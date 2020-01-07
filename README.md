@@ -2,9 +2,9 @@
 
 **This Project will include the following features:**
 
-*Explore the campus map
-*Outdoor directions
-*Directions to my next class
-*Indoor directions
-*Outdoor Points of interest (restaurants, coffee shops, etc.)
+1. Explore the campus map
+2. Outdoor directions
+3. Directions to my next class
+4. Indoor directions
+5. Outdoor Points of interest (restaurants, coffee shops, etc.)
 
