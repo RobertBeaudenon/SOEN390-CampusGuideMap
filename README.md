@@ -8,3 +8,15 @@
 4. Indoor directions
 5. Outdoor Points of interest (restaurants, coffee shops, etc.)
 
+Name | GitHub Username
+------------ | -------------
+Amanda Kolopanis | Amanda-Kolopa
+Donya Meshgin | meshgin
+Jeremiah Tiongson | NicholasNagy
+Khaled Badran | KhaledBadran
+Loujain Al-Nakeeb | Loujain-Al-Nakeeb
+Markram Adaime | makchamp
+Neeham Khalid | Neeham
+Nicholas Nagy | NicholasNagy
+Robert Beaudenon | RobertBeaudenon
+Zohal Mir | Zohalmir
