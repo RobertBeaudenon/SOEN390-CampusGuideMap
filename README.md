@@ -8,6 +8,8 @@
 4. Indoor directions
 5. Outdoor Points of interest (restaurants, coffee shops, etc.)
 
+## This team :family: is composed of the following 10 members:
+
 Name | GitHub Username
 ------------ | -------------
 Amanda Kolopanis | Amanda-Kolopa
