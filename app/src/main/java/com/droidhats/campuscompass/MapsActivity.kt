@@ -13,6 +13,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 
 //OnMapReadyCallback : interface ; extends AppCompatActivity() ;  GoogleMap.OnMarkerClickListener interface, which defines the onMarkerClick(), called when a marker is clicked or tapped:
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarkerClickListener {
@@ -88,12 +89,32 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
    //verifies that user has granted permission
     //checks if the app has been granted the ACCESS_FINE_LOCATION permission. If it hasn’t, then request it from the user.
     private fun setUpMap() {
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-            return
-        }
+       if (ActivityCompat.checkSelfPermission(this,
+               android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+           ActivityCompat.requestPermissions(this,
+               arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+           return
+       }
+
+       map.isMyLocationEnabled = true
+
+       fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
+           // Got last known location. In some rare situations this can be null.
+           if (location != null) {
+               lastLocation = location
+               val currentLatLng = LatLng(location.latitude, location.longitude)
+               placeMarkerOnMap(currentLatLng) // we are adding the marker on map
+               map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
+           }
+       }
+    }
+
+   //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
+    private fun placeMarkerOnMap(location: LatLng) {
+        // 1 Create a MarkerOptions object and sets the user’s current location as the position for the marker
+        val markerOptions = MarkerOptions().position(location)
+        // 2 Add the marker to the map
+        map.addMarker(markerOptions)
     }
 
 }
