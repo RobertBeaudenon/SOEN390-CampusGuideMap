@@ -1,5 +1,8 @@
 package com.droidhats.campuscompass
 
+import android.app.Activity
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -8,8 +11,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -37,6 +40,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+
+         //update lastLocation with the new location and update the map with the new location coordinates
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(p0: LocationResult) {
+                super.onLocationResult(p0)
+
+                lastLocation = p0.lastLocation
+                placeMarkerOnMap(LatLng(lastLocation.latitude, lastLocation.longitude))
+            }
+        }
+
+
+        createLocationRequest()
     }
 
     /**
@@ -85,9 +102,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     //implements methods of interface   GoogleMap.OnMarkerClickListener
      override fun onMarkerClick(p0: Marker?) = false
 
+    // 1
+    private lateinit var locationCallback: LocationCallback
+    // 2
+    private lateinit var locationRequest: LocationRequest
+    private var locationUpdateState = false
+
     //ask permision of user when accessing location
     companion object {
-      private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+
+        // 3 REQUEST_CHECK_SETTINGS is used as the request code passed to onActivityResult.
+        private const val REQUEST_CHECK_SETTINGS = 2
     }
 
    //verifies that user has granted permission
@@ -154,5 +180,87 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
         return addressText
     }
+
+    //get real time updates of current location
+    private fun startLocationUpdates() {
+        //1 if the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE)
+            return
+        }
+        //2 If there is permission, request for location updates.
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
+    }
+
+
+    private fun createLocationRequest() {
+        // 1  create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
+        locationRequest = LocationRequest()
+        // 2   specifies the rate at which your app will like to receive updates.
+        locationRequest.interval = 10000
+        // 3 specifies the fastest rate at which the app can handle updates. Setting the fastestInterval rate places a limit on how fast updates will be sent to your app.
+        locationRequest.fastestInterval = 5000
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        // 4 check location settings before asking for location updates
+        val client = LocationServices.getSettingsClient(this)
+        val task = client.checkLocationSettings(builder.build())
+
+        // 5 A task success means all is well and you can go ahead and initiate a location request
+        task.addOnSuccessListener {
+            locationUpdateState = true
+            startLocationUpdates()
+        }
+        task.addOnFailureListener { e ->
+            // 6  A task failure means the location settings have some issues which can be fixed. This could be as a result of the user’s location settings turned off
+            if (e is ResolvableApiException) {
+                // Location settings are not satisfied, but this can be fixed
+                // by showing the user a dialog.
+                try {
+                    // Show the dialog by calling startResolutionForResult(),
+                    // and check the result in onActivityResult().
+                    e.startResolutionForResult(this@MapsActivity,
+                        REQUEST_CHECK_SETTINGS)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    // Ignore the error.
+                }
+            }
+        }
+    }
+
+
+    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Intent isnullable
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
+            if (resultCode == Activity.RESULT_OK) {
+                locationUpdateState = true
+                startLocationUpdates()
+            }
+        }
+    }
+
+    // 2 Override onPause() to stop location update request
+    override fun onPause() {
+        super.onPause()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+    // 3 Override onResume() to restart the location update request.
+    public override fun onResume() {
+        super.onResume()
+        if (!locationUpdateState) {
+            startLocationUpdates()
+        }
+    }
+
+
+
 
 }
