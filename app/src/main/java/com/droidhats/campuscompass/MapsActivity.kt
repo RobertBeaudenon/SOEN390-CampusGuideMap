@@ -1,7 +1,9 @@
 package com.droidhats.campuscompass
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -54,8 +56,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         //enable the zoom controls on the map and declare MapsActivity as the callback triggered when the user clicks a marker on this map
         map.getUiSettings().setZoomControlsEnabled(true)
         map.setOnMarkerClickListener(this)
+
+        //will asks for users permission through a popup
+        setUpMap()
     }
 
-//implements methods of interface   GoogleMap.OnMarkerClickListener
-override fun onMarkerClick(p0: Marker?) = false
+    //implements methods of interface   GoogleMap.OnMarkerClickListener
+     override fun onMarkerClick(p0: Marker?) = false
+
+    //ask permision of user when accessing location
+    companion object {
+      private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+    }
+
+   //verifies that user has granted permission
+    //checks if the app has been granted the ACCESS_FINE_LOCATION permission. If it hasn’t, then request it from the user.
+    private fun setUpMap() {
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+            return
+        }
+    }
+
 }
