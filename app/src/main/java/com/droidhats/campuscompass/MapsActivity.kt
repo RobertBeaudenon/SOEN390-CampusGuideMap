@@ -1,6 +1,7 @@
 package com.droidhats.campuscompass
 
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -12,7 +13,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 
 //OnMapReadyCallback : interface ; extends AppCompatActivity() ;  GoogleMap.OnMarkerClickListener interface, which defines the onMarkerClick(), called when a marker is clicked or tapped:
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarkerClickListener {
@@ -20,6 +20,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     private lateinit var map: GoogleMap
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private lateinit var lastLocation: Location
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,14 +46,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-/*        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        map.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney))*/
 
-        val myPlace = LatLng(45.495637, -73.578235)  // this is concordia latitude and longitude coordinate
-        map.addMarker(MarkerOptions().position(myPlace).title("Concordia"))
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPlace, 15.0f)) //centers marker on the screen, and control zoom on map: 0 full zoom out 20 max zoom in
+//        val myPlace = LatLng(45.495637, -73.578235)  // this is concordia latitude and longitude coordinate
+//        map.addMarker(MarkerOptions().position(myPlace).title("Concordia"))
+//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPlace, 15.0f)) //centers marker on the screen, and control zoom on map: 0 full zoom out 20 max zoom in
+
+        //initializing vars for get last current location
+        map.uiSettings.isZoomControlsEnabled = true
+        map.setOnMarkerClickListener(this)
 
         //enable the zoom controls on the map and declare MapsActivity as the callback triggered when the user clicks a marker on this map
         map.getUiSettings().setZoomControlsEnabled(true)
@@ -59,6 +61,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
         //will asks for users permission through a popup
         setUpMap()
+
+        //1 enables the my-location layer which draws a light blue dot on the user’s location. It also adds a button to the map that, when tapped, centers the map on the user’s location.
+        map.isMyLocationEnabled = true
+
+        //2 gives you the most recent location currently available.
+        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
+            // Got last known location. In some rare situations this can be null.
+            // 3 If  able to retrieve the the most recent location, then move the camera to the user’s current location.
+            if (location != null) {
+                lastLocation = location
+                val currentLatLng = LatLng(location.latitude, location.longitude)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
+            }
+        }
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
