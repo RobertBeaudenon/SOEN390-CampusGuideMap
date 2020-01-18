@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Campus Compass</string>
     <string name="title_activity_maps">Campus Compass</string>
+
+
+    <string name="SGW_Campus_Name">SGW</string>
+    <string name="Loyola_Campus_Name">Loyola</string>
+
 </resources>

@@ -9,6 +9,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ResolvableApiException
@@ -54,6 +55,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
 
         createLocationRequest()
+        handleCampusSwitch()
     }
 
     /**
@@ -67,11 +69,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
      */
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-
-
-//        val myPlace = LatLng(45.495637, -73.578235)  // this is concordia latitude and longitude coordinate
-//        map.addMarker(MarkerOptions().position(myPlace).title("Concordia"))
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPlace, 15.0f)) //centers marker on the screen, and control zoom on map: 0 full zoom out 20 max zoom in
 
         //initializing vars for get last current location
         map.uiSettings.isZoomControlsEnabled = true
@@ -261,6 +258,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     }
 
 
+    //Handle the switching views between the two campuses. Should probably move from here later
+    private fun handleCampusSwitch()
+    {
+
+  //TODO: refactor these coordinates into location
+       val SGW_LAT  = 45.495637
+       val SGW_LNG = -73.578235
+
+       val LOYOLA_LAT = 45.458159
+       val LOYOLA_LNG =  -73.640450
+
+       var campusView : LatLng
+
+       val campusToggle: ToggleButton = findViewById(R.id.toggle_Campus)
+
+        //Setting toggle button text
+        campusToggle.textOn = getString( R.string.SGW_Campus_Name )
+        campusToggle.textOff = getString( R.string.Loyola_Campus_Name )
+
+        //Setting Toggle button listener
+        campusToggle.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                campusView = LatLng(SGW_LAT, SGW_LNG)
+                map.addMarker(MarkerOptions().position(campusView).title(getString( R.string.SGW_Campus_Name )))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 15.0f))
+
+            } else {
+                campusView = LatLng(LOYOLA_LAT, LOYOLA_LNG)
+                map.addMarker(MarkerOptions().position(campusView).title( getString( R.string.Loyola_Campus_Name ) ))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 15.0f))
+            }
+        }
+    }
 
 
 }
