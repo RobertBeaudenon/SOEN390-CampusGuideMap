@@ -2,8 +2,13 @@
     <string name="app_name">Campus Compass</string>
     <string name="title_activity_maps">Campus Compass</string>
 
-
     <string name="SGW_Campus_Name">SGW</string>
     <string name="Loyola_Campus_Name">Loyola</string>
+    <string name="Hall_Building_Name">Hall Building</string>
+    <string name="WebsterLibrary_Building_Name">Webster Library</string>
+    <string name="JMSB_Building_Name">John Molson School of Business</string>
+    <string name="FG_Building_Name">Faubourg Building</string>
+    <string name="EV_Building_Name">EV Building</string>
+
 
 </resources>

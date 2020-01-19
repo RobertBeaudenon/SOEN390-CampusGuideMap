@@ -9,6 +9,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -18,13 +19,12 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import java.io.IOException
 
+
 //OnMapReadyCallback : interface ; extends AppCompatActivity() ;  GoogleMap.OnMarkerClickListener interface, which defines the onMarkerClick(), called when a marker is clicked or tapped:
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarkerClickListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarkerClickListener, GoogleMap.OnPolygonClickListener {
 
     private lateinit var map: GoogleMap
 
@@ -56,6 +56,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
         createLocationRequest()
         handleCampusSwitch()
+
     }
 
     /**
@@ -78,6 +79,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         map.getUiSettings().setZoomControlsEnabled(true)
         map.setOnMarkerClickListener(this)
 
+        //enable indoor level picker
+        map.isIndoorEnabled = true
+        map.getUiSettings().setIndoorLevelPickerEnabled(true)
+
         //will asks for users permission through a popup
         setUpMap()
 
@@ -94,7 +99,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
             }
         }
+
+        drawBuildingPolygons()
+        map.setOnPolygonClickListener(this)
     }
+
+    //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+    override fun onPolygonClick(p: Polygon)
+    {
+        //Prints the name of the building
+        Toast.makeText(this, p.tag.toString(), Toast.LENGTH_LONG).show()
+
+    }
+
+
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
      override fun onMarkerClick(p0: Marker?) = false
@@ -126,7 +144,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
        map.isMyLocationEnabled = true
 
        //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
-       map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+       map.mapType = GoogleMap.MAP_TYPE_NORMAL
 
        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
            // Got last known location. In some rare situations this can be null.
@@ -281,7 +299,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         campusToggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 campusView = LatLng(SGW_LAT, SGW_LNG)
-                map.addMarker(MarkerOptions().position(campusView).title(getString( R.string.SGW_Campus_Name )))
+               // map.addMarker(MarkerOptions().position(campusView).title(getString( R.string.SGW_Campus_Name )))
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 15.0f))
 
             } else {
@@ -292,5 +310,84 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
     }
 
+
+    private fun drawBuildingPolygons()
+    {
+
+     // SGW CAMPUS
+
+        //EV Building
+        val ev_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.495594, -73.578761),
+                LatLng(45.495175, -73.577855),
+                LatLng(45.495826, -73.577243),
+                LatLng(45.496046, -73.577709),
+                LatLng(45.495663, -73.578080),
+                LatLng(45.495945, -73.578604)
+            )
+        val ev_Polygon: Polygon = map.addPolygon(ev_PolygonOptions)
+        ev_Polygon.tag = getString( R.string.EV_Building_Name )
+
+
+        // Hall Building
+        val hall_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.497164, -73.579544),
+                LatLng(45.497710, -73.579034),
+                LatLng(45.497373, -73.578338),
+                LatLng(45.496828, -73.578850)
+            )
+        val hall_Polygon: Polygon = map.addPolygon(hall_PolygonOptions)
+        hall_Polygon.tag = getString( R.string.Hall_Building_Name )
+
+        //JMSB Building
+        val jmsb_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.495362, -73.579385),
+                LatLng(45.495224, -73.579121),
+                LatLng(45.495165, -73.579180),
+                LatLng(45.495002, -73.578821),
+                LatLng(45.495036, -73.578787),
+                LatLng(45.495001, -73.578728),
+                LatLng(45.495195, -73.578507),
+                LatLng(45.495529, -73.579209)
+            )
+        val jmsb_Polygon: Polygon = map.addPolygon(jmsb_PolygonOptions)
+        jmsb_Polygon.tag = getString( R.string.JMSB_Building_Name )
+
+        //Library
+        val lib_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.497283, -73.578079),
+                LatLng(45.496682, -73.578637),
+                LatLng(45.496249, -73.577675),
+                LatLng(45.496487, -73.577457),
+                LatLng(45.496582, -73.577651),
+                LatLng(45.496634, -73.577604),
+                LatLng(45.496615, -73.577560),
+                LatLng(45.496896, -73.577279)
+            )
+        val lib_Polygon: Polygon = map.addPolygon(lib_PolygonOptions)
+        lib_Polygon.tag = getString( R.string.WebsterLibrary_Building_Name )
+
+    //FG Building
+        val fg_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+               LatLng(45.493822, -73.579069),
+               LatLng(45.493619, -73.578735),
+               LatLng(45.494457, -73.577627),
+               LatLng(45.494687, -73.578045),
+               LatLng(45.494363, -73.578439)
+        )
+        val fg_Polygon: Polygon = map.addPolygon(fg_PolygonOptions)
+        fg_Polygon.tag = getString( R.string.FG_Building_Name )
+
+    }
 
 }
