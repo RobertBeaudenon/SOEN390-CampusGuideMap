@@ -9,6 +9,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
@@ -56,6 +57,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
         createLocationRequest()
         handleCampusSwitch()
+
+        val calendarButton: View = findViewById(R.id.calendarButton)
+        calendarButton.setOnClickListener{ view: View ->
+            pingCalendar(this.applicationContext, this)
+        }
 
     }
 

@@ -18,5 +18,14 @@
         android:textOn="@string/SGW_Campus_Name"
         android:textOff="@string/Loyola_Campus_Name" />
 
+    <Button
+        android:id="@+id/calendarButton"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="125dp"
+        android:layout_marginEnd="125dp"
+        android:text="Calendar" />
 
 </RelativeLayout>
