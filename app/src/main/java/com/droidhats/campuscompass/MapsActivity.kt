@@ -21,7 +21,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.io.IOException
+import java.util.*
 
 
 //OnMapReadyCallback : interface ; extends AppCompatActivity() ;  GoogleMap.OnMarkerClickListener interface, which defines the onMarkerClick(), called when a marker is clicked or tapped:
@@ -54,7 +60,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             }
         }
 
-
         createLocationRequest()
         handleCampusSwitch()
 
@@ -63,6 +68,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             pingCalendar(this.applicationContext, this)
         }
 
+        initPlacesSearch()
     }
 
     /**
@@ -135,6 +141,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
         // 3 REQUEST_CHECK_SETTINGS is used as the request code passed to onActivityResult.
         private const val REQUEST_CHECK_SETTINGS = 2
+
+        private const val AUTOCOMPLETE_REQUEST_CODE = 3
     }
 
    //verifies that user has granted permission
@@ -255,9 +263,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
     }
 
+    private fun initPlacesSearch(){
+
+
+        Places.initialize( this.applicationContext, getString(R.string.ApiKey), Locale.CANADA )
+        Places.createClient(this)
+        var fields = listOf(Place.Field.ID,Place.Field.NAME,Place.Field.LAT_LNG)
+
+
+        //Autocomplete search launches after hitting the button
+        val searchButton : View = findViewById(R.id.fab)
+
+        searchButton.setOnClickListener {
+            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        }
+
+
+    }
+
 
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Intent isnullable
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Intent is nullable
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == Activity.RESULT_OK) {
@@ -265,8 +292,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 startLocationUpdates()
             }
         }
-    }
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    val place = Autocomplete.getPlaceFromIntent(data)
+                    Toast.makeText(this, place.address, Toast.LENGTH_LONG).show()
+                } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                    if (data != null) {
+                        var status = Autocomplete.getStatusFromIntent(data)
+                        Log.i("Autocomplete: ", status.statusMessage)
+                    }
 
+                }
+            }
+        }
+    }
     // 2 Override onPause() to stop location update request
     override fun onPause() {
         super.onPause()
@@ -280,6 +320,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             startLocationUpdates()
         }
     }
+
+
 
 
     //Handle the switching views between the two campuses. Should probably move from here later
@@ -306,12 +348,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             if (isChecked) {
                 campusView = LatLng(SGW_LAT, SGW_LNG)
                // map.addMarker(MarkerOptions().position(campusView).title(getString( R.string.SGW_Campus_Name )))
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 15.0f))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
 
             } else {
                 campusView = LatLng(LOYOLA_LAT, LOYOLA_LNG)
                 map.addMarker(MarkerOptions().position(campusView).title( getString( R.string.Loyola_Campus_Name ) ))
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 15.0f))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
             }
         }
     }
