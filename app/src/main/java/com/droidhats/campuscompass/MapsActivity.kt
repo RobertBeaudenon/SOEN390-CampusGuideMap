@@ -27,7 +27,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.io.IOException
-import java.util.*
+import java.util.Locale
 
 
 //OnMapReadyCallback : interface ; extends AppCompatActivity() ;  GoogleMap.OnMarkerClickListener interface, which defines the onMarkerClick(), called when a marker is clicked or tapped:
@@ -180,7 +180,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
        val titleStr = getAddress(location)
        markerOptions.title(titleStr)
 
-
         // 2 Add the marker to the map
         map.addMarker(markerOptions)
     }
@@ -246,6 +245,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             locationUpdateState = true
             startLocationUpdates()
         }
+
         task.addOnFailureListener { e ->
             // 6  A task failure means the location settings have some issues which can be fixed. This could be as a result of the user’s location settings turned off
             if (e is ResolvableApiException) {
@@ -263,9 +263,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
     }
 
-    private fun initPlacesSearch(){
-
-
+    private fun initPlacesSearch() {
         Places.initialize( this.applicationContext, getString(R.string.ApiKey), Locale.CANADA )
         Places.createClient(this)
         var fields = listOf(Place.Field.ID,Place.Field.NAME,Place.Field.LAT_LNG)
@@ -278,8 +276,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
-
-
     }
 
 
@@ -292,21 +288,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 startLocationUpdates()
             }
         }
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    val place = Autocomplete.getPlaceFromIntent(data)
-                    Toast.makeText(this, place.address, Toast.LENGTH_LONG).show()
-                } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                    if (data != null) {
-                        var status = Autocomplete.getStatusFromIntent(data)
-                        Log.i("Autocomplete: ", status.statusMessage)
-                    }
+        if (requestCode != AUTOCOMPLETE_REQUEST_CODE || resultCode != Activity.RESULT_OK) return
 
-                }
-            }
+        if (data == null) return
+
+        val place = Autocomplete.getPlaceFromIntent(data)
+        Toast.makeText(this, place.address, Toast.LENGTH_LONG).show()
+
+        if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            var status = Autocomplete.getStatusFromIntent(data)
+            Log.i("Autocomplete: ", status.statusMessage)
         }
     }
+
     // 2 Override onPause() to stop location update request
     override fun onPause() {
         super.onPause()
@@ -325,8 +319,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
 
     //Handle the switching views between the two campuses. Should probably move from here later
-    private fun handleCampusSwitch()
-    {
+    private fun handleCampusSwitch() {
 
   //TODO: refactor these coordinates into location
        val SGW_LAT  = 45.495637
@@ -359,8 +352,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     }
 
 
-    private fun drawBuildingPolygons()
-    {
+    private fun drawBuildingPolygons() {
 
      // SGW CAMPUS
 
