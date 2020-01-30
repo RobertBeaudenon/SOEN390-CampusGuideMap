@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MapsActivity" >
+
+
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
+
     <ToggleButton
         android:id="@+id/toggle_Campus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textOn="@string/SGW_Campus_Name"
-        android:textOff="@string/Loyola_Campus_Name" />
+        android:textOff="@string/Loyola_Campus_Name"
+        />
 
     <Button
         android:id="@+id/calendarButton"
@@ -26,6 +31,22 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="125dp"
         android:layout_marginEnd="125dp"
-        android:text="Calendar" />
+        android:drawableStart="@android:drawable/ic_menu_my_calendar"
+        android:text="@string/Calendar_Feature_Name"
+        />
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="112dp"
+        android:layout_marginEnd="8dp"
+        app:srcCompat="@android:drawable/ic_menu_search"
+        android:tint="@color/quantum_black_100"
+        app:backgroundTint="@color/quantum_white_100"
+        />
 
 </RelativeLayout>

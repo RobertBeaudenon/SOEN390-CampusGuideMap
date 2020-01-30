@@ -15,13 +15,28 @@ import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.io.IOException
+import java.util.Locale
 
 
 //OnMapReadyCallback : interface ; extends AppCompatActivity() ;  GoogleMap.OnMarkerClickListener interface, which defines the onMarkerClick(), called when a marker is clicked or tapped:
@@ -54,15 +69,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             }
         }
 
-
         createLocationRequest()
         handleCampusSwitch()
 
         val calendarButton: View = findViewById(R.id.calendarButton)
-        calendarButton.setOnClickListener{ view: View ->
+        calendarButton.setOnClickListener{
             pingCalendar(this.applicationContext, this)
         }
 
+        initPlacesSearch()
     }
 
     /**
@@ -135,6 +150,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
         // 3 REQUEST_CHECK_SETTINGS is used as the request code passed to onActivityResult.
         private const val REQUEST_CHECK_SETTINGS = 2
+
+        private const val AUTOCOMPLETE_REQUEST_CODE = 3
     }
 
    //verifies that user has granted permission
@@ -172,7 +189,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
        val titleStr = getAddress(location)
        markerOptions.title(titleStr)
 
-
         // 2 Add the marker to the map
         map.addMarker(markerOptions)
     }
@@ -196,7 +212,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 }
             }
         } catch (e: IOException) {
-            Log.e("MapsActivity", e.localizedMessage)
+            Log.e("MapsActivity", e.localizedMessage!!)
         }
 
         return addressText
@@ -238,6 +254,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             locationUpdateState = true
             startLocationUpdates()
         }
+
         task.addOnFailureListener { e ->
             // 6  A task failure means the location settings have some issues which can be fixed. This could be as a result of the user’s location settings turned off
             if (e is ResolvableApiException) {
@@ -255,15 +272,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
     }
 
+    private fun initPlacesSearch() {
+        Places.initialize( this.applicationContext, getString(R.string.ApiKey), Locale.CANADA )
+        Places.createClient(this)
+        var fields = listOf(Place.Field.ID,Place.Field.NAME,Place.Field.LAT_LNG)
+
+
+        //Autocomplete search launches after hitting the button
+        val searchButton : View = findViewById(R.id.fab)
+
+        searchButton.setOnClickListener {
+            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        }
+    }
+
 
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Intent isnullable
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Intent is nullable
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
-            if (resultCode == Activity.RESULT_OK) {
-                locationUpdateState = true
-                startLocationUpdates()
-            }
+        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == Activity.RESULT_OK) {
+            locationUpdateState = true
+            startLocationUpdates()
+        }
+        if (requestCode != AUTOCOMPLETE_REQUEST_CODE || resultCode != Activity.RESULT_OK) return
+
+        if (data == null) return
+
+        val place = Autocomplete.getPlaceFromIntent(data)
+        Toast.makeText(this, place.address, Toast.LENGTH_LONG).show()
+
+        if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            var status = Autocomplete.getStatusFromIntent(data)
+            Log.i("Autocomplete: ", status.statusMessage!!)
         }
     }
 
@@ -282,9 +323,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     }
 
 
+
+
     //Handle the switching views between the two campuses. Should probably move from here later
-    private fun handleCampusSwitch()
-    {
+    private fun handleCampusSwitch() {
 
   //TODO: refactor these coordinates into location
        val SGW_LAT  = 45.495637
@@ -306,19 +348,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             if (isChecked) {
                 campusView = LatLng(SGW_LAT, SGW_LNG)
                // map.addMarker(MarkerOptions().position(campusView).title(getString( R.string.SGW_Campus_Name )))
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 15.0f))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
 
             } else {
                 campusView = LatLng(LOYOLA_LAT, LOYOLA_LNG)
                 map.addMarker(MarkerOptions().position(campusView).title( getString( R.string.Loyola_Campus_Name ) ))
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 15.0f))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
             }
         }
     }
 
 
-    private fun drawBuildingPolygons()
-    {
+    private fun drawBuildingPolygons() {
 
      // SGW CAMPUS
 
