@@ -76,56 +76,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
 
         createLocationRequest()
-
-        handleCampusSwitch()
-
+        
         val calendarButton: View = findViewById(R.id.calendarButton)
         calendarButton.setOnClickListener{
             pingCalendar(this.applicationContext, this)
         }
 
-
+        handleCampusSwitch()
         initPlacesSearch()
-
-        //Initializing bottom sheet behavior
-
-        bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
-
-        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-
-            override fun onStateChanged(bottomSheet: View, newState: Int)
-            {
-                // React to state change
-                when (newState)
-                {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                    }
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-
-                    }
-                    BottomSheetBehavior.STATE_DRAGGING -> {
-
-                    }
-                    BottomSheetBehavior.STATE_SETTLING -> {
-
-                    }
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
-                // Adjusting the google zoom buttons to stay on top of the bottom sheet
-                //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
-                map.setPadding( 0, 0, 0, ( slideOffset * bottom_sheet.height ).toInt() )
-
-
-            }
-        })
+        initBottomSheetBehavior()
 
     }
 
@@ -516,5 +475,41 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         fg_Polygon.tag = getString( R.string.FG_Building_Name )
 
     }
+
+    private fun initBottomSheetBehavior()
+    {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
+
+        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onStateChanged(bottomSheet: View, newState: Int)
+            {
+                // React to state change
+                when (newState)
+                {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING -> {
+                    }
+                    BottomSheetBehavior.STATE_SETTLING -> {
+                    }
+                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                    }
+                }
+            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+                // Adjusting the google zoom buttons to stay on top of the bottom sheet
+                //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
+                map.setPadding( 0, 0, 0, ( slideOffset * bottom_sheet.height ).toInt() )
+            }
+        })
+
+    }
+
 
 }
