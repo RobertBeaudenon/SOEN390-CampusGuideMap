@@ -4,17 +4,21 @@ import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -26,18 +30,16 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.maps.android.PolyUtil
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
 
@@ -52,7 +54,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     private lateinit var locationCallback: LocationCallback
 
     private lateinit var locationRequest: LocationRequest
-
+    
     private var locationUpdateState = false
 
     companion object {
@@ -149,8 +151,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             //Dismiss the bottom sheet when clicking anywhere on the map
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
 
+        }
     }
 
     private fun createLocationRequest() {
@@ -240,7 +242,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
     }
 
-
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon)
     {
@@ -253,6 +254,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
         val buildingNameText: TextView = findViewById(R.id.bottom_sheet_building_name)
         buildingNameText.text = p.tag.toString()
+
+        val directionsButton : Button = findViewById(R.id.bottom_sheet_directions_button)
+        directionsButton.setOnClickListener(View.OnClickListener {
+
+            //Calculating the center of the polygon to use for it's location.
+            // This won't be necessary once we hold the Buildings in a common class
+
+            var centerLat : Double = 0.0
+            var centerLong : Double = 0.0
+            for (i in 0 until p.points.size) {
+                centerLat +=  p.points[i].latitude
+                centerLong += p.points[i].longitude
+            }
+            centerLat /= p.points.size
+            centerLong /=p.points.size
+
+            val buildingLocation : Location = lastLocation
+            buildingLocation.latitude = centerLat
+            buildingLocation.longitude = centerLong
+
+            //TODO: This full clear and redraw should probably be removed when the directions system is implemented. It was added to show only one route at a time
+            map.clear()
+            drawBuildingPolygons()
+            placeMarkerOnMap(LatLng(centerLat, centerLong))
+
+
+            //Generate directions from current location to the selected building
+            fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
+                if (location != null)
+                    generateDirections( location, buildingLocation )
+            }
+
+        })
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
@@ -378,9 +412,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         val gm_Polygon: Polygon = map.addPolygon(gm_PolygonOptions)
         gm_Polygon.tag = getString( R.string.GM_Building_Name )
 
-
-
-
         // Hall Building
         val hall_PolygonOptions = PolygonOptions()
             .clickable(true)
@@ -472,7 +503,41 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 map.setPadding( 0, 0, 0, ( slideOffset * bottom_sheet.height ).toInt() )
             }
         })
+    }
 
+    private fun generateDirections(origin : Location, destination : Location){
+
+        val directionsURL = "https://maps.googleapis.com/maps/api/directions/json?" +
+                "origin=" + origin.latitude.toString() + "," + origin.longitude.toString() +
+                "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +
+                "&key=" + getString(R.string.ApiKey)
+
+        val directionsRequest = object : StringRequest(Method.GET, directionsURL, com.android.volley.Response.Listener<String>{ response ->
+
+            //Retrieve json response
+            val jsonResponse = JSONObject(response)
+
+            // Get route information from json response
+            val routes = jsonResponse.getJSONArray("routes")
+            val legs = routes.getJSONObject(0).getJSONArray("legs")
+            val steps = legs.getJSONObject(0).getJSONArray("steps")
+
+            val path: MutableList<List<LatLng>> = ArrayList()
+
+            //Build polyline and draw on map
+            for (i in 0 until steps.length()) {
+            val points = steps.getJSONObject(i).getJSONObject("polyline").getString("points")
+            path.add(PolyUtil.decode(points))
+        }
+            for (i in 0 until path.size) {
+                this.map.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+            }
+        }, com.android.volley.Response.ErrorListener {
+            Log.i("Volley Error:", "HTTP request error")
+        }){}
+
+        val requestQueue = Volley.newRequestQueue(this)
+        requestQueue.add(directionsRequest)
     }
 
 
