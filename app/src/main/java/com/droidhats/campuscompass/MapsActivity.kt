@@ -41,8 +41,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import java.io.IOException
 import java.util.Locale
 
-
-//OnMapReadyCallback : interface ; extends AppCompatActivity() ;  GoogleMap.OnMarkerClickListener interface, which defines the onMarkerClick(), called when a marker is clicked or tapped:
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarkerClickListener, GoogleMap.OnPolygonClickListener {
 
     private lateinit var map: GoogleMap
@@ -50,6 +48,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var lastLocation: Location
+
+    private lateinit var locationCallback: LocationCallback
+
+    private lateinit var locationRequest: LocationRequest
+
+    private var locationUpdateState = false
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+
+        private const val REQUEST_CHECK_SETTINGS = 2
+
+        private const val AUTOCOMPLETE_REQUEST_CODE = 3
+    }
 
     private lateinit var bottomSheetBehavior : BottomSheetBehavior<View>
 
@@ -64,14 +76,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-
         //update lastLocation with the new location and update the map with the new location coordinates
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult) {
                 super.onLocationResult(p0)
 
                 lastLocation = p0.lastLocation
-                placeMarkerOnMap(LatLng(lastLocation.latitude, lastLocation.longitude))
+              //  placeMarkerOnMap(LatLng(lastLocation.latitude, lastLocation.longitude))
             }
         }
 
@@ -100,6 +111,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
+        //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
+        map.mapType = GoogleMap.MAP_TYPE_NORMAL
+
         //initializing vars for get last current location
         map.uiSettings.isZoomControlsEnabled = true
         map.setOnMarkerClickListener(this)
@@ -112,16 +126,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         map.isIndoorEnabled = true
         map.getUiSettings().setIndoorLevelPickerEnabled(true)
 
-        //will asks for users permission through a popup
-        setUpMap()
-
-        //1 enables the my-location layer which draws a light blue dot on the user’s location. It also adds a button to the map that, when tapped, centers the map on the user’s location.
+        //Enables the my-location layer which draws a light blue dot on the user’s location.
+        // It also adds a button to the map that, when tapped, centers the map on the user’s location.
         map.isMyLocationEnabled = true
 
-        //2 gives you the most recent location currently available.
+        //Gives you the most recent location currently available.
         fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
             // Got last known location. In some rare situations this can be null.
-            // 3 If  able to retrieve the the most recent location, then move the camera to the user’s current location.
+            // If  able to retrieve the the most recent location, then move the camera to the user’s current location.
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
@@ -132,7 +144,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         drawBuildingPolygons()
         map.setOnPolygonClickListener(this)
 
-
         map.setOnMapClickListener {
 
             //Dismiss the bottom sheet when clicking anywhere on the map
@@ -141,121 +152,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
 
     }
-
-    //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
-    override fun onPolygonClick(p: Polygon)
-    {
-
-        //Expand the bottom sheet when clicking on a polygon
-        //TODO: Limt only to campus buildings as poylgons could highlight anything
-        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED)
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-        //Populate the bottom sheet with building information
-
-        val buildingNameText: TextView = findViewById(R.id.bottom_sheet_building_name)
-        buildingNameText.text = p.tag.toString()
-    }
-
-
-
-    //implements methods of interface   GoogleMap.OnMarkerClickListener
-    override fun onMarkerClick(p0: Marker?) = false
-
-    // 1
-    private lateinit var locationCallback: LocationCallback
-    // 2
-    private lateinit var locationRequest: LocationRequest
-    private var locationUpdateState = false
-
-    //ask permision of user when accessing location
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-
-        // 3 REQUEST_CHECK_SETTINGS is used as the request code passed to onActivityResult.
-        private const val REQUEST_CHECK_SETTINGS = 2
-
-        private const val AUTOCOMPLETE_REQUEST_CODE = 3
-    }
-
-    //verifies that user has granted permission
-    //checks if the app has been granted the ACCESS_FINE_LOCATION permission. If it hasn’t, then request it from the user.
-    private fun setUpMap() {
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-            return
-        }
-
-        map.isMyLocationEnabled = true
-
-        //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
-        map.mapType = GoogleMap.MAP_TYPE_NORMAL
-
-        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
-            // Got last known location. In some rare situations this can be null.
-            if (location != null) {
-                lastLocation = location
-                val currentLatLng = LatLng(location.latitude, location.longitude)
-                placeMarkerOnMap(currentLatLng) // we are adding the marker on map
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
-            }
-        }
-    }
-
-    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
-    private fun placeMarkerOnMap(location: LatLng) {
-        // 1 Create a MarkerOptions object and sets the user’s current location as the position for the marker
-        val markerOptions = MarkerOptions().position(location)
-
-        //added a call to getAddress() and added this address as the marker title.
-        val titleStr = getAddress(location)
-        markerOptions.title(titleStr)
-
-        // 2 Add the marker to the map
-        map.addMarker(markerOptions)
-    }
-
-    //This method get address from coordinates
-    private fun getAddress(latLng: LatLng): String {
-        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
-        val geocoder = Geocoder(this)
-        val addresses: List<Address>?
-        val address: Address?
-        var addressText = ""
-
-        try {
-            // 2 Asks the geocoder to get the address from the location passed to the method
-            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            // 3 If the response contains any address, then append it to a string and return
-            if (null != addresses && !addresses.isEmpty()) {
-                address = addresses[0]
-                for (i in 0 until address.maxAddressLineIndex) {
-                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
-                }
-            }
-        } catch (e: IOException) {
-            Log.e("MapsActivity", e.localizedMessage!!)
-        }
-
-        return addressText
-    }
-
-    //get real time updates of current location
-    private fun startLocationUpdates() {
-        //1 if the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE)
-            return
-        }
-        //2 If there is permission, request for location updates.
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
-    }
-
 
     private fun createLocationRequest() {
         // 1  create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
@@ -296,21 +192,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
     }
 
-    private fun initPlacesSearch() {
-        Places.initialize( this.applicationContext, getString(R.string.ApiKey), Locale.CANADA )
-        Places.createClient(this)
-        var fields = listOf(Place.Field.ID,Place.Field.NAME,Place.Field.LAT_LNG)
-
-
-        //Autocomplete search launches after hitting the button
-        val searchButton : View = findViewById(R.id.fab_search)
-
-        searchButton.setOnClickListener {
-            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+    //get real time updates of current location
+    private fun startLocationUpdates() {
+        //If the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE)
+            return
         }
+        //If there is permission, request for location updates.
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
     }
-
 
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Intent is nullable
@@ -347,6 +241,76 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     }
 
 
+    //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+    override fun onPolygonClick(p: Polygon)
+    {
+        //Expand the bottom sheet when clicking on a polygon
+        //TODO: Limt only to campus buildings as poylgons could highlight anything
+        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+        //Populate the bottom sheet with building information
+
+        val buildingNameText: TextView = findViewById(R.id.bottom_sheet_building_name)
+        buildingNameText.text = p.tag.toString()
+    }
+
+    //implements methods of interface   GoogleMap.OnMarkerClickListener
+    override fun onMarkerClick(p0: Marker?) = false
+
+    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
+    private fun placeMarkerOnMap(location: LatLng) {
+        // 1 Create a MarkerOptions object and sets the user’s current location as the position for the marker
+        val markerOptions = MarkerOptions().position(location)
+
+        //added a call to getAddress() and added this address as the marker title.
+        val titleStr = getAddress(location)
+        markerOptions.title(titleStr)
+
+        // 2 Add the marker to the map
+        map.addMarker(markerOptions)
+    }
+
+    //This method get address from coordinates
+    private fun getAddress(latLng: LatLng): String {
+        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
+        val geocoder = Geocoder(this)
+        val addresses: List<Address>?
+        val address: Address?
+        var addressText = ""
+
+        try {
+            // 2 Asks the geocoder to get the address from the location passed to the method
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            // 3 If the response contains any address, then append it to a string and return
+            if (null != addresses && !addresses.isEmpty()) {
+                address = addresses[0]
+                for (i in 0 until address.maxAddressLineIndex) {
+                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("MapsActivity", e.localizedMessage!!)
+        }
+
+        return addressText
+    }
+
+
+    private fun initPlacesSearch() {
+        Places.initialize( this.applicationContext, getString(R.string.ApiKey), Locale.CANADA )
+        Places.createClient(this)
+        var fields = listOf(Place.Field.ID,Place.Field.NAME,Place.Field.LAT_LNG)
+
+
+        //Autocomplete search launches after hitting the button
+        val searchButton : View = findViewById(R.id.fab_search)
+
+        searchButton.setOnClickListener {
+            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        }
+    }
 
 
     //Handle the switching views between the two campuses. Should probably move from here later
