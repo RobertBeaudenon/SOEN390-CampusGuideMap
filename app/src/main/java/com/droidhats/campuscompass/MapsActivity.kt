@@ -37,13 +37,14 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import java.io.IOException
 import java.util.Locale
 
 
 //OnMapReadyCallback : interface ; extends AppCompatActivity() ;  GoogleMap.OnMarkerClickListener interface, which defines the onMarkerClick(), called when a marker is clicked or tapped:
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarkerClickListener, GoogleMap.OnPolygonClickListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnPolygonClickListener {
 
     private lateinit var map: GoogleMap
 
@@ -51,7 +52,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
     private lateinit var lastLocation: Location
 
-    private lateinit var bottomSheetBehavior : BottomSheetBehavior<View>
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,9 +77,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
 
         createLocationRequest()
-        
+
         val calendarButton: View = findViewById(R.id.calendarButton)
-        calendarButton.setOnClickListener{
+        calendarButton.setOnClickListener {
             pingCalendar(this.applicationContext, this)
         }
 
@@ -132,19 +133,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         drawBuildingPolygons()
         map.setOnPolygonClickListener(this)
 
-
         map.setOnMapClickListener {
 
             //Dismiss the bottom sheet when clicking anywhere on the map
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
-
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
-    override fun onPolygonClick(p: Polygon)
-    {
+    override fun onPolygonClick(p: Polygon) {
 
         //Expand the bottom sheet when clicking on a polygon
         //TODO: Limt only to campus buildings as poylgons could highlight anything
@@ -152,11 +150,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         //Populate the bottom sheet with building information
-
         val buildingNameText: TextView = findViewById(R.id.bottom_sheet_building_name)
         buildingNameText.text = p.tag.toString()
     }
-
 
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
@@ -181,10 +177,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     //verifies that user has granted permission
     //checks if the app has been granted the ACCESS_FINE_LOCATION permission. If it hasn’t, then request it from the user.
     private fun setUpMap() {
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
             return
         }
 
@@ -232,7 +234,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             if (null != addresses && !addresses.isEmpty()) {
                 address = addresses[0]
                 for (i in 0 until address.maxAddressLineIndex) {
-                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
+                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(
+                        i
+                    )
                 }
             }
         } catch (e: IOException) {
@@ -245,15 +249,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     //get real time updates of current location
     private fun startLocationUpdates() {
         //1 if the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE)
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
             return
         }
         //2 If there is permission, request for location updates.
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            null /* Looper */
+        )
     }
 
 
@@ -287,8 +300,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 try {
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
-                    e.startResolutionForResult(this@MapsActivity,
-                        REQUEST_CHECK_SETTINGS)
+                    e.startResolutionForResult(
+                        this@MapsActivity,
+                        REQUEST_CHECK_SETTINGS
+                    )
                 } catch (sendEx: IntentSender.SendIntentException) {
                     // Ignore the error.
                 }
@@ -297,23 +312,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     }
 
     private fun initPlacesSearch() {
-        Places.initialize( this.applicationContext, getString(R.string.ApiKey), Locale.CANADA )
+        Places.initialize(this.applicationContext, getString(R.string.ApiKey), Locale.CANADA)
         Places.createClient(this)
-        var fields = listOf(Place.Field.ID,Place.Field.NAME,Place.Field.LAT_LNG)
+        var fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
 
 
         //Autocomplete search launches after hitting the button
-        val searchButton : View = findViewById(R.id.fab_search)
+        val searchButton: View = findViewById(R.id.fab_search)
 
         searchButton.setOnClickListener {
-            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
+            var intent =
+                Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
     }
 
-
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Intent is nullable
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) { //Intent is nullable
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == Activity.RESULT_OK) {
             locationUpdateState = true
@@ -347,25 +366,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     }
 
 
-
-
     //Handle the switching views between the two campuses. Should probably move from here later
     private fun handleCampusSwitch() {
 
         //TODO: refactor these coordinates into location
-        val SGW_LAT  = 45.495637
+        val SGW_LAT = 45.495637
         val SGW_LNG = -73.578235
 
         val LOYOLA_LAT = 45.458159
-        val LOYOLA_LNG =  -73.640450
+        val LOYOLA_LNG = -73.640450
 
-        var campusView : LatLng
+        var campusView: LatLng
 
         val campusToggle: ToggleButton = findViewById(R.id.toggle_Campus)
 
         //Setting toggle button text
-        campusToggle.textOn = getString( R.string.SGW_Campus_Name )
-        campusToggle.textOff = getString( R.string.Loyola_Campus_Name )
+        campusToggle.textOn = getString(R.string.SGW_Campus_Name)
+        campusToggle.textOff = getString(R.string.Loyola_Campus_Name)
 
         //Setting Toggle button listener
         campusToggle.setOnCheckedChangeListener { _, isChecked ->
@@ -376,7 +393,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
             } else {
                 campusView = LatLng(LOYOLA_LAT, LOYOLA_LNG)
-                map.addMarker(MarkerOptions().position(campusView).title( getString( R.string.Loyola_Campus_Name ) ))
+                map.addMarker(MarkerOptions().position(campusView).title(getString(R.string.Loyola_Campus_Name)))
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
             }
         }
@@ -399,7 +416,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.495910, -73.578475)
             )
         val ev_Polygon: Polygon = map.addPolygon(ev_PolygonOptions)
-        ev_Polygon.tag = getString( R.string.EV_Building_Name )
+        ev_Polygon.tag = getString(R.string.EV_Building_Name)
 
         val gm_PolygonOptions = PolygonOptions()
             .clickable(true)
@@ -412,10 +429,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.496132, -73.578816)
             )
         val gm_Polygon: Polygon = map.addPolygon(gm_PolygonOptions)
-        gm_Polygon.tag = getString( R.string.GM_Building_Name )
-
-
-
+        gm_Polygon.tag = getString(R.string.GM_Building_Name)
 
         // Hall Building
         val hall_PolygonOptions = PolygonOptions()
@@ -427,7 +441,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.496828, -73.578850)
             )
         val hall_Polygon: Polygon = map.addPolygon(hall_PolygonOptions)
-        hall_Polygon.tag = getString( R.string.Hall_Building_Name )
+        hall_Polygon.tag = getString(R.string.Hall_Building_Name)
 
         //JMSB Building
         val jmsb_PolygonOptions = PolygonOptions()
@@ -443,7 +457,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.495529, -73.579209)
             )
         val jmsb_Polygon: Polygon = map.addPolygon(jmsb_PolygonOptions)
-        jmsb_Polygon.tag = getString( R.string.JMSB_Building_Name )
+        jmsb_Polygon.tag = getString(R.string.JMSB_Building_Name)
 
         //Library
         val lib_PolygonOptions = PolygonOptions()
@@ -459,7 +473,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.496896, -73.577279)
             )
         val lib_Polygon: Polygon = map.addPolygon(lib_PolygonOptions)
-        lib_Polygon.tag = getString( R.string.WebsterLibrary_Building_Name )
+        lib_Polygon.tag = getString(R.string.WebsterLibrary_Building_Name)
 
         //FG Building
         val fg_PolygonOptions = PolygonOptions()
@@ -472,21 +486,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.494363, -73.578439)
             )
         val fg_Polygon: Polygon = map.addPolygon(fg_PolygonOptions)
-        fg_Polygon.tag = getString( R.string.FG_Building_Name )
+        fg_Polygon.tag = getString(R.string.FG_Building_Name)
 
     }
 
-    private fun initBottomSheetBehavior()
-    {
+    private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 
-        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.setBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
 
-            override fun onStateChanged(bottomSheet: View, newState: Int)
-            {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
                 // React to state change
-                when (newState)
-                {
+                when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                     }
                     BottomSheetBehavior.STATE_EXPANDED -> {
@@ -501,11 +513,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                     }
                 }
             }
+
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
-                map.setPadding( 0, 0, 0, ( slideOffset * bottom_sheet.height ).toInt() )
+                map.setPadding(0, 0, 0, (slideOffset * bottom_sheet.height).toInt())
             }
         })
 
