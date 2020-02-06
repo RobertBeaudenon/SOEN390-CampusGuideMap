@@ -30,7 +30,12 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
@@ -38,7 +43,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
@@ -89,9 +94,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         }
 
         createLocationRequest()
-        
+
         val calendarButton: View = findViewById(R.id.calendarButton)
-        calendarButton.setOnClickListener{
+        calendarButton.setOnClickListener {
             pingCalendar(this.applicationContext, this)
         }
 
@@ -151,7 +156,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             //Dismiss the bottom sheet when clicking anywhere on the map
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-
         }
     }
 
@@ -351,19 +355,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     private fun handleCampusSwitch() {
 
         //TODO: refactor these coordinates into location
-        val SGW_LAT  = 45.495637
+        val SGW_LAT = 45.495637
         val SGW_LNG = -73.578235
 
         val LOYOLA_LAT = 45.458159
-        val LOYOLA_LNG =  -73.640450
+        val LOYOLA_LNG = -73.640450
 
-        var campusView : LatLng
+        var campusView: LatLng
 
         val campusToggle: ToggleButton = findViewById(R.id.toggle_Campus)
 
         //Setting toggle button text
-        campusToggle.textOn = getString( R.string.SGW_Campus_Name )
-        campusToggle.textOff = getString( R.string.Loyola_Campus_Name )
+        campusToggle.textOn = getString(R.string.SGW_Campus_Name)
+        campusToggle.textOff = getString(R.string.Loyola_Campus_Name)
 
         //Setting Toggle button listener
         campusToggle.setOnCheckedChangeListener { _, isChecked ->
@@ -374,7 +378,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
             } else {
                 campusView = LatLng(LOYOLA_LAT, LOYOLA_LNG)
-                map.addMarker(MarkerOptions().position(campusView).title( getString( R.string.Loyola_Campus_Name ) ))
+                map.addMarker(MarkerOptions().position(campusView).title(getString(R.string.Loyola_Campus_Name)))
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
             }
         }
@@ -397,7 +401,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.495910, -73.578475)
             )
         val ev_Polygon: Polygon = map.addPolygon(ev_PolygonOptions)
-        ev_Polygon.tag = getString( R.string.EV_Building_Name )
+        ev_Polygon.tag = getString(R.string.EV_Building_Name)
 
         val gm_PolygonOptions = PolygonOptions()
             .clickable(true)
@@ -410,7 +414,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.496132, -73.578816)
             )
         val gm_Polygon: Polygon = map.addPolygon(gm_PolygonOptions)
-        gm_Polygon.tag = getString( R.string.GM_Building_Name )
+        gm_Polygon.tag = getString(R.string.GM_Building_Name)
 
         // Hall Building
         val hall_PolygonOptions = PolygonOptions()
@@ -422,7 +426,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.496828, -73.578850)
             )
         val hall_Polygon: Polygon = map.addPolygon(hall_PolygonOptions)
-        hall_Polygon.tag = getString( R.string.Hall_Building_Name )
+        hall_Polygon.tag = getString(R.string.Hall_Building_Name)
 
         //JMSB Building
         val jmsb_PolygonOptions = PolygonOptions()
@@ -438,7 +442,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.495529, -73.579209)
             )
         val jmsb_Polygon: Polygon = map.addPolygon(jmsb_PolygonOptions)
-        jmsb_Polygon.tag = getString( R.string.JMSB_Building_Name )
+        jmsb_Polygon.tag = getString(R.string.JMSB_Building_Name)
 
         //Library
         val lib_PolygonOptions = PolygonOptions()
@@ -454,7 +458,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.496896, -73.577279)
             )
         val lib_Polygon: Polygon = map.addPolygon(lib_PolygonOptions)
-        lib_Polygon.tag = getString( R.string.WebsterLibrary_Building_Name )
+        lib_Polygon.tag = getString(R.string.WebsterLibrary_Building_Name)
 
         //FG Building
         val fg_PolygonOptions = PolygonOptions()
@@ -467,40 +471,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 LatLng(45.494363, -73.578439)
             )
         val fg_Polygon: Polygon = map.addPolygon(fg_PolygonOptions)
-        fg_Polygon.tag = getString( R.string.FG_Building_Name )
+        fg_Polygon.tag = getString(R.string.FG_Building_Name)
 
     }
 
-    private fun initBottomSheetBehavior()
-    {
+    private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 
-        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.setBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
 
-            override fun onStateChanged(bottomSheet: View, newState: Int)
-            {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
                 // React to state change
-                when (newState)
-                {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                    }
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                    }
-                    BottomSheetBehavior.STATE_DRAGGING -> {
-                    }
-                    BottomSheetBehavior.STATE_SETTLING -> {
-                    }
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                    }
-                }
+                /* The following code can be used if we want to do certain actions related
+                *  to the change of state of the bottom sheet
+                * */
+
+//                when (newState) {
+//                    BottomSheetBehavior.STATE_HIDDEN -> {
+//                    }
+//                    BottomSheetBehavior.STATE_EXPANDED -> {
+//                    }
+//                    BottomSheetBehavior.STATE_COLLAPSED -> {
+//                    }
+//                    BottomSheetBehavior.STATE_DRAGGING -> {
+//                    }
+//                    BottomSheetBehavior.STATE_SETTLING -> {
+//                    }
+//                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+//                    }
+//                }
             }
+
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
-                map.setPadding( 0, 0, 0, ( slideOffset * bottom_sheet.height ).toInt() )
+                map.setPadding(0, 0, 0, (slideOffset * bottom_sheet.height).toInt())
             }
         })
     }
