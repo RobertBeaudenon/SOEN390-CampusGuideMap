@@ -498,20 +498,24 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 // React to state change
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                    }
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                    }
-                    BottomSheetBehavior.STATE_DRAGGING -> {
-                    }
-                    BottomSheetBehavior.STATE_SETTLING -> {
-                    }
-                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-                    }
-                }
+                /* The following code can be used if we want to do certain actions related
+                *  to the change of state of the bottom sheet
+                * */
+
+//                when (newState) {
+//                    BottomSheetBehavior.STATE_HIDDEN -> {
+//                    }
+//                    BottomSheetBehavior.STATE_EXPANDED -> {
+//                    }
+//                    BottomSheetBehavior.STATE_COLLAPSED -> {
+//                    }
+//                    BottomSheetBehavior.STATE_DRAGGING -> {
+//                    }
+//                    BottomSheetBehavior.STATE_SETTLING -> {
+//                    }
+//                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+//                    }
+//                }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
