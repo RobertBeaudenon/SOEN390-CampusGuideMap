@@ -212,6 +212,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
     }
 
+
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Intent is nullable
         super.onActivityResult(requestCode, resultCode, data)
@@ -255,7 +256,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         //Populate the bottom sheet with building information
-
         val buildingNameText: TextView = findViewById(R.id.bottom_sheet_building_name)
         buildingNameText.text = p.tag.toString()
 
@@ -264,7 +264,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
             //Calculating the center of the polygon to use for it's location.
             // This won't be necessary once we hold the Buildings in a common class
-
             var centerLat : Double = 0.0
             var centerLong : Double = 0.0
             for (i in 0 until p.points.size) {
@@ -283,11 +282,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             drawBuildingPolygons()
             placeMarkerOnMap(LatLng(centerLat, centerLong))
 
-
             //Generate directions from current location to the selected building
             fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
                 if (location != null)
                     generateDirections( location, buildingLocation )
+                //Move the camera to the starting location
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 16.0f))
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
 
         })
@@ -514,15 +515,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
     private fun generateDirections(origin : Location, destination : Location){
 
+        //Directions URL to be sent
         val directionsURL = "https://maps.googleapis.com/maps/api/directions/json?" +
                 "origin=" + origin.latitude.toString() + "," + origin.longitude.toString() +
                 "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +
+                "&mode=walking" +
                 "&key=" + getString(R.string.ApiKey)
 
+        //Creating the HTTP request with the directions URL
         val directionsRequest = object : StringRequest(Method.GET, directionsURL, com.android.volley.Response.Listener<String>{ response ->
 
-            //Retrieve json response
+            //Retrieve response (a JSON object)
             val jsonResponse = JSONObject(response)
+
+            Log.i("Directions Response", jsonResponse.toString())
 
             // Get route information from json response
             val routes = jsonResponse.getJSONArray("routes")
@@ -531,18 +537,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
 
             val path: MutableList<List<LatLng>> = ArrayList()
 
-            //Build polyline and draw on map
+            //Build the path polyline
             for (i in 0 until steps.length()) {
             val points = steps.getJSONObject(i).getJSONObject("polyline").getString("points")
+            val instructions = steps.getJSONObject(i).getString("html_instructions")  //Getting the directions
             path.add(PolyUtil.decode(points))
         }
+            //Draw the path polyline
             for (i in 0 until path.size) {
                 this.map.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
             }
         }, com.android.volley.Response.ErrorListener {
-            Log.i("Volley Error:", "HTTP request error")
+            Log.e("Volley Error:", "HTTP response error")
         }){}
 
+        //Confirm and add the request with Volley
         val requestQueue = Volley.newRequestQueue(this)
         requestQueue.add(directionsRequest)
     }
