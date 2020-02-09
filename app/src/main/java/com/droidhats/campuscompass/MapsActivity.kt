@@ -48,29 +48,23 @@ import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarkerClickListener, GoogleMap.OnPolygonClickListener {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnPolygonClickListener {
 
     private lateinit var map: GoogleMap
-
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     private lateinit var lastLocation: Location
-
     private lateinit var locationCallback: LocationCallback
-
     private lateinit var locationRequest: LocationRequest
-    
     private var locationUpdateState = false
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-
         private const val REQUEST_CHECK_SETTINGS = 2
-
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
     }
 
-    private lateinit var bottomSheetBehavior : BottomSheetBehavior<View>
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +83,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 super.onLocationResult(p0)
 
                 lastLocation = p0.lastLocation
-              //  placeMarkerOnMap(LatLng(lastLocation.latitude, lastLocation.longitude))
             }
         }
 
@@ -189,8 +182,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 try {
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
-                    e.startResolutionForResult(this@MapsActivity,
-                        REQUEST_CHECK_SETTINGS)
+                    e.startResolutionForResult(
+                        this@MapsActivity,
+                        REQUEST_CHECK_SETTINGS
+                    )
                 } catch (sendEx: IntentSender.SendIntentException) {
                     // Ignore the error.
                 }
@@ -201,20 +196,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     //get real time updates of current location
     private fun startLocationUpdates() {
         //If the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
-        if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE)
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
             return
         }
         //If there is permission, request for location updates.
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null /* Looper */)
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            null /* Looper */
+        )
     }
 
 
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //Intent is nullable
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?  
+    ) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == Activity.RESULT_OK) {
             locationUpdateState = true
@@ -248,8 +256,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
-    override fun onPolygonClick(p: Polygon)
-    {
+    override fun onPolygonClick(p: Polygon) {
         //Expand the bottom sheet when clicking on a polygon
         //TODO: Limt only to campus buildings as poylgons could highlight anything
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED)
@@ -259,25 +266,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         val buildingNameText: TextView = findViewById(R.id.bottom_sheet_building_name)
         buildingNameText.text = p.tag.toString()
 
-        val directionsButton : Button = findViewById(R.id.bottom_sheet_directions_button)
+        val directionsButton: Button = findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
             //Calculating the center of the polygon to use for it's location.
             // This won't be necessary once we hold the Buildings in a common class
-            var centerLat : Double = 0.0
-            var centerLong : Double = 0.0
+            var centerLat: Double = 0.0
+            var centerLong: Double = 0.0
             for (i in 0 until p.points.size) {
-                centerLat +=  p.points[i].latitude
+                centerLat += p.points[i].latitude
                 centerLong += p.points[i].longitude
             }
             centerLat /= p.points.size
-            centerLong /=p.points.size
+            centerLong /= p.points.size
 
-            val buildingLocation : Location = lastLocation
+            val buildingLocation: Location = lastLocation
             buildingLocation.latitude = centerLat
             buildingLocation.longitude = centerLong
 
-            //TODO: This full clear and redraw should probably be removed when the directions system is implemented. It was added to show only one route at a time
+            //TODO: This full clear and redraw should probably be removed when the directions system is implemented.
+            // It was added to show only one route at a time
             map.clear()
             drawBuildingPolygons()
             placeMarkerOnMap(LatLng(centerLat, centerLong))
@@ -285,10 +293,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             //Generate directions from current location to the selected building
             fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
                 if (location != null)
-                    generateDirections( location, buildingLocation )
+                    generateDirections(location, buildingLocation)
                 //Move the camera to the starting location
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 16.0f))
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                map.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            location.latitude,
+                            location.longitude
+                        ), 16.0f
+                    )
+                )
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
 
         })
@@ -325,7 +340,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             if (null != addresses && !addresses.isEmpty()) {
                 address = addresses[0]
                 for (i in 0 until address.maxAddressLineIndex) {
-                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
+                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(
+                        i
+                    )
                 }
             }
         } catch (e: IOException) {
@@ -335,22 +352,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         return addressText
     }
 
-
     private fun initPlacesSearch() {
-        Places.initialize( this.applicationContext, getString(R.string.ApiKey), Locale.CANADA )
+        Places.initialize(this.applicationContext, getString(R.string.ApiKey), Locale.CANADA)
         Places.createClient(this)
-        var fields = listOf(Place.Field.ID,Place.Field.NAME,Place.Field.LAT_LNG)
+        var fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
 
 
         //Autocomplete search launches after hitting the button
-        val searchButton : View = findViewById(R.id.fab_search)
+        val searchButton: View = findViewById(R.id.fab_search)
 
         searchButton.setOnClickListener {
-            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
+            var intent =
+                Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
     }
-
 
     //Handle the switching views between the two campuses. Should probably move from here later
     private fun handleCampusSwitch() {
@@ -384,7 +400,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
             }
         }
     }
-
 
     private fun drawBuildingPolygons() {
 
@@ -513,7 +528,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
         })
     }
 
-    private fun generateDirections(origin : Location, destination : Location){
+    private fun generateDirections(origin: Location, destination: Location) {
 
         //Directions URL to be sent
         val directionsURL = "https://maps.googleapis.com/maps/api/directions/json?" +
@@ -523,33 +538,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,  GoogleMap.OnMarke
                 "&key=" + getString(R.string.ApiKey)
 
         //Creating the HTTP request with the directions URL
-        val directionsRequest = object : StringRequest(Method.GET, directionsURL, com.android.volley.Response.Listener<String>{ response ->
+        val directionsRequest = object : StringRequest(
+            Method.GET,
+            directionsURL,
+            com.android.volley.Response.Listener<String> { response ->
 
-            //Retrieve response (a JSON object)
-            val jsonResponse = JSONObject(response)
+                //Retrieve response (a JSON object)
+                val jsonResponse = JSONObject(response)
 
-            Log.i("Directions Response", jsonResponse.toString())
+                Log.i("Directions Response", jsonResponse.toString())
 
-            // Get route information from json response
-            val routes = jsonResponse.getJSONArray("routes")
-            val legs = routes.getJSONObject(0).getJSONArray("legs")
-            val steps = legs.getJSONObject(0).getJSONArray("steps")
+                // Get route information from json response
+                val routes = jsonResponse.getJSONArray("routes")
+                val legs = routes.getJSONObject(0).getJSONArray("legs")
+                val steps = legs.getJSONObject(0).getJSONArray("steps")
 
-            val path: MutableList<List<LatLng>> = ArrayList()
+                val path: MutableList<List<LatLng>> = ArrayList()
 
-            //Build the path polyline
-            for (i in 0 until steps.length()) {
-            val points = steps.getJSONObject(i).getJSONObject("polyline").getString("points")
-            val instructions = steps.getJSONObject(i).getString("html_instructions")  //Getting the directions
-            path.add(PolyUtil.decode(points))
-        }
-            //Draw the path polyline
-            for (i in 0 until path.size) {
-                this.map.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
-            }
-        }, com.android.volley.Response.ErrorListener {
-            Log.e("Volley Error:", "HTTP response error")
-        }){}
+                //Build the path polyline
+                for (i in 0 until steps.length()) {
+                    val points =
+                        steps.getJSONObject(i).getJSONObject("polyline").getString("points")
+                    val instructions = steps.getJSONObject(i)
+                        .getString("html_instructions")  //Getting the route instructions
+                    path.add(PolyUtil.decode(points))
+                }
+                //Draw the path polyline
+                for (i in 0 until path.size) {
+                    this.map.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+                }
+            },
+            com.android.volley.Response.ErrorListener {
+                Log.e("Volley Error:", "HTTP response error")
+            }) {}
 
         //Confirm and add the request with Volley
         val requestQueue = Volley.newRequestQueue(this)
