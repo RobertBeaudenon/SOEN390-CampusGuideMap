@@ -5,9 +5,20 @@
     android:id="@+id/navigation"
     app:startDestination="@id/mapsActivity">
 
-    <activity
+
+    <fragment
         android:id="@+id/mapsActivity"
-        android:name="com.droidhats.campuscompass.MapsActivity"
-        android:label="activity_maps"
-        tools:layout="@layout/activity_maps" />
+        android:name="com.droidhats.campuscompass.MapFragment"
+        android:label="maps_fragment"
+        tools:layout="@layout/map_fragment" >
+        <action
+            android:id="@+id/action_mapsActivity_to_calendarFragment2"
+            app:destination="@id/nav_schedule" />
+    </fragment>
+
+    <!--Note: Must be same id as the menu item-->
+    <fragment
+        android:id="@+id/nav_schedule"
+        android:name="com.droidhats.campuscompass.CalendarFragment"
+        tools:layout="@layout/calendar_fragement" />
 </navigation>

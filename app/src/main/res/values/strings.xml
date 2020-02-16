@@ -11,6 +11,9 @@
     <string name="EV_Building_Name">EV Building</string>
     <string name="GM_Building_Name">GM Building</string>
 
-    <string name="Calendar_Feature_Name">Calendar</string>
-
+    <string name="Favorites_Feature_Name">My Places</string>
+    <string name="Calendar_Feature_Name">Schedule</string>
+    <string name="Resources_Feature_Name">Resources</string>
+    <string name="Explore_Feature_Name">Explore</string>
+    <string name="Settings">Settings</string>
 </resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_menu"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_places"
+            android:title="@string/Favorites_Feature_Name" />
+        <item
+            android:id="@+id/nav_schedule"
+            android:title="@string/Calendar_Feature_Name" />
+        <item
+            android:id="@+id/nav_resources"
+            android:title="@string/Resources_Feature_Name" />
+        <item
+            android:id="@+id/nav_explore"
+            android:title="@string/Explore_Feature_Name" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:title="@string/Settings" />
+    </group>
+
+    <!-- This next item is custom layout (it is used to add custom items like buttons and
+          switches right after the above menu group) -->
+
+    <group android:checkableBehavior="none">
+    <item
+        android:id="@+id/nav_drawer_main_content_item"
+        android:title=""
+        app:actionLayout="@layout/nav_drawer_main_content"
+        android:checkable="false"
+        android:checked="false"
+        android:choiceMode="none"
+        app:showAsAction="always"
+        android:clickable="false"
+        android:menuCategory="container"/>
+    </group>
+</menu>
