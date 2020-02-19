@@ -1,13 +1,31 @@
 package com.droidhats.campuscompass
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 
-class CalendarViewModel : ViewModel() {
+/*
+  This class must extend AndroidViewModel instead of just ViewModel because
+  ContentResolver requires the application context to be able to query calendar info
+*/
+class CalendarViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val context = getApplication<Application>().applicationContext
+    private var userCalendars = MutableLiveData<ArrayList<Calendar>>()
 
     private val _text = MutableLiveData<String>().apply {
         value = "Calendar Fragment"
     }
     val text: LiveData<String> = _text
+
+   fun init()
+    {
+       userCalendars = CalendarRepository.getInstance().getCalendars(context)
+    }
+
+    fun getUserCalendars() : MutableLiveData<ArrayList<Calendar>>
+    {
+       return userCalendars
+    }
 }
