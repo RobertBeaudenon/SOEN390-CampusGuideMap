@@ -20,7 +20,7 @@ class CalendarFragment : Fragment() {
     ): View? {
         calendarViewModel =
             ViewModelProviders.of(this).get(CalendarViewModel::class.java)
-        val root = inflater.inflate(R.layout.calendar_fragement, container, false)
+        val root = inflater.inflate(R.layout.calendar_fragment, container, false)
         val textView: TextView = root.findViewById(R.id.text_calendar)
         calendarViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
