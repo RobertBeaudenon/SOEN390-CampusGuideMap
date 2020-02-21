@@ -3,11 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/mapsActivity">
+    app:startDestination="@id/map_fragment">
 
-    <activity
-        android:id="@+id/mapsActivity"
-        android:name="com.droidhats.campuscompass.MapsActivity"
-        android:label="activity_maps"
-        tools:layout="@layout/activity_maps" />
+
+    <fragment
+        android:id="@+id/map_fragment"
+        android:name="com.droidhats.campuscompass.MapFragment"
+        android:label="maps_fragment"
+        tools:layout="@layout/map_fragment" >
+        <action
+            android:id="@+id/action_mapsActivity_to_calendarFragment"
+            app:destination="@id/nav_schedule" />
+    </fragment>
+
+    <!--Note: Must be same id as the menu item-->
+    <fragment
+        android:id="@+id/nav_schedule"
+        android:name="com.droidhats.campuscompass.CalendarFragment"
+        tools:layout="@layout/calendar_fragment" />
 </navigation>
