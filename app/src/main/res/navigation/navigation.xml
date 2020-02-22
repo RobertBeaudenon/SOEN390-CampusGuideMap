@@ -5,7 +5,6 @@
     android:id="@+id/navigation"
     app:startDestination="@id/map_fragment">
 
-
     <fragment
         android:id="@+id/map_fragment"
         android:name="com.droidhats.campuscompass.MapFragment"
