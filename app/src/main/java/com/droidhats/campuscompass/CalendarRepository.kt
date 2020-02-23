@@ -6,10 +6,9 @@ import android.net.Uri
 import android.provider.CalendarContract
 import androidx.lifecycle.MutableLiveData
 
-
 class CalendarRepository {
 
-    private lateinit var userCalendars : ArrayList<Calendar>// The user's retrieved calendars
+    private lateinit var userCalendars : MutableMap<String,Calendar>// The user's retrieved calendars
 
     companion object {
    // Singleton instantiation
@@ -21,35 +20,53 @@ class CalendarRepository {
             }
     }
 
-    fun getCalendars(context: Context) : MutableLiveData<ArrayList<Calendar>>
+    fun getCalendars(context: Context) : MutableLiveData<MutableMap<String, Calendar>>
     {
         pingCalendars(context)
-        return MutableLiveData<ArrayList<Calendar>>().apply {
+        return MutableLiveData<MutableMap<String, Calendar>>().apply {
             value = userCalendars
         }
     }
 
     private fun pingCalendars(context: Context) {
 
-        userCalendars = arrayListOf()
+        userCalendars = mutableMapOf()
 
         // Run query
-        val uri: Uri = CalendarContract.Calendars.CONTENT_URI
+        val uri: Uri = CalendarContract.Events.CONTENT_URI
         try {
             val resolver = context.contentResolver
-            val cur: Cursor = resolver.query(uri, Calendar.calendar_projection.keys.toTypedArray(), null, null, null)!!
+
+            // In this query's WHERE clause I specify that I only want the user's personal google events (ordered by event start time)
+            val cur: Cursor = resolver.query(uri, Calendar.event_projection.keys.toTypedArray(),
+                                            "${CalendarContract.Events.ACCOUNT_TYPE} = 'com.google' AND" +
+                                                    " ${CalendarContract.Events.ACCOUNT_NAME} == ${CalendarContract.Events.OWNER_ACCOUNT}",
+                                            null,
+                                            CalendarContract.Events.DTSTART)!!
 
             while (cur.moveToNext()) {
                 // Get the field values
-                val calID: Long = cur.getLong(Calendar.calendar_projection.getValue(CalendarContract.Calendars._ID))
-                val displayName: String = cur.getString(Calendar.calendar_projection.getValue(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME))
-                val accountName: String = cur.getString(Calendar.calendar_projection.getValue(CalendarContract.Calendars.ACCOUNT_NAME))
-                val ownerName: String = cur.getString(Calendar.calendar_projection.getValue(CalendarContract.Calendars.OWNER_ACCOUNT))
+                val calID: Long = cur.getLong(Calendar.event_projection.getValue(CalendarContract.Events.CALENDAR_ID))
+                val accountName: String = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.ACCOUNT_NAME))
+                val accountType: String = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.ACCOUNT_TYPE))
+                val ownerName: String = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.OWNER_ACCOUNT))
+                val displayName: String = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.CALENDAR_DISPLAY_NAME))
+                val title: String = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.TITLE))
+                val location: String? = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.EVENT_LOCATION))
+                val dtstart: String? = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DTSTART))
+                val dtend: String? = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DTEND))
+                val color: String = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DISPLAY_COLOR))
+                val description: String? = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DESCRIPTION))
 
-               //Construct the calendar and add it to the list of user calendars
-                val calendar = Calendar(calID.toString(), accountName, displayName, ownerName)
-                println(calendar.toString())
-                userCalendars.add(calendar)
+                //Construct the calendar and add it to the collection of user calendars
+                if ( userCalendars.containsKey(color) ) {
+                    userCalendars[color]!!.events.add(CalendarEvent(title, location, dtstart, dtend, description, color))
+                }
+                else {
+                    val calendar = Calendar(calID.toString(), accountName, accountType, displayName, ownerName, color)
+                    calendar.events.add(CalendarEvent(title, location, dtstart, dtend, description, color))
+                    userCalendars[color] = calendar
+                }
             }
             cur.close()
         } catch (e: SecurityException) {
