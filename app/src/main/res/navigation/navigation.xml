@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/map_fragment"
-        android:name="com.droidhats.campuscompass.MapFragment"
+        android:name="com.droidhats.campuscompass.views.MapFragment"
         android:label="maps_fragment"
         tools:layout="@layout/map_fragment" >
         <action
@@ -18,6 +18,7 @@
     <!--Note: Must be same id as the menu item-->
     <fragment
         android:id="@+id/nav_schedule"
-        android:name="com.droidhats.campuscompass.CalendarFragment"
-        tools:layout="@layout/calendar_fragment" />
+        android:name="com.droidhats.campuscompass.views.CalendarFragment"
+        tools:layout="@layout/calendar_fragment" >
+    </fragment>
 </navigation>

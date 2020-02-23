@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.viewmodels
 
 import androidx.lifecycle.ViewModel
 
