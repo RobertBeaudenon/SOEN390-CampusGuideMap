@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.common.api.ResolvableApiException
@@ -55,7 +56,7 @@ import java.io.IOException
 import java.util.Locale
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener {
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener{
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -101,6 +102,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 lastLocation = p0.lastLocation
             }
         }
+
+        //Use this Fragment's implemented calendar event click callback
+        CalendarFragment.onCalendarEventClickListener = this
 
         createLocationRequest()
         handleCampusSwitch()
@@ -583,6 +587,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Confirm and add the request with Volley
         val requestQueue = Volley.newRequestQueue(activity as Activity)
         requestQueue.add(directionsRequest)
+    }
+
+    override fun onCalendarEventClick(item: CalendarEvent?) {
+        findNavController().navigateUp()
+        Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
     }
 
 }

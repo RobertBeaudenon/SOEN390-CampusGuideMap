@@ -20,5 +20,6 @@
     <fragment
         android:id="@+id/nav_schedule"
         android:name="com.droidhats.campuscompass.CalendarFragment"
-        tools:layout="@layout/calendar_fragment" />
+        tools:layout="@layout/calendar_fragment" >
+    </fragment>
 </navigation>

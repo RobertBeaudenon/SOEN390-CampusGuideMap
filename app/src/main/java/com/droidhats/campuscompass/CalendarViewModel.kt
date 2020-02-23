@@ -12,10 +12,10 @@ import androidx.lifecycle.MutableLiveData
 class CalendarViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>().applicationContext
-    private var userCalendars = MutableLiveData<ArrayList<Calendar>>()
+    private var userCalendars = MutableLiveData<MutableMap<String, Calendar>>()
 
     private val _text = MutableLiveData<String>().apply {
-        value = "Calendar Fragment"
+        value = "Calendar"
     }
     val text: LiveData<String> = _text
 
@@ -24,7 +24,7 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
        userCalendars = CalendarRepository.getInstance().getCalendars(context)
     }
 
-    fun getUserCalendars() : MutableLiveData<ArrayList<Calendar>>
+    fun getUserCalendars() : MutableLiveData<MutableMap<String, Calendar>>
     {
        return userCalendars
     }

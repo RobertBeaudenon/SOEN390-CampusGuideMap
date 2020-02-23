@@ -11,14 +11,20 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class CalendarFragment : Fragment() {
 
     private lateinit var calendarViewModel: CalendarViewModel
 
-    companion object{
+    private var columnCount = 1
+
+    companion object {
         private const val READ_CALENDAR_PERMISSION_REQUEST_CODE = 1
-        private const val WRITE_CALENDAR_PERMISSION_REQUEST_CODE = 2
+        // This callback could also be private and be set on the host(main) Activity
+        var onCalendarEventClickListener: OnCalendarEventClickListener? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,24 +49,44 @@ class CalendarFragment : Fragment() {
             textView.text = it
         })
 
-        //Testing the calendar results
-        val availableCalenders : TextView = root.findViewById(R.id.available_calendars)
-        calendarViewModel.getUserCalendars().observe(viewLifecycleOwner, Observer {
-            var calendarsText = ""
-            for ( i in it )
-            {
-                calendarsText += i
-                calendarsText += "\n\n"
-                availableCalenders.text = calendarsText
-            }
-        })
+        initRecyclerView(root)
+
         return root
     }
 
-    private fun requestCalendarPermission(){
+    private fun requestCalendarPermission() {
 
         if (checkSelfPermission(this.context!!, Manifest.permission.READ_CALENDAR)
-            != PackageManager.PERMISSION_GRANTED)
-            requestPermissions(arrayOf(Manifest.permission.READ_CALENDAR), READ_CALENDAR_PERMISSION_REQUEST_CODE)
+            != PackageManager.PERMISSION_GRANTED
+        )
+            requestPermissions(
+                arrayOf(Manifest.permission.READ_CALENDAR),
+                READ_CALENDAR_PERMISSION_REQUEST_CODE
+            )
+    }
+
+    private fun initRecyclerView(root: View) {
+
+        val recyclerView: RecyclerView = root.findViewById(R.id.calendar_recycler_view)
+
+        with(recyclerView) {
+            layoutManager = when {
+                columnCount <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, columnCount)
+            }
+
+            val calendars: List<Calendar> =
+                calendarViewModel.getUserCalendars().value!!.values.toList()
+            val events: ArrayList<CalendarEvent> = arrayListOf()
+
+            for (cal in calendars) {
+                events.addAll(cal.events)
+            }
+            adapter = CalendarAdapter(events, onCalendarEventClickListener)
+        }
+    }
+
+    interface OnCalendarEventClickListener {
+        fun onCalendarEventClick(item: CalendarEvent?)
     }
 }
