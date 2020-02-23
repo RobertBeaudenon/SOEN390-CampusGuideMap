@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.models
 
 class CalendarEvent(
     event_title: String?,

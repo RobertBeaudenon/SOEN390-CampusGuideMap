@@ -1,9 +1,11 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.droidhats.campuscompass.models.Calendar
+import com.droidhats.campuscompass.repositories.CalendarRepository
 
 /*
   This class must extend AndroidViewModel instead of just ViewModel because

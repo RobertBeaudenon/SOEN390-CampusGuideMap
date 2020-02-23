@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.views
 
 import android.app.Activity
 import android.content.Intent
@@ -25,6 +25,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.droidhats.campuscompass.viewmodels.MapViewModel
+import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.CalendarEvent
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -378,7 +381,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         searchButton.setOnClickListener {
             var intent =
                 Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+            startActivityForResult(intent,
+                AUTOCOMPLETE_REQUEST_CODE
+            )
         }
     }
 

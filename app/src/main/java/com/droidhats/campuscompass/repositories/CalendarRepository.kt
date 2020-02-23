@@ -1,22 +1,26 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.repositories
 
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import androidx.lifecycle.MutableLiveData
+import com.droidhats.campuscompass.models.Calendar
+import com.droidhats.campuscompass.models.CalendarEvent
 
 class CalendarRepository {
 
-    private lateinit var userCalendars : MutableMap<String,Calendar>// The user's retrieved calendars
+    private lateinit var userCalendars : MutableMap<String, Calendar>// The user's retrieved calendars
 
     companion object {
    // Singleton instantiation
         private var instance: CalendarRepository? = null
 
         fun getInstance() =
-            instance ?: synchronized(this) {
-                instance ?: CalendarRepository().also { instance = it }
+            instance
+                ?: synchronized(this) {
+                instance
+                    ?: CalendarRepository().also { instance = it }
             }
     }
 
@@ -60,11 +64,36 @@ class CalendarRepository {
 
                 //Construct the calendar and add it to the collection of user calendars
                 if ( userCalendars.containsKey(color) ) {
-                    userCalendars[color]!!.events.add(CalendarEvent(title, location, dtstart, dtend, description, color))
+                    userCalendars[color]!!.events.add(
+                        CalendarEvent(
+                            title,
+                            location,
+                            dtstart,
+                            dtend,
+                            description,
+                            color
+                        )
+                    )
                 }
                 else {
-                    val calendar = Calendar(calID.toString(), accountName, accountType, displayName, ownerName, color)
-                    calendar.events.add(CalendarEvent(title, location, dtstart, dtend, description, color))
+                    val calendar = Calendar(
+                        calID.toString(),
+                        accountName,
+                        accountType,
+                        displayName,
+                        ownerName,
+                        color
+                    )
+                    calendar.events.add(
+                        CalendarEvent(
+                            title,
+                            location,
+                            dtstart,
+                            dtend,
+                            description,
+                            color
+                        )
+                    )
                     userCalendars[color] = calendar
                 }
             }

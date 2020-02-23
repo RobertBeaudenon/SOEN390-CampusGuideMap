@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.views
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -14,6 +14,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.droidhats.campuscompass.viewmodels.CalendarViewModel
+import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.adapters.CalendarAdapter
+import com.droidhats.campuscompass.models.Calendar
+import com.droidhats.campuscompass.models.CalendarEvent
 
 class CalendarFragment : Fragment() {
 
@@ -82,7 +87,10 @@ class CalendarFragment : Fragment() {
             for (cal in calendars) {
                 events.addAll(cal.events)
             }
-            adapter = CalendarAdapter(events, onCalendarEventClickListener)
+            adapter = CalendarAdapter(
+                events,
+                onCalendarEventClickListener
+            )
         }
     }
 

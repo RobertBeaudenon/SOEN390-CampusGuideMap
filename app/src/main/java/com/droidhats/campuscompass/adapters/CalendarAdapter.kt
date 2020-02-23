@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.droidhats.campuscompass.views.CalendarFragment
+import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.CalendarEvent
 import kotlinx.android.synthetic.main.calendar_recycler_item.view.*
 import java.text.SimpleDateFormat
 import java.util.Locale
