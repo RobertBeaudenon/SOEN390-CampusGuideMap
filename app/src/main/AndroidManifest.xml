@@ -32,20 +32,13 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".SplashActivity"
-            android:label="SplashScreen"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"
-            android:noHistory="true">
+            android:name=".MainActivity"
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-        android:name=".MainActivity"
-        android:label="@string/title_activity_maps"
-        android:screenOrientation="portrait">
-    </activity>
     </application>
 </manifest>
