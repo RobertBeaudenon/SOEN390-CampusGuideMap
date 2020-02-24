@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/fragment_splash">
+    app:startDestination="@id/splash_fragment">
 
     <fragment
-        android:id="@+id/fragment_splash"
+        android:id="@+id/splash_fragment"
         android:name="com.droidhats.campuscompass.views.SplashFragment"
         android:label="@string/splash_screen"
-        tools:layout="@layout/fragment_splash" >
+        tools:layout="@layout/splash_fragment" >
         <action
             android:id="@+id/action_splashFragment_to_mapsActivity"
             app:destination="@id/map_fragment" />

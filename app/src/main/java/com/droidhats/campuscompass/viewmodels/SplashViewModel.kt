@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 
 class SplashViewModel : ViewModel() {
 
-    //set as null to identify instantiations are not complete
-    private var mutableLiveData = MutableLiveData<Boolean>().apply {
+    //set as false to identify instantiations are not complete
+    private val mutableLiveData = MutableLiveData<Boolean>().apply {
         value = false
     }
 
