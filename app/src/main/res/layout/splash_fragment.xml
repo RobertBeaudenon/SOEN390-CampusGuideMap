@@ -1,12 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@string/splash_screen"
+        android:id="@+id/splash_screen"
+        android:contentDescription="@string/splash_screen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_splash" />
+        android:scaleType="fitXY"
+        android:src="@drawable/splash_background" />
+
+    <ImageView
+        android:id="@+id/cc_logo"
+        android:contentDescription="@string/cc_logo"
+        android:layout_width="87dp"
+        android:layout_height="113dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="80dp"
+        app:srcCompat="@drawable/ic_logo" />
+
+    <ImageView
+        android:id="@+id/cc_title"
+        android:contentDescription="@string/cc_title"
+        android:layout_width="355dp"
+        android:layout_height="75dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="90dp"
+        app:srcCompat="@drawable/ic_title" />
+
+    <ImageView
+        android:id="@+id/cc_university"
+        android:contentDescription="@string/cc_uni"
+        android:layout_width="289dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="35dp"
+        app:srcCompat="@drawable/cc_university" />
 
 </FrameLayout>
