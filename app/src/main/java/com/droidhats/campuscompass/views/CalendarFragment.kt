@@ -87,6 +87,7 @@ class CalendarFragment : Fragment() {
             for (cal in calendars) {
                 events.addAll(cal.events)
             }
+            events.sortWith(compareBy { it.startTime })
             adapter = CalendarAdapter(
                 events,
                 onCalendarEventClickListener

@@ -30,16 +30,30 @@ class Calendar(
         var event_projection =
             mapOf(
                 CalendarContract.Events.CALENDAR_ID to 0,  //The Calendars#_ID of the calendar the event belongs to.
-                CalendarContract.Events.ACCOUNT_NAME to 1,
-                CalendarContract.Events.ACCOUNT_TYPE to 2,
-                CalendarContract.Events.OWNER_ACCOUNT to 3,
-                CalendarContract.Events.CALENDAR_DISPLAY_NAME to 4,
-                CalendarContract.Events.TITLE to 5,
-                CalendarContract.Events.EVENT_LOCATION to 6,
-                CalendarContract.Events.DTSTART to 7,  //The time the event starts in UTC millis since epoch.
-                CalendarContract.Events.DTEND to 8,   // The time the event ends in UTC millis since epoch.
-                CalendarContract.Events.DISPLAY_COLOR to 9,
-                CalendarContract.Events.DESCRIPTION to 10
+                CalendarContract.Events._ID to 1,
+                CalendarContract.Events.ACCOUNT_NAME to 2,
+                CalendarContract.Events.ACCOUNT_TYPE to 3,
+                CalendarContract.Events.OWNER_ACCOUNT to 4,
+                CalendarContract.Events.CALENDAR_DISPLAY_NAME to 5,
+                CalendarContract.Events.TITLE to 6,
+                CalendarContract.Events.EVENT_LOCATION to 7,
+                CalendarContract.Events.DTSTART to 8,  //The time the event starts in UTC millis since epoch.
+                CalendarContract.Events.DTEND to 9,   // The time the event ends in UTC millis since epoch.
+                CalendarContract.Events.DISPLAY_COLOR to 10,
+                CalendarContract.Events.DESCRIPTION to 11
+            )
+            private set
+
+
+        var instances_projection =
+            mapOf(
+                CalendarContract.Instances.EVENT_ID to 0,
+                CalendarContract.Instances.TITLE to 1,
+                CalendarContract.Instances.EVENT_LOCATION to 2,
+                CalendarContract.Instances.BEGIN to 3,
+                CalendarContract.Instances.END to 4,
+                CalendarContract.Instances.DISPLAY_COLOR to 5,
+                CalendarContract.Instances.DESCRIPTION to 6
             )
             private set
     }
