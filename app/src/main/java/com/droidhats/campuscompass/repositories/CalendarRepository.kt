@@ -11,7 +11,6 @@ import com.droidhats.campuscompass.models.CalendarEvent
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class CalendarRepository {
 
     private lateinit var userCalendars : MutableMap<String, Calendar>// The user's retrieved calendars
@@ -48,7 +47,8 @@ class CalendarRepository {
             val cur: Cursor = resolver.query(uri, Calendar.event_projection.keys.toTypedArray(),
                                             "${CalendarContract.Events.ACCOUNT_TYPE} = 'com.google' AND" +    //Only google events
                                                     " ${CalendarContract.Events.ACCOUNT_NAME} = ${CalendarContract.Events.OWNER_ACCOUNT} AND " + //Only primary account
-                                                    " ${CalendarContract.Events.DELETED} != '1'", //Only primary account
+                                                    " ${CalendarContract.Events.DELETED} != '1' AND " +
+                                                    " ${CalendarContract.Events.STATUS} != '${CalendarContract.Events.STATUS_CANCELED}'",
                                             null,
                                             CalendarContract.Events.DTSTART)!! //Sort by closest event
             while (cur.moveToNext()) {
@@ -67,16 +67,18 @@ class CalendarRepository {
                 val description: String? = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DESCRIPTION))
 
                 val calendar = Calendar(calID.toString(), accountName, accountType, displayName, ownerName, color)
-
                 if (dtend.isNullOrEmpty()) { // We have a recurring event
                     //Query the recurring event instances
-                    val recurringEvents = pingReq(context, eventID)
+                    val recurringEvents = pingReccuringEvents(context, eventID)
 
-                    for (i in recurringEvents)
-                        constructCalendar(calendar , i)
-                    continue
+                    for (i in recurringEvents) {
+                        constructCalendar(calendar, i)
+                    }
+
+                } else {
+                    constructCalendar(calendar, CalendarEvent(title, eventID.toString(), location, dtstart, dtend, description, color))
                 }
-                constructCalendar(calendar, CalendarEvent(title, eventID.toString(), location, dtstart, dtend, description, color))
+
             }
             cur.close()
         } catch (e: SecurityException) {
@@ -89,7 +91,7 @@ class CalendarRepository {
         // Adding only future events. I am not adding this to the query's where clause because of pesky recurring events.
         //CalendarContract.Events.CONTENT_URI only fetches the root (or first) recurring event which could have happened in he past
         //Therefore, if I include this in the where clause all recurring events which had their root in the past would be skipped
-        if (event.startTime!!.toLong() < java.util.Calendar.getInstance(Locale.CANADA).timeInMillis || event.title.isNullOrEmpty() )
+        if (event.endTime!!.toLong() < java.util.Calendar.getInstance(Locale.CANADA).timeInMillis )
             return
 
         if ( userCalendars.containsKey(event.color) ) {
@@ -101,7 +103,7 @@ class CalendarRepository {
         }
     }
 
-    private fun pingReq(context: Context,  eID: Long) : ArrayList<CalendarEvent> {
+    private fun pingReccuringEvents(context: Context, eID: Long) : ArrayList<CalendarEvent> {
 
         val recurringEvents = arrayListOf<CalendarEvent>()
 
@@ -114,7 +116,8 @@ class CalendarRepository {
             // In this query's WHERE clause I specify that I only want the recurring events that match the passed eventID
             val cur: Cursor = resolver.query(eventsUri, Calendar.instances_projection.keys.toTypedArray(),
                 "${CalendarContract.Instances.EVENT_ID} = '${eID}' AND " +
-                "${CalendarContract.Instances.BEGIN} >= '${java.util.Calendar.getInstance(Locale.CANADA).timeInMillis}'",
+                "${CalendarContract.Instances.END} >= '${java.util.Calendar.getInstance(Locale.CANADA).timeInMillis}' AND " +
+                 "${CalendarContract.Instances.STATUS} != ${CalendarContract.Instances.STATUS_CANCELED}",
                 null,
                 CalendarContract.Instances.BEGIN)!!
 
