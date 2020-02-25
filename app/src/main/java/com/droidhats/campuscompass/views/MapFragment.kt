@@ -59,7 +59,7 @@ import java.io.IOException
 import java.util.Locale
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener{
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -170,11 +170,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun createLocationRequest() {
-        // 1  create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
+        // 1  create an instance of LocationRequest, add it to an instance of
+        // LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on
+        // the current state of the user’s location settings.
         locationRequest = LocationRequest()
         // 2   specifies the rate at which your app will like to receive updates.
         locationRequest.interval = 10000
-        // 3 specifies the fastest rate at which the app can handle updates. Setting the fastestInterval rate places a limit on how fast updates will be sent to your app.
+        // 3 specifies the fastest rate at which the app can handle updates. Setting the
+        // fastestInterval rate places a limit on how fast updates will be sent to your app.
         locationRequest.fastestInterval = 5000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
@@ -192,7 +195,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         task.addOnFailureListener { e ->
-            // 6  A task failure means the location settings have some issues which can be fixed. This could be as a result of the user’s location settings turned off
+            // 6  A task failure means the location settings have some issues which can be fixed.
+            // This could be as a result of the user’s location settings turned off
             if (e is ResolvableApiException) {
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
@@ -234,7 +238,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
 
-    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
+    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it
+    // has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
@@ -272,21 +277,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+    // implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
-        //Expand the bottom sheet when clicking on a polygon
-        //TODO: Limt only to campus buildings as poylgons could highlight anything
+        // Expand the bottom sheet when clicking on a polygon
+        // TODO: Limt only to campus buildings as polygons could highlight anything
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-        //Populate the bottom sheet with building information
-        val buildingNameText: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
-        buildingNameText.text = p.tag.toString()
+        // Populate the bottom sheet with building information
+        val buildingName: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
+        buildingName.text = p.tag.toString()
 
         val directionsButton: Button = activity!!.findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
-            //Calculating the center of the polygon to use for it's location.
+            // Calculating the center of the polygon to use for it's location.
             // This won't be necessary once we hold the Buildings in a common class
             var centerLat: Double = 0.0
             var centerLong: Double = 0.0
@@ -301,8 +306,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             buildingLocation.latitude = centerLat
             buildingLocation.longitude = centerLong
 
-            //TODO: This full clear and redraw should probably be removed when the directions system is implemented.
-            // It was added to show only one route at a time
+            //TODO: This full clear and redraw should probably be removed when the directions
+            // system is implemented. It was added to show only one route at a time
             map.clear()
             drawBuildingPolygons()
             placeMarkerOnMap(LatLng(centerLat, centerLong))
@@ -329,9 +334,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     //implements methods of interface   GoogleMap.OnMarkerClickListener
     override fun onMarkerClick(p0: Marker?) = false
 
-    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
+    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a
+    // particular point on the map’s surface.
     private fun placeMarkerOnMap(location: LatLng) {
-        // 1 Create a MarkerOptions object and sets the user’s current location as the position for the marker
+        // 1 Create a MarkerOptions object and sets the user’s current location as the
+        // position for the marker
         val markerOptions = MarkerOptions().position(location)
 
         //added a call to getAddress() and added this address as the marker title.
@@ -344,7 +351,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //This method get address from coordinates
     private fun getAddress(latLng: LatLng): String {
-        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
+        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address
+        // and vice versa
         val geocoder = Geocoder(activity as Activity)
         val addresses: List<Address>?
         val address: Address?
@@ -401,7 +409,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         val drawer : DrawerLayout = activity!!.findViewById(R.id.drawer_layout)
         val side_nav : NavigationView = activity!!.findViewById(R.id.nav_view)
-        val drawer_content : LinearLayout = side_nav.menu.findItem(R.id.nav_drawer_main_content_item).actionView as LinearLayout
+        val drawer_content : LinearLayout =
+            side_nav.menu.findItem(R.id.nav_drawer_main_content_item).actionView as LinearLayout
         val campusToggle : Switch = drawer_content.findViewById(R.id.toggle_Campus)
 
         //Setting Toggle button listener
