@@ -1,6 +1,7 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -18,6 +19,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Switch
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -57,6 +59,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
+import kotlin.system.exitProcess
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
@@ -82,7 +85,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.map_fragment, container, false)
+        val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
+        return mapFragment
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -270,7 +274,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     // 3 Override onResume() to restart the location update request.
-    public override fun onResume() {
+    override fun onResume() {
         super.onResume()
         if (!locationUpdateState) {
             startLocationUpdates()
