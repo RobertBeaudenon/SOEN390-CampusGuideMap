@@ -5,8 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.lifecycle.Observer
+import androidx.activity.addCallback
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 
@@ -24,11 +23,9 @@ class SplashFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                //do nothing on purpose - user won't be able to exit during API initialization
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            //do nothing on purpose - user won't be able to exit during API initialization
+        }
         return inflater.inflate(R.layout.splash_fragment, container, false)
     }
 

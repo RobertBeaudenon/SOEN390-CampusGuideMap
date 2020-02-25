@@ -12,6 +12,8 @@
         tools:layout="@layout/splash_fragment" >
         <action
             android:id="@+id/action_splashFragment_to_mapsActivity"
+            app:popUpTo="@id/splash_fragment"
+            app:popUpToInclusive="true"
             app:destination="@id/map_fragment" />
     </fragment>
 

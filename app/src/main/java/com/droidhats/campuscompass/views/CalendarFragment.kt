@@ -56,13 +56,6 @@ class CalendarFragment : Fragment() {
         })
 
         initRecyclerView(root)
-
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                //when back button is pressed, it navigates to MapFragment
-                Navigation.findNavController(root).navigate(R.id.action_navSchedule_to_mapFragment)
-            }
-        })
         return root
     }
 

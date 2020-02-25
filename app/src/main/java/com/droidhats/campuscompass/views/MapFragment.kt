@@ -1,6 +1,7 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -85,11 +86,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         savedInstanceState: Bundle?
     ): View? {
         val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                exitProcess(-1)
-            }
-        })
         return mapFragment
     }
 
