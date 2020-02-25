@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.SplashViewModel
 import kotlinx.coroutines.GlobalScope
@@ -23,6 +23,10 @@ class SplashFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //Lock the nav drawer access during to the splash screen
+        val drawer : DrawerLayout = activity!!.findViewById(R.id.drawer_layout)
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             //do nothing on purpose - user won't be able to exit during API initialization
         }
@@ -39,6 +43,9 @@ class SplashFragment : Fragment() {
         GlobalScope.launch {
             delay(3000)
                findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
+            //UnLock drawer
+            val drawer : DrawerLayout = activity!!.findViewById(R.id.drawer_layout)
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
         }
     }
 }
