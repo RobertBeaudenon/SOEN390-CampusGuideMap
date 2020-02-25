@@ -387,10 +387,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         toggle_Campus.setOnCheckedChangeListener { _, onSwitch ->
             if (onSwitch) {
                 campusView = LatLng(45.458159, -73.640450)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
             } else {
                 campusView = LatLng(45.495637, -73.578235)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
             }
         }
     }
