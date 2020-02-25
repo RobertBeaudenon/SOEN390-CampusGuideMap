@@ -58,6 +58,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
+import kotlin.system.exitProcess
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener{
@@ -86,7 +87,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
         requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                //do nothing on purpose - user can't go back to splash screen
+                exitProcess(-1)
             }
         })
         return mapFragment
@@ -295,8 +296,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
             //Calculating the center of the polygon to use for it's location.
             // This won't be necessary once we hold the Buildings in a common class
-            var centerLat = 0.0
-            var centerLong = 0.0
+            var centerLat: Double = 0.0
+            var centerLong: Double = 0.0
             for (i in 0 until p.points.size) {
                 centerLat += p.points[i].latitude
                 centerLong += p.points[i].longitude

@@ -37,17 +37,11 @@ class SplashFragment : Fragment() {
         splashViewModel = ViewModelProviders.of(this).get(SplashViewModel::class.java)
         splashViewModel.init()
 
-        //hardCode is a dummy variable that we observe
-        splashViewModel.hardCode.observe(viewLifecycleOwner, Observer {
-
-            //thread is used to represent initialization time
-            //I couldn't put it in SplashViewModel (wouldn't let me change value in background thread)
-            GlobalScope.launch {
-                delay(3000)
-                if(it) {
-                    findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
-                }
-            }
-        })
+        //thread is used to represent initialization time
+        //I couldn't put it in SplashViewModel (wouldn't let me change value in background thread)
+        GlobalScope.launch {
+            delay(3000)
+               findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
+        }
     }
 }
