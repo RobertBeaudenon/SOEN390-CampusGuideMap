@@ -30,5 +30,8 @@
         android:id="@+id/nav_schedule"
         android:name="com.droidhats.campuscompass.views.CalendarFragment"
         tools:layout="@layout/calendar_fragment" >
+        <action
+            android:id="@+id/action_navSchedule_to_mapFragment"
+            app:destination="@id/map_fragment" />
     </fragment>
 </navigation>

@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,7 +44,6 @@ class CalendarFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         calendarViewModel =
             ViewModelProviders.of(this).get(CalendarViewModel::class.java)
         calendarViewModel.init()
@@ -56,6 +57,12 @@ class CalendarFragment : Fragment() {
 
         initRecyclerView(root)
 
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                //when back button is pressed, it navigates to MapFragment
+                Navigation.findNavController(root).navigate(R.id.action_navSchedule_to_mapFragment)
+            }
+        })
         return root
     }
 

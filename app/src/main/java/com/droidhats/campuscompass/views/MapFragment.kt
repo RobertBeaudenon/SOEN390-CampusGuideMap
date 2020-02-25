@@ -18,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Switch
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -82,7 +83,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.map_fragment, container, false)
+        val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
+        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                //do nothing on purpose - user can't go back to splash screen
+            }
+        })
+        return mapFragment
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -265,7 +272,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     // 3 Override onResume() to restart the location update request.
-    public override fun onResume() {
+    override fun onResume() {
         super.onResume()
         if (!locationUpdateState) {
             startLocationUpdates()
@@ -288,8 +295,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
             //Calculating the center of the polygon to use for it's location.
             // This won't be necessary once we hold the Buildings in a common class
-            var centerLat: Double = 0.0
-            var centerLong: Double = 0.0
+            var centerLat = 0.0
+            var centerLong = 0.0
             for (i in 0 until p.points.size) {
                 centerLat += p.points[i].latitude
                 centerLong += p.points[i].longitude
