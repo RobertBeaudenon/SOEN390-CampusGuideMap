@@ -15,8 +15,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateViewModelFactory
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,9 +23,6 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.CalendarAdapter
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.viewmodels.CalendarViewModel
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-
 
 class CalendarFragment : DialogFragment() {
 
@@ -65,7 +60,7 @@ class CalendarFragment : DialogFragment() {
       calendarViewModel = ViewModelProviders.of(this)
           .get(CalendarViewModel::class.java)
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

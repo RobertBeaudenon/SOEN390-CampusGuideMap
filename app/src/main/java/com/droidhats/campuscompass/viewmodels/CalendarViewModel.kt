@@ -1,11 +1,9 @@
 package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import com.droidhats.campuscompass.models.Calendar
 import com.droidhats.campuscompass.repositories.CalendarRepository
 import com.droidhats.campuscompass.views.CalendarFragment
