@@ -1,7 +1,6 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -19,7 +18,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Switch
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -59,7 +57,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
-import kotlin.system.exitProcess
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener{
@@ -79,7 +76,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
-    private lateinit var viewModel: MapViewModel
+    private lateinit var mapViewModel: MapViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -91,7 +88,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        mapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
         if(activity != null)
             {
@@ -117,7 +114,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         handleCampusSwitch()
         initPlacesSearch()
         initBottomSheetBehavior()
-
     }
 
     /**
@@ -160,6 +156,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val currentLatLng = LatLng(location.latitude, location.longitude)
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
             }
+
+            //<-- A TEST TO SEE CAN SAFELY BE REMOVED IN THE FUTURE ALONG WITH THE METHOD NAMED: generateDirectionsAgain(string, string)
+            val from = "45.5556756,-73.6181544"
+            val to = "45.458159,-73.640450"
+            map!!.addMarker(MarkerOptions().position(LatLng(45.5556756, -73.6181544)).title("Old Home")).tag = 0
+            map!!.addMarker(MarkerOptions().position(LatLng(45.458159, -73.640450)).title("The good old Loyola Campus"))
+            generateDirectionsAgain(from, to)
         }
 
         drawBuildingPolygons()
@@ -182,8 +185,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         locationRequest.fastestInterval = 5000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
         // 4 check location settings before asking for location updates
         val client = LocationServices.getSettingsClient(activity as Activity)
@@ -547,6 +549,55 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.setPadding(0, 0, 0, (slideOffset * bottom_sheet.height).toInt())
             }
         })
+    }
+
+    private fun generateDirectionsAgain(from: String, to: String) {
+
+        //Directions URL to be sent
+        val directionsURL = "https://maps.googleapis.com/maps/api/directions/json?" +
+                "origin=" + from +
+                "&destination=" + to +
+                "&mode=walking" +
+                "&key=" + getString(R.string.ApiKey)
+
+        //Creating the HTTP request with the directions URL
+        val directionsRequest = object : StringRequest(
+            Method.GET,
+            directionsURL,
+            com.android.volley.Response.Listener<String> { response ->
+
+                //Retrieve response (a JSON object)
+                val jsonResponse = JSONObject(response)
+
+                Log.i("Directions Response", jsonResponse.toString())
+
+                // Get route information from json response
+                val routes = jsonResponse.getJSONArray("routes")
+                val legs = routes.getJSONObject(0).getJSONArray("legs")
+                val steps = legs.getJSONObject(0).getJSONArray("steps")
+
+                val path: MutableList<List<LatLng>> = ArrayList()
+
+                //Build the path polyline
+                for (i in 0 until steps.length()) {
+                    val points =
+                        steps.getJSONObject(i).getJSONObject("polyline").getString("points")
+                    val instructions = steps.getJSONObject(i)
+                        .getString("html_instructions")  //Getting the route instructions
+                    path.add(PolyUtil.decode(points))
+                }
+                //Draw the path polyline
+                for (i in 0 until path.size) {
+                    this.map.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+                }
+            },
+            com.android.volley.Response.ErrorListener {
+                Log.e("Volley Error:", "HTTP response error")
+            }) {}
+
+        //Confirm and add the request with Volley
+        val requestQueue = Volley.newRequestQueue(activity as Activity)
+        requestQueue.add(directionsRequest)
     }
 
     private fun generateDirections(origin: Location, destination: Location) {

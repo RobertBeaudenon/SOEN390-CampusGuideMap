@@ -57,5 +57,7 @@ dependencies {
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    compile 'org.jetbrains.anko:anko-sdk15:0.8.2' //<--
+    compile 'com.beust:klaxon:0.30' //<--
 
 }
