@@ -30,6 +30,7 @@ import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.models.Campus
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -58,6 +59,7 @@ import com.google.maps.android.PolyUtil
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.json.JSONObject
 import java.io.IOException
+import java.io.InputStream
 import java.util.Locale
 import kotlin.system.exitProcess
 
@@ -69,6 +71,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
+    private lateinit var sgwCampus: Campus
+    private lateinit var loyolaCampus: Campus
     private var locationUpdateState = false
 
     companion object {
@@ -162,6 +166,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
+        //these method calls must happen in this order
+        createCampuses()
         drawBuildingPolygons()
         map.setOnPolygonClickListener(this)
 
@@ -433,6 +439,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun drawBuildingPolygons() {
 
+        //TO-DO: Refactor coordinates to buildings.json -> see TO-DO in Location.kt
+        // This method will traverse buildingsLisT & make use of getPolygonOptions() instead of having duplicate code
+
         // SGW CAMPUS
 
         //EV Building
@@ -446,6 +455,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 LatLng(45.495673, -73.578080),
                 LatLng(45.495910, -73.578475)
             )
+
+
         val ev_Polygon: Polygon = map.addPolygon(ev_PolygonOptions)
         ev_Polygon.tag = getString(R.string.EV_Building_Name)
 
@@ -519,6 +530,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val fg_Polygon: Polygon = map.addPolygon(fg_PolygonOptions)
         fg_Polygon.tag = getString(R.string.FG_Building_Name)
 
+    }
+
+    private fun createCampuses(){
+        var buildingsJson = JSONObject(readJSONFromAsset())
+        sgwCampus = Campus(LatLng(45.495637, -73.578235), "SGW", buildingsJson)
+        sgwCampus.createBuildings()
+    }
+
+    private fun readJSONFromAsset(): String? {
+        var json: String? = null
+        try{
+            val inputStream: InputStream = activity!!.assets.open("buildings.json")
+            json = inputStream.bufferedReader().use{it.readText()}
+        }catch(ex: Exception){
+            ex.printStackTrace()
+            return null
+        }
+        return json
     }
 
     private fun initBottomSheetBehavior() {
