@@ -105,7 +105,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         CalendarFragment.onCalendarEventClickListener = this
 
         createLocationRequest()
-        handleCampusSwitch()
         initPlacesSearch()
         initBottomSheetBehavior()
     }
@@ -369,22 +368,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                 .build(activity as Activity)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
-        }
-    }
-
-    //Handle the switching views between the two campuses. Should probably move from here later
-    private fun handleCampusSwitch() {
-        var campusView: LatLng
-
-        //Setting Toggle button listener
-        toggle_Campus.setOnCheckedChangeListener { _, onSwitch ->
-            if (onSwitch) {
-                campusView = LatLng(45.458159, -73.640450)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
-            } else {
-                campusView = LatLng(45.495637, -73.578235)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
-            }
         }
     }
 
