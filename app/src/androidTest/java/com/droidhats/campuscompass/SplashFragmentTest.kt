@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import junit.framework.TestCase.assertEquals
 import androidx.test.rule.ActivityTestRule
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,14 +22,19 @@ class SplashFragmentTest {
     var activityRule: ActivityTestRule<MainActivity>
     = ActivityTestRule(MainActivity::class.java)
 
-    val navController = TestNavHostController(
-        ApplicationProvider.getApplicationContext())
+    private lateinit var navController: TestNavHostController
+
+    @Before
+    fun setUp() {
+        navController = TestNavHostController(
+            ApplicationProvider.getApplicationContext())
+        //needs to be here to see which fragment is being opened
+        navController.setGraph(R.navigation.navigation)
+    }
 
     //Tests if all images appear on view
     @Test
     fun test_isFragmentImagesInView() {
-        //needs to be here to see which fragment is being opened
-        navController.setGraph(R.navigation.navigation)
 
         //tests if splash_fragment is in view
         assertEquals(navController.currentDestination?.id, R.id.splash_fragment)
@@ -47,11 +53,6 @@ class SplashFragmentTest {
     //Tests possible navigation paths from splash_fragment
     @Test
     fun test_isNavigationCorrect() {
-
-        val navController = TestNavHostController(
-            ApplicationProvider.getApplicationContext())
-
-        navController.setGraph(R.navigation.navigation)
 
         //tests if splash_fragment is in view
         assertEquals(navController.currentDestination?.id, R.id.splash_fragment)
