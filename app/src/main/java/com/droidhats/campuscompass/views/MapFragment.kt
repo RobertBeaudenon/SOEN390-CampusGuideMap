@@ -1,7 +1,7 @@
 package com.droidhats.campuscompass.views
 
+import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -14,12 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Switch
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -55,11 +50,15 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import com.google.maps.android.PolyUtil
-import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
-import kotlin.system.exitProcess
+import android.widget.Toast
+import com.android.volley.Response
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener{
@@ -219,12 +218,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //If the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
         if (ActivityCompat.checkSelfPermission(
                 activity as Activity,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 activity as Activity,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
             return
@@ -278,10 +277,32 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
+
+
         //Expand the bottom sheet when clicking on a polygon
         //TODO: Limt only to campus buildings as poylgons could highlight anything
-        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED)
+        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        //Checking which transportation mode is selected, default is walking.
+        var transportationMode: String = "driving"
+        radioTransportGroup.setOnCheckedChangeListener{ _, optionId ->
+            when (optionId) {
+                R.id.drivingId -> {
+                    transportationMode = "driving"
+                }
+                R.id.walkingId -> {
+                    transportationMode = "walking"
+                }
+                R.id.bicyclingId -> {
+                    transportationMode = "bicycling"
+                }
+                R.id.shuttleId -> {
+                    transportationMode = "shuttle"
+                }
+            }
+        }
 
         //Populate the bottom sheet with building information
         val buildingNameText: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
@@ -313,8 +334,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
             //Generate directions from current location to the selected building
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
-                if (location != null)
-                    generateDirections(location, buildingLocation)
+                if (location != null) {
+                    generateDirections(location, buildingLocation, transportationMode)
+                }
                 //Move the camera to the starting location
                 map.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
@@ -549,30 +571,37 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         })
     }
 
-    private fun generateDirections(origin: Location, destination: Location) {
+    private fun generateDirections(origin: Location, destination: Location, mode: String) {
 
         //Directions URL to be sent
         val directionsURL = "https://maps.googleapis.com/maps/api/directions/json?" +
                 "origin=" + origin.latitude.toString() + "," + origin.longitude.toString() +
                 "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +
-                "&mode=walking" +
+                "&mode=" + mode +
                 "&key=" + getString(R.string.ApiKey)
 
         //Creating the HTTP request with the directions URL
         val directionsRequest = object : StringRequest(
             Method.GET,
             directionsURL,
-            com.android.volley.Response.Listener<String> { response ->
+            Response.Listener<String> { response ->
 
                 //Retrieve response (a JSON object)
                 val jsonResponse = JSONObject(response)
 
-                Log.i("Directions Response", jsonResponse.toString())
-
                 // Get route information from json response
-                val routes = jsonResponse.getJSONArray("routes")
-                val legs = routes.getJSONObject(0).getJSONArray("legs")
-                val steps = legs.getJSONObject(0).getJSONArray("steps")
+                val routesArray = jsonResponse.getJSONArray("routes")
+                val routes = routesArray.getJSONObject(0)
+                val legsArray: JSONArray = routes.getJSONArray("legs")
+                val legs = legsArray.getJSONObject(0)
+                val steps = legsArray.getJSONObject(0).getJSONArray("steps")
+                val totalKm:JSONObject = legs.getJSONObject("distance")
+                val travelTime:JSONObject = legs.getJSONObject("duration")
+
+                //Debug
+                for (x in 1..3) {
+                    Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
+                }
 
                 val path: MutableList<List<LatLng>> = ArrayList()
 
@@ -589,7 +618,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     this.map.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
                 }
             },
-            com.android.volley.Response.ErrorListener {
+            Response.ErrorListener {
                 Log.e("Volley Error:", "HTTP response error")
             }) {}
 
