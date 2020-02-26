@@ -1,5 +1,8 @@
 package com.droidhats.campuscompass.views
 
+import android.content.Context
+import android.content.Intent
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -7,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import androidx.test.rule.ServiceTestRule
 import com.droidhats.campuscompass.R
 import org.junit.Rule
 import org.junit.Test
@@ -16,8 +20,7 @@ import org.junit.runner.RunWith
 @LargeTest
 class MapFragmentTest {
 
-    @get: Rule
-    val activityRule = ActivityScenarioRule(MapFragment::class.java)
+  //  @get:Rule
 
     //Checking if we are at the right layout (map_fragment)
     @Test
@@ -27,8 +30,6 @@ class MapFragmentTest {
 
     @Test
     fun test_visibilityTextsSwitchToggle() {
-    //  val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-
         onView(withId(R.id.text_SGW)).check(matches(isDisplayed()));
         onView(withId(R.id.toggle_Campus)).check(matches(isDisplayed()));
         onView(withId(R.id.text_Loyola)).check(matches(isDisplayed()));
