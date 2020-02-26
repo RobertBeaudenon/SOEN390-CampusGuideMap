@@ -5,6 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/quantum_white_100"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp">
+
     <TextView
         android:id="@+id/text_calendar"
         android:layout_width="match_parent"
@@ -16,15 +23,49 @@
         android:textAlignment="center"
         android:textSize="20sp" />
 
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/calendar_recycler_view"
         android:name="com.droidhats.campuscompass.CalendarFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:overScrollMode="never"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context=".views.CalendarFragment"
-        tools:listitem="@layout/calendar_recycler_item" />
+        tools:listitem="@layout/calendar_recycler_item"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="insideInset"
+        />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp">
+
+        <Button
+            android:id="@+id/select_calendar_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:text="select calendars"
+            android:textAllCaps="false"
+            android:textColor="@color/quantum_white_text"
+            android:background="@drawable/calendarbutton"
+            android:paddingStart="55dp"
+            android:paddingEnd="55dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp" />
+
+
+
+
+    </LinearLayout>
 </LinearLayout>
