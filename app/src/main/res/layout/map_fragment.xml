@@ -9,7 +9,6 @@
     android:id="@+id/coordinate_layout"
     tools:context=".views.MapFragment">
 
-
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
@@ -31,9 +30,10 @@
         />
 
     <LinearLayout
+        android:id="@+id/toggle_button"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="left"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:layout_marginTop="80dp"
