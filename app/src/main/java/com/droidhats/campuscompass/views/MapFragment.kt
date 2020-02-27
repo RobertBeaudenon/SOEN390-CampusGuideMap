@@ -97,11 +97,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
-        if(activity != null)
-            {
-                val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-                mapFragment.getMapAsync(this)
-            }
+        if (activity != null) {
+            val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+            mapFragment.getMapAsync(this)
+        }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
 
@@ -398,8 +397,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         searchButton.setOnClickListener {
             var intent =
-                Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
-            startActivityForResult(intent,
+                Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                    .build(activity as Activity)
+            startActivityForResult(
+                intent,
                 AUTOCOMPLETE_REQUEST_CODE
             )
         }
@@ -417,11 +418,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         var campusView: LatLng
 
-        val drawer : DrawerLayout = activity!!.findViewById(R.id.drawer_layout)
-        val side_nav : NavigationView = activity!!.findViewById(R.id.nav_view)
-        val drawer_content : LinearLayout =
+        val drawer: DrawerLayout = activity!!.findViewById(R.id.drawer_layout)
+        val side_nav: NavigationView = activity!!.findViewById(R.id.nav_view)
+        val drawer_content: LinearLayout =
             side_nav.menu.findItem(R.id.nav_drawer_main_content_item).actionView as LinearLayout
-        val campusToggle : Switch = drawer_content.findViewById(R.id.toggle_Campus)
+        val campusToggle: Switch = drawer_content.findViewById(R.id.toggle_Campus)
 
         //Setting Toggle button listener
         campusToggle.setOnCheckedChangeListener { _, isChecked ->
@@ -439,8 +440,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun drawBuildingPolygons() {
 
-        //TO-DO: Refactor coordinates to buildings.json -> see TO-DO in Location.kt
-        // This method will traverse buildingsLisT & make use of getPolygonOptions() instead of having duplicate code
+        //TODO: Refactor coordinates to buildings.json -> see TO-DO in Location.kt
+        // This method will traverse buildingsList & make use of getPolygonOptions() instead of having duplicate code
+
+        val color: Int = 4289544510.toInt() //temporary, to be used in getPolygonOptions()
 
         // SGW CAMPUS
 
@@ -455,8 +458,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 LatLng(45.495673, -73.578080),
                 LatLng(45.495910, -73.578475)
             )
-
-
+            .fillColor(color)
         val ev_Polygon: Polygon = map.addPolygon(ev_PolygonOptions)
         ev_Polygon.tag = getString(R.string.EV_Building_Name)
 
@@ -470,6 +472,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 LatLng(45.495946, -73.578436),
                 LatLng(45.496132, -73.578816)
             )
+            .fillColor(color)
         val gm_Polygon: Polygon = map.addPolygon(gm_PolygonOptions)
         gm_Polygon.tag = getString(R.string.GM_Building_Name)
 
@@ -482,6 +485,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 LatLng(45.497373, -73.578338),
                 LatLng(45.496828, -73.578850)
             )
+            .fillColor(color)
         val hall_Polygon: Polygon = map.addPolygon(hall_PolygonOptions)
         hall_Polygon.tag = getString(R.string.Hall_Building_Name)
 
@@ -498,6 +502,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 LatLng(45.495195, -73.578507),
                 LatLng(45.495529, -73.579209)
             )
+            .fillColor(color)
         val jmsb_Polygon: Polygon = map.addPolygon(jmsb_PolygonOptions)
         jmsb_Polygon.tag = getString(R.string.JMSB_Building_Name)
 
@@ -514,6 +519,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 LatLng(45.496615, -73.577560),
                 LatLng(45.496896, -73.577279)
             )
+            .fillColor(color)
         val lib_Polygon: Polygon = map.addPolygon(lib_PolygonOptions)
         lib_Polygon.tag = getString(R.string.WebsterLibrary_Building_Name)
 
@@ -527,12 +533,193 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 LatLng(45.494687, -73.578045),
                 LatLng(45.494363, -73.578439)
             )
+            .fillColor(color)
         val fg_Polygon: Polygon = map.addPolygon(fg_PolygonOptions)
         fg_Polygon.tag = getString(R.string.FG_Building_Name)
 
+        //FB Building
+        val fb_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.494911, -73.577786),
+                LatLng(45.494655, -73.577218),
+                LatLng(45.494403, -73.577520),
+                LatLng(45.494696, -73.578037)
+            )
+            .fillColor(color)
+        val fb_Polygon: Polygon = map.addPolygon(fb_PolygonOptions)
+        fb_Polygon.tag = getString(R.string.FB_Building_Name)
+
+        //VA Building
+        val va_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.496179, -73.573797),
+                LatLng(45.495661, -73.574293),
+                LatLng(45.495406, -73.573755),
+                LatLng(45.495660, -73.573507),
+                LatLng(45.495809, -73.573805),
+                LatLng(45.496066, -73.573558)
+            )
+            .fillColor(color)
+        val va_Polygon: Polygon = map.addPolygon(va_PolygonOptions)
+        va_Polygon.tag = getString(R.string.VA_Building_Name)
+
+        // LOYOLA CAMPUS
+
+        // Psychology Building
+        val py_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.459285, -73.640559),
+                LatLng(45.459199, -73.640621),
+                LatLng(45.459180, -73.640574),
+                LatLng(45.458849, -73.640829),
+                LatLng(45.458802, -73.640711),
+                LatLng(45.458731, -73.640437),
+                LatLng(45.459117, -73.640113)
+            )
+            .fillColor(color)
+        val py_Polygon: Polygon = map.addPolygon(py_PolygonOptions)
+        py_Polygon.tag = getString(R.string.PY_Building_Name)
+
+        // Science Complex Building
+        val sp_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.458323, -73.641412),
+                LatLng(45.457673, -73.641924),
+                LatLng(45.457642, -73.641845),
+                LatLng(45.457440, -73.642002),
+                LatLng(45.457210, -73.641413),
+                LatLng(45.457184, -73.641432),
+                LatLng(45.457170, -73.641391),
+                LatLng(45.457180, -73.641383),
+                LatLng(45.457150, -73.641302),
+                LatLng(45.457160, -73.641295),
+                LatLng(45.457043, -73.640994),
+                LatLng(45.457018, -73.641010),
+                LatLng(45.456998, -73.640958),
+                LatLng(45.457025, -73.640934),
+                LatLng(45.456986, -73.640827),
+                LatLng(45.457204, -73.640657),
+                LatLng(45.457528, -73.641469),
+                LatLng(45.457907, -73.641168),
+                LatLng(45.457895, -73.641131),
+                LatLng(45.457979, -73.641067),
+                LatLng(45.457998, -73.641115),
+                LatLng(45.458315, -73.640862),
+                LatLng(45.458340, -73.640921),
+                LatLng(45.458193, -73.641038),
+                LatLng(45.458255, -73.641202),
+                LatLng(45.458180, -73.641261),
+                LatLng(45.458210, -73.641338),
+                LatLng(45.458277, -73.641283)
+            )
+            .fillColor(color)
+        val sp_Polygon: Polygon = map.addPolygon(sp_PolygonOptions)
+        sp_Polygon.tag = getString(R.string.SP_Building_Name)
+
+        //Central Building
+        val cc_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.458527, -73.640695),
+                LatLng(45.458427, -73.640453),
+                LatLng(45.458439, -73.640447),
+                LatLng(45.458328, -73.640134),
+                LatLng(45.458312, -73.640131),
+                LatLng(45.458224, -73.639894),
+                LatLng(45.458079, -73.640005),
+                LatLng(45.458101, -73.640266),
+                LatLng(45.458098, -73.640275),
+                LatLng(45.458206, -73.640581),
+                LatLng(45.458220, -73.640566),
+                LatLng(45.458308, -73.640814)
+            )
+            .fillColor(color)
+        val cc_Polygon: Polygon = map.addPolygon(cc_PolygonOptions)
+        cc_Polygon.tag = getString(R.string.CC_Building_Name)
+
+        //Communication Studies and Journalism Building
+        val cj_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.457830, -73.640483),
+                LatLng(45.457755, -73.640293),
+                LatLng(45.457727, -73.640316),
+                LatLng(45.457622, -73.640046),
+                LatLng(45.457489, -73.640159),
+                LatLng(45.457437, -73.640028),
+                LatLng(45.457447, -73.639946),
+                LatLng(45.457464, -73.639954),
+                LatLng(45.457481, -73.639821),
+                LatLng(45.457429, -73.639771),
+                LatLng(45.457362, -73.639764),
+                LatLng(45.457282, -73.639803),
+                LatLng(45.457230, -73.639884),
+                LatLng(45.457213, -73.639989),
+                LatLng(45.457215, -73.640017),
+                LatLng(45.457306, -73.640073),
+                LatLng(45.457313, -73.640049),
+                LatLng(45.457360, -73.640074),
+                LatLng(45.457411, -73.640207),
+                LatLng(45.457179, -73.640394),
+                LatLng(45.457280, -73.640658),
+                LatLng(45.457304, -73.640639),
+                LatLng(45.457334, -73.640716),
+                LatLng(45.457598, -73.640502),
+                LatLng(45.457652, -73.640631)
+            )
+            .fillColor(color)
+        val cj_Polygon: Polygon = map.addPolygon(cj_PolygonOptions)
+        cj_Polygon.tag = getString(R.string.CJ_Building_Name)
+
+        //Administration Building
+        val ad_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.458376, -73.639773),
+                LatLng(45.458249, -73.639445),
+                LatLng(45.458168, -73.639511),
+                LatLng(45.458202, -73.639616),
+                LatLng(45.458096, -73.639695),
+                LatLng(45.458044, -73.639580),
+                LatLng(45.457986, -73.639623),
+                LatLng(45.458025, -73.639744),
+                LatLng(45.457912, -73.639837),
+                LatLng(45.457880, -73.639756),
+                LatLng(45.457794, -73.639817),
+                LatLng(45.457909, -73.640126),
+                LatLng(45.457987, -73.640065),
+                LatLng(45.457964, -73.640008),
+                LatLng(45.458273, -73.639772),
+                LatLng(45.458300, -73.639828)
+            )
+            .fillColor(color)
+        val ad_Polygon: Polygon = map.addPolygon(ad_PolygonOptions)
+        ad_Polygon.tag = getString(R.string.AD_Building_Name)
+
+        //Loyola Jesuit Hall and Conference Centre
+        val rf_PolygonOptions = PolygonOptions()
+            .clickable(true)
+            .add(
+                LatLng(45.458743, -73.640962),
+                LatLng(45.458693, -73.640836),
+                LatLng(45.458573, -73.640919),
+                LatLng(45.458528, -73.640809),
+                LatLng(45.458448, -73.640865),
+                LatLng(45.458496, -73.640990),
+                LatLng(45.458378, -73.641071),
+                LatLng(45.458432, -73.641198)
+            )
+            .fillColor(color)
+        val rf_Polygon: Polygon = map.addPolygon(rf_PolygonOptions)
+        rf_Polygon.tag = getString(R.string.RF_Building_Name)
+
     }
 
-    private fun createCampuses(){
+    private fun createCampuses() {
         var buildingsJson = JSONObject(readJSONFromAsset())
         sgwCampus = Campus(LatLng(45.495637, -73.578235), "SGW", buildingsJson)
         sgwCampus.createBuildings()
@@ -540,10 +727,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun readJSONFromAsset(): String? {
         var json: String? = null
-        try{
+        try {
             val inputStream: InputStream = activity!!.assets.open("buildings.json")
-            json = inputStream.bufferedReader().use{it.readText()}
-        }catch(ex: Exception){
+            json = inputStream.bufferedReader().use { it.readText() }
+        } catch (ex: Exception) {
             ex.printStackTrace()
             return null
         }
@@ -559,8 +746,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 // React to state change
                 // The following code can be used if we want to do certain actions related
-                 // to the change of state of the bottom sheet
-                 //
+                // to the change of state of the bottom sheet
+                //
 
 //                when (newState) {
 //                    BottomSheetBehavior.STATE_HIDDEN -> {
