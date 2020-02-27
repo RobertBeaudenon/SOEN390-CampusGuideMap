@@ -10,6 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import junit.framework.TestCase.assertEquals
 import androidx.test.rule.ActivityTestRule
+import junit.framework.TestCase.assertNotSame
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -61,12 +62,15 @@ class SplashFragmentTest {
         onView(withId(R.id.nav_menu))
             .check(doesNotExist())
 
-        //tests if the back button will navigate away from splash_fragment
-        pressBack()
-        assertEquals(navController.currentDestination?.id, R.id.splash_fragment)
-
         //tests if there is navigation to the map_fragment
         navController.navigate(R.id.action_splashFragment_to_mapsActivity)
         assertEquals(navController.currentDestination?.id, R.id.map_fragment)
+
+        //tests if the back button will navigate away from splash_fragment
+        navController.navigateUp()
+        assertNotSame(navController.currentDestination?.id, R.id.splash_fragment)
+
+        //test that the backstack is empty
+        assert(navController.backStack.isEmpty())
     }
 }
