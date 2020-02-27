@@ -304,7 +304,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         //In case the transportation mode is changed, this will capture it.
-        println("WOOT WOOTs: ${radioTransportGroup.checkedRadioButtonId}")
         radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
             when (optionId) {
                 R.id.drivingId -> {
