@@ -1,6 +1,7 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
+import android.content.Context
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues.TAG
@@ -19,6 +20,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -47,10 +49,12 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.map_fragment.*
 import org.json.JSONObject
 import java.io.IOException
+import java.util.Locale
+import kotlin.system.exitProcess
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.List
 import kotlin.collections.MutableList
+import kotlin.collections.List
 import kotlin.collections.listOf
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -78,7 +82,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.map_fragment, container, false)
+        val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
+        return mapFragment
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
