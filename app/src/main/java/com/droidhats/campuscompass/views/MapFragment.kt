@@ -383,17 +383,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun handleCampusSwitch() {
         var campusView: LatLng
 
-        //Setting Toggle button listener
-        toggle_Campus.setOnCheckedChangeListener { _, onSwitch ->
-            if (onSwitch) {
-                campusView = LatLng(45.458159, -73.640450)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
-            } else {
-                campusView = LatLng(45.495637, -73.578235)
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
-            }
+    //Setting Toggle button listener
+    toggleButton.setOnCheckedChangeListener { _, onSwitch ->
+        if (onSwitch) {
+            campusView = LatLng(45.495637, -73.578235)
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
+        } else {
+            campusView = LatLng(45.458159, -73.640450)
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
         }
     }
+}
 
     private fun drawBuildingPolygons() {
 
