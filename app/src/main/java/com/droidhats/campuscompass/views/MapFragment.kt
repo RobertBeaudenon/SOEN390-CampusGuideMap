@@ -287,7 +287,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         //Checking which transportation mode is selected, default is walking.
         var transportationMode: String = "driving"
-        radioTransportGroup.setOnCheckedChangeListener{ _, optionId ->
+        var radioSelectedId = radioTransportGroup.checkedRadioButtonId
+        when (radioSelectedId) {
+            R.id.drivingId -> {
+                transportationMode = "driving"
+            }
+            R.id.walkingId -> {
+                transportationMode = "walking"
+            }
+            R.id.bicyclingId -> {
+                transportationMode = "bicycling"
+            }
+            R.id.shuttleId -> {
+                transportationMode = "shuttle"
+            }
+        }
+
+        //In case the transportation mode is changed, this will capture it.
+        println("WOOT WOOTs: ${radioTransportGroup.checkedRadioButtonId}")
+        radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
             when (optionId) {
                 R.id.drivingId -> {
                     transportationMode = "driving"
