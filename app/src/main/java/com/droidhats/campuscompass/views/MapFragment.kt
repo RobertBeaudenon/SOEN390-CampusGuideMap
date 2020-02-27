@@ -1,6 +1,7 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.views
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -10,15 +11,25 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Switch
 import android.widget.Toast
-import android.widget.ToggleButton
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.droidhats.campuscompass.viewmodels.MapViewModel
+import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.CalendarEvent
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -42,14 +53,16 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.navigation.NavigationView
 import com.google.maps.android.PolyUtil
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
+import kotlin.system.exitProcess
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener {
+class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener{
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -66,16 +79,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
+    private lateinit var viewModel: MapViewModel
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
+        return mapFragment
+    }
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+
+        if(activity != null)
+            {
+                val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+                mapFragment.getMapAsync(this)
+            }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
 
         //update lastLocation with the new location and update the map with the new location coordinates
         locationCallback = object : LocationCallback() {
@@ -86,13 +110,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }
         }
 
+        //Use this Fragment's implemented calendar event click callback
+        CalendarFragment.onCalendarEventClickListener = this
+
         createLocationRequest()
-
-        val calendarButton: View = findViewById(R.id.calendarButton)
-        calendarButton.setOnClickListener {
-            pingCalendar(this.applicationContext, this)
-        }
-
         handleCampusSwitch()
         initPlacesSearch()
         initBottomSheetBehavior()
@@ -118,7 +139,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         map.uiSettings.isZoomControlsEnabled = true
         map.setOnMarkerClickListener(this)
 
-        //enable the zoom controls on the map and declare MapsActivity as the callback triggered when the user clicks a marker on this map
+        //enable the zoom controls on the map and declare MainActivity as the callback triggered when the user clicks a marker on this map
         map.getUiSettings().setZoomControlsEnabled(true)
         map.setOnMarkerClickListener(this)
 
@@ -131,7 +152,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         map.isMyLocationEnabled = true
 
         //Gives you the most recent location currently available.
-        fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
+        fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
             // Got last known location. In some rare situations this can be null.
             // If  able to retrieve the the most recent location, then move the camera to the user’s current location.
             if (location != null) {
@@ -165,7 +186,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             .addLocationRequest(locationRequest)
 
         // 4 check location settings before asking for location updates
-        val client = LocationServices.getSettingsClient(this)
+        val client = LocationServices.getSettingsClient(activity as Activity)
         val task = client.checkLocationSettings(builder.build())
 
         // 5 A task success means all is well and you can go ahead and initiate a location request
@@ -183,7 +204,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
                     e.startResolutionForResult(
-                        this@MapsActivity,
+                        activity as Activity,
                         REQUEST_CHECK_SETTINGS
                     )
                 } catch (sendEx: IntentSender.SendIntentException) {
@@ -197,12 +218,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private fun startLocationUpdates() {
         //If the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
         if (ActivityCompat.checkSelfPermission(
-                this,
+                activity as Activity,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
+                activity as Activity,
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
@@ -212,7 +233,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
-            null /* Looper */
+            null //* Looper *//*
         )
     }
 
@@ -221,7 +242,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     override fun onActivityResult(
         requestCode: Int,
         resultCode: Int,
-        data: Intent?  
+        data: Intent?
     ) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == Activity.RESULT_OK) {
@@ -233,7 +254,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         if (data == null) return
 
         val place = Autocomplete.getPlaceFromIntent(data)
-        Toast.makeText(this, place.address, Toast.LENGTH_LONG).show()
+        Toast.makeText(activity as Activity, place.address, Toast.LENGTH_LONG).show()
 
         if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             var status = Autocomplete.getStatusFromIntent(data)
@@ -248,7 +269,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     // 3 Override onResume() to restart the location update request.
-    public override fun onResume() {
+    override fun onResume() {
         super.onResume()
         if (!locationUpdateState) {
             startLocationUpdates()
@@ -263,10 +284,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         //Populate the bottom sheet with building information
-        val buildingNameText: TextView = findViewById(R.id.bottom_sheet_building_name)
+        val buildingNameText: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
         buildingNameText.text = p.tag.toString()
 
-        val directionsButton: Button = findViewById(R.id.bottom_sheet_directions_button)
+        val directionsButton: Button = activity!!.findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
             //Calculating the center of the polygon to use for it's location.
@@ -291,7 +312,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             placeMarkerOnMap(LatLng(centerLat, centerLong))
 
             //Generate directions from current location to the selected building
-            fusedLocationClient.lastLocation.addOnSuccessListener(this) { location ->
+            fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null)
                     generateDirections(location, buildingLocation)
                 //Move the camera to the starting location
@@ -328,7 +349,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     //This method get address from coordinates
     private fun getAddress(latLng: LatLng): String {
         // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
-        val geocoder = Geocoder(this)
+        val geocoder = Geocoder(activity as Activity)
         val addresses: List<Address>?
         val address: Address?
         var addressText = ""
@@ -346,25 +367,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
                 }
             }
         } catch (e: IOException) {
-            Log.e("MapsActivity", e.localizedMessage!!)
+            Log.e("MapFragment", e.localizedMessage!!)
         }
 
         return addressText
     }
 
     private fun initPlacesSearch() {
-        Places.initialize(this.applicationContext, getString(R.string.ApiKey), Locale.CANADA)
-        Places.createClient(this)
+        Places.initialize(activity as Activity, getString(R.string.ApiKey), Locale.CANADA)
+        Places.createClient(activity as Activity)
         var fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
 
 
         //Autocomplete search launches after hitting the button
-        val searchButton: View = findViewById(R.id.fab_search)
+        val searchButton: View = activity!!.findViewById(R.id.fab_search)
 
         searchButton.setOnClickListener {
             var intent =
-                Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(this)
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+                Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
+            startActivityForResult(intent,
+                AUTOCOMPLETE_REQUEST_CODE
+            )
         }
     }
 
@@ -380,22 +403,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         var campusView: LatLng
 
-        val campusToggle: ToggleButton = findViewById(R.id.toggle_Campus)
-
-        //Setting toggle button text
-        campusToggle.textOn = getString(R.string.SGW_Campus_Name)
-        campusToggle.textOff = getString(R.string.Loyola_Campus_Name)
+        val drawer : DrawerLayout = activity!!.findViewById(R.id.drawer_layout)
+        val side_nav : NavigationView = activity!!.findViewById(R.id.nav_view)
+        val drawer_content : LinearLayout = side_nav.menu.findItem(R.id.nav_drawer_main_content_item).actionView as LinearLayout
+        val campusToggle : Switch = drawer_content.findViewById(R.id.toggle_Campus)
 
         //Setting Toggle button listener
         campusToggle.setOnCheckedChangeListener { _, isChecked ->
+            drawer.closeDrawers()
             if (isChecked) {
-                campusView = LatLng(SGW_LAT, SGW_LNG)
-                // map.addMarker(MarkerOptions().position(campusView).title(getString( R.string.SGW_Campus_Name )))
+                campusView = LatLng(LOYOLA_LAT, LOYOLA_LNG)
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
 
             } else {
-                campusView = LatLng(LOYOLA_LAT, LOYOLA_LNG)
-                map.addMarker(MarkerOptions().position(campusView).title(getString(R.string.Loyola_Campus_Name)))
+                campusView = LatLng(SGW_LAT, SGW_LNG)
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
             }
         }
@@ -499,9 +520,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 // React to state change
-                /* The following code can be used if we want to do certain actions related
-                *  to the change of state of the bottom sheet
-                * */
+                // The following code can be used if we want to do certain actions related
+                 // to the change of state of the bottom sheet
+                 //
 
 //                when (newState) {
 //                    BottomSheetBehavior.STATE_HIDDEN -> {
@@ -573,10 +594,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
             }) {}
 
         //Confirm and add the request with Volley
-        val requestQueue = Volley.newRequestQueue(this)
+        val requestQueue = Volley.newRequestQueue(activity as Activity)
         requestQueue.add(directionsRequest)
     }
 
+    override fun onCalendarEventClick(item: CalendarEvent?) {
+        findNavController().navigateUp()
+        Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
+    }
 
     //
 

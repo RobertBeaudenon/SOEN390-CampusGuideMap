@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Campus Compass</string>
     <string name="title_activity_maps">Campus Compass</string>
+    <string name="splash_screen">Splash screen</string>
+    <string name="cc_logo">Campus Compass Logo</string>
+    <string name="cc_title">Campus Compass Title</string>
+    <string name="cc_uni">Concordia University</string>
 
     <string name="SGW_Campus_Name">SGW</string>
     <string name="Loyola_Campus_Name">Loyola</string>
@@ -11,6 +15,9 @@
     <string name="EV_Building_Name">EV Building</string>
     <string name="GM_Building_Name">GM Building</string>
 
-    <string name="Calendar_Feature_Name">Calendar</string>
-
+    <string name="Favorites_Feature_Name">My Places</string>
+    <string name="Calendar_Feature_Name">Schedule</string>
+    <string name="Resources_Feature_Name">Resources</string>
+    <string name="Explore_Feature_Name">Explore</string>
+    <string name="Settings">Settings</string>
 </resources>
