@@ -1,7 +1,6 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
-import android.content.Context
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues.TAG
@@ -20,7 +19,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -31,12 +29,22 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -45,17 +53,11 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.map_fragment.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
-import kotlin.system.exitProcess
-import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.MutableList
-import kotlin.collections.List
-import kotlin.collections.listOf
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
@@ -180,7 +182,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             .addLocationRequest(locationRequest)
 
         // 4 check location settings before asking for location updates
-        val client = LocationServices.getSettingsClient(activity as Activity)
+        val client = LocationServices.getSettingsClient(requireActivity())
         val task = client.checkLocationSettings(builder.build())
 
         // 5 A task success means all is well and you can go ahead and initiate a location request
@@ -198,7 +200,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
                     e.startResolutionForResult(
-                        activity as Activity,
+                        activity,
                         REQUEST_CHECK_SETTINGS
                     )
                 } catch (sendEx: IntentSender.SendIntentException) {
@@ -275,10 +277,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         //Populate the bottom sheet with building information
-        val buildingNameText: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
+        val buildingNameText: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
         buildingNameText.text = p.tag.toString()
 
-        val directionsButton: Button = activity!!.findViewById(R.id.bottom_sheet_directions_button)
+        val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
             //Calculating the center of the polygon to use for it's location.
@@ -367,7 +369,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         var fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
 
         //Autocomplete search launches after hitting the button
-        val searchButton: View = activity!!.findViewById(R.id.fab_search)
+        val searchButton: View = requireActivity().findViewById(R.id.fab_search)
 
         searchButton.setOnClickListener {
             var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
@@ -548,7 +550,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }) {}
 
         //Confirm and add the request with Volley
-        val requestQueue = Volley.newRequestQueue(activity as Activity)
+        val requestQueue = Volley.newRequestQueue(activity)
         requestQueue.add(directionsRequest)
     }
 
