@@ -12,7 +12,7 @@ Name | GitHub Username
 ------------ | -------------
 Amanda Kolopanis | Amanda-Kolopa
 Donya Meshgin | meshgin
-Jeremiah Tiongson | --
+Jeremiah Tiongson | JeremiahTee
 Khaled Badran | KhaledBadran
 Loujain Al-Nakeeb | Loujain-Al-Nakeeb
 Markram Adaime | makchamp
