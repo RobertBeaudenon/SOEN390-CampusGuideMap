@@ -19,10 +19,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.CalendarAdapter
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.viewmodels.CalendarViewModel
+import kotlinx.android.synthetic.main.calendar_fragment.*
 
 class CalendarFragment : DialogFragment() {
 
@@ -35,23 +37,6 @@ class CalendarFragment : DialogFragment() {
 
         // This callback could also be private and be set on the host(main) Activity
         var onCalendarEventClickListener: OnCalendarEventClickListener? = null
-
-    //The colors available on the google calendar app with their corresponding int value
-         val googleCalendarColorMap : Map<String, String> = mapOf(
-            "Default" to "-6299161",
-            "Tomato" to "-2350809",
-            "Tangerine" to "-18312",
-            "Banana" to "-272549",
-            "Basil" to "-11421879",
-            "Sage" to "-8722497",
-            "Peacock" to "-12134693",
-            "Blueberry" to "-11238163",
-            "Lavender" to "-5980676",
-            "Grape" to "-2380289",
-            "Flamingo" to "-30596",
-            "Graphite" to "-1973791"
-        )
-        var selectedColors = BooleanArray(googleCalendarColorMap.size)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +44,7 @@ class CalendarFragment : DialogFragment() {
         requestCalendarPermission()
       calendarViewModel = ViewModelProviders.of(this)
           .get(CalendarViewModel::class.java)
+
     }
 
     override fun onCreateView(
@@ -70,10 +56,14 @@ class CalendarFragment : DialogFragment() {
        val root = inflater.inflate(R.layout.calendar_fragment, container, false)
 
         calendarViewModel.init()
-        val textView: TextView = root.findViewById(R.id.text_calendar)
-        calendarViewModel.text.observe(viewLifecycleOwner, Observer {
+        loadChecked()
+        calendarViewModel.selectCalendars()
+
+        val textView: TextView = root.findViewById(R.id.text_info)
+        calendarViewModel.info.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })
+
         recyclerView = root.findViewById(R.id.calendar_recycler_view)
 
       val selectCalendarButton: Button = root.findViewById(R.id.select_calendar_button)
@@ -88,15 +78,26 @@ class CalendarFragment : DialogFragment() {
             recyclerView.adapter!!.notifyDataSetChanged()
 
         })
+
+        val swipeLayout : SwipeRefreshLayout = root.findViewById(R.id.swipe_container)
+        swipeLayout.setOnRefreshListener {
+            refresh()
+            swipeLayout.isRefreshing = false
+        }
       return root
     }
 
     private fun showDialog() {
-
         val dialog = CalendarFragment()
         dialog.setTargetFragment(this, targetRequestCode)
         dialog.show(fragmentManager!!, "select calendars dialog")
+    }
 
+    private fun refresh()
+    {
+        calendarViewModel.init()
+        loadChecked()
+        calendarViewModel.selectCalendars()
     }
 
     private fun requestCalendarPermission() {
@@ -129,8 +130,8 @@ class CalendarFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { it ->
 
-            val selectedBool = loadDialog()
-            val colorArray = googleCalendarColorMap.keys.toTypedArray()
+            val selectedBool = loadChecked()
+            val colorArray = calendarViewModel.googleCalendarColorMap.keys.toTypedArray()
 
             val builder = AlertDialog.Builder(it)
                 .setTitle("Select Your Calendars")
@@ -139,7 +140,7 @@ class CalendarFragment : DialogFragment() {
                     selectedBool!![which] = isChecked
                 }.setPositiveButton(R.string.ok) { _, _ ->
 
-                    saveDialog(selectedBool!!)
+                    saveChecked(selectedBool!!)
                     targetFragment!!.onActivityResult(targetRequestCode, 1, null)
                 }
             builder.create()
@@ -152,12 +153,13 @@ class CalendarFragment : DialogFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        calendarViewModel.selectCalendars(selectedColors)
+        loadChecked()
+        calendarViewModel.selectCalendars()
 
     }
 
-    private fun saveDialog(checkedArr: BooleanArray) {
-        selectedColors = checkedArr
+    private fun saveChecked(checkedArr: BooleanArray) {
+        calendarViewModel.selectedColors = checkedArr
         val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
         val editor = sharedPreferences?.edit()
         for (i in checkedArr.indices) {
@@ -166,13 +168,13 @@ class CalendarFragment : DialogFragment() {
         editor?.apply()
     }
 
-    private fun loadDialog(): BooleanArray? {
+    private fun loadChecked(): BooleanArray? {
         val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
-        val checkedArr = BooleanArray(googleCalendarColorMap.size)
+        val checkedArr = BooleanArray(calendarViewModel.googleCalendarColorMap.size)
         for (i in checkedArr.indices) {
             checkedArr[i] = sharedPreferences!!.getBoolean(i.toString(), false)
         }
-        selectedColors = checkedArr
+        calendarViewModel.selectedColors = checkedArr
         return checkedArr
     }
 }

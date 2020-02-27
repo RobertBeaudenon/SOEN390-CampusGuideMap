@@ -16,6 +16,7 @@
         android:id="@+id/text_calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/Calendar_Feature_Name"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
@@ -25,13 +26,20 @@
 
     </LinearLayout>
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+
     <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/calendar_recycler_view"
         android:name="com.droidhats.campuscompass.CalendarFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:overScrollMode="never"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -42,13 +50,27 @@
         android:scrollbarStyle="insideInset"
         />
 
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_gravity="bottom"
         android:paddingBottom="15dp"
         android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/text_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            />
 
         <Button
             android:id="@+id/select_calendar_button"
@@ -61,11 +83,13 @@
             android:background="@drawable/calendarbutton"
             android:paddingStart="55dp"
             android:paddingEnd="55dp"
-            android:paddingBottom="12dp"
+            android:paddingBottom="14dp"
             android:paddingTop="12dp" />
 
 
 
 
     </LinearLayout>
+
+
 </LinearLayout>
