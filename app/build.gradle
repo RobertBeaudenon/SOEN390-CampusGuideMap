@@ -74,5 +74,6 @@ dependencies {
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
     implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
+    testImplementation "com.google.truth:truth:1.0.1"
 
 }

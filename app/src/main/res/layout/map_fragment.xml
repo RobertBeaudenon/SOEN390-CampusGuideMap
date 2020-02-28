@@ -45,19 +45,22 @@
         app:layout_dodgeInsetEdges="bottom"
         />
 
-        <ToggleButton
-            android:id="@+id/toggleButton"
-            android:layout_width="230.65px"
-            android:layout_height="100px"
-            android:layout_gravity="left"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/toggle_switch"
-            android:text="ToggleButton"
-            android:textOff=""
-            android:textOn="" />
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="230.65px"
+        android:layout_height="100px"
+        android:layout_gravity="left"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/toggle_switch"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="ToggleButton"
+        android:textColor="#FFFFFF"
+        android:textOff="LOY"
+        android:textOn="SGW"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <include layout="@layout/bottom_sheet_layout"/>
 
