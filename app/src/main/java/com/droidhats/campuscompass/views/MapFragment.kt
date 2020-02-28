@@ -56,8 +56,6 @@ import java.io.IOException
 import java.util.Locale
 import android.widget.Toast
 import com.android.volley.Response
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -278,7 +276,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
 
-
         //Expand the bottom sheet when clicking on a polygon
         //TODO: Limt only to campus buildings as poylgons could highlight anything
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
@@ -322,10 +319,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         //Populate the bottom sheet with building information
-        val buildingNameText: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
+        val buildingNameText: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
         buildingNameText.text = p.tag.toString()
 
-        val directionsButton: Button = activity!!.findViewById(R.id.bottom_sheet_directions_button)
+        val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
             //Calculating the center of the polygon to use for it's location.
@@ -419,7 +416,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
 
         //Autocomplete search launches after hitting the button
-        val searchButton: View = activity!!.findViewById(R.id.fab_search)
+        val searchButton: View = requireActivity().findViewById(R.id.fab_search)
 
         searchButton.setOnClickListener {
             var intent =
@@ -442,8 +439,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         var campusView: LatLng
 
-        val drawer : DrawerLayout = activity!!.findViewById(R.id.drawer_layout)
-        val side_nav : NavigationView = activity!!.findViewById(R.id.nav_view)
+        val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+        val side_nav : NavigationView = requireActivity().findViewById(R.id.nav_view)
         val drawer_content : LinearLayout = side_nav.menu.findItem(R.id.nav_drawer_main_content_item).actionView as LinearLayout
         val campusToggle : Switch = drawer_content.findViewById(R.id.toggle_Campus)
 
