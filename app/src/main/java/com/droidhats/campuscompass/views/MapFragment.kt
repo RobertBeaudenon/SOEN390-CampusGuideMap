@@ -14,27 +14,24 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Switch
 import android.widget.Toast
+import android.widget.TextView
+import android.widget.Button
 import androidx.core.app.ActivityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -42,22 +39,26 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.navigation.NavigationView
 import com.google.maps.android.PolyUtil
-import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
-import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONObject
 import java.io.IOException
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.listOf
+import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import java.util.Locale
 import com.android.volley.Response
 import org.json.JSONArray
@@ -433,34 +434,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //Handle the switching views between the two campuses. Should probably move from here later
     private fun handleCampusSwitch() {
-
-        //TODO: refactor these coordinates into location
-        val SGW_LAT = 45.495637
-        val SGW_LNG = -73.578235
-
-        val LOYOLA_LAT = 45.458159
-        val LOYOLA_LNG = -73.640450
-
         var campusView: LatLng
 
-        val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
-        val side_nav : NavigationView = requireActivity().findViewById(R.id.nav_view)
-        val drawer_content : LinearLayout = side_nav.menu.findItem(R.id.nav_drawer_main_content_item).actionView as LinearLayout
-        val campusToggle : Switch = drawer_content.findViewById(R.id.toggle_Campus)
-
-        //Setting Toggle button listener
-        campusToggle.setOnCheckedChangeListener { _, isChecked ->
-            drawer.closeDrawers()
-            if (isChecked) {
-                campusView = LatLng(LOYOLA_LAT, LOYOLA_LNG)
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
-
-            } else {
-                campusView = LatLng(SGW_LAT, SGW_LNG)
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(campusView, 16.0f))
-            }
+    //Setting Toggle button listener
+    toggleButton.setOnCheckedChangeListener { _, onSwitch ->
+        if (onSwitch) {
+            campusView = LatLng(45.495637, -73.578235)
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
+        } else {
+            campusView = LatLng(45.458159, -73.640450)
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
         }
     }
+}
 
     private fun drawBuildingPolygons() {
 
