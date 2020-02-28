@@ -29,11 +29,6 @@ class MapFragmentTest {
         navController = TestNavHostController(ApplicationProvider.getApplicationContext())
         //needs to be here to see which fragment is being opened
         navController.setGraph(R.navigation.navigation)
-    }
-
-    //Checking if we are at the right layout (map_fragment)
-    @Before
-    fun test_isActivityInView() {
 
         //Ensuring the app starts with splash_fragment
         if (navController.currentDestination?.id == R.id.splash_fragment) {
@@ -47,7 +42,7 @@ class MapFragmentTest {
             //Waiting 5 seconds for splash screen to load
             Thread.sleep(5000);
 
-            //Checking if that action id did take you to map_fragment
+            //Checking if that action id did take you to map_fragment view
             onView(withId(R.id.coordinate_layout)).check(matches(isDisplayed()))
         }
     }
@@ -56,9 +51,6 @@ class MapFragmentTest {
     @Test
     fun test_SearchBar() {
 
-        //Moving to map_fragment as well as testing if its indeed there using the previous test we have created.
-        test_isActivityInView()
-
         //Checking if searchBar exists on map_fragment
         onView(withId(R.id.searchBar)).check(matches(isDisplayed()))
     }
@@ -66,9 +58,6 @@ class MapFragmentTest {
 
     @Test
     fun test_SwitchToggle() {
-
-        //Moving to map_fragment as well as testing if its indeed there using the previous test we have created.
-        test_isActivityInView()
 
         //Checking if toggle button is displayed
         onView(withId(R.id.toggleButton)).check(matches(isDisplayed()))
