@@ -32,7 +32,7 @@ class MapFragmentTest {
     }
 
     //Checking if we are at the right layout (map_fragment)
-    @Test
+    @Before
     fun test_isActivityInView() {
 
         //Ensuring the app starts with splash_fragment
