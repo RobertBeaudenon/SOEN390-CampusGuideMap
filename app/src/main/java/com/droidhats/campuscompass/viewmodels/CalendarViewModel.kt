@@ -19,6 +19,7 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
     private val _info = MutableLiveData<String>().apply {
         value = ""
     }
+    // TODO: Change the following variable to be a LiveData variable
     var info: MutableLiveData<String> = _info
 
     //The colors available on the google calendar app with their corresponding int value
