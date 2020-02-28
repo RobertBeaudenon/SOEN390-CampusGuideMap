@@ -8,21 +8,6 @@
 
     <string name="SGW_Campus_Name">SGW</string>
     <string name="Loyola_Campus_Name">Loyola</string>
-    <string name="Hall_Building_Name">Henry F. Hall Building</string>
-    <string name="WebsterLibrary_Building_Name">Webster Library</string>
-    <string name="JMSB_Building_Name">John Molson School of Business</string>
-    <string name="FG_Building_Name">Faubourg Saint-Catherine Building</string>
-    <string name="EV_Building_Name">EV Building</string>
-    <string name="GM_Building_Name">GM Building</string>
-    <string name="FB_Building_Name">Faubourg Building</string>
-    <string name="VA_Building_Name">Visual Arts Building</string>
-    <string name="PY_Building_Name">Psychology Building</string>
-    <string name="SP_Building_Name">Richard J. Renaud Science Complex</string>
-    <string name="CC_Building_Name">Central Building</string>
-    <string name="CJ_Building_Name">Communication Studies and Journalism Building</string>
-    <string name="AD_Building_Name">Administration Building</string>
-    <string name="RF_Building_Name">Loyola Jesuit and Conference Centre</string>
-    <string name="VL_Building_Name">Vanier Library Building</string>
 
     <string name="Favorites_Feature_Name">My Places</string>
     <string name="Calendar_Feature_Name">Schedule</string>
