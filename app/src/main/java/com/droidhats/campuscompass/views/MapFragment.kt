@@ -14,7 +14,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Switch
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -50,14 +54,12 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import com.google.maps.android.PolyUtil
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
-import android.widget.Toast
 import com.android.volley.Response
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
