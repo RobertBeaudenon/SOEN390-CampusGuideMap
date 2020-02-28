@@ -9,87 +9,168 @@
     app:behavior_peekHeight="0dp"
     app:layout_insetEdge="bottom"
     app:behavior_hideable="true"
-    android:background="#FFF"
+    android:background="#f2f2f2"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-
     <androidx.cardview.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view"
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardBackgroundColor="@color/quantum_purple900">
+        app:cardBackgroundColor="#f2f2f2">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:paddingStart="20dp">
-
-        <TextView
-            android:id="@+id/bottom_sheet_building_name"
+            android:id="@+id/hold_building_img"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Building"
-            android:textSize="18sp"
-            android:textColor="@color/quantum_white_text"
-            />
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Address"
-            android:textSize="14sp"
-            android:textColor="@color/quantum_white_text" />
-
-                 </LinearLayout>
+            <ImageView
+                android:id="@+id/building_image"
+                android:layout_width="wrap_content"
+                android:layout_height="190dp"
+                app:srcCompat="@drawable/hall_building" />
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 
+    <TextView
+        android:id="@+id/bottom_sheet_building_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:text="Building"
+        android:textSize="30sp"
+        android:textColor="#000000" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/bottom_sheet_building_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="Address"
+        android:textSize="20sp"
+        android:textColor="#000000" />
+
+    <ImageView
+        android:id="@+id/separator_bar"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/bottom_sheet_separator" />
+
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:stretchColumns="*"
         android:padding="5dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="15sp"
-        android:text="Open hours"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="15sp"
-        android:text="Services" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="15sp"
-        android:text="Departments" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="15sp"
-        android:text="Events" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Open hours: "
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/bottom_sheet_open_hours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="Hours here"
+                android:textSize="18sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_margin="1dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:text="Services:" />
+
+            <TextView
+                android:id="@+id/bottom_sheet_services"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:text="Services here" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_margin="1dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:text="Departments:" />
+
+            <TextView
+                android:id="@+id/bottom_sheet_departments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:text="Departments here" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_margin="1dp"
+            android:layout_weight="1" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:text="Events:" />
+
+
+            <TextView
+                android:id="@+id/bottom_sheet_events"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textSize="18sp"
+                android:text="Events here" />
+
+        </TableRow>
+    </TableLayout>
 
     <Button
         android:id="@+id/bottom_sheet_directions_button"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
         android:layout_marginStart="125dp"
         android:layout_marginEnd="125dp"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:background="@drawable/calendarbutton"
         android:drawableStart="@android:drawable/ic_dialog_map"
-        android:text="Directions" />
-
-
-    </LinearLayout>
+        android:text="Directions"
+        android:textColor="#FFFFFF" />
 </LinearLayout>
