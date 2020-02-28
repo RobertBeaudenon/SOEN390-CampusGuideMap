@@ -45,7 +45,7 @@ class CalendarFragment : DialogFragment() {
       calendarViewModel = ViewModelProviders.of(this)
           .get(CalendarViewModel::class.java)
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
