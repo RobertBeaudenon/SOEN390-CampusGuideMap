@@ -38,9 +38,11 @@ class CalendarAdapter(
 
         holder.titleView.text = item.title
 
-        val startTime = formatDateTime(item.startTime!!, "E dd MMMM yyyy  hh:mm")
+        val date = formatDateTime(item.startTime!!, "E dd MMMM yyyy")
+        val startTime = formatDateTime(item.startTime!!, "hh:mm")
         val endTime = formatDateTime(item.endTime!!, "hh:mm a")
-        val dateTime = "$startTime - $endTime"
+        val time = "$startTime - $endTime"
+        val dateTime = "$date  $time"
         holder.dateView.text = dateTime
 
         holder.locationView.text = if (item.location.isNullOrBlank()) "None" else item.location
