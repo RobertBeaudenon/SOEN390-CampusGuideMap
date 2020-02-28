@@ -2,6 +2,9 @@ package com.droidhats.campuscompass.views
 
 import android.Manifest
 import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -14,10 +17,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import android.widget.TextView
 import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -33,14 +38,14 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.PolygonOptions
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
@@ -50,6 +55,9 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
+import com.mancj.materialsearchbar.MaterialSearchBar
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONObject
 import java.io.IOException
@@ -58,13 +66,12 @@ import kotlin.collections.List
 import kotlin.collections.MutableList
 import kotlin.collections.listOf
 import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
-import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import java.util.Locale
 import com.android.volley.Response
 import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener{
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -95,11 +102,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
-        if(activity != null)
-            {
-                val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-                mapFragment.getMapAsync(this)
-            }
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
 
@@ -116,10 +120,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         CalendarFragment.onCalendarEventClickListener = this
 
         createLocationRequest()
-        handleCampusSwitch()
         initPlacesSearch()
         initBottomSheetBehavior()
-
+        initSearchBar()
+        handleCampusSwitch()
     }
 
     /**
@@ -142,12 +146,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.setOnMarkerClickListener(this)
 
         //enable the zoom controls on the map and declare MainActivity as the callback triggered when the user clicks a marker on this map
-        map.getUiSettings().setZoomControlsEnabled(true)
+        map.uiSettings.isZoomControlsEnabled = true
         map.setOnMarkerClickListener(this)
 
         //enable indoor level picker
         map.isIndoorEnabled = true
-        map.getUiSettings().setIndoorLevelPickerEnabled(true)
+        map.uiSettings.isIndoorLevelPickerEnabled = true
 
         //Enables the my-location layer which draws a light blue dot on the user’s location.
         // It also adds a button to the map that, when tapped, centers the map on the user’s location.
@@ -188,7 +192,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             .addLocationRequest(locationRequest)
 
         // 4 check location settings before asking for location updates
-        val client = LocationServices.getSettingsClient(activity as Activity)
+        val client = LocationServices.getSettingsClient(requireActivity())
         val task = client.checkLocationSettings(builder.build())
 
         // 5 A task success means all is well and you can go ahead and initiate a location request
@@ -206,7 +210,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
                     e.startResolutionForResult(
-                        activity as Activity,
+                        activity,
                         REQUEST_CHECK_SETTINGS
                     )
                 } catch (sendEx: IntentSender.SendIntentException) {
@@ -241,26 +245,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
 
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
-    ) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == Activity.RESULT_OK) {
-            locationUpdateState = true
-            startLocationUpdates()
-        }
-        if (requestCode != AUTOCOMPLETE_REQUEST_CODE || resultCode != Activity.RESULT_OK) return
-
-        if (data == null) return
-
-        val place = Autocomplete.getPlaceFromIntent(data)
-        Toast.makeText(activity as Activity, place.address, Toast.LENGTH_LONG).show()
-
-        if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-            var status = Autocomplete.getStatusFromIntent(data)
-            Log.i("Autocomplete: ", status.statusMessage!!)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
+                if (place != null) {
+                    Log.i(TAG,"Place: " + place.name + ", " + place.id + ", " + place.latLng)
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 16.0f))
+                }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                var status = data?.let { Autocomplete.getStatusFromIntent(it) }
+            } else if (resultCode == RESULT_CANCELED) {
+                // TODO: Handle user cancelling the operation.
+            }
         }
     }
 
@@ -330,7 +328,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
-            //Calculating the center of the polygon to use for it's location.
+            // Calculating the center of the polygon to use for it's location.
             // This won't be necessary once we hold the Buildings in a common class
             var centerLat: Double = 0.0
             var centerLong: Double = 0.0
@@ -367,7 +365,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 )
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
-
         })
     }
 
@@ -402,9 +399,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             if (null != addresses && !addresses.isEmpty()) {
                 address = addresses[0]
                 for (i in 0 until address.maxAddressLineIndex) {
-                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(
-                        i
-                    )
+                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
                 }
             }
         } catch (e: IOException) {
@@ -419,16 +414,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         Places.createClient(activity as Activity)
         var fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
 
-
         //Autocomplete search launches after hitting the button
         val searchButton: View = requireActivity().findViewById(R.id.fab_search)
 
         searchButton.setOnClickListener {
-            var intent =
-                Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
-            startActivityForResult(intent,
-                AUTOCOMPLETE_REQUEST_CODE
-            )
+            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                .build(activity as Activity)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
     }
 
@@ -538,6 +530,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     }
 
+    private fun initSearchBar() {
+        searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
+
+            override fun onButtonClicked(buttonCode: Int) {
+                when(buttonCode) {
+                    //Open the Nav Bar
+                    MaterialSearchBar.BUTTON_NAVIGATION -> requireActivity().
+                        findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START)
+                }
+            }
+            override fun onSearchStateChanged(enabled: Boolean) {
+            }
+            override fun onSearchConfirmed(text: CharSequence?) {
+            }
+        })
+    }
+
     private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 
@@ -547,8 +556,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 // React to state change
                 // The following code can be used if we want to do certain actions related
-                 // to the change of state of the bottom sheet
-                 //
+                // to the change of state of the bottom sheet
+                //
 
 //                when (newState) {
 //                    BottomSheetBehavior.STATE_HIDDEN -> {
@@ -627,7 +636,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }) {}
 
         //Confirm and add the request with Volley
-        val requestQueue = Volley.newRequestQueue(activity as Activity)
+        val requestQueue = Volley.newRequestQueue(activity)
         requestQueue.add(directionsRequest)
     }
 
