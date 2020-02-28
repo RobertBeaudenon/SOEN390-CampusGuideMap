@@ -13,7 +13,6 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +69,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
-    private lateinit var placesClient: PlacesClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private var locationUpdateState = false
@@ -97,8 +95,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
-            val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-            mapFragment.getMapAsync(this)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
 
@@ -250,11 +248,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 var status = data?.let { Autocomplete.getStatusFromIntent(it) }
-                if (status != null) {
-                    //    Log.i(TAG, status.getStatusMessage())
-                }
             } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
+                // TODO: Handle user cancelling the operation.
             }
         }
     }
@@ -287,7 +282,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
-            //Calculating the center of the polygon to use for it's location.
+            // Calculating the center of the polygon to use for it's location.
             // This won't be necessary once we hold the Buildings in a common class
             var centerLat: Double = 0.0
             var centerLong: Double = 0.0
