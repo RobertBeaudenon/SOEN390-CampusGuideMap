@@ -13,6 +13,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,8 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -53,7 +56,9 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
+import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.map_fragment.searchBar
 import org.json.JSONObject
 import java.io.IOException
 import java.util.Locale
@@ -92,10 +97,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
-        if (activity != null) {
             val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
             mapFragment.getMapAsync(this)
-        }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
 
@@ -114,6 +117,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         createLocationRequest()
         initPlacesSearch()
         initBottomSheetBehavior()
+        initSearchBar()
     }
 
     /**
@@ -466,6 +470,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val fg_Polygon: Polygon = map.addPolygon(fg_PolygonOptions)
         fg_Polygon.tag = getString(R.string.FG_Building_Name)
 
+    }
+
+    private fun initSearchBar() {
+        searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
+
+            override fun onButtonClicked(buttonCode: Int) {
+                when(buttonCode) {
+                    //Open the Nav Bar
+                    MaterialSearchBar.BUTTON_NAVIGATION -> requireActivity().
+                        findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START)
+                }
+            }
+            override fun onSearchStateChanged(enabled: Boolean) {
+            }
+            override fun onSearchConfirmed(text: CharSequence?) {
+            }
+        })
     }
 
     private fun initBottomSheetBehavior() {
