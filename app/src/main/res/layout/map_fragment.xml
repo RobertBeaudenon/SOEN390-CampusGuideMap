@@ -45,6 +45,20 @@
         app:layout_dodgeInsetEdges="bottom"
         />
 
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="230.65px"
+            android:layout_height="100px"
+            android:layout_gravity="left"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_marginTop="80dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/toggle_switch"
+            android:text="ToggleButton"
+            android:textOff=""
+            android:textOn="" />
+
     <include layout="@layout/bottom_sheet_layout"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
