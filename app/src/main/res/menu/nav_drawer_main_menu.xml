@@ -23,20 +23,4 @@
             android:id="@+id/nav_settings"
             android:title="@string/Settings" />
     </group>
-
-    <!-- This next item is custom layout (it is used to add custom items like buttons and
-          switches right after the above menu group) -->
-
-    <group android:checkableBehavior="none">
-    <item
-        android:id="@+id/nav_drawer_main_content_item"
-        android:title=""
-        app:actionLayout="@layout/nav_drawer_main_content"
-        android:checkable="false"
-        android:checked="false"
-        android:choiceMode="none"
-        app:showAsAction="always"
-        android:clickable="false"
-        android:menuCategory="container"/>
-    </group>
 </menu>

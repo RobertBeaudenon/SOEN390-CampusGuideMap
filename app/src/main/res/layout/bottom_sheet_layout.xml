@@ -90,6 +90,37 @@
         android:drawableStart="@android:drawable/ic_dialog_map"
         android:text="Directions" />
 
+        <RadioGroup
+            android:id="@+id/radioTransportGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#dbeceb"
+            android:checkedButton="@id/drivingId">
+
+            <RadioButton
+                android:id="@+id/drivingId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Driving" />
+
+            <RadioButton
+                android:id="@+id/walkingId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Walking" />
+
+            <RadioButton
+                android:id="@+id/bicyclingId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bicycle" />
+
+            <RadioButton
+                android:id="@+id/shuttleId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shuttle" />
+        </RadioGroup>
 
     </LinearLayout>
 </LinearLayout>
