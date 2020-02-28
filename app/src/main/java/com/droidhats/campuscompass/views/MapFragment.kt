@@ -84,9 +84,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
-
-        private const val MAP_PADDING_TOP = 150
-        private const val MAP_PADDING_RIGHT = 15
     }
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
@@ -159,8 +156,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Enables the my-location layer which draws a light blue dot on the user’s location.
         // It also adds a button to the map that, when tapped, centers the map on the user’s location.
         map.isMyLocationEnabled = true
-        //Lower the button
-        map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
 
         //Gives you the most recent location currently available.
         fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
@@ -581,9 +576,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
-                map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
+                map.setPadding(0, 0, 0, (slideOffset * bottom_sheet.height).toInt())
             }
         })
     }
