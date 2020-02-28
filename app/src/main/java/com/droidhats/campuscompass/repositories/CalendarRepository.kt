@@ -66,7 +66,7 @@ class CalendarRepository {
                 val dtend: String? = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DTEND))
                 val color: String = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DISPLAY_COLOR))
                 val description: String? = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DESCRIPTION))
-                val isDefaultColor = !CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP.contains(color)
+                val isDefaultColor = !CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP.containsValue(color)
 
                 val calendar = Calendar(calID.toString(), accountName, accountType, displayName, ownerName, color, isDefaultColor)
                 if (dtend.isNullOrEmpty()) { // We have a recurring event
