@@ -8,7 +8,8 @@ import android.provider.CalendarContract
 import androidx.lifecycle.MutableLiveData
 import com.droidhats.campuscompass.models.Calendar
 import com.droidhats.campuscompass.models.CalendarEvent
-import java.util.*
+import com.droidhats.campuscompass.viewmodels.CalendarViewModel
+import java.util.Locale
 import kotlin.collections.ArrayList
 
 class CalendarRepository {
@@ -65,11 +66,12 @@ class CalendarRepository {
                 val dtend: String? = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DTEND))
                 val color: String = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DISPLAY_COLOR))
                 val description: String? = cur.getString(Calendar.event_projection.getValue(CalendarContract.Events.DESCRIPTION))
+                val isDefaultColor = !CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP.contains(color)
 
-                val calendar = Calendar(calID.toString(), accountName, accountType, displayName, ownerName, color)
+                val calendar = Calendar(calID.toString(), accountName, accountType, displayName, ownerName, color, isDefaultColor)
                 if (dtend.isNullOrEmpty()) { // We have a recurring event
                     //Query the recurring event instances
-                    val recurringEvents = pingReccuringEvents(context, eventID)
+                    val recurringEvents = pingRecurringEvents(context, eventID)
 
                     for (i in recurringEvents) {
                         constructCalendar(calendar, i)
@@ -93,17 +95,21 @@ class CalendarRepository {
         //Therefore, if I include this in the where clause all recurring events which had their root in the past would be skipped
         if (event.endTime!!.toLong() < java.util.Calendar.getInstance(Locale.CANADA).timeInMillis )
             return
+        var colorKey : String? = event.color
 
-        if ( userCalendars.containsKey(event.color) ) {
-            userCalendars[event.color]!!.events.add(event)
+        if (calendar.isDefaultColor)
+           colorKey = CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP.getValue("Default")
+
+        if ( userCalendars.containsKey(colorKey) ) {
+            userCalendars[colorKey]!!.events.add(event)
         }
         else {
             calendar.events.add(event)
-            userCalendars[event.color!!] = calendar
+            userCalendars[colorKey!!] = calendar
         }
     }
 
-    private fun pingReccuringEvents(context: Context, eID: Long) : ArrayList<CalendarEvent> {
+    private fun pingRecurringEvents(context: Context, eID: Long) : ArrayList<CalendarEvent> {
 
         val recurringEvents = arrayListOf<CalendarEvent>()
 

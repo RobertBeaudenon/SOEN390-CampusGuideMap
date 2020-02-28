@@ -24,7 +24,7 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.CalendarAdapter
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.viewmodels.CalendarViewModel
-import kotlinx.android.synthetic.main.calendar_fragment.*
+import com.droidhats.campuscompass.viewmodels.CalendarViewModel.Companion.GOOGLE_CALENDAR_COLOR_MAP
 
 class CalendarFragment : DialogFragment() {
 
@@ -44,9 +44,8 @@ class CalendarFragment : DialogFragment() {
         requestCalendarPermission()
       calendarViewModel = ViewModelProviders.of(this)
           .get(CalendarViewModel::class.java)
-
     }
-
+    
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,7 +89,7 @@ class CalendarFragment : DialogFragment() {
     private fun showDialog() {
         val dialog = CalendarFragment()
         dialog.setTargetFragment(this, targetRequestCode)
-        dialog.show(fragmentManager!!, "select calendars dialog")
+        dialog.show(requireFragmentManager(), "select calendars dialog")
     }
 
     private fun refresh()
@@ -102,7 +101,7 @@ class CalendarFragment : DialogFragment() {
 
     private fun requestCalendarPermission() {
 
-        if (checkSelfPermission(this.context!!, Manifest.permission.READ_CALENDAR)
+        if (checkSelfPermission(requireContext(), Manifest.permission.READ_CALENDAR)
             != PackageManager.PERMISSION_GRANTED
         )
             requestPermissions(
@@ -131,7 +130,7 @@ class CalendarFragment : DialogFragment() {
         return activity?.let { it ->
 
             val selectedBool = loadChecked()
-            val colorArray = calendarViewModel.googleCalendarColorMap.keys.toTypedArray()
+            val colorArray = GOOGLE_CALENDAR_COLOR_MAP.keys.toTypedArray()
 
             val builder = AlertDialog.Builder(it)
                 .setTitle("Select Your Calendars")
@@ -159,7 +158,7 @@ class CalendarFragment : DialogFragment() {
     }
 
     private fun saveChecked(checkedArr: BooleanArray) {
-        calendarViewModel.selectedColors = checkedArr
+        CalendarViewModel.selectedColors = checkedArr
         val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
         val editor = sharedPreferences?.edit()
         for (i in checkedArr.indices) {
@@ -170,11 +169,11 @@ class CalendarFragment : DialogFragment() {
 
     private fun loadChecked(): BooleanArray? {
         val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
-        val checkedArr = BooleanArray(calendarViewModel.googleCalendarColorMap.size)
+        val checkedArr = BooleanArray(GOOGLE_CALENDAR_COLOR_MAP.size)
         for (i in checkedArr.indices) {
             checkedArr[i] = sharedPreferences!!.getBoolean(i.toString(), false)
         }
-        calendarViewModel.selectedColors = checkedArr
+        CalendarViewModel.selectedColors = checkedArr
         return checkedArr
     }
 }
