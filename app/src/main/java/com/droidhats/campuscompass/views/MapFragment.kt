@@ -55,7 +55,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
-import com.mancj.materialsearchbar.MaterialSearchBar
+//import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
@@ -125,7 +125,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         createLocationRequest()
         initPlacesSearch()
         initBottomSheetBehavior()
-        initSearchBar()
+       // initSearchBar()
         handleCampusSwitch()
     }
 
@@ -534,7 +534,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         fg_Polygon.tag = getString(R.string.FG_Building_Name)
 
     }
-
+/*
     private fun initSearchBar() {
         searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
 
@@ -551,7 +551,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         })
     }
-
+*/
     private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 

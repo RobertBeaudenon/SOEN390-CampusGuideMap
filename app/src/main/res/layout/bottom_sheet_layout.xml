@@ -149,7 +149,6 @@
                 android:textSize="18sp"
                 android:text="Events:" />
 
-
             <TextView
                 android:id="@+id/bottom_sheet_events"
                 android:layout_width="match_parent"
@@ -173,4 +172,38 @@
         android:drawableStart="@android:drawable/ic_dialog_map"
         android:text="Directions"
         android:textColor="#FFFFFF" />
+
+    <!-- this needs to be deleted after -->
+
+    <RadioGroup
+        android:id="@+id/radioTransportGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#dbeceb"
+        android:checkedButton="@id/drivingId">
+
+        <RadioButton
+            android:id="@+id/drivingId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Driving" />
+
+        <RadioButton
+            android:id="@+id/walkingId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Walking" />
+
+        <RadioButton
+            android:id="@+id/bicyclingId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bicycle" />
+
+        <RadioButton
+            android:id="@+id/shuttleId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shuttle" />
+    </RadioGroup>
 </LinearLayout>
