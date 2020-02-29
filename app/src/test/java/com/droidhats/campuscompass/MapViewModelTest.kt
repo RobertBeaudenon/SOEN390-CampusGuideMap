@@ -14,13 +14,7 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
 class MapViewModelTest {
-    val context: Application
-    val viewmodel: MapViewModel
-    init {
-        context = RuntimeEnvironment.application
-        viewmodel = MapViewModel(context)
-        viewmodel.init()
-    }
+    val viewmodel: MapViewModel = MapViewModel(RuntimeEnvironment.application)
 
     @Test
     fun testInit() {
