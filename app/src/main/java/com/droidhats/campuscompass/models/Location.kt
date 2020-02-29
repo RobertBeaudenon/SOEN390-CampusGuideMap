@@ -1,12 +1,7 @@
 package com.droidhats.campuscompass.models
 
-import android.util.Log
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 
 /*
 * Model for location classes
@@ -21,72 +16,12 @@ abstract class Location(coordinate: LatLng) {
 class Campus(
     private val coordinate: LatLng,
     private val name: String,
-    private val jsonObject: JSONObject
+    private val buildingsList: List<Building>
 ) : Location(coordinate) {
 
-    private var buildingsList: MutableList<Building> = mutableListOf()
     fun getName(): String = name
     fun getCoordinate(): LatLng = coordinate
     fun getBuildings(): List<Building> = buildingsList
-
-    init {
-        createBuildings()
-    }
-
-    private fun createBuildings() {
-        try {
-            var buildingsArray : JSONArray = when (name) {
-                // Important that at the creation of the campus object, its name is either SGW or
-                // Loyola; otherwise the parsing fails
-                "SGW" -> {
-                    jsonObject.getJSONArray("SGW_buildings")
-                }
-                "Loyola" -> {
-                    jsonObject.getJSONArray("LOY_buildings")
-                }
-                else -> {
-                    Log.v("Parsing error", "Unable to parse buildings from JSON\nMake " +
-                            " that at the creation of the campus object the name parameter is " +
-                            "either SGW or Loyola)\nMake sure that the values of the string " +
-                            "resources SGW_Campus_Name and Loyola_Campus_Name are 'SGW' " +
-                            "and 'Loyola'"
-                    )
-                    return
-                }
-            }
-
-            var coordinatesArray : JSONArray
-
-            // Traverse each building in the array
-            for(i in 0 until buildingsArray.length()) {
-                val buildingName : String = buildingsArray.getJSONObject(i).get("name").toString()
-                val buildingLocationArray: JSONArray = buildingsArray.getJSONObject(i)
-                    .getJSONArray("location")
-                val buildingLocation = LatLng(
-                    buildingLocationArray[0].toString().toDouble(),
-                    buildingLocationArray[1].toString().toDouble()
-                )
-
-                coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
-                var polygonCoordinatesList: MutableList<LatLng> = mutableListOf()
-
-                // Traverse each coordinate arrays of each building
-                for(j in 0 until coordinatesArray.length()){
-                    val latCoordinate: Double = coordinatesArray.getJSONArray(j)[0].toString().toDouble()
-                    val longCoordinate: Double = coordinatesArray.getJSONArray(j)[1].toString().toDouble()
-
-                    // Add all the edge coordinates of the building to the list
-                    polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
-                }
-
-                buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList))
-            }
-        } catch(e: JSONException) {
-            Log.v("Parsing error", "Make sure that:" +
-                    "\nJSON has arrays 'SGW_buildings' and 'LOY_buildings'" +
-                    "\nJSON has NO typos using https://jsonlint.com/ ")
-        }
-    }
 }
 
 // Model for building class, data relating to buildings should be stored here
@@ -96,16 +31,9 @@ class Building(
     private val polygonCoordinatesList: List<LatLng>
 ) : Location(coordinate) {
     private val polygonColor = 4289544510.toInt()
-    private lateinit var polygon: Polygon
 
     fun getName(): String = name
     fun getLocation(): LatLng = coordinate
-    fun getPolygon(): Polygon = polygon
-
-    fun setPolygon(buildingPolygon: Polygon){
-        this.polygon = buildingPolygon
-        this.polygon.tag = name
-    }
 
     fun getPolygonOptions(): PolygonOptions {
         var polygonOptions = PolygonOptions()

@@ -1,7 +1,6 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -19,7 +18,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Switch
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -46,7 +44,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -59,9 +56,7 @@ import com.google.maps.android.PolyUtil
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.json.JSONObject
 import java.io.IOException
-import java.io.InputStream
 import java.util.Locale
-import kotlin.system.exitProcess
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
@@ -96,6 +91,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        viewModel.init(requireActivity())
 
         if (activity != null) {
             val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -166,7 +162,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         //these method calls must happen in this order
-        createCampuses()
         drawBuildingPolygons()
         map.setOnPolygonClickListener(this)
 
@@ -439,35 +434,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun drawBuildingPolygons() {
-        //Highlight SGW Campus buildings
-        for(building in sgwCampus.getBuildings()){
-            building.setPolygon(map.addPolygon(building.getPolygonOptions()))
-        }
 
-        // Highlight Loyola Campus buildings
-        for(building in loyCampus.getBuildings()){
-            building.setPolygon(map.addPolygon(building.getPolygonOptions()))
+        //Highlight both SGW and Loyola Campuses
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                map.addPolygon(building.getPolygonOptions())
+            }
         }
     }
 
-    private fun createCampuses() {
-        var buildingsJson = JSONObject(readJSONFromAsset())
-        //TODO: Refactor LatLng into Location possibly (?) @Nick
-        sgwCampus = Campus(LatLng(45.495637, -73.578235), getString(R.string.SGW_Campus_Name), buildingsJson)
-        loyCampus = Campus(LatLng(45.458159, -73.640450), getString(R.string.Loyola_Campus_Name), buildingsJson)
-    }
-
-    private fun readJSONFromAsset(): String? {
-        var json: String? = null
-        try {
-            val inputStream: InputStream = activity!!.assets.open("buildings.json")
-            json = inputStream.bufferedReader().use { it.readText() }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-            return null
-        }
-        return json
-    }
 
     private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
