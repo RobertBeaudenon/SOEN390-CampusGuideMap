@@ -98,14 +98,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         savedInstanceState: Bundle?
     ): View? {
         val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
+        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        viewModel.init()
         return mapFragment
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        viewModel.init(requireActivity())
-
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -173,10 +172,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
             }
         }
-
-        //these method calls must happen in this order
-        drawBuildingPolygons()
-        map.setOnPolygonClickListener(this)
+        setBuildingPolygons()
 
         map.setOnMapClickListener {
 
@@ -286,6 +282,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (!locationUpdateState) {
             startLocationUpdates()
         }
+    }
+
+    private fun setBuildingPolygons() {
+        drawBuildingPolygons()
+        map.setOnPolygonClickListener(this)
     }
 
     // implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
