@@ -72,7 +72,6 @@ class Campus(
 
                 // Traverse each coordinate arrays of each building
                 for(j in 0 until coordinatesArray.length()){
-
                     val latCoordinate: Double = coordinatesArray.getJSONArray(j)[0].toString().toDouble()
                     val longCoordinate: Double = coordinatesArray.getJSONArray(j)[1].toString().toDouble()
 
@@ -109,7 +108,6 @@ class Building(
     }
 
     fun getPolygonOptions(): PolygonOptions {
-
         var polygonOptions = PolygonOptions()
             .fillColor(polygonColor)
             .strokeWidth(2F)
