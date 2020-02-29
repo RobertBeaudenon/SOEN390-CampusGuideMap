@@ -19,11 +19,11 @@ abstract class Location(coordinate: LatLng) {
 
 // Model for Campus class
 class Campus(coordinate: LatLng, name: String, jsonObject: JSONObject) : Location(coordinate) {
-    private var buildingsList: MutableList<Building> = mutableListOf()
+    private lateinit var buildingsList: List<Building>
     private val name: String = name
     private val jsonObject: JSONObject = jsonObject
     fun getName(): String = name
-    fun getBuildings(): MutableList<Building> = buildingsList
+    fun getBuildings(): List<Building> = buildingsList
 
     init{
         createBuildings()
@@ -32,7 +32,7 @@ class Campus(coordinate: LatLng, name: String, jsonObject: JSONObject) : Locatio
     private fun createBuildings() {
         try{
             var buildingsArray : JSONArray = when (name) {
-                "SGW" -> { //Important that at the creation of the campus object, its name is either SGW or Loyola; otherwise the parsing fails
+                "SGW" -> {
                     jsonObject.getJSONArray("SGW_buildings")
                 }
                 "Loyola" -> {
@@ -46,6 +46,8 @@ class Campus(coordinate: LatLng, name: String, jsonObject: JSONObject) : Locatio
             }
 
             var coordinatesArray : JSONArray
+            var polygonCoordinatesList: MutableList<LatLng> = mutableListOf()
+            var parsedBuildingList: MutableList<Building> = mutableListOf()
 
             //Traverse each building in the array
             for(i in 0 until buildingsArray.length()){
@@ -53,22 +55,24 @@ class Campus(coordinate: LatLng, name: String, jsonObject: JSONObject) : Locatio
                 val buildingLocationArray: JSONArray = buildingsArray.getJSONObject(i).getJSONArray("location")
                 val buildingLocation = LatLng(buildingLocationArray[0].toString().toDouble(), buildingLocationArray[1].toString().toDouble())
 
-                //Create the building object
-                var building = Building(buildingLocation, buildingName)
                 coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
+
+                polygonCoordinatesList.clear()
 
                 //Traverse each coordinate arrays of each building
                 for(j in 0 until coordinatesArray.length()){
-
                     val latCoordinate: Double = coordinatesArray.getJSONArray(j)[0].toString().toDouble()
                     val longCoordinate: Double = coordinatesArray.getJSONArray(j)[1].toString().toDouble()
 
-                    //Add all the edge coordinates of the building to the list
-                    building.getPolygonCoordinatesList().add(LatLng(latCoordinate, longCoordinate))
+                    polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
                 }
 
-                buildingsList.add(building)
+                //Create building object, passing an immutable list made out of the temporary mutable list
+                var building = Building(buildingLocation, buildingName, polygonCoordinatesList.toList())
+                parsedBuildingList.add(building)
             }
+
+            buildingsList = parsedBuildingList.toList()
         }catch(e: JSONException){
             Log.v("Parsing error", "Make sure that:" +
                     "\nJSON has arrays 'SGW_buildings' and 'LOY_buildings'" +
@@ -78,16 +82,15 @@ class Campus(coordinate: LatLng, name: String, jsonObject: JSONObject) : Locatio
 }
 
 // Model for building class, data relating to buildings should be stored here
-class Building(coordinate: LatLng, name: String) : Location(coordinate) {
+class Building(coordinate: LatLng, name: String, edgeCoordinateList: List<LatLng>) : Location(coordinate) {
     private var location : LatLng = coordinate
     private val name: String = name
     private val polygonColor = 4289544510.toInt()
     private lateinit var polygon: Polygon
-    private var polygonCoordinatesList: MutableList<LatLng> = mutableListOf()
+    private val edgeCoordinateList: List<LatLng> = edgeCoordinateList
 
     fun getName(): String = name
     fun getLocation(): LatLng = location
-    fun getPolygonCoordinatesList(): MutableList<LatLng> = polygonCoordinatesList
     fun getPolygon(): Polygon = polygon
 
     fun setPolygon(buildingPolygon: Polygon){
@@ -96,12 +99,11 @@ class Building(coordinate: LatLng, name: String) : Location(coordinate) {
     }
 
     fun getPolygonOptions(): PolygonOptions {
-
         var polygonOptions = PolygonOptions()
             .fillColor(polygonColor)
             .strokeWidth(2F)
             .clickable(true)
-        for (polygonCoordinate in polygonCoordinatesList) {
+        for (polygonCoordinate in edgeCoordinateList) {
             polygonOptions.add(polygonCoordinate)
         }
         return polygonOptions
