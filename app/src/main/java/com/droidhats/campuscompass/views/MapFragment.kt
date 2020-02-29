@@ -93,6 +93,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private lateinit var viewModel: MapViewModel
 
+    private var checker = 0
+    private var coordOne = ""
+    private var coordTwo = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -251,12 +255,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
-                if (place != null) {
-                    Log.i(TAG,"Place: " + place.name + ", " + place.id + ", " + place.latLng)
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 16.0f))
+                if (checker == 1) {
+                    val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
+                    if (place != null) {
+                        coordOne = place.latLng?.latitude.toString()
+                        coordTwo = place.latLng?.longitude.toString()
+                    }
+                } else {
+                    val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
+                    if (place != null) {
+                        Log.i(TAG,"Place: " + place.name + ", " + place.id + ", " + place.latLng)
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 16.0f))
+                    }
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
@@ -290,27 +303,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        //Checking which transportation mode is selected, default is walking.
-        var transportationMode: String = "driving"
-        var radioSelectedId = radioTransportGroup.checkedRadioButtonId
-        when (radioSelectedId) {
-            R.id.drivingId -> {
-                transportationMode = "driving"
-            }
-            R.id.walkingId -> {
-                transportationMode = "walking"
-            }
-            R.id.bicyclingId -> {
-                transportationMode = "bicycling"
-            }
-            R.id.shuttleId -> {
-                transportationMode = "shuttle"
-            }
-        }
+        //Populate the bottom sheet with building information
+        val buildingNameText: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
+        buildingNameText.text = p.tag.toString()
 
-        //In case the transportation mode is changed, this will capture it.
-        radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
-            when (optionId) {
+        val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
+        directionsButton.setOnClickListener(View.OnClickListener {
+
+            //<--
+            checker = 1
+
+            var fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+
+            //Checking which transportation mode is selected, default is walking.
+            var transportationMode: String = "driving"
+            var radioSelectedId = radioTransportGroup.checkedRadioButtonId
+            when (radioSelectedId) {
                 R.id.drivingId -> {
                     transportationMode = "driving"
                 }
@@ -324,14 +334,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     transportationMode = "shuttle"
                 }
             }
-        }
 
-        //Populate the bottom sheet with building information
-        val buildingNameText: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
-        buildingNameText.text = p.tag.toString()
+            //In case the transportation mode is changed, this will capture it.
+            radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
+                when (optionId) {
+                    R.id.drivingId -> {
+                        transportationMode = "driving"
+                    }
+                    R.id.walkingId -> {
+                        transportationMode = "walking"
+                    }
+                    R.id.bicyclingId -> {
+                        transportationMode = "bicycling"
+                    }
+                    R.id.shuttleId -> {
+                        transportationMode = "shuttle"
+                    }
+                }
+            }
 
-        val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
-        directionsButton.setOnClickListener(View.OnClickListener {
+            println("Bitch" + coordOne) //<-- ISSUE can't get this coordOne to show when its assinged under onActivityResult to the global variable
+ /*
 
             // Calculating the center of the polygon to use for it's location.
             // This won't be necessary once we hold the Buildings in a common class
@@ -344,7 +367,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             centerLat /= p.points.size
             centerLong /= p.points.size
 
+
             val buildingLocation: Location = lastLocation
+
+            lastLocation.latitude = coordOne.toDouble()
+            lastLocation.longitude = coordTwo.toDouble()
             buildingLocation.latitude = centerLat
             buildingLocation.longitude = centerLong
 
@@ -363,13 +390,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.animateCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         LatLng(
-                            location.latitude,
-                            location.longitude
+                            coordOne.toDouble(),
+                            coordTwo.toDouble()
                         ), 16.0f
                     )
                 )
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                coordOne = ""
+                coordTwo = ""
             }
+
+  */
         })
     }
 
