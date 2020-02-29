@@ -555,12 +555,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun generateDirections(origin: Location, destination: Location, mode: String) {
 
-        //Directions URL to be sent
-        val directionsURL = "https://maps.googleapis.com/maps/api/directions/json?" +
-                "origin=" + origin.latitude.toString() + "," + origin.longitude.toString() +
-                "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +
-                "&mode=" + mode +
-                "&key=" + getString(R.string.ApiKey)
+        val directionsURL:String = if (mode == "shuttle"){
+            "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
+        } else {
+            //Directions URL to be sent
+            "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude.toString() + "," + origin.longitude.toString() +
+                    "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +
+                    "&mode=" + mode +
+                    "&key=" + getString(R.string.ApiKey)
+        }
 
         //Creating the HTTP request with the directions URL
         val directionsRequest = object : StringRequest(
