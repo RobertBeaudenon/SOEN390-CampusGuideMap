@@ -3,7 +3,6 @@ package com.droidhats.campuscompass
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -20,8 +19,7 @@ import org.junit.runner.RunWith
 class SplashFragmentTest {
 
     @get:Rule
-    var activityRule: ActivityTestRule<MainActivity>
-    = ActivityTestRule(MainActivity::class.java)
+    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
     private lateinit var navController: TestNavHostController
 
@@ -41,14 +39,10 @@ class SplashFragmentTest {
         assertEquals(navController.currentDestination?.id, R.id.splash_fragment)
 
         //sees if the images display
-        onView(withId(R.id.splash_screen))
-            .check(matches(isDisplayed()))
-        onView(withId(R.id.cc_logo))
-            .check(matches(isDisplayed()))
-        onView(withId(R.id.cc_title))
-            .check(matches(isDisplayed()))
-        onView(withId(R.id.cc_university))
-            .check(matches(isDisplayed()))
+        onView(withId(R.id.splash_screen)).check(matches(isDisplayed()))
+        onView(withId(R.id.cc_logo)).check(matches(isDisplayed()))
+        onView(withId(R.id.cc_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.cc_university)).check(matches(isDisplayed()))
     }
 
     //Tests possible navigation paths from splash_fragment
@@ -59,8 +53,7 @@ class SplashFragmentTest {
         assertEquals(navController.currentDestination?.id, R.id.splash_fragment)
 
         //tests if the side menu is visible
-        onView(withId(R.id.nav_menu))
-            .check(doesNotExist())
+        onView(withId(R.id.nav_menu)).check(doesNotExist())
 
         //tests if there is navigation to the map_fragment
         navController.navigate(R.id.action_splashFragment_to_mapsActivity)

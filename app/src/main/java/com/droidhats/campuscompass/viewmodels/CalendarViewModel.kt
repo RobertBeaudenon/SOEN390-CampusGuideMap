@@ -2,6 +2,7 @@ package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.droidhats.campuscompass.models.Calendar
 import com.droidhats.campuscompass.repositories.CalendarRepository
@@ -19,7 +20,7 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
     private val _info = MutableLiveData<String>().apply {
         value = ""
     }
-    var info: MutableLiveData<String> = _info
+    var info: LiveData<String> = _info
 
     //The colors available on the google calendar app with their corresponding int value
     companion object {
@@ -54,6 +55,7 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
 
         val colorArray = GOOGLE_CALENDAR_COLOR_MAP.keys.toTypedArray()
         val filteredList = arrayListOf<Calendar>()
+        var selectedButNoCalendarsFound = 0
         //Get the Calendars of the selected colors
         for (i in selectedColors.indices) {
             if (selectedColors[i]) {
@@ -62,25 +64,25 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
                     userCalendars.value!![GOOGLE_CALENDAR_COLOR_MAP[colorArray[i]]]
                 if (colorToAdd != null)
                     filteredList.add(colorToAdd)
+                else
+                    selectedButNoCalendarsFound++
             }
         }
-        updateInfo(filteredList)
+        updateInfo(filteredList, selectedButNoCalendarsFound)
         selectedCalendars.value = filteredList
     }
 
-    private fun updateInfo(list : ArrayList<Calendar>)
+    private fun updateInfo(list : ArrayList<Calendar>, selectedButNotFound : Int)
     {
-        if (list.size == 0)
-            info.value = "No Calendars Selected"
+        if (list.size == 0 && selectedButNotFound == 0)
+            _info.value = "No Calendars Selected"
+        else if (selectedButNotFound > 0 && list.size ==0)
+            _info.value= "No Calendars Found\nfor Current Selection(s)"
         else
-            info.value= ""
+            _info.value = ""
 
         if (userCalendars.value.isNullOrEmpty())
-            info.value = "Could Not Find Calendars"
-        else
-            info.value=""
+            _info.value = "Could Not Find Calendars"
     }
-
-
 }
 
