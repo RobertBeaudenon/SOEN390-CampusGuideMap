@@ -84,6 +84,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
+
+        private const val MAP_PADDING_TOP = 200
+        private const val MAP_PADDING_RIGHT = 15
     }
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
@@ -156,6 +159,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Enables the my-location layer which draws a light blue dot on the user’s location.
         // It also adds a button to the map that, when tapped, centers the map on the user’s location.
         map.isMyLocationEnabled = true
+        //Lower the button
+        map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
 
         //Gives you the most recent location currently available.
         fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
@@ -417,9 +422,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Autocomplete search launches after hitting the button
         val searchButton: View = requireActivity().findViewById(R.id.fab_search)
 
-        searchButton.setOnClickListener {
-            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                .build(activity as Activity)
+        searchBar.setOnClickListener {
+            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
     }
@@ -428,17 +432,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun handleCampusSwitch() {
         var campusView: LatLng
 
-    //Setting Toggle button listener
-    toggleButton.setOnCheckedChangeListener { _, onSwitch ->
-        if (onSwitch) {
-            campusView = LatLng(45.495637, -73.578235)
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
-        } else {
-            campusView = LatLng(45.458159, -73.640450)
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
+        //Setting Toggle button listener
+        toggleButton.setOnCheckedChangeListener { _, onSwitch ->
+            if (onSwitch) {
+                campusView = LatLng(45.495637, -73.578235)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
+            } else {
+                campusView = LatLng(45.458159, -73.640450)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
+            }
         }
     }
-}
 
     private fun drawBuildingPolygons() {
 
@@ -576,10 +580,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
-
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
-                map.setPadding(0, 0, 0, (slideOffset * bottom_sheet.height).toInt())
+                map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
             }
         })
     }
@@ -644,8 +647,5 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         findNavController().navigateUp()
         Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
     }
-
-    //
-
 
 }
