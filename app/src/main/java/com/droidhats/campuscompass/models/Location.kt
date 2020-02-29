@@ -18,29 +18,39 @@ abstract class Location(coordinate: LatLng) {
 }
 
 // Model for Campus class
-class Campus(coordinate: LatLng, name: String, jsonObject: JSONObject) : Location(coordinate) {
+class Campus(
+    private val coordinate: LatLng,
+    private val name: String,
+    private val jsonObject: JSONObject
+) : Location(coordinate) {
+
     private var buildingsList: MutableList<Building> = mutableListOf()
-    private val name: String = name
-    private val jsonObject: JSONObject = jsonObject
     fun getName(): String = name
+    fun getCoordinate(): LatLng = coordinate
     fun getBuildings(): MutableList<Building> = buildingsList
 
-    init{
+    init {
         createBuildings()
     }
 
     private fun createBuildings() {
         try{
             var buildingsArray : JSONArray = when (name) {
-                "SGW" -> { //Important that at the creation of the campus object, its name is either SGW or Loyola; otherwise the parsing fails
+                // Important that at the creation of the campus object, its name is either SGW or
+                // Loyola; otherwise the parsing fails
+                "SGW" -> {
                     jsonObject.getJSONArray("SGW_buildings")
                 }
                 "Loyola" -> {
                     jsonObject.getJSONArray("LOY_buildings")
                 }
                 else -> {
-                    Log.v("Parsing error", "Unable to parse buildings from JSON\nMake sure that at the creation of the campus object the name parameter is either SGW or Loyola)" +
-                            "\nMake sure that the values of the string resources SGW_Campus_Name and Loyola_Campus_Name are 'SGW' and 'Loyola'")
+                    Log.v("Parsing error", "Unable to parse buildings from JSON\nMake " +
+                            " that at the creation of the campus object the name parameter is " +
+                            "either SGW or Loyola)\nMake sure that the values of the string " +
+                            "resources SGW_Campus_Name and Loyola_Campus_Name are 'SGW' " +
+                            "and 'Loyola'"
+                    )
                     return
                 }
             }
@@ -48,7 +58,7 @@ class Campus(coordinate: LatLng, name: String, jsonObject: JSONObject) : Locatio
             var coordinatesArray : JSONArray
 
             //Traverse each building in the array
-            for(i in 0 until buildingsArray.length()){
+            for(i in 0 until buildingsArray.length()) {
                 val buildingName : String = buildingsArray.getJSONObject(i).get("name").toString()
                 val buildingLocationArray: JSONArray = buildingsArray.getJSONObject(i).getJSONArray("location")
                 val buildingLocation = LatLng(buildingLocationArray[0].toString().toDouble(), buildingLocationArray[1].toString().toDouble())
@@ -69,7 +79,7 @@ class Campus(coordinate: LatLng, name: String, jsonObject: JSONObject) : Locatio
 
                 buildingsList.add(building)
             }
-        }catch(e: JSONException){
+        } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +
                     "\nJSON has arrays 'SGW_buildings' and 'LOY_buildings'" +
                     "\nJSON has NO typos using https://jsonlint.com/ ")
@@ -78,15 +88,16 @@ class Campus(coordinate: LatLng, name: String, jsonObject: JSONObject) : Locatio
 }
 
 // Model for building class, data relating to buildings should be stored here
-class Building(coordinate: LatLng, name: String) : Location(coordinate) {
-    private var location : LatLng = coordinate
-    private val name: String = name
+class Building(
+    private val coordinate: LatLng,
+    private val name: String
+) : Location(coordinate) {
     private val polygonColor = 4289544510.toInt()
     private lateinit var polygon: Polygon
     private var polygonCoordinatesList: MutableList<LatLng> = mutableListOf()
 
     fun getName(): String = name
-    fun getLocation(): LatLng = location
+    fun getLocation(): LatLng = coordinate
     fun getPolygonCoordinatesList(): MutableList<LatLng> = polygonCoordinatesList
     fun getPolygon(): Polygon = polygon
 
