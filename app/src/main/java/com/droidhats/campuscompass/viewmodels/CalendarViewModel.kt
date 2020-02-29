@@ -39,10 +39,12 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
             "Flamingo" to "-30596",
             "Graphite" to "-1973791"
         )
+        //array initialized to false to keep track of colors that we want to set for the calendar event
         var selectedColors = BooleanArray(GOOGLE_CALENDAR_COLOR_MAP.size)
     }
 
    fun init() {
+       //we fetch all the different calendars within the same calendar based on the colors that the user has preset.
       userCalendars = CalendarRepository.getInstance().getCalendars(context)
    }
 
@@ -52,23 +54,32 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun selectCalendars() {
-
+        //constant map of the colors, convert map to array
         val colorArray = GOOGLE_CALENDAR_COLOR_MAP.keys.toTypedArray()
+        //calendar is the color that we pick,
         val filteredList = arrayListOf<Calendar>()
-        var selectedButNoCalendarsFound = 0
+
+        var selectedButNoCalendarsFound = 0 //selection and no calandors
+
         //Get the Calendars of the selected colors
         for (i in selectedColors.indices) {
             if (selectedColors[i]) {
-                println(GOOGLE_CALENDAR_COLOR_MAP[colorArray[i]])
+               // println(GOOGLE_CALENDAR_COLOR_MAP[colorArray[i]])
+
+                //Storing the calendar object specific to the color we selected, fetched from repo
                 val colorToAdd =
                     userCalendars.value!![GOOGLE_CALENDAR_COLOR_MAP[colorArray[i]]]
+
+                //if the calendar specific to the color selected actually exist then set it
                 if (colorToAdd != null)
                     filteredList.add(colorToAdd)
                 else
                     selectedButNoCalendarsFound++
             }
         }
+        //display text on screen
         updateInfo(filteredList, selectedButNoCalendarsFound)
+        //pass the calendars to view
         selectedCalendars.value = filteredList
     }
 
