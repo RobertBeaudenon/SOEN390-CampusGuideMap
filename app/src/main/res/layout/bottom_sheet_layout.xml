@@ -27,9 +27,9 @@
 
             <ImageView
                 android:id="@+id/building_image"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="190dp"
-                app:srcCompat="@drawable/building_cb" />
+                app:srcCompat="@drawable/building_ljacc" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
