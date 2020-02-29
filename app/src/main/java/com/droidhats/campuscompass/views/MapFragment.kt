@@ -30,6 +30,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -39,7 +40,6 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -98,13 +98,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         savedInstanceState: Bundle?
     ): View? {
         val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
+        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        viewModel.init()
         return mapFragment
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -172,9 +172,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
             }
         }
-
-        drawBuildingPolygons()
-        map.setOnPolygonClickListener(this)
+        setBuildingPolygons()
 
         map.setOnMapClickListener {
 
@@ -185,11 +183,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun createLocationRequest() {
-        // 1  create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
+        // 1  create an instance of LocationRequest, add it to an instance of
+        // LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on
+        // the current state of the user’s location settings.
         locationRequest = LocationRequest()
         // 2   specifies the rate at which your app will like to receive updates.
         locationRequest.interval = 10000
-        // 3 specifies the fastest rate at which the app can handle updates. Setting the fastestInterval rate places a limit on how fast updates will be sent to your app.
+        // 3 specifies the fastest rate at which the app can handle updates. Setting the
+        // fastestInterval rate places a limit on how fast updates will be sent to your app.
         locationRequest.fastestInterval = 5000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
@@ -207,7 +208,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         task.addOnFailureListener { e ->
-            // 6  A task failure means the location settings have some issues which can be fixed. This could be as a result of the user’s location settings turned off
+            // 6  A task failure means the location settings have some issues which can be fixed.
+            // This could be as a result of the user’s location settings turned off
             if (e is ResolvableApiException) {
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
@@ -249,7 +251,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
 
-    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
+    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it
+    // has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -281,11 +284,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
-    override fun onPolygonClick(p: Polygon) {
+    private fun setBuildingPolygons() {
+        drawBuildingPolygons()
+        map.setOnPolygonClickListener(this)
+    }
 
-        //Expand the bottom sheet when clicking on a polygon
-        //TODO: Limt only to campus buildings as poylgons could highlight anything
+    // implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+    override fun onPolygonClick(p: Polygon) {
+        // Expand the bottom sheet when clicking on a polygon
+        // TODO: Limt only to campus buildings as polygons could highlight anything
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
@@ -326,12 +333,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
-        //Populate the bottom sheet with building information
-        val buildingNameText: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
-        buildingNameText.text = p.tag.toString()
+        // Populate the bottom sheet with building information
+        val buildingName: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
+        buildingName.text = p.tag.toString()
 
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
+
+            ///TODO: Refactor this, no longer needed since buildings.json holds the location of the building @Makram
 
             // Calculating the center of the polygon to use for it's location.
             // This won't be necessary once we hold the Buildings in a common class
@@ -348,8 +357,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             buildingLocation.latitude = centerLat
             buildingLocation.longitude = centerLong
 
-            //TODO: This full clear and redraw should probably be removed when the directions system is implemented.
-            // It was added to show only one route at a time
+            //TODO: This full clear and redraw should probably be removed when the directions
+            // system is implemented. It was added to show only one route at a time
             map.clear()
             drawBuildingPolygons()
             placeMarkerOnMap(LatLng(centerLat, centerLong))
@@ -376,9 +385,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     //implements methods of interface   GoogleMap.OnMarkerClickListener
     override fun onMarkerClick(p0: Marker?) = false
 
-    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
+    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a
+    // particular point on the map’s surface.
     private fun placeMarkerOnMap(location: LatLng) {
-        // 1 Create a MarkerOptions object and sets the user’s current location as the position for the marker
+        // 1 Create a MarkerOptions object and sets the user’s current location as the
+        // position for the marker
         val markerOptions = MarkerOptions().position(location)
 
         //added a call to getAddress() and added this address as the marker title.
@@ -391,7 +402,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //This method get address from coordinates
     private fun getAddress(latLng: LatLng): String {
-        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
+        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address
+        // and vice versa
         val geocoder = Geocoder(activity as Activity)
         val addresses: List<Address>?
         val address: Address?
@@ -433,106 +445,26 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun handleCampusSwitch() {
         var campusView: LatLng
 
-    //Setting Toggle button listener
-    toggleButton.setOnCheckedChangeListener { _, onSwitch ->
-        if (onSwitch) {
-            campusView = LatLng(45.495637, -73.578235)
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
-        } else {
-            campusView = LatLng(45.458159, -73.640450)
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
+        //Setting Toggle button listener
+        toggleButton.setOnCheckedChangeListener { _, onSwitch ->
+            if (onSwitch) {
+                campusView = LatLng(45.495637, -73.578235)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
+            } else {
+                campusView = LatLng(45.458159, -73.640450)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
+            }
         }
-    }
 }
 
     private fun drawBuildingPolygons() {
 
-        // SGW CAMPUS
-
-        //EV Building
-        val ev_PolygonOptions = PolygonOptions()
-            .clickable(true)
-            .add(
-                LatLng(45.495594, -73.578761),
-                LatLng(45.495175, -73.577855),
-                LatLng(45.495826, -73.577243),
-                LatLng(45.496046, -73.577709),
-                LatLng(45.495673, -73.578080),
-                LatLng(45.495910, -73.578475)
-            )
-        val ev_Polygon: Polygon = map.addPolygon(ev_PolygonOptions)
-        ev_Polygon.tag = getString(R.string.EV_Building_Name)
-
-        val gm_PolygonOptions = PolygonOptions()
-            .clickable(true)
-            .add(
-                LatLng(45.495782, -73.579159),
-                LatLng(45.495765, -73.579118),
-                LatLng(45.495781, -73.579099),
-                LatLng(45.495615, -73.578746),
-                LatLng(45.495946, -73.578436),
-                LatLng(45.496132, -73.578816)
-            )
-        val gm_Polygon: Polygon = map.addPolygon(gm_PolygonOptions)
-        gm_Polygon.tag = getString(R.string.GM_Building_Name)
-
-        // Hall Building
-        val hall_PolygonOptions = PolygonOptions()
-            .clickable(true)
-            .add(
-                LatLng(45.497164, -73.579544),
-                LatLng(45.497710, -73.579034),
-                LatLng(45.497373, -73.578338),
-                LatLng(45.496828, -73.578850)
-            )
-        val hall_Polygon: Polygon = map.addPolygon(hall_PolygonOptions)
-        hall_Polygon.tag = getString(R.string.Hall_Building_Name)
-
-        //JMSB Building
-        val jmsb_PolygonOptions = PolygonOptions()
-            .clickable(true)
-            .add(
-                LatLng(45.495362, -73.579385),
-                LatLng(45.495224, -73.579121),
-                LatLng(45.495165, -73.579180),
-                LatLng(45.495002, -73.578821),
-                LatLng(45.495036, -73.578787),
-                LatLng(45.495001, -73.578728),
-                LatLng(45.495195, -73.578507),
-                LatLng(45.495529, -73.579209)
-            )
-        val jmsb_Polygon: Polygon = map.addPolygon(jmsb_PolygonOptions)
-        jmsb_Polygon.tag = getString(R.string.JMSB_Building_Name)
-
-        //Library
-        val lib_PolygonOptions = PolygonOptions()
-            .clickable(true)
-            .add(
-                LatLng(45.497283, -73.578079),
-                LatLng(45.496682, -73.578637),
-                LatLng(45.496249, -73.577675),
-                LatLng(45.496487, -73.577457),
-                LatLng(45.496582, -73.577651),
-                LatLng(45.496634, -73.577604),
-                LatLng(45.496615, -73.577560),
-                LatLng(45.496896, -73.577279)
-            )
-        val lib_Polygon: Polygon = map.addPolygon(lib_PolygonOptions)
-        lib_Polygon.tag = getString(R.string.WebsterLibrary_Building_Name)
-
-        //FG Building
-        val fg_PolygonOptions = PolygonOptions()
-            .clickable(true)
-            .add(
-                LatLng(45.493822, -73.579069),
-                LatLng(45.493619, -73.578735),
-                LatLng(45.494457, -73.577627),
-                LatLng(45.494687, -73.578045),
-                LatLng(45.494363, -73.578439)
-            )
-        val fg_Polygon: Polygon = map.addPolygon(fg_PolygonOptions)
-        fg_Polygon.tag = getString(R.string.FG_Building_Name)
-
+        //Highlight both SGW and Loyola Campuses
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                map.addPolygon(building.getPolygonOptions()).setTag(building.getName())
+            }
+        }
     }
 
     private fun initSearchBar() {
