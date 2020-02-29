@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.viewmodels
 
-import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.droidhats.campuscompass.models.Campus
