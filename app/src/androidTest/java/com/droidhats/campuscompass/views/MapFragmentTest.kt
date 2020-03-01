@@ -52,7 +52,7 @@ class MapFragmentTest {
     fun test_SearchBar() {
 
         //Checking if searchBar exists on map_fragment
-        onView(withId(R.id.searchBar)).check(matches(isDisplayed()))
+        onView(withId(R.id.searchBarMain)).check(matches(isDisplayed()))
     }
 
 

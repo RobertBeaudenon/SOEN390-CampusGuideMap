@@ -13,6 +13,8 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +32,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.CalendarEvent
-import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -49,25 +50,30 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import kotlinx.android.synthetic.main.map_fragment.searchBar
-import kotlinx.android.synthetic.main.map_fragment.toggleButton
+import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
 import org.json.JSONObject
 import java.io.IOException
 import kotlin.collections.ArrayList
 import kotlin.collections.List
 import kotlin.collections.MutableList
-import kotlin.collections.listOf
-import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
+import kotlinx.android.synthetic.main.search_bar_layout.radioTransportGroup
 import java.util.Locale
 import com.android.volley.Response
+import com.droidhats.campuscompass.models.Building
+import com.google.android.gms.common.api.ApiException
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.android.synthetic.main.search_bar_layout.searchBarMain
+import kotlinx.android.synthetic.main.search_bar_layout.searchBarDestination
 import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -78,6 +84,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
+    private lateinit var placesClient : PlacesClient
+    private lateinit var mapFragment: View
     private var locationUpdateState = false
 
     companion object {
@@ -85,7 +93,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
 
-        private const val MAP_PADDING_TOP = 200
+        private const val MAP_PADDING_TOP = 370
         private const val MAP_PADDING_RIGHT = 15
     }
 
@@ -101,7 +109,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
+         mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         return mapFragment
     }
@@ -128,7 +136,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         createLocationRequest()
         initPlacesSearch()
         initBottomSheetBehavior()
-        initSearchBar()
+        initSearchBarMain()
+        initSearchBarDestination()
         handleCampusSwitch()
     }
 
@@ -313,20 +322,73 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val buildingNameText: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
         buildingNameText.text = p.tag.toString()
 
+        //Navigation here
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            //<--
-            checker = 1
+            //Get the building that the user clicked on
+            var selectedBuilding :Building? = null
+            for (campus in viewModel.getCampuses()) {
+                for (building in campus.getBuildings()) {
+                    if (p.tag.toString() == building.getName())
+                        selectedBuilding  = building
+                }
+            }
 
-            var fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
-            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+            //Open the search bars and the location texts inside
+            searchBarDestination.openSearch()
+            searchBarMain.openSearch()
+            searchBarMain.text = "Your freakin location"
+            searchBarDestination.text = selectedBuilding!!.getName()
 
-            //Checking which transportation mode is selected, default is walking.
-            var transportationMode: String = "driving"
-            var radioSelectedId = radioTransportGroup.checkedRadioButtonId
-            when (radioSelectedId) {
+            //TODO: This full clear and redraw should probably be removed when the directions
+            // system is implemented. It was added to show only one route at a time
+            map.clear()
+            drawBuildingPolygons()
+            placeMarkerOnMap(LatLng(selectedBuilding.getLocation().latitude, selectedBuilding.getLocation().longitude))
+
+            //Generate directions from current location to the selected building
+            fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
+                if (location != null) {
+                    generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                }
+                //Move the camera to the starting location
+                map.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            location.latitude,
+                            location.longitude
+                        ), 16.0f
+                    )
+                )
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        })
+    }
+
+   private fun tansportationMode() : String{
+        checker = 1
+        //Checking which transportation mode is selected, default is walking.
+        var transportationMode: String = "driving"
+        var radioSelectedId = radioTransportGroup.checkedRadioButtonId
+        when (radioSelectedId) {
+            R.id.drivingId -> {
+                transportationMode = "driving"
+            }
+            R.id.walkingId -> {
+                transportationMode = "walking"
+            }
+            R.id.bicyclingId -> {
+                transportationMode = "bicycling"
+            }
+            R.id.shuttleId -> {
+                transportationMode = "shuttle"
+            }
+        }
+
+        radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
+            when (optionId) {
                 R.id.drivingId -> {
                     transportationMode = "driving"
                 }
@@ -340,79 +402,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     transportationMode = "shuttle"
                 }
             }
-
-        // Populate the bottom sheet with building information
-        val buildingName: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
-        buildingName.text = p.tag.toString()
-            //In case the transportation mode is changed, this will capture it.
-            radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
-                when (optionId) {
-                    R.id.drivingId -> {
-                        transportationMode = "driving"
-                    }
-                    R.id.walkingId -> {
-                        transportationMode = "walking"
-                    }
-                    R.id.bicyclingId -> {
-                        transportationMode = "bicycling"
-                    }
-                    R.id.shuttleId -> {
-                        transportationMode = "shuttle"
-                    }
-                }
-            }
-
-            println("TESTING $coordOne") //<-- ISSUE can't get this coordOne to show when its assinged under onActivityResult to the global variable
- /*
-
-            ///TODO: Refactor this, no longer needed since buildings.json holds the location of the building @Makram
-
-            // Calculating the center of the polygon to use for it's location.
-            // This won't be necessary once we hold the Buildings in a common class
-            var centerLat: Double = 0.0
-            var centerLong: Double = 0.0
-            for (i in 0 until p.points.size) {
-                centerLat += p.points[i].latitude
-                centerLong += p.points[i].longitude
-            }
-            centerLat /= p.points.size
-            centerLong /= p.points.size
-
-
-            val buildingLocation: Location = lastLocation
-
-            lastLocation.latitude = coordOne.toDouble()
-            lastLocation.longitude = coordTwo.toDouble()
-            buildingLocation.latitude = centerLat
-            buildingLocation.longitude = centerLong
-
-            //TODO: This full clear and redraw should probably be removed when the directions
-            // system is implemented. It was added to show only one route at a time
-            map.clear()
-            drawBuildingPolygons()
-            placeMarkerOnMap(LatLng(centerLat, centerLong))
-
-            //Generate directions from current location to the selected building
-            fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
-                if (location != null) {
-                    generateDirections(location, buildingLocation, transportationMode)
-                }
-                //Move the camera to the starting location
-                map.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(
-                            coordOne.toDouble(),
-                            coordTwo.toDouble()
-                        ), 16.0f
-                    )
-                )
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-                coordOne = ""
-                coordTwo = ""
-            }
-
-  */
-        })
+        }
+    return transportationMode
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
@@ -459,20 +450,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return addressText
     }
 
-    private fun initPlacesSearch() {
-        Places.initialize(activity as Activity, getString(R.string.ApiKey), Locale.CANADA)
-        Places.createClient(activity as Activity)
-        var fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
-
-        //Autocomplete search launches after hitting the button
-        val searchButton: View = requireActivity().findViewById(R.id.fab_search)
-
-        searchBar.setOnClickListener {
-            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
-        }
-    }
-
     //Handle the switching views between the two campuses. Should probably move from here later
     private fun handleCampusSwitch() {
         var campusView: LatLng
@@ -499,8 +476,55 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun initSearchBar() {
-        searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
+    private fun initPlacesSearch() {
+
+        Places.initialize(activity as Activity, getString(R.string.ApiKey), Locale.CANADA)
+        placesClient = Places.createClient(activity as Activity)
+
+    }
+
+    fun sendQuery(query : String, searchBar : MaterialSearchBar) : Boolean{
+
+        var doesPredict = false
+
+        //Set up your query here
+        val token : AutocompleteSessionToken  = AutocompleteSessionToken.newInstance()
+        //Here you would bound your search (to montreal for example)
+       val bounds : RectangularBounds = RectangularBounds.newInstance(LatLng(45.509958, -74.152854), LatLng(45.610739, -73.163261))
+        val request : FindAutocompletePredictionsRequest  = FindAutocompletePredictionsRequest.builder()
+            .setLocationBias(bounds)
+            .setTypeFilter(TypeFilter.ADDRESS)
+            .setSessionToken(token)
+            .setQuery(query)
+            .build()
+
+        val searchResults  = mutableListOf<String>()
+        //Get your query results here
+        placesClient.findAutocompletePredictions(request).addOnSuccessListener {
+
+            for ( prediction in it.autocompletePredictions) {
+                Log.i(TAG, prediction.getPlaceId());
+                Log.i(TAG, prediction.getPrimaryText(null).toString())
+                searchResults.add(prediction.getPrimaryText(null).toString())
+            }
+            searchBar.lastSuggestions = searchResults
+            doesPredict = searchResults.size != 0
+            searchBar.showSuggestionsList()
+            if (!doesPredict)
+                searchBar.hideSuggestionsList()
+
+        }.addOnFailureListener {
+            if (it is ApiException) {
+             val apiException =  it
+            Log.e(TAG, "Place not found: " + apiException.statusCode);
+            }
+        }
+        return doesPredict
+    }
+
+    private fun initSearchBarMain() {
+
+        searchBarMain.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
 
             override fun onButtonClicked(buttonCode: Int) {
                 when(buttonCode) {
@@ -514,7 +538,53 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             override fun onSearchConfirmed(text: CharSequence?) {
             }
         })
+
+        searchBarMain.addTextChangeListener( object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (p0.isNullOrBlank())
+                {
+                    searchBarMain.hideSuggestionsList()
+                    searchBarMain.clearSuggestions()
+                }
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                 val doesPredict = sendQuery(p0.toString(), searchBarMain)
+                if (!doesPredict)
+                    searchBarMain.hideSuggestionsList()
+            }
+        })
     }
+
+    private fun initSearchBarDestination() {
+        searchBarDestination.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
+            override fun onButtonClicked(buttonCode: Int) {
+            }
+            override fun onSearchStateChanged(enabled: Boolean) {
+            }
+            override fun onSearchConfirmed(text: CharSequence?) {
+            }
+        })
+
+        searchBarDestination.addTextChangeListener( object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                if (p0.isNullOrBlank())
+                {
+                    searchBarDestination.hideSuggestionsList()
+                    searchBarDestination.clearSuggestions()
+                }
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val doesPredict = sendQuery(p0.toString(), searchBarDestination)
+                if (!doesPredict)
+                    searchBarDestination.hideSuggestionsList()
+            }
+        })
+    }
+
 
     private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
@@ -552,7 +622,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         })
     }
 
-    private fun generateDirections(origin: Location, destination: Location, mode: String) {
+    private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
 
         val directionsURL:String = if (mode == "shuttle"){
             "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)

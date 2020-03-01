@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <!--hardcoded margins for now as the search bars can expand -->
+    <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="230.65px"
+            android:layout_height="100px"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="155dp"
+            android:background="@drawable/toggle_switch"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="ToggleButton"
+            android:textColor="#FFFFFF"
+            android:textOff="LOY"
+            android:textOn="SGW"
+            android:textSize="14sp"
+            android:elevation="0dp"
+            android:textStyle="bold" />
+
+    <RadioGroup
+            android:id="@+id/radioTransportGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:layout_marginTop="120dp"
+            android:orientation="horizontal"
+            android:checkedButton="@id/drivingId">
+
+        <RadioButton
+                android:id="@+id/drivingId"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Driving" />
+
+        <RadioButton
+                android:id="@+id/walkingId"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Walking" />
+
+        <RadioButton
+                android:id="@+id/bicyclingId"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Bicycle" />
+
+        <RadioButton
+                android:id="@+id/shuttleId"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Shuttle" />
+    </RadioGroup>
+
+    <com.mancj.materialsearchbar.MaterialSearchBar
+            style="@style/MaterialSearchBarLight"
+            app:mt_speechMode="false"
+            app:mt_hint="Destination"
+            map:mt_placeholder="To"
+            app:mt_placeholderColor="@color/colorPrimaryDark"
+            app:mt_maxSuggestionsCount="10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:elevation="5dp"
+            android:id="@+id/searchBarDestination"
+            android:outlineProvider="bounds" />
+
+    <com.mancj.materialsearchbar.MaterialSearchBar
+            style="@style/MaterialSearchBarLight"
+            app:mt_speechMode="false"
+            app:mt_hint="Search"
+            app:mt_maxSuggestionsCount="10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/searchBarMain"
+            android:layout_marginTop="16dp"
+            map:mt_navIconEnabled="true"
+            map:mt_placeholder="Search"
+            android:elevation="5dp"
+            android:outlineProvider="bounds"
+            />
+
+
+
+
+</RelativeLayout>

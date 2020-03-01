@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,27 +8,11 @@
     android:id="@+id/coordinate_layout"
     tools:context=".views.MapFragment">
 
-
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
-
-    <com.mancj.materialsearchbar.MaterialSearchBar
-        style="@style/MaterialSearchBarLight"
-        app:mt_speechMode="false"
-        app:mt_hint="Search"
-        app:mt_maxSuggestionsCount="10"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchBar"
-        android:layout_margin="16dp"
-        map:mt_navIconEnabled="true"
-        map:mt_placeholder="Search"
-        android:elevation="5dp"
-        android:outlineProvider="bounds"
-        />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_search"
@@ -43,25 +26,10 @@
         app:backgroundTint="@color/quantum_white_100"
         app:fabSize="normal"
         app:layout_dodgeInsetEdges="bottom"
+        android:visibility="gone"
         />
 
-    <ToggleButton
-        android:id="@+id/toggleButton"
-        android:layout_width="230.65px"
-        android:layout_height="100px"
-        android:layout_gravity="left"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="80dp"
-        android:background="@drawable/toggle_switch"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:text="ToggleButton"
-        android:textColor="#FFFFFF"
-        android:textOff="LOY"
-        android:textOn="SGW"
-        android:textSize="14sp"
-        android:textStyle="bold" />
-
     <include layout="@layout/bottom_sheet_layout"/>
+    <include layout="@layout/search_bar_layout"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
