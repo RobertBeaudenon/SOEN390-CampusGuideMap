@@ -334,8 +334,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         // Populate the bottom sheet with building information
-        val buildingName: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
-        buildingName.text = p.tag.toString()
+        populateAdditionalInfoBottomSheet(p)
 
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
@@ -458,11 +457,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 }
 
     private fun drawBuildingPolygons() {
-
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
-                map.addPolygon(building.getPolygonOptions()).setTag(building.getName())
+                var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
+                building.setPolygon(polygon)
             }
         }
     }
@@ -518,6 +517,30 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
             }
         })
+    }
+
+    private fun populateAdditionalInfoBottomSheet(p: Polygon) {
+        // Populate the bottom sheet with building information
+        val buildingName: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
+        val buildingAddress: TextView =
+            requireActivity().findViewById(R.id.bottom_sheet_building_address)
+        val buildingOpenHours: TextView = requireActivity().findViewById(R.id.bottom_sheet_open_hours)
+        val buildingServices: TextView = requireActivity().findViewById(R.id.bottom_sheet_services)
+        val buildingDepartments: TextView =
+            requireActivity().findViewById(R.id.bottom_sheet_departments)
+
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if (building.getPolygon().tag == p.tag) {
+                    buildingName.text = p.tag.toString()
+                    buildingAddress.text = building.getAddress()
+                    buildingOpenHours.text = building.getOpenHours()
+                    buildingServices.text = building.getServices()
+                    buildingDepartments.text = building.getDepartments()
+                    //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
+                }
+            }
+        }
     }
 
     private fun generateDirections(origin: Location, destination: Location, mode: String) {
