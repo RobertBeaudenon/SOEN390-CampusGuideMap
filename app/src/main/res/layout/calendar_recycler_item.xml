@@ -29,18 +29,30 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:textAppearance="?attr/textAppearanceListItemSecondary"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:maxWidth="@dimen/calendar_event_card_max_text_width"/>
 
-
-        <TextView
-            android:id="@+id/event_location_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:drawableStart="@drawable/ic_location_on_black_24dp"
-            android:textAppearance="?attr/textAppearanceListItemSecondary" />
+            <TextView
+                android:id="@+id/event_location_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:drawableStart="@drawable/ic_location_on_black_24dp"
+                android:textAppearance="?attr/textAppearanceListItemSecondary"
+                android:maxWidth="@dimen/calendar_event_card_max_text_width"/>
 
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/navigateFromEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_directions_60dp"
+        android:background="@android:color/white"
+        android:layout_gravity="end|center_vertical"
+        android:contentDescription="Navigate"
+        android:paddingEnd="15dp" />
+
 
 </androidx.cardview.widget.CardView>
 
