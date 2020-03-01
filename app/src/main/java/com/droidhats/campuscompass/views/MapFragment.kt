@@ -339,10 +339,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
-            ///TODO: Refactor this, no longer needed since buildings.json holds the location of the building @Makram
-
             // Calculating the center of the polygon to use for it's location.
-            // This won't be necessary once we hold the Buildings in a common class
+            // This was here before building class in the model was made, so I think it's a good
+            // idea to keep it here because there is no use in introducing a dependency to this
+            // method and it's not slower than filtering through all the buildings for a match to
+            // this polygon.
             var centerLat: Double = 0.0
             var centerLong: Double = 0.0
             for (i in 0 until p.points.size) {
