@@ -409,12 +409,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         Places.createClient(activity as Activity)
         val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
 
-        //Autocomplete search launches after hitting the button
-        val searchButton: View = requireActivity().findViewById(R.id.fab_search)
-
-        searchButton.setOnClickListener {
-            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                .build(activity as Activity)
+        searchBar.setOnClickListener {
+            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
     }
