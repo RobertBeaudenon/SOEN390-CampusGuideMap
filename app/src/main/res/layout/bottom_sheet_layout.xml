@@ -60,120 +60,110 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/bottom_sheet_separator" />
 
-    <TableLayout
+    <!-- this needs to be deleted after -->
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:stretchColumns="*"
-        android:padding="5dp">
+        android:layout_height="match_parent">
 
-        <TableRow
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="1dp"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <TextView
+            <TableLayout
+                android:id="@+id/bottom_sheet_info_table"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Open hours: "
-                android:textSize="18sp" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:shrinkColumns="1">
 
-            <TextView
-                android:id="@+id/bottom_sheet_open_hours"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text="Hours here"
-                android:textSize="18sp" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1">
 
-        </TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Open hours: "
+                        android:textSize="18sp" />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_margin="1dp"
-            android:layout_weight="1" >
+                    <TextView
+                        android:id="@+id/bottom_sheet_open_hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Hours here"
+                        android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="18sp"
-                android:text="Services:" />
+                </TableRow>
 
-            <TextView
-                android:id="@+id/bottom_sheet_services"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="18sp"
-                android:text="Services here" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1">
 
-        </TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Services:"
+                        android:textSize="18sp" />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_margin="1dp"
-            android:layout_weight="1" >
+                    <TextView
+                        android:id="@+id/bottom_sheet_services"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Services here"
+                        android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="18sp"
-                android:text="Departments:" />
+                </TableRow>
 
-            <TextView
-                android:id="@+id/bottom_sheet_departments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="18sp"
-                android:text="Departments here" />
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_weight="1">
 
-        </TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Departments:"
+                        android:textSize="18sp" />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_margin="1dp"
-            android:layout_weight="1" >
+                    <TextView
+                        android:id="@+id/bottom_sheet_departments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="Departments here"
+                        android:textSize="18sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="18sp"
-                android:text="Events:" />
+                </TableRow>
 
-            <TextView
-                android:id="@+id/bottom_sheet_events"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textSize="18sp"
-                android:text="Events here" />
-
-        </TableRow>
-    </TableLayout>
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/bottom_sheet_directions_button"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="125dp"
-        android:layout_marginEnd="125dp"
         android:layout_marginTop="5dp"
-        android:padding="10dp"
+        android:layout_marginEnd="125dp"
         android:background="@drawable/calendarbutton"
         android:drawableStart="@android:drawable/ic_dialog_map"
+        android:padding="10dp"
         android:text="Directions"
         android:textColor="#FFFFFF" />
-
-    <!-- this needs to be deleted after -->
 
     <RadioGroup
         android:id="@+id/radioTransportGroup"
