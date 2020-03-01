@@ -36,6 +36,11 @@ class CalendarRepository {
         }
     }
 
+    // used for testing, do not touch or use please
+    internal fun setCalendars(calendars: MutableMap<String, Calendar>) {
+        userCalendars = calendars
+    }
+
     private fun pingCalendars(context: Context) {
         userCalendars = mutableMapOf()
 
@@ -45,13 +50,18 @@ class CalendarRepository {
             val resolver = context.contentResolver
 
             // In this query's WHERE clause I specify that I only want the user's personal google events
-            val cur: Cursor = resolver.query(uri, Calendar.event_projection.keys.toTypedArray(),
+            val cur: Cursor? = resolver.query(uri, Calendar.event_projection.keys.toTypedArray(),
                                             "${CalendarContract.Events.ACCOUNT_TYPE} = 'com.google' AND" +    //Only google events
                                                     " ${CalendarContract.Events.ACCOUNT_NAME} = ${CalendarContract.Events.OWNER_ACCOUNT} AND " + //Only primary account
                                                     " ${CalendarContract.Events.DELETED} != '1' AND " +
                                                     " ${CalendarContract.Events.STATUS} != '${CalendarContract.Events.STATUS_CANCELED}'",
                                             null,
-                                            CalendarContract.Events.DTSTART)!! //Sort by closest event
+                                            CalendarContract.Events.DTSTART) //Sort by closest event
+
+            if (cur == null) {
+                return
+            }
+
             while (cur.moveToNext()) {
                 // Get the field values
                 val calID: Long = cur.getLong(Calendar.event_projection.getValue(CalendarContract.Events.CALENDAR_ID))
