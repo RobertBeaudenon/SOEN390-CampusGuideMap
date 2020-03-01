@@ -336,41 +336,54 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
 
-            //Open the search bars and the location texts inside
-            searchBarDestination.openSearch()
-            searchBarMain.openSearch()
-            searchBarMain.text = "Your Current location goes here!!!!"
-            searchBarDestination.text = selectedBuilding!!.getName()
-
             //TODO: This full clear and redraw should probably be removed when the directions
             // system is implemented. It was added to show only one route at a time
             map.clear()
             drawBuildingPolygons()
-            placeMarkerOnMap(LatLng(selectedBuilding.getLocation().latitude, selectedBuilding.getLocation().longitude))
+            if (selectedBuilding != null) {
+                placeMarkerOnMap(LatLng(selectedBuilding.getLocation().latitude, selectedBuilding.getLocation().longitude))
+            }
 
             //Generate directions from current location to the selected building
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null) {
+
+                    //Open the search bars and the location texts inside
+                    searchBarDestination.openSearch()
+                    searchBarMain.openSearch()
+
                     if (tansportationMode() == "shuttle") {
+                        //Setting the top bar "from" to the name of the selected building.
+                        if (selectedBuilding != null) {
+                            searchBarMain.text = selectedBuilding.getName()
+                        }
+
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
-                        if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
-                            generateDirections(location, selectedBuilding.getLocation(), "shuttleFromSGW")
-                        } else {
-                            generateDirections(location, selectedBuilding.getLocation(), "shuttleFromLOY")
+                        if (selectedBuilding != null) {
+                            if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
+                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
+                                searchBarMain.text = "Shuttle Bus Stop Loyola"
+                                searchBarDestination.text = selectedBuilding.getName()
+                            } else {
+                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
+                                searchBarMain.text = "Shuttle Bus Stop SGW"
+                                searchBarDestination.text = selectedBuilding.getName()
+                            }
                         }
                     } else {
-                        generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                        if (selectedBuilding != null) {
+                            searchBarMain.text = "Current Location"
+                            generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                            searchBarDestination.text = selectedBuilding.getName()
+                        }
                     }
                 }
-                //Move the camera to the starting location
-                map.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(
-                            location.latitude,
-                            location.longitude
-                        ), 16.0f
-                    )
-                )
+
+                if (tansportationMode()!= "shuttle") {
+                    //Move the camera to the starting location
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
+                }
+
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
@@ -379,7 +392,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
    private fun tansportationMode() : String {
         checker = 1
         //Checking which transportation mode is selected, default is walking.
-        var transportationMode: String = "driving"
+        var transportationMode = "driving"
        when (radioTransportGroup.checkedRadioButtonId) {
             R.id.drivingId -> {
                 transportationMode = "driving"
@@ -634,17 +647,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
 
         val directionsURL:String = when (mode) {
-            "shuttleFromSGW" -> {
-                println("DEBUGGING: SGW CHOSEN ")
+            "shuttleToSGW" -> {
                 "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
             }
-            "shuttleFromLOY" -> {
-                println("DEBUGGING: LOY CHOSEN ")
+            "shuttleToLOY" -> {
                 "https://maps.googleapis.com/maps/api/directions/json?origin=45.458398,-73.638241&destination=45.497132,-73.578519&mode=" + mode + "&key=" + getString(R.string.ApiKey)
             }
             else -> {
                 "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude.toString() + "," + origin.longitude.toString() + "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +"&mode=" + mode +"&key=" + getString(R.string.ApiKey)
             }
+        }
+
+        if (mode == "shuttleToSGW") {
+            //Move the camera to the LOY Campus
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(45.458398,-73.638241), 16.0f))
+        }
+
+        //Move the camera to the SGW Campus
+        if (mode == "shuttleToLOY") {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(45.497132,-73.578519), 16.0f))
         }
 
         //Creating the HTTP request with the directions URL
@@ -665,7 +686,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val totalKm:JSONObject = legs.getJSONObject("distance")
                 val travelTime:JSONObject = legs.getJSONObject("duration")
 
-                if (mode == "shuttleFromSGW" || mode == "shuttleFromLOY") {
+                if (mode == "shuttleToSGW" || mode == "shuttleToLOY") {
                     for (x in 1..3) {
                         Toast.makeText(activity, "The selected Transportation mode is: Shuttle. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
                     }
