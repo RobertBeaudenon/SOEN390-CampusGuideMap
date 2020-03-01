@@ -339,10 +339,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
-            ///TODO: Refactor this, no longer needed since buildings.json holds the location of the building @Makram
-
             // Calculating the center of the polygon to use for it's location.
-            // This won't be necessary once we hold the Buildings in a common class
+            // This was here before building class in the model was made, so I think it's a good
+            // idea to keep it here because there is no use in introducing a dependency to this
+            // method and it's not slower than filtering through all the buildings for a match to
+            // this polygon.
             var centerLat: Double = 0.0
             var centerLong: Double = 0.0
             for (i in 0 until p.points.size) {
@@ -491,25 +492,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             BottomSheetBehavior.BottomSheetCallback() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // React to state change
-                // The following code can be used if we want to do certain actions related
-                // to the change of state of the bottom sheet
-                //
-
-//                when (newState) {
-//                    BottomSheetBehavior.STATE_HIDDEN -> {
-//                    }
-//                    BottomSheetBehavior.STATE_EXPANDED -> {
-//                    }
-//                    BottomSheetBehavior.STATE_COLLAPSED -> {
-//                    }
-//                    BottomSheetBehavior.STATE_DRAGGING -> {
-//                    }
-//                    BottomSheetBehavior.STATE_SETTLING -> {
-//                    }
-//                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-//                    }
-//                }
+                // React to state change.
+                // No functionality yet (but needs to override abstract class)
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
