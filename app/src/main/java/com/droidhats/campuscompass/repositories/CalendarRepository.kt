@@ -1,5 +1,6 @@
 package com.droidhats.campuscompass.repositories
 
+import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -36,6 +37,7 @@ class CalendarRepository {
         }
     }
 
+    @SuppressLint("Recycle")
     private fun pingCalendars(context: Context) {
         userCalendars = mutableMapOf()
 

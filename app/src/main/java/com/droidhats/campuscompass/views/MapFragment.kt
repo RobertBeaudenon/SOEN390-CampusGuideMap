@@ -563,8 +563,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         searchBarMain.addTextChangeListener( object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
-                if (p0.isNullOrBlank())
-                {
+                if (p0.isNullOrBlank()) {
                     searchBarMain.hideSuggestionsList()
                     searchBarMain.clearSuggestions()
                 }
