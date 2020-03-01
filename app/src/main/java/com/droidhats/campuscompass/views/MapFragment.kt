@@ -103,7 +103,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     ): View? {
         val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        viewModel.init()
         return mapFragment
     }
 
