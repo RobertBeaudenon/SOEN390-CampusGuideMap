@@ -1,96 +1,74 @@
 package com.droidhats.campuscompass
 
-
-import android.app.Application
-import android.content.Context
 import android.os.Build
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.ViewModelProviders
-import com.droidhats.campuscompass.viewmodels.CalendarViewModel
-import com.droidhats.campuscompass.views.CalendarFragment
-import com.droidhats.campuscompass.MainActivity
-
-
 import org.junit.Test
-import org.junit.Before
-import org.junit.Rule
 import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import org.junit.ClassRule
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
-import java.util.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import com.droidhats.campuscompass.models.Calendar
 import com.droidhats.campuscompass.models.CalendarEvent
-
+import com.droidhats.campuscompass.viewmodels.CalendarViewModel
+import org.junit.Before
+import kotlin.collections.ArrayList
+import kotlin.random.Random
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
 class CalendarViewModelTest {
 
-    var calendarViewModel:  CalendarViewModel
+    private val calendarViewModel: CalendarViewModel = CalendarViewModel(RuntimeEnvironment.application)
+    private var userCalendars = mutableMapOf<String, Calendar>()
+    val colorArray =  CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP.keys.toTypedArray()
 
 
+    @Before // Creating calendars with events
+    fun initCalendars() {
+        var id = 0
+        var dummy = "dummy"
 
-   //initializing the calendarviewmodel
-    init {
-       val context: Application = RuntimeEnvironment.application
-        calendarViewModel = CalendarViewModel(context)
+        for(colorInt in CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP) {
 
+            val eventList: ArrayList<CalendarEvent> = arrayListOf()
 
-   }
-
-
-
-    // Checks the status of the initializations to make sure they return true
-    @Test
-    fun testEvents() {
-        val colorArray = CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP.keys.toTypedArray()
-        var userCalendars = mutableMapOf<String, Calendar>()
-
-
-
-        for(i in colorArray){
-
-            var eventList: ArrayList<CalendarEvent> = arrayListOf()
-            if(i=="any") {
-                var calendar= Calendar("robert", "makram", "nick", "neeham", "amanda", i, true)
-                eventList.add(
-                    CalendarEvent( "a",
-                        "b",
-                        "c",
-                        "d",
-                        "e",
-                        "f",
-                        i)
-                )
-                calendar.events = eventList
-                userCalendars[i] = calendar
-            }else{
-
-
-                     var calendar= Calendar("robert", "makram", "nick", "neeham", "amanda", i, false)
-                 eventList.add(
-                CalendarEvent( "a",
-                    "b",
-                    "c",
-                    "d",
-                    "e",
-                    "f",
-                    i)
-                )
-                calendar.events = eventList
-                userCalendars[i] = calendar
-            }
+            val calendar= Calendar((id++).toString(), dummy, dummy, dummy, dummy, colorInt.value, colorInt.key == "Any")
+            eventList.add(CalendarEvent( dummy, dummy, dummy, dummy, dummy, dummy, colorInt.value))
+            calendar.events = eventList
+            userCalendars[colorInt.value] = calendar
         }
+        calendarViewModel.userCalendars.value = userCalendars
+    }
 
-
-
+    @Before // Randomizing user selections
+    fun initUserSelections()
+    {
+        for (selection in calendarViewModel.selectedColors.indices) {
+            val selected = Random.nextBoolean()
+            println("Setting ${colorArray[selection]} selection to $selected")
+            calendarViewModel.selectedColors[selection] = selected
+        }
 
     }
 
+    // Checks the filtered list shows the correct(selected) colors
+    @Test
+    fun testEvents() {
 
+        val selectedColors = arrayListOf<String>() //the color of the selected calendars
+       calendarViewModel.selectCalendars() //filter calendars
+
+       for (i in calendarViewModel.selectedCalendars.value!!) {
+           selectedColors.add(i.color!!)
+       }
+
+        for ( selection in calendarViewModel.selectedColors.indices) {
+
+        //If the color has been selected, check that it has been filtered properly by the selectCalendars() method
+                if (calendarViewModel.selectedColors[selection])
+                    assert(selectedColors.contains(CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP[colorArray[selection]]))
+                else
+                    assert(!selectedColors.contains(CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP[colorArray[selection]]))
+        }
+    }
 }
+

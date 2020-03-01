@@ -14,8 +14,8 @@ import com.droidhats.campuscompass.repositories.CalendarRepository
 class CalendarViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>().applicationContext
-    private var userCalendars = MutableLiveData<MutableMap<String, Calendar>>()
-    private var selectedCalendars = MutableLiveData<ArrayList<Calendar>>()
+    internal var userCalendars = MutableLiveData<MutableMap<String, Calendar>>()
+    internal var selectedCalendars = MutableLiveData<ArrayList<Calendar>>()
 
     private val _info = MutableLiveData<String>().apply {
         value = ""
@@ -39,9 +39,9 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
             "Flamingo" to "-30596",
             "Graphite" to "-1973791"
         )
-        //array initialized to false to keep track of colors that we want to set for the calendar event
-        var selectedColors = BooleanArray(GOOGLE_CALENDAR_COLOR_MAP.size)
     }
+    //array initialized to false to keep track of colors that we want to set for the calendar event
+    var selectedColors = BooleanArray(GOOGLE_CALENDAR_COLOR_MAP.size)
 
    fun init() {
        //we fetch all the different calendars within the same calendar based on the colors that the user has preset.
@@ -59,13 +59,11 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
         //calendar is the color that we pick,
         val filteredList = arrayListOf<Calendar>()
 
-        var selectedButNoCalendarsFound = 0 //selection and no calandors
+        var selectedButNoCalendarsFound = 0
 
         //Get the Calendars of the selected colors
         for (i in selectedColors.indices) {
             if (selectedColors[i]) {
-               // println(GOOGLE_CALENDAR_COLOR_MAP[colorArray[i]])
-
                 //Storing the calendar object specific to the color we selected, fetched from repo
                 val colorToAdd =
                     userCalendars.value!![GOOGLE_CALENDAR_COLOR_MAP[colorArray[i]]]
