@@ -14,8 +14,8 @@ import com.droidhats.campuscompass.repositories.CalendarRepository
 class CalendarViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>().applicationContext
-    private var userCalendars = MutableLiveData<MutableMap<String, Calendar>>()
-    private var selectedCalendars = MutableLiveData<ArrayList<Calendar>>()
+    internal var userCalendars = MutableLiveData<MutableMap<String, Calendar>>()
+    internal var selectedCalendars = MutableLiveData<ArrayList<Calendar>>()
 
     private val _info = MutableLiveData<String>().apply {
         value = ""
@@ -39,41 +39,46 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
             "Flamingo" to "-30596",
             "Graphite" to "-1973791"
         )
-        var selectedColors = BooleanArray(GOOGLE_CALENDAR_COLOR_MAP.size)
     }
+    //array initialized to false to keep track of colors that we want to set for the calendar event
+    var selectedColors = BooleanArray(GOOGLE_CALENDAR_COLOR_MAP.size)
 
    fun init() {
+       //we fetch all the different calendars within the same calendar based on the colors that the user has preset.
       userCalendars = CalendarRepository.getInstance().getCalendars(context)
    }
 
-    fun getCalendars() : MutableLiveData<ArrayList<Calendar>>
-    {
-       return selectedCalendars
-    }
+    fun getCalendars() : MutableLiveData<ArrayList<Calendar>> = selectedCalendars
 
     fun selectCalendars() {
-
+        //constant map of the colors, convert map to array
         val colorArray = GOOGLE_CALENDAR_COLOR_MAP.keys.toTypedArray()
+        //calendar is the color that we pick,
         val filteredList = arrayListOf<Calendar>()
+
         var selectedButNoCalendarsFound = 0
+
         //Get the Calendars of the selected colors
         for (i in selectedColors.indices) {
             if (selectedColors[i]) {
-                println(GOOGLE_CALENDAR_COLOR_MAP[colorArray[i]])
+                //Storing the calendar object specific to the color we selected, fetched from repo
                 val colorToAdd =
                     userCalendars.value!![GOOGLE_CALENDAR_COLOR_MAP[colorArray[i]]]
+
+                //if the calendar specific to the color selected actually exist then set it
                 if (colorToAdd != null)
                     filteredList.add(colorToAdd)
                 else
                     selectedButNoCalendarsFound++
             }
         }
+        //display text on screen
         updateInfo(filteredList, selectedButNoCalendarsFound)
+        //pass the calendars to view
         selectedCalendars.value = filteredList
     }
 
-    private fun updateInfo(list : ArrayList<Calendar>, selectedButNotFound : Int)
-    {
+    private fun updateInfo(list : ArrayList<Calendar>, selectedButNotFound : Int) {
         if (list.size == 0 && selectedButNotFound == 0)
             _info.value = "No Calendars Selected"
         else if (selectedButNotFound > 0 && list.size ==0)
