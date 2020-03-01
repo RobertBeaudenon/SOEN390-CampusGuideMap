@@ -22,7 +22,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.RadioGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -285,7 +284,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
-                var status = data?.let { Autocomplete.getStatusFromIntent(it) }
+               // var status = data?.let { Autocomplete.getStatusFromIntent(it) }
             } else if (resultCode == RESULT_CANCELED) {
                 // TODO: Handle user cancelling the operation.
             }
@@ -325,7 +324,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         //Navigation here
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
-        directionsButton.setOnClickListener(View.OnClickListener {
+        directionsButton.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
             //Get the building that the user clicked on
@@ -352,7 +351,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             //Generate directions from current location to the selected building
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null) {
-                    generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                    if (tansportationMode() == "shuttle") {
+                        // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
+                        if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
+                            generateDirections(location, selectedBuilding.getLocation(), "shuttleFromSGW")
+                        } else {
+                            generateDirections(location, selectedBuilding.getLocation(), "shuttleFromLOY")
+                        }
+                    } else {
+                        generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                    }
                 }
                 //Move the camera to the starting location
                 map.animateCamera(
@@ -365,15 +373,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 )
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
-        })
+        }
     }
 
-   private fun tansportationMode() : String{
+   private fun tansportationMode() : String {
         checker = 1
         //Checking which transportation mode is selected, default is walking.
         var transportationMode: String = "driving"
-        var radioSelectedId = radioTransportGroup.checkedRadioButtonId
-        when (radioSelectedId) {
+       when (radioTransportGroup.checkedRadioButtonId) {
             R.id.drivingId -> {
                 transportationMode = "driving"
             }
@@ -388,6 +395,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
+       /*
         radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
             when (optionId) {
                 R.id.drivingId -> {
@@ -403,7 +411,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     transportationMode = "shuttle"
                 }
             }
-        }
+        }*/
     return transportationMode
     }
 
@@ -438,7 +446,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             // 2 Asks the geocoder to get the address from the location passed to the method
             addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             // 3 If the response contains any address, then append it to a string and return
-            if (null != addresses && !addresses.isEmpty()) {
+            if (null != addresses && addresses.isNotEmpty()) {
                 address = addresses[0]
                 for (i in 0 until address.maxAddressLineIndex) {
                     addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
@@ -472,7 +480,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
-                map.addPolygon(building.getPolygonOptions()).setTag(building.getName())
+                map.addPolygon(building.getPolygonOptions()).tag = building.getName()
             }
         }
     }
@@ -504,7 +512,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         placesClient.findAutocompletePredictions(request).addOnSuccessListener {
 
             for ( prediction in it.autocompletePredictions) {
-                Log.i(TAG, prediction.getPlaceId());
+                Log.i(TAG, prediction.placeId)
                 Log.i(TAG, prediction.getPrimaryText(null).toString())
                 searchResults.add(prediction.getPrimaryText(null).toString())
             }
@@ -517,7 +525,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }.addOnFailureListener {
             if (it is ApiException) {
              val apiException =  it
-            Log.e(TAG, "Place not found: " + apiException.statusCode);
+            Log.e(TAG, "Place not found: " + apiException.statusCode)
             }
         }
         return doesPredict
@@ -625,14 +633,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
 
-        val directionsURL:String = if (mode == "shuttle"){
-            "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
-        } else {
-            //Directions URL to be sent
-            "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude.toString() + "," + origin.longitude.toString() +
-                    "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +
-                    "&mode=" + mode +
-                    "&key=" + getString(R.string.ApiKey)
+        val directionsURL:String = when (mode) {
+            "shuttleFromSGW" -> {
+                println("DEBUGGING: SGW CHOSEN ")
+                "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
+            }
+            "shuttleFromLOY" -> {
+                println("DEBUGGING: LOY CHOSEN ")
+                "https://maps.googleapis.com/maps/api/directions/json?origin=45.458398,-73.638241&destination=45.497132,-73.578519&mode=" + mode + "&key=" + getString(R.string.ApiKey)
+            }
+            else -> {
+                "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude.toString() + "," + origin.longitude.toString() + "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +"&mode=" + mode +"&key=" + getString(R.string.ApiKey)
+            }
         }
 
         //Creating the HTTP request with the directions URL
@@ -653,10 +665,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val totalKm:JSONObject = legs.getJSONObject("distance")
                 val travelTime:JSONObject = legs.getJSONObject("duration")
 
-                //Debug
-                for (x in 1..3) {
-                    Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
+                if (mode == "shuttleFromSGW" || mode == "shuttleFromLOY") {
+                    for (x in 1..3) {
+                        Toast.makeText(activity, "The selected Transportation mode is: Shuttle. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    for (x in 1..3) {
+                        Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
+                    }
                 }
+
 
                 val path: MutableList<List<LatLng>> = ArrayList()
 
@@ -664,8 +682,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 for (i in 0 until steps.length()) {
                     val points =
                         steps.getJSONObject(i).getJSONObject("polyline").getString("points")
-                    val instructions = steps.getJSONObject(i)
-                        .getString("html_instructions")  //Getting the route instructions
+                   // val instructions = steps.getJSONObject(i).getString("html_instructions")  //Getting the route instructions
                     path.add(PolyUtil.decode(points))
                 }
                 //Draw the path polyline
