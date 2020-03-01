@@ -117,8 +117,7 @@ class MapRepository(json: String) {
                     // Add all the edge coordinates of the building to the list
                     polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
                 }
-
-                buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList, buildingAddress, getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray), hoursBuilder.toString()))
+                buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList, buildingAddress, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
             }
         } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +
