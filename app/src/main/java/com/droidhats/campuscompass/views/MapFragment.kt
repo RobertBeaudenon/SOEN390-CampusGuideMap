@@ -340,7 +340,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             //Open the search bars and the location texts inside
             searchBarDestination.openSearch()
             searchBarMain.openSearch()
-            searchBarMain.text = "Your freakin location"
+            searchBarMain.text = "Your Current location goes here!!!!"
             searchBarDestination.text = selectedBuilding!!.getName()
 
             //TODO: This full clear and redraw should probably be removed when the directions
