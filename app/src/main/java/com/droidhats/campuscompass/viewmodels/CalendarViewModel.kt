@@ -48,10 +48,7 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
       userCalendars = CalendarRepository.getInstance().getCalendars(context)
    }
 
-    fun getCalendars() : MutableLiveData<ArrayList<Calendar>>
-    {
-       return selectedCalendars
-    }
+    fun getCalendars() : MutableLiveData<ArrayList<Calendar>> = selectedCalendars
 
     fun selectCalendars() {
         //constant map of the colors, convert map to array
@@ -81,8 +78,7 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
         selectedCalendars.value = filteredList
     }
 
-    private fun updateInfo(list : ArrayList<Calendar>, selectedButNotFound : Int)
-    {
+    private fun updateInfo(list : ArrayList<Calendar>, selectedButNotFound : Int) {
         if (list.size == 0 && selectedButNotFound == 0)
             _info.value = "No Calendars Selected"
         else if (selectedButNotFound > 0 && list.size ==0)

@@ -31,8 +31,26 @@ class CalendarViewModelTest {
 
             val eventList: ArrayList<CalendarEvent> = arrayListOf()
 
-            val calendar= Calendar((id++).toString(), dummy, dummy, dummy, dummy, colorInt.value, colorInt.key == "Any")
-            eventList.add(CalendarEvent( dummy, dummy, dummy, dummy, dummy, dummy, colorInt.value))
+            val calendar= Calendar(
+                (id++).toString(),
+                dummy,
+                dummy,
+                dummy,
+                dummy,
+                colorInt.value,
+                colorInt.key == "Any"
+            )
+            eventList.add(
+                CalendarEvent(
+                    dummy,
+                    dummy,
+                    dummy,
+                    dummy,
+                    dummy,
+                    dummy,
+                    colorInt.value
+                )
+            )
             calendar.events = eventList
             userCalendars[colorInt.value] = calendar
         }
@@ -55,19 +73,19 @@ class CalendarViewModelTest {
     fun testEvents() {
 
         val selectedColors = arrayListOf<String>() //the color of the selected calendars
-       calendarViewModel.selectCalendars() //filter calendars
+        calendarViewModel.selectCalendars() //filter calendars
 
-       for (i in calendarViewModel.selectedCalendars.value!!) {
-           selectedColors.add(i.color!!)
-       }
+        for (i in calendarViewModel.selectedCalendars.value!!) {
+            selectedColors.add(i.color!!)
+        }
 
-        for ( selection in calendarViewModel.selectedColors.indices) {
+        for (selection in calendarViewModel.selectedColors.indices) {
 
-        //If the color has been selected, check that it has been filtered properly by the selectCalendars() method
-                if (calendarViewModel.selectedColors[selection])
-                    assert(selectedColors.contains(CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP[colorArray[selection]]))
-                else
-                    assert(!selectedColors.contains(CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP[colorArray[selection]]))
+            //If the color has been selected, check that it has been filtered properly by the selectCalendars() method
+            if (calendarViewModel.selectedColors[selection])
+                assert(selectedColors.contains(CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP[colorArray[selection]]))
+            else
+                assert(!selectedColors.contains(CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP[colorArray[selection]]))
         }
     }
 }

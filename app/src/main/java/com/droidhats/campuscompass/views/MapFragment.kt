@@ -307,7 +307,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             transportationMode = getTransportationMode(optionId)
         }
 
-
         // Populate the bottom sheet with building information
         val buildingName: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
         buildingName.text = p.tag.toString()
@@ -356,7 +355,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         })
     }
-
 
     fun getTransportationMode(optionId: Int): String {
         when (optionId) {
@@ -574,8 +572,4 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         findNavController().navigateUp()
         Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
     }
-
-    //
-
-
 }
