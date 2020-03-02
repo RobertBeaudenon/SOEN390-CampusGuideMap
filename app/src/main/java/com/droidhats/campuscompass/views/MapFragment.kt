@@ -67,7 +67,7 @@ import java.util.Locale
 import com.android.volley.Response
 import com.droidhats.campuscompass.models.Building
 import kotlinx.android.synthetic.main.instructions_sheet_layout.*
-import kotlinx.android.synthetic.main.instructions_sheet_layout.view.*
+import kotlinx.android.synthetic.main.instructions_sheet_layout.instructionsStepsID
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
 import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
@@ -89,6 +89,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
+
+         var stepInsts : String = ""
     }
 
     private var instructions = arrayListOf<String>()
@@ -447,30 +449,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //Handle the clicking of the instructions button. Should probably move from here later
     private fun instructionsButton() {
-
         //instruction button listener
         buttonInstructions.setOnClickListener {
 
             for (item in instructions) {
                 stepInstructions += item + "\n"
             }
-            println(stepInstructions)
-
-           // root!!.instructionsStepsID.text = stepInstructions
+            stepInsts = stepInstructions
             findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
         }
     }
-
-/*
-    //Handle the clicking of the closure of the instructions button. Should probably move from here later
-    private fun instructionsClose() {
-
-        //instruction button listener
-        buttonCloseInstructions.setOnClickListener {
-
-            findNavController().navigate(R.id.action_instructionFragment_to_map_fragment)
-        }
-    } */
 
     private fun drawBuildingPolygons() {
 
