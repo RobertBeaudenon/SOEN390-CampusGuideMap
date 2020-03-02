@@ -18,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.RadioGroup
@@ -56,7 +57,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
-import com.mancj.materialsearchbar.MaterialSearchBar
+//import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
@@ -125,7 +126,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         createLocationRequest()
         initPlacesSearch()
         initBottomSheetBehavior()
-        initSearchBar()
+       // initSearchBar()
         handleCampusSwitch()
     }
 
@@ -177,8 +178,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.setOnMapClickListener {
 
             //Dismiss the bottom sheet when clicking anywhere on the map
-            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            dismissBottomSheet()
         }
     }
 
@@ -292,9 +292,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     // implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
         // Expand the bottom sheet when clicking on a polygon
-        // TODO: Limt only to campus buildings as polygons could highlight anything
+        // TODO: Limit only to campus buildings as polygons could highlight anything
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
 
         //Checking which transportation mode is selected, default is walking.
@@ -308,16 +308,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         // Populate the bottom sheet with building information
-        val buildingName: TextView = activity!!.findViewById(R.id.bottom_sheet_building_name)
-        buildingName.text = p.tag.toString()
+        populateAdditionalInfoBottomSheet(p)
 
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener(View.OnClickListener {
 
-            ///TODO: Refactor this, no longer needed since buildings.json holds the location of the building @Makram
-
             // Calculating the center of the polygon to use for it's location.
-            // This won't be necessary once we hold the Buildings in a common class
+            // This was here before building class in the model was made, so I think it's a good
+            // idea to keep it here because there is no use in introducing a dependency to this
+            // method and it's not slower than filtering through all the buildings for a match to
+            // this polygon.
             var centerLat: Double = 0.0
             var centerLong: Double = 0.0
             for (i in 0 until p.points.size) {
@@ -446,19 +446,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 campusView = LatLng(45.458159, -73.640450)
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
             }
+            dismissBottomSheet()
         }
 }
 
     private fun drawBuildingPolygons() {
-
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
-                map.addPolygon(building.getPolygonOptions()).setTag(building.getName())
+                var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
+                building.setPolygon(polygon)
             }
         }
     }
-
+/*
     private fun initSearchBar() {
         searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
 
@@ -475,7 +476,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         })
     }
-
+*/
     private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
 
@@ -483,25 +484,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             BottomSheetBehavior.BottomSheetCallback() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // React to state change
-                // The following code can be used if we want to do certain actions related
-                // to the change of state of the bottom sheet
-                //
-
-//                when (newState) {
-//                    BottomSheetBehavior.STATE_HIDDEN -> {
-//                    }
-//                    BottomSheetBehavior.STATE_EXPANDED -> {
-//                    }
-//                    BottomSheetBehavior.STATE_COLLAPSED -> {
-//                    }
-//                    BottomSheetBehavior.STATE_DRAGGING -> {
-//                    }
-//                    BottomSheetBehavior.STATE_SETTLING -> {
-//                    }
-//                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-//                    }
-//                }
+                // React to state change.
+                // No functionality yet (but needs to override abstract class)
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -510,6 +494,54 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
             }
         })
+    }
+
+    private fun dismissBottomSheet() {
+        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun populateAdditionalInfoBottomSheet(p: Polygon) {
+        // Populate the bottom sheet with building information
+        val buildingName: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
+        val buildingAddress: TextView =
+            requireActivity().findViewById(R.id.bottom_sheet_building_address)
+        val buildingOpenHours: TextView = requireActivity().findViewById(R.id.bottom_sheet_open_hours)
+        val buildingServices: TextView = requireActivity().findViewById(R.id.bottom_sheet_services)
+        val buildingDepartments: TextView =
+            requireActivity().findViewById(R.id.bottom_sheet_departments)
+        val buildingImage: ImageView = requireActivity().findViewById(R.id.building_image)
+
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if (building.getPolygon().tag == p.tag) {
+                    buildingName.text = p.tag.toString()
+                    buildingAddress.text = building.getAddress()
+                    buildingOpenHours.text = building.getOpenHours()
+                    buildingServices.text = building.getServices()
+                    buildingDepartments.text = building.getDepartments()
+
+                    when(building.getPolygon().tag){
+                        "Henry F. Hall Building" -> buildingImage.setImageResource(R.drawable.building_hall)
+                        "EV Building" -> buildingImage.setImageResource(R.drawable.building_ev)
+                        "John Molson School of Business" -> buildingImage.setImageResource(R.drawable.building_jmsb)
+                        "Faubourg Saint-Catherine Building" -> buildingImage.setImageResource(R.drawable.building_fg_sc)
+                        "Guy-De Maisonneuve Building" -> buildingImage.setImageResource(R.drawable.building_gm)
+                        "Faubourg Building" -> buildingImage.setImageResource(R.drawable.building_fg)
+                        "Visual Arts Building" -> buildingImage.setImageResource(R.drawable.building_va)
+                        "Pavillion J.W. McConnell Building" -> buildingImage.setImageResource(R.drawable.building_webster_library)
+                        "Psychology Building" -> buildingImage.setImageResource(R.drawable.building_p)
+                        "Richard J. Renaud Science Complex" -> buildingImage.setImageResource(R.drawable.building_rjrsc)
+                        "Central Building" -> buildingImage.setImageResource(R.drawable.building_cb)
+                        "Communication Studies and Journalism Building" -> buildingImage.setImageResource(R.drawable.building_csj)
+                        "Administration Building" -> buildingImage.setImageResource(R.drawable.building_a)
+                        "Loyola Jesuit and Conference Centre" -> buildingImage.setImageResource(R.drawable.building_ljacc)
+                        else -> Log.v("Error loading images", "couldn't load image")
+                    }
+                    //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
+                }
+            }
+        }
     }
 
     private fun generateDirections(origin: Location, destination: Location, mode: String) {
