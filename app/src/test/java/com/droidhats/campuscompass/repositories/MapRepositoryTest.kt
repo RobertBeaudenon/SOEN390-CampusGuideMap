@@ -3,7 +3,6 @@ package com.droidhats.campuscompass.repositories
 import android.os.Build
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
-import com.droidhats.campuscompass.repositories.MapRepository
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import org.junit.Test
