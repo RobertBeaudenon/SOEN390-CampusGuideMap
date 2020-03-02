@@ -54,6 +54,7 @@ class CalendarRepositoryTest {
 
         val emptyMap: MutableMap<String, Calendar> = mutableMapOf<String, Calendar>()
 
+        // Asserting that null query does not initialize a map
         Assert.assertEquals(calendars, emptyMap)
     }
 }
