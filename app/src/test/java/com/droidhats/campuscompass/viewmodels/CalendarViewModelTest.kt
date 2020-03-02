@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.viewmodels
 
 import android.os.Build
 import org.junit.Test
@@ -8,7 +8,6 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import com.droidhats.campuscompass.models.Calendar
 import com.droidhats.campuscompass.models.CalendarEvent
-import com.droidhats.campuscompass.viewmodels.CalendarViewModel
 import org.junit.Before
 import kotlin.collections.ArrayList
 import kotlin.random.Random
