@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.repositories
 
 import android.os.Build
 import com.droidhats.campuscompass.models.Building
