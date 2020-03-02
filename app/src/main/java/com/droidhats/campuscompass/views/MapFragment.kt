@@ -13,6 +13,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -132,7 +133,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initSearchBar()
         handleCampusSwitch()
         instructionsButton()
-       // instructionsClose()
     }
 
     /**
@@ -339,7 +339,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         }
                     } else {
                         if (selectedBuilding != null) {
-                            println("Yo this is what I got: " + getTravelInfo(location, selectedBuilding.getLocation(), tansportationMode()))
                             generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
                         }
                     }
@@ -453,9 +452,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         buttonInstructions.setOnClickListener {
 
             for (item in instructions) {
-                stepInstructions += item + "\n"
+                stepInstructions += item + "\n\n"
             }
-            stepInsts = stepInstructions
+            stepInsts = Html.fromHtml(stepInstructions).toString()
             findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
         }
     }
@@ -503,43 +502,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
             }
         })
-    }
-
-    private fun getTravelInfo(origin: Location, destination: LatLng, mode: String) : String {
-
-        var travelTimeHolder = "Temp"
-
-        val directionsURL:String =
-                "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude.toString() + "," + origin.longitude.toString() + "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +"&mode=" + mode +"&key=" + getString(R.string.ApiKey)
-
-        //Creating the HTTP request with the directions URL
-        val directionsRequest = object : StringRequest(
-            Method.GET,
-            directionsURL,
-            Response.Listener<String> { response ->
-
-                //Retrieve response (a JSON object)
-                val jsonResponse = JSONObject(response)
-
-                // Get route information from json response
-                val routesArray = jsonResponse.getJSONArray("routes")
-                val routes = routesArray.getJSONObject(0)
-                val legsArray: JSONArray = routes.getJSONArray("legs")
-                val legs = legsArray.getJSONObject(0)
-                val steps = legsArray.getJSONObject(0).getJSONArray("steps")
-                val travelTime:JSONObject = legs.getJSONObject("duration")
-
-                travelTimeHolder = travelTime.getString("text")
-            },
-            Response.ErrorListener {
-                Log.e("Volley Error:", "HTTP response error")
-            }) {}
-
-        //Confirm and add the request with Volley
-        val requestQueue = Volley.newRequestQueue(activity)
-        requestQueue.add(directionsRequest)
-
-        return travelTimeHolder
     }
 
     private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
