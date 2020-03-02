@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.RadioGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -100,7 +101,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     ): View? {
         val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        viewModel.init()
         return mapFragment
     }
 
@@ -300,37 +300,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Checking which transportation mode is selected, default is walking.
         var transportationMode: String = "driving"
         var radioSelectedId = radioTransportGroup.checkedRadioButtonId
-        when (radioSelectedId) {
-            R.id.drivingId -> {
-                transportationMode = "driving"
-            }
-            R.id.walkingId -> {
-                transportationMode = "walking"
-            }
-            R.id.bicyclingId -> {
-                transportationMode = "bicycling"
-            }
-            R.id.shuttleId -> {
-                transportationMode = "shuttle"
-            }
-        }
+        transportationMode = getTransportationMode(radioSelectedId)
 
         //In case the transportation mode is changed, this will capture it.
         radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
-            when (optionId) {
-                R.id.drivingId -> {
-                    transportationMode = "driving"
-                }
-                R.id.walkingId -> {
-                    transportationMode = "walking"
-                }
-                R.id.bicyclingId -> {
-                    transportationMode = "bicycling"
-                }
-                R.id.shuttleId -> {
-                    transportationMode = "shuttle"
-                }
-            }
+            transportationMode = getTransportationMode(optionId)
         }
 
         // Populate the bottom sheet with building information
@@ -380,6 +354,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         })
+    }
+
+    fun getTransportationMode(optionId: Int): String {
+        when (optionId) {
+            R.id.drivingId -> {
+                return "driving"
+            }
+            R.id.walkingId -> {
+                return "walking"
+            }
+            R.id.bicyclingId -> {
+                return "bicycling"
+            }
+            R.id.shuttleId -> {
+                return "shuttle"
+            }
+        }
+        return ""
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
@@ -612,5 +604,4 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         findNavController().navigateUp()
         Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
     }
-
 }

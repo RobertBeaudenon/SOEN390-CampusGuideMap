@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.viewmodels
 
 
 import io.reactivex.rxjava3.core.Scheduler
