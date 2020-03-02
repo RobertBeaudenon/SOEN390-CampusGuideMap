@@ -26,7 +26,6 @@ class InstructionFragment : Fragment() {
 
         //Handle the clicking of the closure of the instructions button. Should probably move from here later
         buttonCloseInstructions.setOnClickListener {
-
             findNavController().navigateUp()
         }
 

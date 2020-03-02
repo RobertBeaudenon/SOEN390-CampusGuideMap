@@ -253,7 +253,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         )
     }
 
-
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
@@ -356,7 +355,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun tansportationMode() : String {
 
         //Checking which transportation mode is selected, default is walking.
-
         var transportationMode = "driving"
         when (radioTransportGroup.checkedRadioButtonId) {
             R.id.drivingId -> {
