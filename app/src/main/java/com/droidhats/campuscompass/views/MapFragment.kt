@@ -13,6 +13,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.RadioGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -32,7 +32,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.CalendarEvent
-import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -57,10 +56,8 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
-//import com.mancj.materialsearchbar.MaterialSearchBar
+import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import kotlinx.android.synthetic.main.map_fragment.searchBar
-import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONObject
 import java.io.IOException
 import kotlin.collections.ArrayList
@@ -70,6 +67,10 @@ import kotlin.collections.listOf
 import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
 import java.util.Locale
 import com.android.volley.Response
+import com.droidhats.campuscompass.models.Building
+import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
+import kotlinx.android.synthetic.main.map_fragment.searchBar
+import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -86,26 +87,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
-
-        private const val MAP_PADDING_TOP = 150
+        private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
+
+         var stepInsts : String = ""
     }
 
+    private var instructions = arrayListOf<String>()
+    private var stepInstructions: String = ""
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
-
     private lateinit var viewModel: MapViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
-        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        return mapFragment
+        return inflater.inflate(R.layout.map_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -126,8 +129,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         createLocationRequest()
         initPlacesSearch()
         initBottomSheetBehavior()
-       // initSearchBar()
+        initSearchBar()
         handleCampusSwitch()
+        instructionsButton()
     }
 
     /**
@@ -160,7 +164,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Enables the my-location layer which draws a light blue dot on the user’s location.
         // It also adds a button to the map that, when tapped, centers the map on the user’s location.
         map.isMyLocationEnabled = true
-        //Lower the button
+
+        //Current Location Icon has been adjusted to be at the bottom right sid eof the search bar.
         map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
 
         //Gives you the most recent location currently available.
@@ -173,7 +178,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
             }
         }
-        setBuildingPolygons()
+
+        drawBuildingPolygons()
+        map.setOnPolygonClickListener(this)
 
         map.setOnMapClickListener {
 
@@ -183,14 +190,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun createLocationRequest() {
-        // 1  create an instance of LocationRequest, add it to an instance of
-        // LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on
-        // the current state of the user’s location settings.
+        // 1  create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
         locationRequest = LocationRequest()
         // 2   specifies the rate at which your app will like to receive updates.
         locationRequest.interval = 10000
-        // 3 specifies the fastest rate at which the app can handle updates. Setting the
-        // fastestInterval rate places a limit on how fast updates will be sent to your app.
+        // 3 specifies the fastest rate at which the app can handle updates. Setting the fastestInterval rate places a limit on how fast updates will be sent to your app.
         locationRequest.fastestInterval = 5000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
@@ -208,8 +212,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         task.addOnFailureListener { e ->
-            // 6  A task failure means the location settings have some issues which can be fixed.
-            // This could be as a result of the user’s location settings turned off
+            // 6  A task failure means the location settings have some issues which can be fixed. This could be as a result of the user’s location settings turned off
             if (e is ResolvableApiException) {
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
@@ -250,9 +253,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         )
     }
 
-
-    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it
-    // has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
+    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
@@ -284,12 +285,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun setBuildingPolygons() {
-        drawBuildingPolygons()
-        map.setOnPolygonClickListener(this)
-    }
-
-    // implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+    //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
         // Expand the bottom sheet when clicking on a polygon
         // TODO: Limit only to campus buildings as polygons could highlight anything
@@ -297,91 +293,92 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
 
-        //Checking which transportation mode is selected, default is walking.
-        var transportationMode: String = "driving"
-        var radioSelectedId = radioTransportGroup.checkedRadioButtonId
-        transportationMode = getTransportationMode(radioSelectedId)
-
-        //In case the transportation mode is changed, this will capture it.
-        radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
-            transportationMode = getTransportationMode(optionId)
-        }
-
         // Populate the bottom sheet with building information
         populateAdditionalInfoBottomSheet(p)
 
+        //Navigation here
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
-        directionsButton.setOnClickListener(View.OnClickListener {
+        directionsButton.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            // Calculating the center of the polygon to use for it's location.
-            // This was here before building class in the model was made, so I think it's a good
-            // idea to keep it here because there is no use in introducing a dependency to this
-            // method and it's not slower than filtering through all the buildings for a match to
-            // this polygon.
-            var centerLat: Double = 0.0
-            var centerLong: Double = 0.0
-            for (i in 0 until p.points.size) {
-                centerLat += p.points[i].latitude
-                centerLong += p.points[i].longitude
+            //Get the building that the user clicked on
+            var selectedBuilding : Building? = null
+            for (campus in viewModel.getCampuses()) {
+                for (building in campus.getBuildings()) {
+                    if (p.tag.toString() == building.getName())
+                        selectedBuilding  = building
+                }
             }
-            centerLat /= p.points.size
-            centerLong /= p.points.size
-
-            val buildingLocation: Location = lastLocation
-            buildingLocation.latitude = centerLat
-            buildingLocation.longitude = centerLong
 
             //TODO: This full clear and redraw should probably be removed when the directions
             // system is implemented. It was added to show only one route at a time
             map.clear()
             drawBuildingPolygons()
-            placeMarkerOnMap(LatLng(centerLat, centerLong))
+            if (selectedBuilding != null) {
+                placeMarkerOnMap(LatLng(selectedBuilding.getLocation().latitude, selectedBuilding.getLocation().longitude))
+            }
 
             //Generate directions from current location to the selected building
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null) {
-                    generateDirections(location, buildingLocation, transportationMode)
+
+                    if (tansportationMode() == "shuttle") {
+                        //Setting the top bar "from" to the name of the selected building.
+
+                        // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
+                        if (selectedBuilding != null) {
+                            if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
+                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
+                            } else {
+                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
+                            }
+                        }
+                    } else {
+                        if (selectedBuilding != null) {
+                            generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                        }
+                    }
                 }
-                //Move the camera to the starting location
-                map.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(
-                            location.latitude,
-                            location.longitude
-                        ), 16.0f
-                    )
-                )
+
+                if (tansportationMode()!= "shuttle") {
+                    //Move the camera to the starting location
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
+                }
+
+                buttonInstructions.visibility = View.VISIBLE
+
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
-        })
+        }
     }
 
-    fun getTransportationMode(optionId: Int): String {
-        when (optionId) {
+    private fun tansportationMode() : String {
+
+        //Checking which transportation mode is selected, default is walking.
+        var transportationMode = "driving"
+        when (radioTransportGroup.checkedRadioButtonId) {
             R.id.drivingId -> {
-                return "driving"
+                transportationMode = "driving"
             }
             R.id.walkingId -> {
-                return "walking"
+                transportationMode = "walking"
             }
             R.id.bicyclingId -> {
-                return "bicycling"
+                transportationMode = "bicycling"
             }
             R.id.shuttleId -> {
-                return "shuttle"
+                transportationMode = "shuttle"
             }
         }
-        return ""
+        return transportationMode
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
     override fun onMarkerClick(p0: Marker?) = false
 
-    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a
-    // particular point on the map’s surface.
+    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
     private fun placeMarkerOnMap(location: LatLng) {
-        // 1 Create a MarkerOptions object and sets the user’s current location as the
-        // position for the marker
+        // 1 Create a MarkerOptions object and sets the user’s current location as the position for the marker
         val markerOptions = MarkerOptions().position(location)
 
         //added a call to getAddress() and added this address as the marker title.
@@ -394,8 +391,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //This method get address from coordinates
     private fun getAddress(latLng: LatLng): String {
-        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address
-        // and vice versa
+        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
         val geocoder = Geocoder(activity as Activity)
         val addresses: List<Address>?
         val address: Address?
@@ -405,7 +401,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             // 2 Asks the geocoder to get the address from the location passed to the method
             addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             // 3 If the response contains any address, then append it to a string and return
-            if (null != addresses && !addresses.isEmpty()) {
+            if (null != addresses && addresses.isNotEmpty()) {
                 address = addresses[0]
                 for (i in 0 until address.maxAddressLineIndex) {
                     addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
@@ -421,14 +417,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun initPlacesSearch() {
         Places.initialize(activity as Activity, getString(R.string.ApiKey), Locale.CANADA)
         Places.createClient(activity as Activity)
-        var fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+        val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
 
-        //Autocomplete search launches after hitting the button
-        val searchButton: View = requireActivity().findViewById(R.id.fab_search)
-
-        searchButton.setOnClickListener {
-            var intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                .build(activity as Activity)
+        searchBar.setOnClickListener {
+            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(activity as Activity)
             startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
         }
     }
@@ -448,18 +440,32 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
             dismissBottomSheet()
         }
-}
+    }
+
+    //Handle the clicking of the instructions button. Should probably move from here later
+    private fun instructionsButton() {
+        //instruction button listener
+        buttonInstructions.setOnClickListener {
+
+            for (item in instructions) {
+                stepInstructions += item + "\n\n"
+            }
+            stepInsts = Html.fromHtml(stepInstructions).toString()
+            findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
+        }
+    }
 
     private fun drawBuildingPolygons() {
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
+                map.addPolygon(building.getPolygonOptions()).tag = building.getName()
                 var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
                 building.setPolygon(polygon)
             }
         }
     }
-/*
+
     private fun initSearchBar() {
         searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
 
@@ -476,16 +482,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         })
     }
-*/
+
     private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
-
-        bottomSheetBehavior.setBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // React to state change.
-                // No functionality yet (but needs to override abstract class)
+                // React to state change
+                // The following code can be used if we want to do certain actions related
+                // to the change of state of the bottom sheet
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -544,14 +549,29 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun generateDirections(origin: Location, destination: Location, mode: String) {
+    private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
 
-        //Directions URL to be sent
-        val directionsURL = "https://maps.googleapis.com/maps/api/directions/json?" +
-                "origin=" + origin.latitude.toString() + "," + origin.longitude.toString() +
-                "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +
-                "&mode=" + mode +
-                "&key=" + getString(R.string.ApiKey)
+        val directionsURL:String = when (mode) {
+            "shuttleToSGW" -> {
+                "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
+            }
+            "shuttleToLOY" -> {
+                "https://maps.googleapis.com/maps/api/directions/json?origin=45.458398,-73.638241&destination=45.497132,-73.578519&mode=" + mode + "&key=" + getString(R.string.ApiKey)
+            }
+            else -> {
+                "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude.toString() + "," + origin.longitude.toString() + "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +"&mode=" + mode +"&key=" + getString(R.string.ApiKey)
+            }
+        }
+
+        if (mode == "shuttleToSGW") {
+            //Move the camera to the LOY Campus
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(45.458398,-73.638241), 16.0f))
+        }
+
+        //Move the camera to the SGW Campus
+        if (mode == "shuttleToLOY") {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(45.497132,-73.578519), 16.0f))
+        }
 
         //Creating the HTTP request with the directions URL
         val directionsRequest = object : StringRequest(
@@ -580,10 +600,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
                 //Build the path polyline
                 for (i in 0 until steps.length()) {
-                    val points =
-                        steps.getJSONObject(i).getJSONObject("polyline").getString("points")
-                    val instructions = steps.getJSONObject(i)
-                        .getString("html_instructions")  //Getting the route instructions
+                    val points =steps.getJSONObject(i).getJSONObject("polyline").getString("points")
+                    instructions.add(steps.getJSONObject(i).getString("html_instructions"))  //Getting the route instructions and storing it into an array.
                     path.add(PolyUtil.decode(points))
                 }
                 //Draw the path polyline
