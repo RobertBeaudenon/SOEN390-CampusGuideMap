@@ -98,11 +98,11 @@ class MapRepository(json: String) {
                 var hoursBuilder = StringBuilder()
 
                 //Traverse each opening hours array of each building
-                for(i in 0 until openHoursArray.length()) {
-                    val day: String = openHoursArray.getJSONArray(i)[0].toString()
-                    val hours: String = openHoursArray.getJSONArray(i)[1].toString()
+                for(j in 0 until openHoursArray.length()) {
+                    val day: String = openHoursArray.getJSONArray(j)[0].toString()
+                    val hours: String = openHoursArray.getJSONArray(j)[1].toString()
 
-                    if(i == openHoursArray.length()){
+                    if(j == openHoursArray.length()){
                         hoursBuilder.append(day + "\t" + hours)
                     } else {
                         hoursBuilder.append(day + "\t" + hours + "\n")
@@ -110,13 +110,14 @@ class MapRepository(json: String) {
                 }
 
                 // Traverse each coordinate arrays of each building
-                for(j in 0 until coordinatesArray.length()) {
-                    val latCoordinate: Double = coordinatesArray.getJSONArray(j)[0].toString().toDouble()
-                    val longCoordinate: Double = coordinatesArray.getJSONArray(j)[1].toString().toDouble()
+                for(k in 0 until coordinatesArray.length()) {
+                    val latCoordinate: Double = coordinatesArray.getJSONArray(k)[0].toString().toDouble()
+                    val longCoordinate: Double = coordinatesArray.getJSONArray(k)[1].toString().toDouble()
 
                     // Add all the edge coordinates of the building to the list
                     polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
                 }
+
                 buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList, buildingAddress, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
             }
         } catch(e: JSONException) {
