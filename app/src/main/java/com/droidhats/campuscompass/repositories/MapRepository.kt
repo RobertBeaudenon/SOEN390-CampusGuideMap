@@ -98,19 +98,19 @@ class MapRepository(json: String) {
                 var hoursBuilder = StringBuilder()
 
                 //Traverse each opening hours array of each building
-                for(i in 0 until openHoursArray.length()){
+                for(i in 0 until openHoursArray.length()) {
                     val day: String = openHoursArray.getJSONArray(i)[0].toString()
                     val hours: String = openHoursArray.getJSONArray(i)[1].toString()
 
                     if(i == openHoursArray.length()){
                         hoursBuilder.append(day + "\t" + hours)
-                    }else{
+                    } else {
                         hoursBuilder.append(day + "\t" + hours + "\n")
                     }
                 }
 
                 // Traverse each coordinate arrays of each building
-                for(j in 0 until coordinatesArray.length()){
+                for(j in 0 until coordinatesArray.length()) {
                     val latCoordinate: Double = coordinatesArray.getJSONArray(j)[0].toString().toDouble()
                     val longCoordinate: Double = coordinatesArray.getJSONArray(j)[1].toString().toDouble()
 
