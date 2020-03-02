@@ -50,4 +50,19 @@
 
     <include layout="@layout/bottom_sheet_layout"/>
 
+    <Button
+        android:id="@+id/buttonInstructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="150dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:text="Instructions"
+        android:background="#791b0f"
+        android:textColor="#FFF"
+        android:textAllCaps="false"
+        android:visibility="invisible"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

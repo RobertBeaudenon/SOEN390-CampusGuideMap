@@ -56,8 +56,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import kotlinx.android.synthetic.main.map_fragment.searchBar
-import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONObject
 import java.io.IOException
 import kotlin.collections.ArrayList
@@ -68,6 +66,11 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
 import java.util.Locale
 import com.android.volley.Response
 import com.droidhats.campuscompass.models.Building
+import kotlinx.android.synthetic.main.instructions_sheet_layout.*
+import kotlinx.android.synthetic.main.instructions_sheet_layout.view.*
+import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
+import kotlinx.android.synthetic.main.map_fragment.searchBar
+import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -88,8 +91,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val MAP_PADDING_RIGHT = 15
     }
 
+    private var instructions = arrayListOf<String>()
+    private var stepInstructions: String = ""
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
-
     private lateinit var viewModel: MapViewModel
 
     override fun onCreateView(
@@ -125,6 +129,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initBottomSheetBehavior()
         initSearchBar()
         handleCampusSwitch()
+        instructionsButton()
+       // instructionsClose()
     }
 
     /**
@@ -331,6 +337,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         }
                     } else {
                         if (selectedBuilding != null) {
+                            println("Yo this is what I got: " + getTravelInfo(location, selectedBuilding.getLocation(), tansportationMode()))
                             generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
                         }
                     }
@@ -340,6 +347,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     //Move the camera to the starting location
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
                 }
+
+                buttonInstructions.visibility = View.VISIBLE
 
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
@@ -436,6 +445,33 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    //Handle the clicking of the instructions button. Should probably move from here later
+    private fun instructionsButton() {
+
+        //instruction button listener
+        buttonInstructions.setOnClickListener {
+
+            for (item in instructions) {
+                stepInstructions += item + "\n"
+            }
+            println(stepInstructions)
+
+           // root!!.instructionsStepsID.text = stepInstructions
+            findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
+        }
+    }
+
+/*
+    //Handle the clicking of the closure of the instructions button. Should probably move from here later
+    private fun instructionsClose() {
+
+        //instruction button listener
+        buttonCloseInstructions.setOnClickListener {
+
+            findNavController().navigate(R.id.action_instructionFragment_to_map_fragment)
+        }
+    } */
+
     private fun drawBuildingPolygons() {
 
         //Highlight both SGW and Loyola Campuses
@@ -479,6 +515,43 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
             }
         })
+    }
+
+    private fun getTravelInfo(origin: Location, destination: LatLng, mode: String) : String {
+
+        var travelTimeHolder = "Temp"
+
+        val directionsURL:String =
+                "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude.toString() + "," + origin.longitude.toString() + "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +"&mode=" + mode +"&key=" + getString(R.string.ApiKey)
+
+        //Creating the HTTP request with the directions URL
+        val directionsRequest = object : StringRequest(
+            Method.GET,
+            directionsURL,
+            Response.Listener<String> { response ->
+
+                //Retrieve response (a JSON object)
+                val jsonResponse = JSONObject(response)
+
+                // Get route information from json response
+                val routesArray = jsonResponse.getJSONArray("routes")
+                val routes = routesArray.getJSONObject(0)
+                val legsArray: JSONArray = routes.getJSONArray("legs")
+                val legs = legsArray.getJSONObject(0)
+                val steps = legsArray.getJSONObject(0).getJSONArray("steps")
+                val travelTime:JSONObject = legs.getJSONObject("duration")
+
+                travelTimeHolder = travelTime.getString("text")
+            },
+            Response.ErrorListener {
+                Log.e("Volley Error:", "HTTP response error")
+            }) {}
+
+        //Confirm and add the request with Volley
+        val requestQueue = Volley.newRequestQueue(activity)
+        requestQueue.add(directionsRequest)
+
+        return travelTimeHolder
     }
 
     private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
@@ -533,8 +606,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 //Build the path polyline
                 for (i in 0 until steps.length()) {
                     val points =steps.getJSONObject(i).getJSONObject("polyline").getString("points")
-                    val instructions = steps.getJSONObject(i).getString("html_instructions")  //Getting the route instructions
-                    println("The Instructions are: $instructions")
+                    instructions.add(steps.getJSONObject(i).getString("html_instructions"))  //Getting the route instructions and storing it into an array.
                     path.add(PolyUtil.decode(points))
                 }
                 //Draw the path polyline
