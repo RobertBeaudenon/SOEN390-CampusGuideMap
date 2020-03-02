@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -67,8 +68,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
 import java.util.Locale
 import com.android.volley.Response
 import com.droidhats.campuscompass.models.Building
-import kotlinx.android.synthetic.main.instructions_sheet_layout.*
-import kotlinx.android.synthetic.main.instructions_sheet_layout.instructionsStepsID
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
 import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
@@ -186,8 +185,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.setOnMapClickListener {
 
             //Dismiss the bottom sheet when clicking anywhere on the map
-            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            dismissBottomSheet()
         }
     }
 
@@ -291,14 +289,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
         // Expand the bottom sheet when clicking on a polygon
-        // TODO: Limt only to campus buildings as polygons could highlight anything
+        // TODO: Limit only to campus buildings as polygons could highlight anything
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
 
-        //Populate the bottom sheet with building information
-        val buildingNameText: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
-        buildingNameText.text = p.tag.toString()
+        // Populate the bottom sheet with building information
+        populateAdditionalInfoBottomSheet(p)
 
         //Navigation here
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
@@ -443,6 +440,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 campusView = LatLng(45.458159, -73.640450)
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
             }
+            dismissBottomSheet()
         }
     }
 
@@ -460,11 +458,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun drawBuildingPolygons() {
-
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
                 map.addPolygon(building.getPolygonOptions()).tag = building.getName()
+                var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
+                building.setPolygon(polygon)
             }
         }
     }
@@ -502,6 +501,54 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
             }
         })
+    }
+
+    private fun dismissBottomSheet() {
+        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun populateAdditionalInfoBottomSheet(p: Polygon) {
+        // Populate the bottom sheet with building information
+        val buildingName: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
+        val buildingAddress: TextView =
+            requireActivity().findViewById(R.id.bottom_sheet_building_address)
+        val buildingOpenHours: TextView = requireActivity().findViewById(R.id.bottom_sheet_open_hours)
+        val buildingServices: TextView = requireActivity().findViewById(R.id.bottom_sheet_services)
+        val buildingDepartments: TextView =
+            requireActivity().findViewById(R.id.bottom_sheet_departments)
+        val buildingImage: ImageView = requireActivity().findViewById(R.id.building_image)
+
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if (building.getPolygon().tag == p.tag) {
+                    buildingName.text = p.tag.toString()
+                    buildingAddress.text = building.getAddress()
+                    buildingOpenHours.text = building.getOpenHours()
+                    buildingServices.text = building.getServices()
+                    buildingDepartments.text = building.getDepartments()
+
+                    when(building.getPolygon().tag){
+                        "Henry F. Hall Building" -> buildingImage.setImageResource(R.drawable.building_hall)
+                        "EV Building" -> buildingImage.setImageResource(R.drawable.building_ev)
+                        "John Molson School of Business" -> buildingImage.setImageResource(R.drawable.building_jmsb)
+                        "Faubourg Saint-Catherine Building" -> buildingImage.setImageResource(R.drawable.building_fg_sc)
+                        "Guy-De Maisonneuve Building" -> buildingImage.setImageResource(R.drawable.building_gm)
+                        "Faubourg Building" -> buildingImage.setImageResource(R.drawable.building_fg)
+                        "Visual Arts Building" -> buildingImage.setImageResource(R.drawable.building_va)
+                        "Pavillion J.W. McConnell Building" -> buildingImage.setImageResource(R.drawable.building_webster_library)
+                        "Psychology Building" -> buildingImage.setImageResource(R.drawable.building_p)
+                        "Richard J. Renaud Science Complex" -> buildingImage.setImageResource(R.drawable.building_rjrsc)
+                        "Central Building" -> buildingImage.setImageResource(R.drawable.building_cb)
+                        "Communication Studies and Journalism Building" -> buildingImage.setImageResource(R.drawable.building_csj)
+                        "Administration Building" -> buildingImage.setImageResource(R.drawable.building_a)
+                        "Loyola Jesuit and Conference Centre" -> buildingImage.setImageResource(R.drawable.building_ljacc)
+                        else -> Log.v("Error loading images", "couldn't load image")
+                    }
+                    //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
+                }
+            }
+        }
     }
 
     private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
