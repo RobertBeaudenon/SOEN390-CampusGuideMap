@@ -26,6 +26,6 @@ class CalendarEvent(
                 "\nStart Time: $startTime" +
                 "\nEnd Time: $endTime" +
                 "\nDescription: $description" +
-                "\nColor $color"
+                "\nColor: $color"
     }
 }

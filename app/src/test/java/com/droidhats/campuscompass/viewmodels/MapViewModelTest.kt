@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
 import android.os.Build
