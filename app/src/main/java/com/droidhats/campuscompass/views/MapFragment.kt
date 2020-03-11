@@ -84,7 +84,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private var locationUpdateState = false
 
     companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
         private const val MAP_PADDING_TOP = 200
@@ -161,9 +160,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.isIndoorEnabled = true
         map.uiSettings.isIndoorLevelPickerEnabled = true
 
-        //Enables the my-location layer which draws a light blue dot on the user’s location.
-        // It also adds a button to the map that, when tapped, centers the map on the user’s location.
-        map.isMyLocationEnabled = true
+        //Checks if location permissions were granted before enabling my-location layer
+        //Purpose: users can still generate directions without supplying their current location
+        if (ActivityCompat.checkSelfPermission(
+                activity as Activity,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            //Enables the my-location layer which draws a light blue dot on the user’s location.
+            // It also adds a button to the map that, when tapped, centers the map on the user’s location.
+            map.isMyLocationEnabled = true
+        }
 
         //Current Location Icon has been adjusted to be at the bottom right sid eof the search bar.
         map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
@@ -232,20 +239,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //get real time updates of current location
     private fun startLocationUpdates() {
-        //If the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
-        if (ActivityCompat.checkSelfPermission(
-                activity as Activity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                activity as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            return
-        }
-        //If there is permission, request for location updates.
+        //requests for location updates.
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
