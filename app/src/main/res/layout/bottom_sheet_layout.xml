@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
@@ -7,89 +7,188 @@
     android:clickable="true"
     android:focusable="auto"
     app:behavior_peekHeight="0dp"
+    app:behavior_fitToContents = "false"
     app:layout_insetEdge="bottom"
     app:behavior_hideable="true"
-    android:background="#FFF"
+    android:background="#f2f2f2"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-
-    <androidx.cardview.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
-        android:layout_gravity="center"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        card_view:cardBackgroundColor="@color/quantum_purple900">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:paddingStart="20dp">
+            android:layout_gravity="center"
+            app:cardBackgroundColor="#f2f2f2">
+            <LinearLayout
+                android:id="@+id/hold_building_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/building_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="190dp"
+                    app:srcCompat="@drawable/building_ljacc" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
 
         <TextView
             android:id="@+id/bottom_sheet_building_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
             android:text="Building"
-            android:textSize="18sp"
-            android:textColor="@color/quantum_white_text"
-            />
+            android:textColor="#000000"
+            android:textSize="30sp" />
 
         <TextView
+            android:id="@+id/bottom_sheet_building_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
             android:text="Address"
-            android:textSize="14sp"
-            android:textColor="@color/quantum_white_text" />
+            android:textSize="20sp"
+            android:textColor="#000000" />
 
-                 </LinearLayout>
+        <ImageView
+            android:id="@+id/separator_bar"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/bottom_sheet_separator" />
 
-    </androidx.cardview.widget.CardView>
+        <!-- this needs to be deleted after -->
 
+        <TableLayout
+            android:id="@+id/bottom_sheet_info_table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:shrinkColumns="1">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="5dp">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="1">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="15sp"
-        android:text="Open hours"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="15sp"
-        android:text="Services" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Open hours: "
+                    android:textSize="18sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="15sp"
-        android:text="Departments" />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="15sp"
-        android:text="Events" />
+                <TextView
+                    android:id="@+id/bottom_sheet_open_hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Hours here"
+                    android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/bottom_sheet_directions_button"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="125dp"
-        android:layout_marginEnd="125dp"
-        android:drawableStart="@android:drawable/ic_dialog_map"
-        android:text="Directions" />
+            </TableRow>
 
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="1">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Services:"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/bottom_sheet_services"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Services here"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Departments:"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/bottom_sheet_departments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text="Departments here"
+                    android:textSize="18sp" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <Button
+            android:id="@+id/bottom_sheet_directions_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="125dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="125dp"
+            android:background="@drawable/calendarbutton"
+            android:drawableStart="@android:drawable/ic_dialog_map"
+            android:padding="10dp"
+            android:text="Directions"
+            android:textColor="#FFFFFF" />
+
+        <RadioGroup
+            android:id="@+id/radioTransportGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#dbeceb"
+            android:checkedButton="@id/drivingId">
+
+            <RadioButton
+                android:id="@+id/drivingId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Driving" />
+
+            <RadioButton
+                android:id="@+id/walkingId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Walking" />
+
+            <RadioButton
+                android:id="@+id/bicyclingId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bicycle" />
+
+            <RadioButton
+                android:id="@+id/shuttleId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shuttle" />
+        </RadioGroup>
     </LinearLayout>
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>
