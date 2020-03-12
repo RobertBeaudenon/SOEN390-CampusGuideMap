@@ -350,6 +350,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
+
+        val indoorMapsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_floor_map_button)
+        indoorMapsButton.setOnClickListener {
+
+            findNavController().navigate(R.id.action_map_fragment_to_floorFragment)
+        }
+
+
     }
 
     private fun tansportationMode() : String {

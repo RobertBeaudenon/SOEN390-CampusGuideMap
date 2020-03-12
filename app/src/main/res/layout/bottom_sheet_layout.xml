@@ -164,6 +164,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#dbeceb"
+            android:orientation="horizontal"
             android:checkedButton="@id/drivingId">
 
             <RadioButton
@@ -190,5 +191,17 @@
                 android:layout_height="wrap_content"
                 android:text="Shuttle" />
         </RadioGroup>
+
+        <Button
+            android:id="@+id/bottom_sheet_floor_map_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="125dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="125dp"
+            android:background="@drawable/calendarbutton"
+            android:padding="10dp"
+            android:text="Indoor Maps"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
