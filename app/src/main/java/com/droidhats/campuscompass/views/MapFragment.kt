@@ -22,6 +22,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -67,6 +68,7 @@ import kotlin.collections.listOf
 import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
 import java.util.Locale
 import com.android.volley.Response
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.models.Building
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
 import kotlinx.android.synthetic.main.map_fragment.searchBar
@@ -162,11 +164,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         //Checks if location permissions were granted before enabling my-location layer
         //Purpose: users can still generate directions without supplying their current location
-        if (ActivityCompat.checkSelfPermission(
-                activity as Activity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        if ((activity as MainActivity).checkLocationPermission()) {
             //Enables the my-location layer which draws a light blue dot on the user’s location.
             // It also adds a button to the map that, when tapped, centers the map on the user’s location.
             map.isMyLocationEnabled = true
