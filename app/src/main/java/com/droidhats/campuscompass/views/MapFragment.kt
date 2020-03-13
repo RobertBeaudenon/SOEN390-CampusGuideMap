@@ -14,6 +14,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.text.Html
+import android.text.Html.fromHtml
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -435,7 +436,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             for (item in instructions) {
                 stepInstructions += item
             }
-            stepInsts = Html.fromHtml(stepInstructions).toString()
+            stepInsts = fromHtml(stepInstructions).toString()
             instructions.clear() // Array is cleared
             stepInstructions = "" // String instruction cleared
             findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
@@ -575,6 +576,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val legsArray: JSONArray = routes.getJSONArray("legs")
                 val legs = legsArray.getJSONObject(0)
                 val stepsArray = legs.getJSONArray("steps")
+                val steps = stepsArray.getJSONObject(0)
 
                 //Debug
                 for (x in 1..3) {
