@@ -1,0 +1,529 @@
+{
+    "SGW_buildings": [{
+            "name": "Henry F. Hall Building",
+            "address": "Boulevard de Maisonneuve O, Montreal, QC H3G 1M8",
+            "location": [45.497320, -73.579031],
+            "coordinates": [
+                [45.497164, -73.579544],
+                [45.497710, -73.579034],
+                [45.497373, -73.578338],
+                [45.496828, -73.578850]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Geography, Planning and Environment",
+                "Political Science, Sociology and Anthropology, Economics",
+                "School of Irish Studies"
+            ],
+            "services": [
+                "Welcome Crew Office",
+                "DB Clarke Theatre",
+                "Dean of Students",
+                "Aboriginal Student Resource Centre",
+                "Concordia Student Union"
+            ]
+        }, {
+            "name": "EV Building",
+            "address": "1515 Saint-Catherine St W, Montreal, Quebec H3G 1S6",
+            "location": [45.495469, -73.577632],
+            "coordinates": [
+                [45.495594, -73.578761],
+                [45.495175, -73.577855],
+                [45.495826, -73.577243],
+                [45.496046, -73.577709],
+                [45.495673, -73.578080],
+                [45.495910, -73.578475]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Gina Cody School of Engineering and Computer Science",
+                "Electrical and Computer Engineering",
+                "Building, Civil, and Environmental Engineering",
+                "Computer Science and Software Engineering",
+                "Mechanical, Industrial and Aerospace Engineering",
+                "Design and Computation Arts",
+                "Faculty of Fine Arts",
+                "Studio Arts",
+                "Art Education",
+                "Art History",
+                "Contemporary Dance",
+                "Recreation Athletics",
+                "Zero Energy Building Studies",
+                "Centre for Pattern Recognition and Machine Intelligence",
+                "Centre for Composites (CONCOM)"
+            ],
+            "services": [
+                "LeGym",
+                "FOFA Gallery"
+            ]
+        }, {
+            "name": "John Molson School of Business",
+            "address": "1450 Guy St, Montreal, Quebec H3H 0A1",
+            "location": [45.495496, -73.579162],
+            "coordinates": [
+                [45.495362, -73.579385],
+                [45.495224, -73.579121],
+                [45.495165, -73.579180],
+                [45.495002, -73.578821],
+                [45.495036, -73.578787],
+                [45.495001, -73.578728],
+                [45.495195, -73.578507],
+                [45.495529, -73.579209]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Accountancy",
+                "Supply Chain & Business Technology Management",
+                "Finance",
+                "Management",
+                "Marketing",
+                "Goodman Institute of Investment Management",
+                "Executive MBA Program",
+                "Music",
+                "Theatre",
+                "Contemporary Dance"
+            ],
+            "services": [
+                "Career Management Services",
+                "John Molson Executive Centre",
+                "Performing Arts Facilities"
+            ]
+        }, {
+            "name": "Faubourg Saint-Catherine Building",
+            "address": "1616 Saint-Catherine St W, Montreal, QC H3H 1L7",
+            "location": [45.494231, -73.578363],
+            "coordinates": [
+                [45.493822, -73.579069],
+                [45.493619, -73.578735],
+                [45.494457, -73.577627],
+                [45.494687, -73.578045],
+                [45.494363, -73.578439]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Education"
+            ],
+            "services": [
+                "Classrooms"
+            ]
+        }, {
+            "name": "Guy-De Maisonneuve Building",
+            "address": "1435 Guy St, Montreal, Quebec H3H 2L5",
+            "location": [45.495924, -73.578884],
+            "coordinates": [
+                [45.495782, -73.579159],
+                [45.495765, -73.579118],
+                [45.495781, -73.579099],
+                [45.495615, -73.578746],
+                [45.495946, -73.578436],
+                [45.496132, -73.578816]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Contemporary Dance",
+                "Music",
+                "Theatre"
+            ],
+            "services": [
+                "Access Centre for Students with Disabilities",
+                "Environmental Health and Safety",
+                "Facilities Management",
+                "Financial Aid & Awards Office",
+                "Financial Services",
+                "Graduate Studies",
+                "Health Services",
+                "Institute for Co-operative Education",
+                "Internal Students Office",
+                "Office of Rights and Responsibilities",
+                "Office of the President",
+                "Office of the Provost & VP, Academic",
+                "Office of the VP, Institutional Relations and Secretary General",
+                "Office of the VP, Research & Graduate Studies",
+                "Ombuds Office",
+                "University Communications Services"
+            ]
+        }, {
+            "name": "Faubourg Building",
+            "address": "1250 Guy St, Montreal, Quebec H3H 2L3",
+            "location": [45.494855, -73.577820],
+            "coordinates": [
+                [45.494911, -73.577786],
+                [45.494655, -73.577218],
+                [45.494403, -73.577520],
+                [45.494696, -73.578037]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Classics, Modern Languages & Linguistics",
+                "Concordia Continuing Education",
+                "Mel Hoppenheim School of Cinema",
+                "Montreal Instititute for Genocide and Human Rights Studies",
+                "District 3 Innovation Center"
+            ],
+            "services": [
+                "Human Resources",
+                "Enrolment Services",
+                "Examinations Office",
+                "Senior non-credit program"
+            ]
+        }, {
+            "name": "Visual Arts Building",
+            "address": "1395 René-Lévesque Blvd W, Montreal, Quebec H3G 2M5",
+            "location": [45.495671, -73.573622],
+            "coordinates": [
+                [45.496179, -73.573797],
+                [45.495661, -73.574293],
+                [45.495406, -73.573755],
+                [45.495660, -73.573507],
+                [45.495809, -73.573805],
+                [45.496066, -73.573558]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Studio Arts",
+                "Art History",
+                "Art Education",
+                "Creative Arts Therapies"
+            ],
+            "services": [
+                "VAV Art Gallery",
+                "Art Supply Store"
+            ]
+        }, {
+            "name": "Pavillion J.W. McConnell Building",
+            "address": "1400 Maisonneuve Blvd W, Montreal, Quebec H3G 1M8",
+            "location": [45.495469, -73.577632],
+            "coordinates": [
+                [45.497283, -73.578079],
+                [45.496682, -73.578637],
+                [45.496249, -73.577675],
+                [45.496487, -73.577457],
+                [45.496582, -73.577651],
+                [45.496634, -73.577604],
+                [45.496615, -73.577560],
+                [45.496896, -73.577279]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "English",
+                "History",
+                "Études français",
+                "Mathematics and Statistics",
+                "Education",
+                "Centre for Interdisciplinary Studies in Society and Culture",
+                "Centre for Study of Learning and Performance"
+            ],
+            "services": [
+                "R. Howard Webster Library",
+                "Welcome Centre",
+                "Leonard and Bina Ellen Art Gallery",
+                "J.A. De Sève Cinema",
+                "Birks Student Service Centre",
+                "Campus Stores",
+                "Instructional & Information Technology Services (IITS)",
+                "4TH SPACE"
+            ]
+        }
+    ],
+    "LOY_buildings": [{
+            "name": "Psychology Building",
+            "address": "Refectory, Montreal, Quebec H4B 2Z3",
+            "location": [45.459075, -73.640518],
+            "coordinates": [
+                [45.459285, -73.640559],
+                [45.459199, -73.640621],
+                [45.459180, -73.640574],
+                [45.458849, -73.640829],
+                [45.458802, -73.640711],
+                [45.458731, -73.640437],
+                [45.459117, -73.640113]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Psychology",
+                "Centre for clinical research in health (CCRH)"
+            ],
+            "services": [
+                "None"
+            ]
+        }, {
+            "name": "Richard J. Renaud Science Complex",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 2A7",
+            "location": [45.457972, -73.641366],
+            "coordinates": [
+                [45.458323, -73.641412],
+                [45.457673, -73.641924],
+                [45.457642, -73.641845],
+                [45.457440, -73.642002],
+                [45.457210, -73.641413],
+                [45.457184, -73.641432],
+                [45.457170, -73.641391],
+                [45.457180, -73.641383],
+                [45.457150, -73.641302],
+                [45.457160, -73.641295],
+                [45.457043, -73.640994],
+                [45.457018, -73.641010],
+                [45.456998, -73.640958],
+                [45.457025, -73.640934],
+                [45.456986, -73.640827],
+                [45.457204, -73.640657],
+                [45.457528, -73.641469],
+                [45.457907, -73.641168],
+                [45.457895, -73.641131],
+                [45.457979, -73.641067],
+                [45.457998, -73.641115],
+                [45.458315, -73.640862],
+                [45.458340, -73.640921],
+                [45.458193, -73.641038],
+                [45.458255, -73.641202],
+                [45.458180, -73.641261],
+                [45.458210, -73.641338],
+                [45.458277, -73.641283]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Loyola and Jesuit Hall and Conference Centre",
+                "Conference services"
+            ],
+            "services": [
+                "None"
+            ]
+        }, {
+            "name": "Central Building",
+            "address": "7141 Rue Sherbrooke O, Montréal, QC H4B 2B5",
+            "location": [45.458251, -73.640353],
+            "coordinates": [
+                [45.458527, -73.640695],
+                [45.458427, -73.640453],
+                [45.458439, -73.640447],
+                [45.458328, -73.640134],
+                [45.458312, -73.640131],
+                [45.458224, -73.639894],
+                [45.458079, -73.640005],
+                [45.458101, -73.640266],
+                [45.458098, -73.640275],
+                [45.458206, -73.640581],
+                [45.458220, -73.640566],
+                [45.458308, -73.640814]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Concordia Student Union",
+                "Loyola College for Diversity and Sustainability and Loyola"
+            ]
+        }, {
+            "name": "Communication Studies and Journalism Building",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.457437, -73.640159],
+            "coordinates": [
+                [45.457830, -73.640483],
+                [45.457755, -73.640293],
+                [45.457727, -73.640316],
+                [45.457622, -73.640046],
+                [45.457489, -73.640159],
+                [45.457437, -73.640028],
+                [45.457447, -73.639946],
+                [45.457464, -73.639954],
+                [45.457481, -73.639821],
+                [45.457429, -73.639771],
+                [45.457362, -73.639764],
+                [45.457282, -73.639803],
+                [45.457230, -73.639884],
+                [45.457213, -73.639989],
+                [45.457215, -73.640017],
+                [45.457306, -73.640073],
+                [45.457313, -73.640049],
+                [45.457360, -73.640074],
+                [45.457411, -73.640207],
+                [45.457179, -73.640394],
+                [45.457280, -73.640658],
+                [45.457304, -73.640639],
+                [45.457334, -73.640716],
+                [45.457598, -73.640502],
+                [45.457652, -73.640631]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Communication Studies",
+                "Journalism"
+            ],
+            "services": [
+                "Campus Retail Stores"
+            ]
+        }, {
+            "name": "Administration Building",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.458100, -73.639814],
+            "coordinates": [
+                [45.458376, -73.639773],
+                [45.458249, -73.639445],
+                [45.458168, -73.639511],
+                [45.458202, -73.639616],
+                [45.458096, -73.639695],
+                [45.458044, -73.639580],
+                [45.457986, -73.639623],
+                [45.458025, -73.639744],
+                [45.457912, -73.639837],
+                [45.457880, -73.639756],
+                [45.457794, -73.639817],
+                [45.457909, -73.640126],
+                [45.457987, -73.640065],
+                [45.457964, -73.640008],
+                [45.458273, -73.639772],
+                [45.458300, -73.639828]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Faculty of Arts & Science"
+            ],
+            "services": [
+                "Welcome Crew Office",
+                "Centre for Teaching & Learning",
+                "Loyola International College",
+                "Provost and VP, Academic",
+                "Dean of Students",
+                "Advocacy & Support Services",
+                "Access Centre for Students with Disabilities",
+                "Counselling and Development",
+                "Health Services"
+            ]
+        }, {
+            "name": "Loyola Jesuit and Conference Centre",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.458528, -73.640930],
+            "coordinates": [
+                [45.458743, -73.640962],
+                [45.458693, -73.640836],
+                [45.458573, -73.640919],
+                [45.458528, -73.640809],
+                [45.458448, -73.640865],
+                [45.458496, -73.640990],
+                [45.458378, -73.641071],
+                [45.458432, -73.641198]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Loyola Jesuit and Hall and Conference Centre",
+                "Conference services"
+            ],
+            "services": [
+                "None"
+            ]
+        }
+    ]
+}

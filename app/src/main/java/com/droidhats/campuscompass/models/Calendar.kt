@@ -10,21 +10,15 @@ import android.provider.CalendarContract
 * */
 
 class Calendar(
-    cal_id: String,
-    cal_account_name: String,
-    cal_account_type: String,
-    cal_display_name: String,
-    cal_owner_name: String,
-    cal_color: String
-) {
-
-    var id: String? = cal_id
-    var accountName: String? = cal_account_name
-    var accountType: String? = cal_account_type
-    var displayName: String? = cal_display_name
-    var ownerName: String? = cal_owner_name
-    var color: String? = cal_color
+    var id: String?,
+    var accountName: String?,
+    var accountType: String?,
+    var displayName: String?,
+    var ownerName: String?,
+    var color: String?,
+    var isDefaultColor: Boolean,
     var events: ArrayList<CalendarEvent> = arrayListOf()
+) {
 
     companion object {
         var event_projection =
@@ -58,13 +52,6 @@ class Calendar(
             private set
     }
 
-    fun printEvents() {
-
-        for (i in events.orEmpty()) {
-            println(i.toString())
-        }
-    }
-
     override fun toString(): String {
 
         return "Calendar ID: $id" +
@@ -72,7 +59,8 @@ class Calendar(
                 "\nAccount Type: $accountType" +
                 "\nOwner Name: $ownerName" +
                 "\nDisplay Name: $displayName" +
-                "\nColor: $color"
+                "\nColor: $color" +
+                "\nIs Default Color: $isDefaultColor"
     }
 
 }
