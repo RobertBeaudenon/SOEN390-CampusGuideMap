@@ -327,10 +327,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
                         if (selectedBuilding != null) {
-                            if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
-                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
-                            } else {
+                            if (selectedBuilding.getName() == "Psychology Building" || selectedBuilding.getName() == "Richard J. Renaud Science Complex" || selectedBuilding.getName() == "Central Building" || selectedBuilding.getName() == "Communication Studies and Journalism Building" || selectedBuilding.getName() == "Administration Building" || selectedBuilding.getName() == "Loyola Jesuit and Conference Centre") { //<-- TO FIX
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
+                            } else {
+                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
                             }
                         }
                     } else {
@@ -491,12 +491,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-            }
+                if(newState == BottomSheetBehavior.STATE_COLLAPSED){
+                    searchBar.visibility = View.VISIBLE
+                    toggleButton.visibility =  View.VISIBLE
+                }
+
+           }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
                 map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
+                //searchBar and campus toggle button become invisible when bottom sheet is open
+                searchBar.visibility = View.INVISIBLE
+                toggleButton.visibility =  View.INVISIBLE
             }
         })
     }

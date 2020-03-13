@@ -287,6 +287,335 @@
                 "Instructional & Information Technology Services (IITS)",
                 "4TH SPACE"
             ]
+        },{
+            "name": "Grey Nuns Building",
+            "address": "1190 Guy St, Montreal, Quebec H3H 2L4",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-9p.m."],
+                ["Tuesday", "9a.m.-9p.m."],
+                ["Wednesday", "9a.m.-9p.m."],
+                ["Thursday", "9a.m.-9p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "10a.m.-5p.m."],
+                ["Sunday", "10a.m.-5p.m."]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Residences",
+                "Grey Nuns Library",
+                "Daycare Centre",
+                "Summer Accomodation"
+            ]
+        },{
+            "name": "Q Annex",
+            "address": "2010 Mackay St, Montreal, Quebec H3G 2J1",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "closed"],
+                ["Sunday", "closed"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Ethnic Students' Association"
+            ]
+        },{
+            "name": "T Annex",
+            "address": "2030 Mackay St, Montreal, Quebec H3G 2J1",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "closed"],
+                ["Sunday", "closed"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Graduate Students Association"
+            ]
+        },{
+            "name": "RR Annex",
+            "address": "2040 Mackay St, Montreal, Quebec H3G 2J1",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Liberal Arts College"
+            ],
+            "services": [
+                "None"
+            ]
+        },{
+            "name": "R Annex",
+            "address": "2050 Mackay St, Montreal, Quebec H3G 2J1",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Religions and Cultures"
+            ],
+            "services": [
+                "None"
+            ]
+        },{
+            "name": "FA Annex",
+            "address": "2060 Mackay St, Montreal, Quebec H3G 2J1",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Religions and Cultures"
+            ],
+            "services": [
+                "None"
+            ]
+        },{
+            "name": "LD Building",
+            "address": "1424 Bishop St, Montréal, Québec H3G 2E6",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "7a.m.-6p.m."],
+                ["Tuesday", "7a.m.-6p.m."],
+                ["Wednesday", "7a.m.-6p.m."],
+                ["Thursday", "7a.m.-6p.m."],
+                ["Friday", "7a.m.-6p.m."],
+                ["Saturday", "closed"],
+                ["Sunday", "closed"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "CSU Daycare & Nursery"
+            ]
+        },{
+            "name": "X Annex",
+            "address": "2080 Mackay St, Montreal, Quebec H3G 2J1",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "closed"],
+                ["Sunday", "closed"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Concordia International"
+            ]
+        },{
+            "name": "Z Annex",
+            "address": "2090 Mackay St, Montreal, Quebec H3G 2J1",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "closed"],
+                ["Sunday", "closed"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Multi-Faith and Spirituality Center",
+                "Sustainable Concordia"
+            ]
+        },{
+            "name": "V Annex",
+            "address": "2110 Mackay St, Montreal, Quebec H3G 2J1",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "closed"],
+                ["Sunday", "closed"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "CUTV",
+                "Center for Gender Advocacy"
+            ]
+        },{
+            "name": "S Annex",
+            "address": "2145 Mackay St, Montreal, Quebec H3G 1M8",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Department of Philosophy"
+            ],
+            "services": [
+                "None"
+            ]
+        },{
+            "name": "CI Annex",
+            "address": "2149 Mackay St, Montreal, QC H3G 2J2",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "School of Community & Public Affairs"
+            ],
+            "services": [
+                "None"
+            ]
+        },{
+            "name": "MU Annex",
+            "address": "1400 Sherbrooke St W, Montreal, QC H3G 2G2",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Simone de Beauvoir Institute"
+            ]
+        },{
+            "name": "B Annex",
+            "address": "1455 de Maisonneuve Blvd W, Montreal, QC H3G 1M8",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "11a.m.-5p.m."],
+                ["Tuesday", "11a.m.-5p.m."],
+                ["Wednesday", "11a.m.-5p.m."],
+                ["Thursday", "11a.m.-5p.m."],
+                ["Friday", "11a.m.-5p.m."],
+                ["Saturday", "closed"],
+                ["Sunday", "closed"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Engineering & Computer Science Association (ECA) of Concordia"
+            ]
+        },{
+            "name": "D Annex",
+            "address": "2140 Bishop St, Montreal, QC H3G 2E9",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "Theological Studies"
+            ],
+            "services": [
+                "None"
+            ]
+        },{
+            "name": "MI Annex",
+            "address": "2130 Bishop St, Montreal, QC H3G 2E9",
+            "location": [],
+            "coordinates": [],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "closed"],
+                ["Sunday", "closed"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "ACUMAE",
+                "SCOMM",
+                "CUSSU",
+                "CULEU",
+                "CUPEU"
+            ]
         }
     ],
     "LOY_buildings": [{
