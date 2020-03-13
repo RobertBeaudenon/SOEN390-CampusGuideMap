@@ -25,6 +25,16 @@
         <action
             android:id="@+id/action_mapsActivity_to_calendarFragment"
             app:destination="@id/nav_schedule" />
+        <action
+            android:id="@+id/action_map_fragment_to_search_fragment"
+            app:destination="@id/search_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="com.droidhats.campuscompass.views.SearchFragment"
+        android:label="maps_fragment"
+        tools:layout="@layout/search_fragment" >
     </fragment>
 
     <!--Note: Must be same id as the menu item-->

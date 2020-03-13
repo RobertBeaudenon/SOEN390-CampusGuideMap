@@ -13,8 +13,6 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -56,13 +54,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
 import org.json.JSONObject
 import java.io.IOException
 import kotlin.collections.ArrayList
 import kotlin.collections.List
 import kotlin.collections.MutableList
-import kotlinx.android.synthetic.main.search_bar_layout.radioTransportGroup
 import java.util.Locale
 import com.android.volley.Response
 import com.droidhats.campuscompass.models.Building
@@ -72,8 +68,7 @@ import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
-import kotlinx.android.synthetic.main.search_bar_layout.searchBarMain
-import kotlinx.android.synthetic.main.search_bar_layout.searchBarDestination
+import kotlinx.android.synthetic.main.search_bar_layout.*
 import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -93,7 +88,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
 
-        private const val MAP_PADDING_TOP = 370
+        private const val MAP_PADDING_TOP = 220
         private const val MAP_PADDING_RIGHT = 15
     }
 
@@ -136,8 +131,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         createLocationRequest()
         initPlacesSearch()
         initBottomSheetBehavior()
-        initSearchBarMain()
-        initSearchBarDestination()
+        initSearchBar()
         handleCampusSwitch()
     }
 
@@ -349,32 +343,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 if (location != null) {
 
                     //Open the search bars and the location texts inside
-                    searchBarDestination.openSearch()
-                    searchBarMain.openSearch()
+                    mapFragSearchBar.openSearch()
 
                     if (tansportationMode() == "shuttle") {
                         //Setting the top bar "from" to the name of the selected building.
                         if (selectedBuilding != null) {
-                            searchBarMain.text = selectedBuilding.getName()
+                            mapFragSearchBar.text = selectedBuilding.getName()
                         }
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
                         if (selectedBuilding != null) {
                             if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
-                                searchBarMain.text = "Shuttle Bus Stop Loyola"
-                                searchBarDestination.text = selectedBuilding.getName()
+                                mapFragSearchBar.text = "Shuttle Bus Stop Loyola"
                             } else {
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
-                                searchBarMain.text = "Shuttle Bus Stop SGW"
-                                searchBarDestination.text = selectedBuilding.getName()
+                                mapFragSearchBar.text = "Shuttle Bus Stop SGW"
                             }
                         }
                     } else {
                         if (selectedBuilding != null) {
-                            searchBarMain.text = "Current Location"
+                            mapFragSearchBar.text = "Current Location"
                             generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
-                            searchBarDestination.text = selectedBuilding.getName()
                         }
                     }
                 }
@@ -544,9 +534,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return doesPredict
     }
 
-    private fun initSearchBarMain() {
+    private fun initSearchBar() {
 
-        searchBarMain.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
+        mapFragSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
 
             override fun onButtonClicked(buttonCode: Int) {
                 when(buttonCode) {
@@ -556,56 +546,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
             override fun onSearchStateChanged(enabled: Boolean) {
+                  if (enabled) {
+                      findNavController().navigate(R.id.search_fragment)
+                      mapFragSearchBar.closeSearch()
+                  }
             }
             override fun onSearchConfirmed(text: CharSequence?) {
             }
         })
-
-        searchBarMain.addTextChangeListener( object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                if (p0.isNullOrBlank()) {
-                    searchBarMain.hideSuggestionsList()
-                    searchBarMain.clearSuggestions()
-                }
-            }
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                 val doesPredict = sendQuery(p0.toString(), searchBarMain)
-                if (!doesPredict)
-                    searchBarMain.hideSuggestionsList()
-            }
-        })
     }
-
-    private fun initSearchBarDestination() {
-        searchBarDestination.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
-            override fun onButtonClicked(buttonCode: Int) {
-            }
-            override fun onSearchStateChanged(enabled: Boolean) {
-            }
-            override fun onSearchConfirmed(text: CharSequence?) {
-            }
-        })
-
-        searchBarDestination.addTextChangeListener( object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                if (p0.isNullOrBlank())
-                {
-                    searchBarDestination.hideSuggestionsList()
-                    searchBarDestination.clearSuggestions()
-                }
-            }
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                val doesPredict = sendQuery(p0.toString(), searchBarDestination)
-                if (!doesPredict)
-                    searchBarDestination.hideSuggestionsList()
-            }
-        })
-    }
-
 
     private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)

@@ -6,13 +6,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+    <com.mancj.materialsearchbar.MaterialSearchBar
+        style="@style/MaterialSearchBarLight"
+        app:mt_speechMode="false"
+        app:mt_hint="Search"
+        app:mt_maxSuggestionsCount="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mapFragSearchBar"
+        android:layout_marginTop="16dp"
+        map:mt_navIconEnabled="true"
+        map:mt_placeholder="Search"
+        android:elevation="5dp"
+        android:outlineProvider="bounds"
+        />
+
     <!--hardcoded margins for now as the search bars can expand -->
     <ToggleButton
             android:id="@+id/toggleButton"
             android:layout_width="230.65px"
             android:layout_height="100px"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="155dp"
+            android:layout_below="@+id/radioTransportGroup"
             android:background="@drawable/toggle_switch"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
@@ -29,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:layout_marginTop="120dp"
+            android:layout_below="@+id/mapFragSearchBar"
             android:orientation="horizontal"
             android:checkedButton="@id/drivingId">
 
@@ -61,39 +75,6 @@
                 android:layout_height="wrap_content"
                 android:text="Shuttle" />
     </RadioGroup>
-
-    <com.mancj.materialsearchbar.MaterialSearchBar
-            style="@style/MaterialSearchBarLight"
-            app:mt_speechMode="false"
-            app:mt_hint="Destination"
-            map:mt_placeholder="To"
-            app:mt_placeholderColor="@color/colorPrimaryDark"
-            app:mt_maxSuggestionsCount="10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:elevation="5dp"
-            android:id="@+id/searchBarDestination"
-            android:outlineProvider="bounds" />
-
-    <com.mancj.materialsearchbar.MaterialSearchBar
-            style="@style/MaterialSearchBarLight"
-            app:mt_speechMode="false"
-            app:mt_hint="Search"
-            app:mt_maxSuggestionsCount="10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/searchBarMain"
-            android:layout_marginTop="16dp"
-            map:mt_navIconEnabled="true"
-            map:mt_placeholder="Search"
-            android:elevation="5dp"
-            android:outlineProvider="bounds"
-            />
-
-
 
 
 </RelativeLayout>
