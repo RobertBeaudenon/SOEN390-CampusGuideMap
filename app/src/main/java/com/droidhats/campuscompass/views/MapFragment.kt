@@ -1,13 +1,11 @@
 package com.droidhats.campuscompass.views
 
-import android.Manifest
 import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
@@ -22,7 +20,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -67,6 +64,7 @@ import kotlin.collections.listOf
 import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
 import java.util.Locale
 import com.android.volley.Response
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.models.Building
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
 import kotlinx.android.synthetic.main.map_fragment.searchBar
@@ -84,7 +82,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private var locationUpdateState = false
 
     companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
         private const val MAP_PADDING_TOP = 200
@@ -161,9 +158,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.isIndoorEnabled = true
         map.uiSettings.isIndoorLevelPickerEnabled = true
 
-        //Enables the my-location layer which draws a light blue dot on the user’s location.
-        // It also adds a button to the map that, when tapped, centers the map on the user’s location.
-        map.isMyLocationEnabled = true
+        //Checks if location permissions were granted before enabling my-location layer
+        //Purpose: users can still generate directions without supplying their current location
+        if ((activity as MainActivity).checkLocationPermission()) {
+            //Enables the my-location layer which draws a light blue dot on the user’s location.
+            // It also adds a button to the map that, when tapped, centers the map on the user’s location.
+            map.isMyLocationEnabled = true
+        }
 
         //Current Location Icon has been adjusted to be at the bottom right sid eof the search bar.
         map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
@@ -232,20 +233,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //get real time updates of current location
     private fun startLocationUpdates() {
-        //If the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
-        if (ActivityCompat.checkSelfPermission(
-                activity as Activity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                activity as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            return
-        }
-        //If there is permission, request for location updates.
+        //requests for location updates.
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -322,7 +310,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null) {
 
-                    if (tansportationMode() == "shuttle") {
+                    if (transportationMode() == "shuttle") {
                         //Setting the top bar "from" to the name of the selected building.
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
@@ -335,12 +323,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         }
                     } else {
                         if (selectedBuilding != null) {
-                            generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                            generateDirections(location, selectedBuilding.getLocation(), transportationMode())
                         }
                     }
                 }
 
-                if (tansportationMode()!= "shuttle") {
+                if (transportationMode()!= "shuttle") {
                     //Move the camera to the starting location
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
                 }
@@ -352,7 +340,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun tansportationMode() : String {
+    private fun transportationMode() : String {
 
         //Checking which transportation mode is selected, default is walking.
         var transportationMode = "driving"
