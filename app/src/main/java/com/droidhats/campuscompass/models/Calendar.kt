@@ -52,13 +52,6 @@ class Calendar(
             private set
     }
 
-    fun printEvents() {
-
-        for (i in events.orEmpty()) {
-            println(i.toString())
-        }
-    }
-
     override fun toString(): String {
 
         return "Calendar ID: $id" +

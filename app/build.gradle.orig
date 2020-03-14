@@ -64,12 +64,14 @@ android {
         }
     }
 
+<<<<<<< HEAD
     sourceSets {
         // Adds exported schema location as test app assets.
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 }
-
+apply plugin: "kotlin-kapt"
+=======
 def buildDir = '/Users/nicholasnagy/StudioProjects/SOEN390-CampusGuideMap/app/build/'
 
 //task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
@@ -105,7 +107,7 @@ def buildDir = '/Users/nicholasnagy/StudioProjects/SOEN390-CampusGuideMap/app/bu
 //    }
 //}
 
-apply plugin: "kotlin-kapt"
+>>>>>>> origin/master
 dependencies {
     def fragment_version = "1.2.2"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -113,6 +115,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.3.0-alpha01'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-places:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.google.maps.android:android-maps-utils:0.6.2'

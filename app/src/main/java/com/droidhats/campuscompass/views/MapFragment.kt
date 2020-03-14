@@ -1,26 +1,25 @@
 package com.droidhats.campuscompass.views
 
-import android.Manifest
 import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -61,14 +60,15 @@ import kotlin.collections.List
 import kotlin.collections.MutableList
 import java.util.Locale
 import com.android.volley.Response
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.models.Building
-import com.google.android.gms.common.api.ApiException
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
-import com.google.android.libraries.places.api.model.RectangularBounds
-import com.google.android.libraries.places.api.model.TypeFilter
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
-import kotlinx.android.synthetic.main.search_bar_layout.*
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
+import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
+import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
+import kotlinx.android.synthetic.main.search_bar_layout.radioTransportGroup
 import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -84,16 +84,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private var locationUpdateState = false
 
     companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
-
-        private const val MAP_PADDING_TOP = 220
+        private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
+
+         var stepInsts : String = ""
     }
 
+    private var instructions = arrayListOf<String>()
+    private var stepInstructions: String = ""
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
-
     private lateinit var viewModel: MapViewModel
 
     private var checker = 0
@@ -104,13 +105,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-         mapFragment = inflater.inflate(R.layout.map_fragment, container, false)
-        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-        return mapFragment
+        return inflater.inflate(R.layout.map_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -129,10 +130,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         CalendarFragment.onCalendarEventClickListener = this
 
         createLocationRequest()
-        initPlacesSearch()
         initBottomSheetBehavior()
         initSearchBar()
         handleCampusSwitch()
+        instructionsButton()
     }
 
     /**
@@ -162,10 +163,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.isIndoorEnabled = true
         map.uiSettings.isIndoorLevelPickerEnabled = true
 
-        //Enables the my-location layer which draws a light blue dot on the user’s location.
-        // It also adds a button to the map that, when tapped, centers the map on the user’s location.
-        map.isMyLocationEnabled = true
-        //Lower the button
+        //Checks if location permissions were granted before enabling my-location layer
+        //Purpose: users can still generate directions without supplying their current location
+        if ((activity as MainActivity).checkLocationPermission()) {
+            //Enables the my-location layer which draws a light blue dot on the user’s location.
+            // It also adds a button to the map that, when tapped, centers the map on the user’s location.
+            map.isMyLocationEnabled = true
+        }
+
+        //Current Location Icon has been adjusted to be at the bottom right sid eof the search bar.
         map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
 
         //Gives you the most recent location currently available.
@@ -178,25 +184,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
             }
         }
-        setBuildingPolygons()
+
+        drawBuildingPolygons()
+        map.setOnPolygonClickListener(this)
 
         map.setOnMapClickListener {
 
             //Dismiss the bottom sheet when clicking anywhere on the map
-            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED)
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            dismissBottomSheet()
         }
     }
 
     private fun createLocationRequest() {
-        // 1  create an instance of LocationRequest, add it to an instance of
-        // LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on
-        // the current state of the user’s location settings.
+        // 1  create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
         locationRequest = LocationRequest()
         // 2   specifies the rate at which your app will like to receive updates.
         locationRequest.interval = 10000
-        // 3 specifies the fastest rate at which the app can handle updates. Setting the
-        // fastestInterval rate places a limit on how fast updates will be sent to your app.
+        // 3 specifies the fastest rate at which the app can handle updates. Setting the fastestInterval rate places a limit on how fast updates will be sent to your app.
         locationRequest.fastestInterval = 5000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
@@ -214,8 +218,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         task.addOnFailureListener { e ->
-            // 6  A task failure means the location settings have some issues which can be fixed.
-            // This could be as a result of the user’s location settings turned off
+            // 6  A task failure means the location settings have some issues which can be fixed. This could be as a result of the user’s location settings turned off
             if (e is ResolvableApiException) {
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
@@ -235,20 +238,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //get real time updates of current location
     private fun startLocationUpdates() {
-        //If the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
-        if (ActivityCompat.checkSelfPermission(
-                activity as Activity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                activity as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            return
-        }
-        //If there is permission, request for location updates.
+        //requests for location updates.
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -256,29 +246,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         )
     }
 
-
-    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it
-    // has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
+    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                if (checker == 1) {
-                    val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
-                    if (place != null) {
-                        coordOne = place.latLng?.latitude.toString()
-                        coordTwo = place.latLng?.longitude.toString()
-                    }
-                } else {
-                    val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
-                    if (place != null) {
-                        Log.i(TAG,"Place: " + place.name + ", " + place.id + ", " + place.latLng)
-                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 16.0f))
-                    }
+                val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
+                if (place != null) {
+                    Log.i(TAG,"Place: " + place.name + ", " + place.id + ", " + place.latLng)
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 16.0f))
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
-               // var status = data?.let { Autocomplete.getStatusFromIntent(it) }
+                var status = data?.let { Autocomplete.getStatusFromIntent(it) }
             } else if (resultCode == RESULT_CANCELED) {
                 // TODO: Handle user cancelling the operation.
             }
@@ -299,22 +279,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun setBuildingPolygons() {
-        drawBuildingPolygons()
-        map.setOnPolygonClickListener(this)
-    }
-
-    // implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+    //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
         // Expand the bottom sheet when clicking on a polygon
-        // TODO: Limt only to campus buildings as polygons could highlight anything
+        // TODO: Limit only to campus buildings as polygons could highlight anything
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
 
-        //Populate the bottom sheet with building information
-        val buildingNameText: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
-        buildingNameText.text = p.tag.toString()
+        // Populate the bottom sheet with building information
+        populateAdditionalInfoBottomSheet(p)
 
         //Navigation here
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
@@ -322,7 +296,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
             //Get the building that the user clicked on
-            var selectedBuilding :Building? = null
+            var selectedBuilding : Building? = null
             for (campus in viewModel.getCampuses()) {
                 for (building in campus.getBuildings()) {
                     if (p.tag.toString() == building.getName())
@@ -342,19 +316,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null) {
 
-                    //Open the search bars and the location texts inside
-                    mapFragSearchBar.openSearch()
-
-                    if (tansportationMode() == "shuttle") {
+                    if (transportationMode() == "shuttle") {
                         //Setting the top bar "from" to the name of the selected building.
-                        if (selectedBuilding != null) {
-                            mapFragSearchBar.text = selectedBuilding.getName()
-                        }
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
                         if (selectedBuilding != null) {
                             if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
+
                                 mapFragSearchBar.text = "Shuttle Bus Stop Loyola"
                             } else {
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
@@ -363,27 +332,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         }
                     } else {
                         if (selectedBuilding != null) {
-                            mapFragSearchBar.text = "Current Location"
-                            generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                            generateDirections(location, selectedBuilding.getLocation(), transportationMode())
                         }
                     }
                 }
 
-                if (tansportationMode()!= "shuttle") {
+                if (transportationMode()!= "shuttle") {
                     //Move the camera to the starting location
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
                 }
+
+                buttonInstructions.visibility = View.VISIBLE
 
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
     }
 
-   private fun tansportationMode() : String {
-        checker = 1
+    private fun transportationMode() : String {
+
         //Checking which transportation mode is selected, default is walking.
         var transportationMode = "driving"
-       when (radioTransportGroup.checkedRadioButtonId) {
+        when (radioTransportGroup.checkedRadioButtonId) {
             R.id.drivingId -> {
                 transportationMode = "driving"
             }
@@ -397,35 +367,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 transportationMode = "shuttle"
             }
         }
-
-       /*
-        radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
-            when (optionId) {
-                R.id.drivingId -> {
-                    transportationMode = "driving"
-                }
-                R.id.walkingId -> {
-                    transportationMode = "walking"
-                }
-                R.id.bicyclingId -> {
-                    transportationMode = "bicycling"
-                }
-                R.id.shuttleId -> {
-                    transportationMode = "shuttle"
-                }
-            }
-        }*/
-    return transportationMode
+        return transportationMode
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
     override fun onMarkerClick(p0: Marker?) = false
 
-    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a
-    // particular point on the map’s surface.
+    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
     private fun placeMarkerOnMap(location: LatLng) {
-        // 1 Create a MarkerOptions object and sets the user’s current location as the
-        // position for the marker
+        // 1 Create a MarkerOptions object and sets the user’s current location as the position for the marker
         val markerOptions = MarkerOptions().position(location)
 
         //added a call to getAddress() and added this address as the marker title.
@@ -438,8 +388,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //This method get address from coordinates
     private fun getAddress(latLng: LatLng): String {
-        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address
-        // and vice versa
+        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
         val geocoder = Geocoder(activity as Activity)
         val addresses: List<Address>?
         val address: Address?
@@ -475,63 +424,32 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 campusView = LatLng(45.458159, -73.640450)
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(campusView, 17.5f))
             }
+            dismissBottomSheet()
+        }
+    }
+
+    //Handle the clicking of the instructions button. Should probably move from here later
+    private fun instructionsButton() {
+        //instruction button listener
+        buttonInstructions.setOnClickListener {
+
+            for (item in instructions) {
+                stepInstructions += item + "\n\n"
+            }
+            stepInsts = Html.fromHtml(stepInstructions).toString()
+            findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
         }
     }
 
     private fun drawBuildingPolygons() {
-
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
                 map.addPolygon(building.getPolygonOptions()).tag = building.getName()
+                var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
+                building.setPolygon(polygon)
             }
         }
-    }
-
-    private fun initPlacesSearch() {
-
-        Places.initialize(activity as Activity, getString(R.string.ApiKey), Locale.CANADA)
-        placesClient = Places.createClient(activity as Activity)
-
-    }
-
-    fun sendQuery(query : String, searchBar : MaterialSearchBar) : Boolean{
-
-        var doesPredict = false
-
-        //Set up your query here
-        val token : AutocompleteSessionToken  = AutocompleteSessionToken.newInstance()
-        //Here you would bound your search (to montreal for example)
-       val bounds : RectangularBounds = RectangularBounds.newInstance(LatLng(45.509958, -74.152854), LatLng(45.610739, -73.163261))
-        val request : FindAutocompletePredictionsRequest  = FindAutocompletePredictionsRequest.builder()
-            .setLocationBias(bounds)
-            .setTypeFilter(TypeFilter.ADDRESS)
-            .setSessionToken(token)
-            .setQuery(query)
-            .build()
-
-        val searchResults  = mutableListOf<String>()
-        //Get your query results here
-        placesClient.findAutocompletePredictions(request).addOnSuccessListener {
-
-            for ( prediction in it.autocompletePredictions) {
-                Log.i(TAG, prediction.placeId)
-                Log.i(TAG, prediction.getPrimaryText(null).toString())
-                searchResults.add(prediction.getPrimaryText(null).toString())
-            }
-            searchBar.lastSuggestions = searchResults
-            doesPredict = searchResults.size != 0
-            searchBar.showSuggestionsList()
-            if (!doesPredict)
-                searchBar.hideSuggestionsList()
-
-        }.addOnFailureListener {
-            if (it is ApiException) {
-             val apiException =  it
-            Log.e(TAG, "Place not found: " + apiException.statusCode)
-            }
-        }
-        return doesPredict
     }
 
     private fun initSearchBar() {
@@ -558,30 +476,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun initBottomSheetBehavior() {
         bottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet)
-
-        bottomSheetBehavior.setBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-                //
-
-//                when (newState) {
-//                    BottomSheetBehavior.STATE_HIDDEN -> {
-//                    }
-//                    BottomSheetBehavior.STATE_EXPANDED -> {
-//                    }
-//                    BottomSheetBehavior.STATE_COLLAPSED -> {
-//                    }
-//                    BottomSheetBehavior.STATE_DRAGGING -> {
-//                    }
-//                    BottomSheetBehavior.STATE_SETTLING -> {
-//                    }
-//                    BottomSheetBehavior.STATE_HALF_EXPANDED -> {
-//                    }
-//                }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -590,6 +490,54 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
             }
         })
+    }
+
+    private fun dismissBottomSheet() {
+        if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun populateAdditionalInfoBottomSheet(p: Polygon) {
+        // Populate the bottom sheet with building information
+        val buildingName: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
+        val buildingAddress: TextView =
+            requireActivity().findViewById(R.id.bottom_sheet_building_address)
+        val buildingOpenHours: TextView = requireActivity().findViewById(R.id.bottom_sheet_open_hours)
+        val buildingServices: TextView = requireActivity().findViewById(R.id.bottom_sheet_services)
+        val buildingDepartments: TextView =
+            requireActivity().findViewById(R.id.bottom_sheet_departments)
+        val buildingImage: ImageView = requireActivity().findViewById(R.id.building_image)
+
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if (building.getPolygon().tag == p.tag) {
+                    buildingName.text = p.tag.toString()
+                    buildingAddress.text = building.getAddress()
+                    buildingOpenHours.text = building.getOpenHours()
+                    buildingServices.text = building.getServices()
+                    buildingDepartments.text = building.getDepartments()
+
+                    when(building.getPolygon().tag){
+                        "Henry F. Hall Building" -> buildingImage.setImageResource(R.drawable.building_hall)
+                        "EV Building" -> buildingImage.setImageResource(R.drawable.building_ev)
+                        "John Molson School of Business" -> buildingImage.setImageResource(R.drawable.building_jmsb)
+                        "Faubourg Saint-Catherine Building" -> buildingImage.setImageResource(R.drawable.building_fg_sc)
+                        "Guy-De Maisonneuve Building" -> buildingImage.setImageResource(R.drawable.building_gm)
+                        "Faubourg Building" -> buildingImage.setImageResource(R.drawable.building_fg)
+                        "Visual Arts Building" -> buildingImage.setImageResource(R.drawable.building_va)
+                        "Pavillion J.W. McConnell Building" -> buildingImage.setImageResource(R.drawable.building_webster_library)
+                        "Psychology Building" -> buildingImage.setImageResource(R.drawable.building_p)
+                        "Richard J. Renaud Science Complex" -> buildingImage.setImageResource(R.drawable.building_rjrsc)
+                        "Central Building" -> buildingImage.setImageResource(R.drawable.building_cb)
+                        "Communication Studies and Journalism Building" -> buildingImage.setImageResource(R.drawable.building_csj)
+                        "Administration Building" -> buildingImage.setImageResource(R.drawable.building_a)
+                        "Loyola Jesuit and Conference Centre" -> buildingImage.setImageResource(R.drawable.building_ljacc)
+                        else -> Log.v("Error loading images", "couldn't load image")
+                    }
+                    //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
+                }
+            }
+        }
     }
 
     private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
@@ -634,14 +582,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val totalKm:JSONObject = legs.getJSONObject("distance")
                 val travelTime:JSONObject = legs.getJSONObject("duration")
 
-                if (mode == "shuttleToSGW" || mode == "shuttleToLOY") {
-                    for (x in 1..3) {
-                        Toast.makeText(activity, "The selected Transportation mode is: Shuttle. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    for (x in 1..3) {
-                        Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
-                    }
+                //Debug
+                for (x in 1..3) {
+                    Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
                 }
 
 
@@ -649,9 +592,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
                 //Build the path polyline
                 for (i in 0 until steps.length()) {
-                    val points =
-                        steps.getJSONObject(i).getJSONObject("polyline").getString("points")
-                   // val instructions = steps.getJSONObject(i).getString("html_instructions")  //Getting the route instructions
+                    val points =steps.getJSONObject(i).getJSONObject("polyline").getString("points")
+                    instructions.add(steps.getJSONObject(i).getString("html_instructions"))  //Getting the route instructions and storing it into an array.
                     path.add(PolyUtil.decode(points))
                 }
                 //Draw the path polyline
