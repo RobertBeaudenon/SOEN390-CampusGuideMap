@@ -9,7 +9,7 @@ import com.droidhats.campuscompass.R
 import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.*
 
 class SearchAdapter(
-    private val items: ArrayList<String>  //the search results
+    private val items: List<String>  //the search results
 ) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     private val onClickListener: View.OnClickListener

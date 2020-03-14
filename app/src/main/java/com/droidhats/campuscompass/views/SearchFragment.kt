@@ -37,14 +37,25 @@ class SearchFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
         viewModel.init()
+        observeSearchSuggestions()
+    }
 
-        viewModel.searchSuggestions.observe(viewLifecycleOwner , Observer {
-            //On Change here. Whenever the data changes the recycler view will be updated
+
+    private fun observeSearchSuggestions()
+    {
+        viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googleResults ->
+            viewModel.indoorSearchSuggestions.observe(viewLifecycleOwner , Observer {indoorResults ->
+                //Prepending indoor results to the google places results
+                viewModel.searchSuggestions.value = indoorResults.plus(googleResults)
+            })
+        })
+
+        //On change to the above results, the recycler view will be updated here
+        viewModel.searchSuggestions.observe(viewLifecycleOwner, Observer {
             updateRecyclerView()
             recyclerView.adapter!!.notifyDataSetChanged()
         })
     }
-
     private fun initMainSearchBar()
     {
        val mainSearchBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
@@ -54,7 +65,12 @@ class SearchFragment : Fragment() {
                 return false
             }
             override fun onQueryTextChange(p0: String?): Boolean {
-                return viewModel.sendQuery(p0!!)
+
+                return if (!p0.isNullOrBlank()) viewModel.sendSearchQueries(p0)
+                else {
+                    viewModel.searchSuggestions.value = emptyList()
+                    return false
+                }
             }
         })
     }
@@ -65,7 +81,8 @@ class SearchFragment : Fragment() {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-               adapter = SearchAdapter(viewModel.searchSuggestions.value!!)
+            adapter = SearchAdapter(viewModel.searchSuggestions.value!!)
         }
     }
+
 }
