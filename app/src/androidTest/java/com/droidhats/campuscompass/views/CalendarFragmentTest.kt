@@ -98,23 +98,6 @@ class CalendarFragmentTest {
         )
         navigationMenuItemView.perform(click())
 
-//The following are to be tested later
-//        val textView = onView(
-//            allOf(
-//                withText("Allow Campus Compass to access your calendar?"),
-//                isDisplayed()
-//            )
-//        )
-//        textView.check(matches(withText("Allow Campus Compass to access your calendar?")))
-
-//        val textView2 = onView(
-//            allOf(
-//                withId(R.id.text_info), withText("No Calendars Selected"),
-//                isDisplayed()
-//            )
-//        )
-//        textView2.check(matches(withText("No Calendars Selected")))
-
         //Checks if the select calendar button exists
         val button = onView(
             allOf(
