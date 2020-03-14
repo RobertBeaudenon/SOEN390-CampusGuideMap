@@ -576,7 +576,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val legsArray: JSONArray = routes.getJSONArray("legs")
                 val legs = legsArray.getJSONObject(0)
                 val stepsArray = legs.getJSONArray("steps")
-                val steps = stepsArray.getJSONObject(0)
 
                 //Debug
                 for (x in 1..3) {
