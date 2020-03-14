@@ -42,7 +42,8 @@ class SplashFragment : Fragment() {
         //I couldn't put it in SplashViewModel (wouldn't let me change value in background thread)
         GlobalScope.launch {
             delay(3000)
-               findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
+                findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
+
             //UnLock drawer
             val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
