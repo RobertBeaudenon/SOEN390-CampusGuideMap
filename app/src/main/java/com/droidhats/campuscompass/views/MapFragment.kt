@@ -316,9 +316,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
                         if (selectedBuilding != null) {
                             if (selectedBuilding.getName() == "Psychology Building" || selectedBuilding.getName() == "Richard J. Renaud Science Complex" || selectedBuilding.getName() == "Central Building" || selectedBuilding.getName() == "Communication Studies and Journalism Building" || selectedBuilding.getName() == "Administration Building" || selectedBuilding.getName() == "Loyola Jesuit and Conference Centre") { //<-- TO FIX
-                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
-                            } else {
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
+                            } else {
+                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
                             }
                         }
                     } else {
@@ -581,10 +581,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
 
         val directionsURL:String = when (mode) {
-            "shuttleToSGW" -> {
+            "shuttleToLOY" -> {
                 "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
             }
-            "shuttleToLOY" -> {
+            "shuttleToSGW" -> {
                 "https://maps.googleapis.com/maps/api/directions/json?origin=45.458398,-73.638241&destination=45.497132,-73.578519&mode=" + mode + "&key=" + getString(R.string.ApiKey)
             }
             else -> {

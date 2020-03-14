@@ -778,7 +778,172 @@
                 "CULEU",
                 "CUPEU"
             ]
-        }
+        },{
+        "name": "Samuel Bronfman Building",
+        "initial": "SB",
+        "address": "1590 Docteur Penfield, Montreal, QC",
+        "location": [45.4965936,-73.5882774],
+        "coordinates": [ //to update
+            [0,0],
+            [0,0],
+            [0,0],
+            [0,0]
+        ],
+        "open_hours": [ 
+            ["Monday", "9a.m.-5p.m."],
+            ["Tuesday", "9a.m.-5p.m."],
+            ["Wednesday", "9a.m.-5p.m."],
+            ["Thursday", "9a.m.-5p.m."],
+            ["Friday", "9a.m.-5p.m."],
+            ["Saturday", "9a.m.-5p.m."],
+            ["Sunday", "9a.m.-5p.m."]
+        ],
+        "departments": [ 
+            "None"
+        ],
+        "services": [ 
+            "Arts and Science Research Groups"
+        ]
+    },{
+        "name": "GS Building",
+        "initial": "GS",
+        "address": "1538 Sherbrooke St W, Montreal, QC H3H 2L9",
+        "location": [45.4965115,-73.5813888],
+        "coordinates": [ //to update
+            [0,0],
+            [0,0],
+            [0,0],
+            [0,0]
+        ],
+        "open_hours": [ 
+            ["Monday", "9a.m.-5p.m."],
+            ["Tuesday", "9a.m.-5p.m."],
+            ["Wednesday", "9a.m.-5p.m."],
+            ["Thursday", "9a.m.-5p.m."],
+            ["Friday", "9a.m.-5p.m."],
+            ["Saturday", "9a.m.-5p.m."],
+            ["Sunday", "9a.m.-5p.m."]
+        ],
+        "departments": [ 
+            "None"
+        ],
+        "services": [ 
+            "None"
+        ]
+    },{
+        "name": "CB Building",
+        "initial": "CB",
+        "address": "1425 René-Lévesque Blvd W, Montreal, QC H3G 1T7",
+        "location": [45.4951236,-73.576302],
+        "coordinates": [ //to update
+            [0,0],
+            [0,0],
+            [0,0],
+            [0,0]
+        ],
+        "open_hours": [ 
+            ["Monday", "9a.m.-5p.m."],
+            ["Tuesday", "9a.m.-5p.m."],
+            ["Wednesday", "9a.m.-5p.m."],
+            ["Thursday", "9a.m.-5p.m."],
+            ["Friday", "9a.m.-5p.m."],
+            ["Saturday", "9a.m.-5p.m."],
+            ["Sunday", "9a.m.-5p.m."]
+        ],
+        "departments": [ 
+            "None"
+        ],
+        "services": [ 
+            "None"
+        ]
+    },{
+        "name": "Grey Nuns Annex",
+        "initial": "GA",
+        "address": "1211 Rue Saint Mathieu, Montréal, QC H3H 2S2",
+        "location": [45.4941589,-73.5789745],
+        "coordinates": [
+            [45.493851, -73.578358],
+            [45.493793, -73.578248],
+            [45.494078, -73.577908],
+            [45.494059, -73.577866],
+            [45.494286, -73.577628],
+            [45.494346, -73.577735],
+            [45.494119, -73.577983],
+            [45.494134, -73.578009],
+            [45.493846, -73.578351]
+
+        ],
+        "open_hours": [ 
+            ["Monday", "9a.m.-5p.m."],
+            ["Tuesday", "9a.m.-5p.m."],
+            ["Wednesday", "9a.m.-5p.m."],
+            ["Thursday", "9a.m.-5p.m."],
+            ["Friday", "9a.m.-5p.m."],
+            ["Saturday", "9a.m.-5p.m."],
+            ["Sunday", "9a.m.-5p.m."]
+        ],
+        "departments": [ 
+            "Department of Education"
+        ],
+        "services": [ 
+            "None"
+        ]
+    },{
+        "name": "CL Annex",
+        "initial": "CL",
+        "address": "1665 Saint-Catherine St W, Montreal, QC H3H 1L9",
+        "location": [45.4939465,-73.5791085],
+        "coordinates": [
+            [0,0],
+            [0,0],
+            [0,0],
+            [0,0]
+        ],
+        "open_hours": [ 
+            ["Monday", "9a.m.-5p.m."],
+            ["Tuesday", "9a.m.-5p.m."],
+            ["Wednesday", "9a.m.-5p.m."],
+            ["Thursday", "9a.m.-5p.m."],
+            ["Friday", "9a.m.-5p.m."],
+            ["Saturday", "9a.m.-5p.m."],
+            ["Sunday", "9a.m.-5p.m."]
+        ],
+        "departments": [ 
+            "None"
+        ],
+        "services": [ 
+            "Concordia Continuing Education"
+        ]
+    },{
+        "name": "Learning Square",
+        "initial": "LS",
+        "address": "1535 Boulevard de Maisonneuve O, Montréal, QC H3G 1M9",
+        "location": [45.4962049,-73.5795302],
+        "coordinates": [
+            [45.496143, -73.579461],
+            [45.496239, -73.579691],
+            [45.496427, -73.579503],
+            [45.496361, -73.579272] //tochange
+
+
+        ],
+        "open_hours": [ 
+            ["Monday", "9a.m.-5p.m."],
+            ["Tuesday", "9a.m.-5p.m."],
+            ["Wednesday", "9a.m.-5p.m."],
+            ["Thursday", "9a.m.-5p.m."],
+            ["Friday", "9a.m.-5p.m."],
+            ["Saturday", "9a.m.-5p.m."],
+            ["Sunday", "9a.m.-5p.m."]
+        ],
+        "departments": [ 
+            "None"
+        ],
+        "services": [ 
+            "IT Services - 1st floor",
+            "IT Services - 2nd floor"
+        ]
+    }
     ],
     "LOY_buildings": [{
             "name": "Psychology Building",
@@ -1021,7 +1186,7 @@
             "services": [
                 "None"
             ]
-        }, {
+        }, {//change the coordinates for buildings below
             "name": "Vanier Library Building",
             "initial": "VL",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
