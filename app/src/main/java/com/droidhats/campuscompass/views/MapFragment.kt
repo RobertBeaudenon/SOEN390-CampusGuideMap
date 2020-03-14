@@ -328,9 +328,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
                         if (selectedBuilding != null) {
                             if (selectedBuilding.getName() == "Psychology Building" || selectedBuilding.getName() == "Richard J. Renaud Science Complex" || selectedBuilding.getName() == "Central Building" || selectedBuilding.getName() == "Communication Studies and Journalism Building" || selectedBuilding.getName() == "Administration Building" || selectedBuilding.getName() == "Loyola Jesuit and Conference Centre") { //<-- TO FIX
-                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
-                            } else {
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
+                            } else {
+                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
                             }
                         }
                     } else {

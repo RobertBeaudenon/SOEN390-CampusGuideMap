@@ -290,8 +290,13 @@
         },{
             "name": "Grey Nuns Building",
             "address": "1190 Guy St, Montreal, Quebec H3H 2L4",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-9p.m."],
                 ["Tuesday", "9a.m.-9p.m."],
@@ -313,8 +318,13 @@
         },{
             "name": "Q Annex",
             "address": "2010 Mackay St, Montreal, Quebec H3G 2J1",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -333,8 +343,13 @@
         },{
             "name": "T Annex",
             "address": "2030 Mackay St, Montreal, Quebec H3G 2J1",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -353,8 +368,13 @@
         },{
             "name": "RR Annex",
             "address": "2040 Mackay St, Montreal, Quebec H3G 2J1",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -373,8 +393,13 @@
         },{
             "name": "R Annex",
             "address": "2050 Mackay St, Montreal, Quebec H3G 2J1",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -393,8 +418,13 @@
         },{
             "name": "FA Annex",
             "address": "2060 Mackay St, Montreal, Quebec H3G 2J1",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -413,8 +443,13 @@
         },{
             "name": "LD Building",
             "address": "1424 Bishop St, Montréal, Québec H3G 2E6",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "7a.m.-6p.m."],
                 ["Tuesday", "7a.m.-6p.m."],
@@ -433,8 +468,13 @@
         },{
             "name": "X Annex",
             "address": "2080 Mackay St, Montreal, Quebec H3G 2J1",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -453,8 +493,13 @@
         },{
             "name": "Z Annex",
             "address": "2090 Mackay St, Montreal, Quebec H3G 2J1",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -474,8 +519,13 @@
         },{
             "name": "V Annex",
             "address": "2110 Mackay St, Montreal, Quebec H3G 2J1",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -495,8 +545,13 @@
         },{
             "name": "S Annex",
             "address": "2145 Mackay St, Montreal, Quebec H3G 1M8",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -515,8 +570,13 @@
         },{
             "name": "CI Annex",
             "address": "2149 Mackay St, Montreal, QC H3G 2J2",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -535,8 +595,13 @@
         },{
             "name": "MU Annex",
             "address": "1400 Sherbrooke St W, Montreal, QC H3G 2G2",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -555,8 +620,13 @@
         },{
             "name": "B Annex",
             "address": "1455 de Maisonneuve Blvd W, Montreal, QC H3G 1M8",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "11a.m.-5p.m."],
                 ["Tuesday", "11a.m.-5p.m."],
@@ -575,8 +645,13 @@
         },{
             "name": "D Annex",
             "address": "2140 Bishop St, Montreal, QC H3G 2E9",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
@@ -595,8 +670,13 @@
         },{
             "name": "MI Annex",
             "address": "2130 Bishop St, Montreal, QC H3G 2E9",
-            "location": [],
-            "coordinates": [],
+            "location": [0,0],
+            "coordinates": [
+                [0,0],
+                [0,0],
+                [0,0],
+                [0,0]
+            ],
             "open_hours": [
                 ["Monday", "9a.m.-5p.m."],
                 ["Tuesday", "9a.m.-5p.m."],
