@@ -310,7 +310,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null) {
 
-                    if (tansportationMode() == "shuttle") {
+                    if (transportationMode() == "shuttle") {
                         //Setting the top bar "from" to the name of the selected building.
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
@@ -323,12 +323,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         }
                     } else {
                         if (selectedBuilding != null) {
-                            generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                            generateDirections(location, selectedBuilding.getLocation(), transportationMode())
                         }
                     }
                 }
 
-                if (tansportationMode()!= "shuttle") {
+                if (transportationMode()!= "shuttle") {
                     //Move the camera to the starting location
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
                 }
@@ -340,7 +340,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun tansportationMode() : String {
+    private fun transportationMode() : String {
 
         //Checking which transportation mode is selected, default is walking.
         var transportationMode = "driving"
