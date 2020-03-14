@@ -479,7 +479,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-                if(newState == BottomSheetBehavior.STATE_COLLAPSED){
+                if(newState == BottomSheetBehavior.STATE_EXPANDED){
+                    searchBar.visibility = View.INVISIBLE
+                    toggleButton.visibility =  View.INVISIBLE
+                }
+                else{
                     searchBar.visibility = View.VISIBLE
                     toggleButton.visibility =  View.VISIBLE
                 }
@@ -491,8 +495,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
                 map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
                 //searchBar and campus toggle button become invisible when bottom sheet is open
-                searchBar.visibility = View.INVISIBLE
-                toggleButton.visibility =  View.INVISIBLE
             }
         })
     }
@@ -532,6 +534,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "Visual Arts Building" -> buildingImage.setImageResource(R.drawable.building_va)
                         "Pavillion J.W. McConnell Building" -> buildingImage.setImageResource(R.drawable.building_webster_library)
                         "Grey Nuns Building" -> buildingImage.setImageResource(R.drawable.building_grey_nuns)
+                        "Samuel Bronfman Building" -> buildingImage.setImageResource(R.drawable.building_sb)
+                        "GS Building" -> buildingImage.setImageResource(R.drawable.building_gs)
+                        "CB Building" -> buildingImage.setImageResource(R.drawable.building_cbb)
+                        "Grey Nuns Annex" -> buildingImage.setImageResource(R.drawable.building_ga)
+                        "CL Annex" -> buildingImage.setImageResource(R.drawable.building_cl)
                         "Q Annex" -> buildingImage.setImageResource(R.drawable.building_q)
                         "T Annex" -> buildingImage.setImageResource(R.drawable.building_t)
                         "RR Annex" -> buildingImage.setImageResource(R.drawable.building_rr)
@@ -553,10 +560,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "Communication Studies and Journalism Building" -> buildingImage.setImageResource(R.drawable.building_csj)
                         "Administration Building" -> buildingImage.setImageResource(R.drawable.building_a)
                         "Loyola Jesuit and Conference Centre" -> buildingImage.setImageResource(R.drawable.building_ljacc)
+                        "Vanier Library Building" -> buildingImage.setImageResource(R.drawable.building_vl)
+                        "Vanier Extension" -> buildingImage.setImageResource(R.drawable.building_ve)
+                        "Student Center" -> buildingImage.setImageResource(R.drawable.building_sc)
+                        "F.C. Smith. Building" -> buildingImage.setImageResource(R.drawable.building_fc)
+                        "Stinger Dome" -> buildingImage.setImageResource(R.drawable.building_do)
+                        "PERFORM centre" -> buildingImage.setImageResource(R.drawable.building_pc)
+                        "Jesuit Residence" -> buildingImage.setImageResource(R.drawable.building_jr)
+                        "Physical Services Building" -> buildingImage.setImageResource(R.drawable.building_ps)
+
+
                         else -> Log.v("Error loading images", "couldn't load image")
                     }
                     //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
-                }
+                } 
             }
         }
     }

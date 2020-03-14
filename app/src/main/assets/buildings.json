@@ -1021,6 +1021,252 @@
             "services": [
                 "None"
             ]
+        }, {
+            "name": "Vanier Library Building",
+            "initial": "VL",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.4584073,-73.6406743],
+            "coordinates": [
+                [45.458743, -73.640962],
+                [45.458693, -73.640836],
+                [45.458573, -73.640919],
+                [45.458528, -73.640809],
+                [45.458448, -73.640865],
+                [45.458496, -73.640990],
+                [45.458378, -73.641071],
+                [45.458432, -73.641198]
+            ],
+            "open_hours": [
+                ["Monday", "24 hours"],
+                ["Tuesday", "24 hours"],
+                ["Wednesday", "24 hours"],
+                ["Thursday", "24 hours"],
+                ["Friday", "24 hours"],
+                ["Saturday", "24 hours"],
+                ["Sunday", "24 hours"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Library"
+            ]
+        }, {
+            "name": "Vanier Extension",
+            "initial": "VE",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.4584073,-73.6406743],
+            "coordinates": [
+                [45.458743, -73.640962],
+                [45.458693, -73.640836],
+                [45.458573, -73.640919],
+                [45.458528, -73.640809],
+                [45.458448, -73.640865],
+                [45.458496, -73.640990],
+                [45.458378, -73.641071],
+                [45.458432, -73.641198]
+            ],
+            "open_hours": [
+                ["Monday", "24 hours"],
+                ["Tuesday", "24 hours"],
+                ["Wednesday", "24 hours"],
+                ["Thursday", "24 hours"],
+                ["Friday", "24 hours"],
+                ["Saturday", "24 hours"],
+                ["Sunday", "24 hours"]
+            ],
+            "departments": [
+                "Applied Human Services"
+            ],
+            "services": [
+                "Library"
+            ]
+        }, {
+            "name": "Student Centre",
+            "initial": "SC",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.4584073,-73.6406743],
+            "coordinates": [
+                [45.458743, -73.640962],
+                [45.458693, -73.640836],
+                [45.458573, -73.640919],
+                [45.458528, -73.640809],
+                [45.458448, -73.640865],
+                [45.458496, -73.640990],
+                [45.458378, -73.641071],
+                [45.458432, -73.641198]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Campus Centre",
+                "Food Services",
+                "Cafeteria",
+                "Café"
+            ]
+        }, {
+            "name": "F.C. Smith Building",
+            "initial": "FC",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.4584073,-73.6406743],
+            "coordinates": [
+                [45.458743, -73.640962],
+                [45.458693, -73.640836],
+                [45.458573, -73.640919],
+                [45.458528, -73.640809],
+                [45.458448, -73.640865],
+                [45.458496, -73.640990],
+                [45.458378, -73.641071],
+                [45.458432, -73.641198]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "closed"],
+                ["Sunday", "closed"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "F.C. Smith Auditorium",
+                "Cazalet Theater",
+                "Concordia Multi-Faith and Spirituality Centre"
+            ]
+        }, {
+            "name": "PERFORM Centre",
+            "initial": "PS",
+            "address": "7200 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.4584073,-73.6406743],
+            "coordinates": [
+                [45.458743, -73.640962],
+                [45.458693, -73.640836],
+                [45.458573, -73.640919],
+                [45.458528, -73.640809],
+                [45.458448, -73.640865],
+                [45.458496, -73.640990],
+                [45.458378, -73.641071],
+                [45.458432, -73.641198]
+            ],
+            "open_hours": [
+                ["Monday", "6:30a.m.-10p.m."],
+                ["Tuesday", "6:30a.m.-10p.m."],
+                ["Wednesday", "6:30a.m.-10p.m."],
+                ["Thursday", "6:30a.m.-10p.m."],
+                ["Friday", "6:30a.m.-10p.m."],
+                ["Saturday", "8a.m.-6p.m."],
+                ["Sunday", "8a.m.-6p.m."]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "PEFORM centre"
+            ]
+        }, {
+            "name": "Stinger Dome",
+            "initial": "DO",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.4584073,-73.6406743],
+            "coordinates": [
+                [45.458743, -73.640962],
+                [45.458693, -73.640836],
+                [45.458573, -73.640919],
+                [45.458528, -73.640809],
+                [45.458448, -73.640865],
+                [45.458496, -73.640990],
+                [45.458378, -73.641071],
+                [45.458432, -73.641198]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-11p.m."],
+                ["Tuesday", "9a.m.-11p.m."],
+                ["Wednesday", "9a.m.-11p.m."],
+                ["Thursday", "9a.m.-11p.m."],
+                ["Friday", "9a.m.-11:30p.m."],
+                ["Saturday", "9:30a.m.-11:30p.m."],
+                ["Sunday", "9:30a.m.-11p.m."]
+            ],
+            "departments": [
+                "Stingers"
+            ],
+            "services": [
+                "None"
+            ]
+        }, {
+            "name": "Jesuit Residence",
+            "initial": "JR",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.4584073,-73.6406743],
+            "coordinates": [
+                [45.458743, -73.640962],
+                [45.458693, -73.640836],
+                [45.458573, -73.640919],
+                [45.458528, -73.640809],
+                [45.458448, -73.640865],
+                [45.458496, -73.640990],
+                [45.458378, -73.641071],
+                [45.458432, -73.641198]
+            ],
+            "open_hours": [
+                ["Monday", "24 hours"],
+                ["Tuesday", "24 hours"],
+                ["Wednesday", "24 hours"],
+                ["Thursday", "24 hours"],
+                ["Friday", "24 hours"],
+                ["Saturday", "24 hours"],
+                ["Sunday", "24 hours"]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Student Residence"
+            ]
+        }, {
+            "name": "Physical Services Building",
+            "initial": "PS",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            "location": [45.4584073,-73.6406743],
+            "coordinates": [
+                [45.458743, -73.640962],
+                [45.458693, -73.640836],
+                [45.458573, -73.640919],
+                [45.458528, -73.640809],
+                [45.458448, -73.640865],
+                [45.458496, -73.640990],
+                [45.458378, -73.641071],
+                [45.458432, -73.641198]
+            ],
+            "open_hours": [
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Environmental Health and Safety",
+                "Facilities Management"
+            ]
         }
     ]
 }
