@@ -6,12 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [ShuttleBus_Loyola_Entity::class,ShuttleBus_SGW_Entity::class],version = 2, exportSchema = false)
+@Database(entities = [ShuttleBus_Loyola_Entity::class,ShuttleBus_SGW_Entity::class],version = 3, exportSchema = false)
 abstract class AppDB : RoomDatabase() {
 
    //When we invoke this function it will call the DAO class
     abstract fun shuttleBusDAO(): ShuttleBus_DAO
-
 
     companion object {
         private var INSTANCE: AppDB? = null
@@ -20,7 +19,7 @@ abstract class AppDB : RoomDatabase() {
                 synchronized(AppDB::class) {
                     INSTANCE = Room.databaseBuilder(context,
                         AppDB::class.java, "CampusCompassDB")
-                        .addCallback(AppDBCallback)
+                        .createFromAsset("database/ShuttleBus.db").fallbackToDestructiveMigration()
                         .build()
                 }
             }
@@ -29,13 +28,6 @@ abstract class AppDB : RoomDatabase() {
         fun destroyInstance() {
             INSTANCE = null
         }
-        val AppDBCallback = object:RoomDatabase.Callback(){
-            override fun onOpen(db: SupportSQLiteDatabase) {
-                super.onOpen(db)
-                InitDBAsync(INSTANCE!!).execute()
-            }
-        };
-
     }
 
 
