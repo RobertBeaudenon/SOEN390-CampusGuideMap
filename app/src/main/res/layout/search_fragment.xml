@@ -1,34 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.SearchFragment">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/mainSearchBar"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/searchHead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:iconifiedByDefault="false"
-        android:focusable="true"
-        app:queryHint="Search"
-        />
+        app:cardBackgroundColor="@color/colorPrimaryDark">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <ImageButton
+                android:id="@+id/backFromNavigationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_chevron_left_black_42dp"
+                android:visibility="gone"
+                android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+              />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/mainSearchBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                app:searchIcon="@null"
+                android:layout_toRightOf="@id/backFromNavigationButton"
+                app:iconifiedByDefault="false"
+                app:queryHint="Search" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/secondarySearchBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mainSearchBar"
+                android:clickable="true"
+                android:focusable="true"
+                app:iconifiedByDefault="false"
+                android:visibility="gone"
+                android:layout_toRightOf="@id/backFromNavigationButton"
+                android:maxWidth="@dimen/search_bar_max_width"
+                app:searchIcon="@null"
+                app:queryHint="To" />
+
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/swapSearchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_swap_vert_black_42dp"
+            android:visibility="gone"
+            android:background="?selectableItemBackgroundBorderless"
+            android:layout_gravity="end|center_vertical"
+            android:contentDescription="Navigate"
+            android:layout_marginEnd="10dp" />
+
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_suggestions_recycler_view"
         android:name="com.droidhats.campuscompass.CalendarFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="LinearLayoutManager"
-        android:layout_below="@+id/mainSearchBar"
-        android:layout_marginTop="10dp"
+        android:layout_below="@+id/searchHead"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="16dp"
-        tools:context=".views.SearchFragment"
+        android:overScrollMode="never"
+        android:scrollbarStyle="outsideInset"
         android:scrollbars="vertical"
-        android:scrollbarStyle="insideInset"
-        />
+        app:layoutManager="LinearLayoutManager"
+        tools:context=".views.SearchFragment" />
 
 </RelativeLayout>

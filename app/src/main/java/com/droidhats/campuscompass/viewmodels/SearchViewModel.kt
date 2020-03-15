@@ -87,12 +87,14 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun sendSQLiteQuery(query : String) : Boolean
     {
+     if (query.isNullOrBlank()) return false
+     var qEsc = query.replace("'","")
         val queryString =
             "SELECT * " +
             "FROM IndoorLocation " +
              "WHERE location_type ='classroom' " +
-              "AND location_name like '%$query%' " +
-               "OR location_name like '%${query.toUpperCase()}%' " +
+              "AND location_name like '%$qEsc%' " +
+               "OR location_name like '%${qEsc.toUpperCase()}%' " +
                     "LIMIT 3"
 
         val sqliteQuery = SimpleSQLiteQuery(queryString)

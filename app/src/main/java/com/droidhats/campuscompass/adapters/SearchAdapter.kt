@@ -3,20 +3,25 @@ package com.droidhats.campuscompass.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import androidx.appcompat.widget.SearchView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Location
-import com.droidhats.campuscompass.views.SearchFragment
 import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.*
 
 class SearchAdapter(
     private val items: List<Location>,  //the search results
-    private val listener: OnSearchResultClickListener?
+    private val listener: OnSearchResultClickListener?,
+    private val root: View
 ) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
-    private val onClickListener: View.OnClickListener
+    private var onClickListener: View.OnClickListener
+
+    companion object{
+        var navigateClick = false
+    }
 
     init {
         onClickListener = View.OnClickListener { view ->
@@ -34,11 +39,38 @@ class SearchAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
 
-        holder.suggestion.text = item.name
-        with(holder.view) {
-            tag = item
-           setOnClickListener(onClickListener)
+        with (holder){
+            suggestion.text = item.name
+            view.tag = item
+            val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
+            val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
+            val swapButton  = root.findViewById<ImageButton>(R.id.swapSearchButton)
+            val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
+            setNavigation.setOnClickListener {
+                navigateClick = true
+                destinationBar.visibility = View.VISIBLE
+                swapButton.visibility = View.VISIBLE
+                backButton.visibility = View.VISIBLE
+                mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
+
+                destinationBar.setQuery(item.name, false)
+
+                mainBar.setQuery(mainBar.query, true)
+                mainBar.queryHint = "From"
+
+            }
+
+            if (!navigateClick)
+                view.setOnClickListener(onClickListener)
+            else
+                view.setOnClickListener{
+                    if (mainBar.isActivated)
+                        mainBar.setQuery(item.name, true)
+                    if(destinationBar.isActivated)
+                        destinationBar.setQuery(item.name, true)
+                }
         }
+
     }
 
     override fun getItemCount(): Int = items.size
@@ -46,6 +78,7 @@ class SearchAdapter(
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         val suggestion: TextView = view.search_suggestion
+        val setNavigation: ImageButton = view.setNavigationPoint
     }
 
     interface OnSearchResultClickListener {

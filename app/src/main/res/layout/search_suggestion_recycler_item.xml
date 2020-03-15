@@ -4,37 +4,50 @@
     android:id="@+id/search_suggestions_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="6dp"
-    app:cardElevation="4dp"
-    app:contentPadding="1dp"
+    android:layout_margin="1dp"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/quantum_grey500">
+    >
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/relative_layout1"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp">
+
+    <TextView
+        android:id="@+id/search_suggestion"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:color/white">
+        android:text="sample"
+        android:layout_alignParentTop="true"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="17sp"
+        android:textColor="#141a1d"
+        android:maxWidth="@dimen/search_item_card_max_text_width"/>
 
-        <TextView
-            android:id="@+id/search_suggestion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/search_placehold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
-            android:textSize="12sp"
-            android:maxWidth="@dimen/calendar_event_card_max_text_width"/>
+    <TextView
+        android:id="@+id/categoryTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/search_suggestion"
+        android:text="category"
+        android:textSize="12sp"
+        android:maxWidth="@dimen/search_item_card_max_text_width"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
+    <ImageButton
+        android:id="@+id/setNavigationPoint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_near_me_blue_32dp"
+        android:layout_gravity="end|center_vertical"
+        android:contentDescription="SetNavigation"
+        android:background="?selectableItemBackgroundBorderless"
+        android:layout_marginEnd="10dp" />
 </androidx.cardview.widget.CardView>
 
 

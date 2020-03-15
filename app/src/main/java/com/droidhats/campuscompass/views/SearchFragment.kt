@@ -1,11 +1,14 @@
 package com.droidhats.campuscompass.views
 
+import android.graphics.Color
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.ImageButton
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,9 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
-import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
-import com.google.android.gms.maps.model.LatLng
 
 class SearchFragment : Fragment()  {
 
@@ -35,7 +36,6 @@ class SearchFragment : Fragment()  {
     ): View? {
         root = inflater.inflate(R.layout.search_fragment, container, false)
         recyclerView = root.findViewById(R.id.search_suggestions_recycler_view)
-        initMainSearchBar()
         return root
     }
 
@@ -43,7 +43,15 @@ class SearchFragment : Fragment()  {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
         viewModel.init()
+        initSearch()
         observeSearchSuggestions()
+
+        val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
+        backButton.setOnClickListener{
+            SearchAdapter.navigateClick = false
+            requireFragmentManager().beginTransaction().detach(this).attach(this).commit()
+
+        }
     }
 
 
@@ -63,11 +71,33 @@ class SearchFragment : Fragment()  {
             recyclerView.adapter!!.notifyDataSetChanged()
         })
     }
-    private fun initMainSearchBar()
-    {
-       val mainSearchBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
+
+    private fun  initSearch(){
+        val mainSearchBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
+        val mainSearchText = mainSearchBar.findViewById<EditText>(R.id.search_src_text)
+        mainSearchText.setTextColor(Color.WHITE)
         mainSearchBar.isIconified = false
-        mainSearchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        mainSearchBar.isActivated = true
+
+        val secondarySearchBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
+        val secondarySearchText = secondarySearchBar.findViewById<EditText>(R.id.search_src_text)
+        secondarySearchText.setTextColor(Color.WHITE)
+        secondarySearchText.isActivated = false
+
+        val swapButton  = root.findViewById<ImageButton>(R.id.swapSearchButton)
+        swapButton.setOnClickListener{
+            var temp = mainSearchBar.query
+            mainSearchBar.setQuery(secondarySearchBar.query, false)
+            secondarySearchBar.setQuery(temp, false)
+        }
+
+        initQueryTextListener(mainSearchBar)
+        initQueryTextListener(secondarySearchBar)
+    }
+
+    private fun initQueryTextListener(searchView: SearchView)
+    {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return false
             }
@@ -80,6 +110,13 @@ class SearchFragment : Fragment()  {
                 }
             }
         })
+
+       searchView.setOnQueryTextFocusChangeListener { _, isFocused ->
+            searchView.isActivated = isFocused
+          if(searchView.isActivated)
+           viewModel.sendSearchQueries(searchView.query.toString())
+
+        }
     }
 
     private fun updateRecyclerView() {
@@ -88,7 +125,7 @@ class SearchFragment : Fragment()  {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = SearchAdapter(viewModel.searchSuggestions.value!!, onSearchResultClickListener)
+            adapter = SearchAdapter(viewModel.searchSuggestions.value!!, onSearchResultClickListener, root)
         }
     }
 }
