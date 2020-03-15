@@ -20,6 +20,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
 
     fun getIndoorLocations() : LiveData<List<IndoorLocation>> = indoorLocationDao.getAll()
     fun getClassrooms() : LiveData<List<IndoorLocation>> = indoorLocationDao.getAllClassrooms()
-    fun getMatchedClassrooms(query : SimpleSQLiteQuery) : LiveData<List<String>> = indoorLocationDao.getMatchedClassrooms(query)
+    fun getMatchedClassrooms(query : SimpleSQLiteQuery) : LiveData<List<IndoorLocation>>
+            = indoorLocationDao.getMatchedClassrooms(query)
 }
 

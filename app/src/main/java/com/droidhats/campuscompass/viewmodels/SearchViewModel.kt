@@ -10,22 +10,26 @@ import androidx.room.Room
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.droidhats.campuscompass.IndoorLocationDatabase
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.IndoorLocation
+import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.repositories.IndoorLocationRepository
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
-import com.google.android.libraries.places.api.model.RectangularBounds
-import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.api.model.*
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import java.util.Locale
 
+
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
-    internal var googleSearchSuggestions = MutableLiveData<List<String>>()  //google places api search results
-    internal lateinit var indoorSearchSuggestions : LiveData<List<String>> // concordia indoor location search results from SQLite database
-    internal var searchSuggestions =  MutableLiveData<List<String>>()  // The combined indoor and google search results
+    internal var googleSearchSuggestions = MutableLiveData<MutableList<GooglePlace>>()  //google places search results to be displayed
+    internal lateinit var indoorSearchSuggestions : LiveData<List<IndoorLocation>> // concordia indoor location search results from SQLite database to be displayed
+    internal var searchSuggestions =  MutableLiveData<List<Location>>()  // The combined indoor and google search results to be displayed
 
     private lateinit var indoorLocationDatabase: IndoorLocationDatabase
     private lateinit var placesClient : PlacesClient // Used to query google places
@@ -60,20 +64,17 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             .setQuery(query)
             .build()
 
-        val queryResults  = arrayListOf<String>()
         //Get your query results here
+        val queryResults  = arrayListOf<GooglePlace>()
         placesClient.findAutocompletePredictions(request).addOnSuccessListener {
 
             for ( prediction in it.autocompletePredictions) {
-                Log.i(ContentValues.TAG, prediction.placeId)
-                Log.i(ContentValues.TAG, prediction.getPrimaryText(null).toString())
-                queryResults.add(prediction.getPrimaryText(null).toString())
+                queryResults.add(GooglePlace(prediction.placeId, prediction.getPrimaryText(null).toString(), LatLng(0.0, 0.0)))
             }
-                if (queryResults.size > 0)
-                    success = true
+            if (queryResults.size > 0)
+                success = true
 
-                googleSearchSuggestions.value = queryResults
-
+            googleSearchSuggestions.value = queryResults
 
         }.addOnFailureListener {
             if (it is ApiException) {
@@ -87,7 +88,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     private fun sendSQLiteQuery(query : String) : Boolean
     {
         val queryString =
-            "SELECT location_name " +
+            "SELECT * " +
             "FROM IndoorLocation " +
              "WHERE location_type ='classroom' " +
               "AND location_name like '%$query%' " +
@@ -107,4 +108,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         sendSQLiteQuery(query)
         return success
     }
+
+
 }

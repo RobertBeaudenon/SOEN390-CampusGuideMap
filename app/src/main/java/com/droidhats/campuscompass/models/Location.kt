@@ -3,42 +3,42 @@ package com.droidhats.campuscompass.models
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.libraries.places.api.model.Place
 
 /*
 * Model for location classes
 * Data relating to locations should be stored in this file
 * */
 
-abstract class Location(coordinate: LatLng) {
-    private var coordinate: LatLng = coordinate
+abstract class Location {
+    abstract val name: String
+    abstract val coordinate: LatLng
 }
 
 // Model for Campus class
 class Campus(
-    private val coordinate: LatLng,
-    private val name: String,
+    override val coordinate: LatLng,
+    override val name: String,
     private val buildingsList: List<Building>
-) : Location(coordinate) {
+) : Location() {
 
-    fun getName(): String = name
-    fun getCoordinate(): LatLng = coordinate
+    fun getLocation(): LatLng = coordinate
     fun getBuildings(): List<Building> = buildingsList
 }
 
 // Model for building class, data relating to buildings should be stored here
 class Building(
-    private val coordinate: LatLng,
-    private val name: String,
+    override val coordinate: LatLng,
+    override val name: String,
     private val polygonCoordinatesList: List<LatLng>,
     private val address: String,
     private val openHours: String,
     private val departments: String,
     private val services: String
-) : Location(coordinate) {
+) : Location(){
     private val polygonColor = 4289544510.toInt()
     private lateinit var polygon: Polygon
 
-    fun getName(): String = name
     fun getLocation(): LatLng = coordinate
     fun getAddress(): String = address
     fun getDepartments(): String = departments
@@ -61,4 +61,14 @@ class Building(
         }
         return polygonOptions
     }
+}
+
+class GooglePlace(
+    val placeID : String,
+    override val name: String,
+    override var coordinate: LatLng
+) : Location()
+{
+    var place : Place? = null
+
 }

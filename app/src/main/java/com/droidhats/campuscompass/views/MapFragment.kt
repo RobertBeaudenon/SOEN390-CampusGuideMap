@@ -3,6 +3,7 @@ package com.droidhats.campuscompass.views
 import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
@@ -63,7 +64,11 @@ import com.android.volley.Response
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.GooglePlace
+import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
@@ -301,7 +306,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             var selectedBuilding : Building? = null
             for (campus in viewModel.getCampuses()) {
                 for (building in campus.getBuildings()) {
-                    if (p.tag.toString() == building.getName())
+                    if (p.tag.toString() == building.name)
                         selectedBuilding  = building
                 }
             }
@@ -323,7 +328,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
                         if (selectedBuilding != null) {
-                            if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
+                            if (selectedBuilding.name == "Henry F. Hall Building" || selectedBuilding.name == "EV Building" || selectedBuilding.name == "John Molson School of Business" || selectedBuilding.name == "Faubourg Saint-Catherine Building" || selectedBuilding.name == "Guy-De Maisonneuve Building" || selectedBuilding.name == "Faubourg Building" || selectedBuilding.name == "Visual Arts Building" || selectedBuilding.name == "Pavillion J.W. McConnell Building") { //<-- TO FIX
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
 
                                 mapFragSearchBar.text = "Shuttle Bus Stop Loyola"
@@ -447,7 +452,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
-                map.addPolygon(building.getPolygonOptions()).tag = building.getName()
+                map.addPolygon(building.getPolygonOptions()).tag = building.name
                 var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
                 building.setPolygon(polygon)
             }
@@ -617,9 +622,38 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
     }
 
-    override fun onSearchResultClickListener(item: String?) {
-        findNavController().navigateUp()
-        Toast.makeText(context, "Clicked $item", Toast.LENGTH_LONG).show()
+    override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
+        if (item is GooglePlace)
+        {
+            findNavController().navigateUp()
+            moveToLocation(item)
+        }
+        Toast.makeText(context, item?.name, Toast.LENGTH_LONG).show()
+    }
+
+   /** This FetchPlaceRequest is not sent at search time because it is required on
+    *   on top of the FindAutocompletePredictionsRequest
+    *  It would be possible though more challenging to synchronize two requests all the while
+    *  showing live autocompleted results. This minor compromise is okay for now
+   **/
+    private fun moveToLocation(location: GooglePlace){
+        val placeFields: List<Place.Field> =
+            arrayListOf(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG)
+        val request = FetchPlaceRequest.newInstance(location.placeID, placeFields)
+        placesClient = Places.createClient(requireContext())
+        placesClient.fetchPlace(request)
+            .addOnSuccessListener { response: FetchPlaceResponse ->
+                val place= response.place
+                Log.i(TAG, "Place found: " + place.id)
+                location.place = place
+                location.coordinate = place.latLng!!
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 17.0f))
+            }
+            .addOnFailureListener { exception: Exception ->
+                if (exception is ApiException) {
+                    Log.e(TAG, "Place not found: " + exception.message)
+                }
+            }
     }
 
 }

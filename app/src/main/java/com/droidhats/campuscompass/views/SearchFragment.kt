@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,7 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
+import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
+import com.google.android.gms.maps.model.LatLng
 
 class SearchFragment : Fragment()  {
 
@@ -48,10 +49,11 @@ class SearchFragment : Fragment()  {
 
     private fun observeSearchSuggestions()
     {
-        viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googleResults ->
+        viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googlePredictions ->
+
             viewModel.indoorSearchSuggestions.observe(viewLifecycleOwner , Observer {indoorResults ->
                 //Prepending indoor results to the google places results
-                viewModel.searchSuggestions.value = indoorResults.plus(googleResults)
+                viewModel.searchSuggestions.value = indoorResults + googlePredictions
             })
         })
 

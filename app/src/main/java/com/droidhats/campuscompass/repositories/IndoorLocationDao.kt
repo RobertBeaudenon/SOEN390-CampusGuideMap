@@ -29,6 +29,6 @@ interface IndoorLocationDao {
      * Runtime query used in search autocomplete
      */
     @RawQuery(observedEntities = [IndoorLocation::class])
-    fun getMatchedClassrooms(query : SupportSQLiteQuery): LiveData<List<String>>
+    fun getMatchedClassrooms(query : SupportSQLiteQuery): LiveData<List<IndoorLocation>>
 
 }
