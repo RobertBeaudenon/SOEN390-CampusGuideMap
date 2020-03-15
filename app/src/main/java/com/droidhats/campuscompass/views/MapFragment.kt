@@ -70,6 +70,7 @@ import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
 import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
+import com.droidhats.campuscompass.models.Map
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
@@ -87,7 +88,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
 
-         var stepInsts : String = ""
+        var stepInsts : String = ""
     }
 
     private var instructions = arrayListOf<String>()
@@ -141,33 +142,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
 
-        //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
-        map.mapType = GoogleMap.MAP_TYPE_NORMAL
-
-        //initializing vars for get last current location
-        map.uiSettings.isZoomControlsEnabled = true
-        map.setOnMarkerClickListener(this)
-
-        //enable the zoom controls on the map and declare MainActivity as the callback triggered when the user clicks a marker on this map
-        map.uiSettings.isZoomControlsEnabled = true
-        map.setOnMarkerClickListener(this)
-
-        //enable indoor level picker
-        map.isIndoorEnabled = true
-        map.uiSettings.isIndoorLevelPickerEnabled = true
-
-        //Checks if location permissions were granted before enabling my-location layer
-        //Purpose: users can still generate directions without supplying their current location
-        if ((activity as MainActivity).checkLocationPermission()) {
-            //Enables the my-location layer which draws a light blue dot on the user’s location.
-            // It also adds a button to the map that, when tapped, centers the map on the user’s location.
-            map.isMyLocationEnabled = true
-        }
-
-        //Current Location Icon has been adjusted to be at the bottom right sid eof the search bar.
-        map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
+        // Get the map from the viewModel.
+        map = viewModel.getMap(googleMap, this, this, this.activity as MainActivity)
 
         //Gives you the most recent location currently available.
         fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
@@ -179,9 +156,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
             }
         }
-
-        drawBuildingPolygons()
-        map.setOnPolygonClickListener(this)
 
         map.setOnMapClickListener {
 
