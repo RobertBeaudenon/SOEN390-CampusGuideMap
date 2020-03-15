@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,13 +16,17 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 
-
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment()  {
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var root: View
     private var columnCount = 1
+
+    companion object{
+        var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,8 +86,7 @@ class SearchFragment : Fragment() {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = SearchAdapter(viewModel.searchSuggestions.value!!)
+            adapter = SearchAdapter(viewModel.searchSuggestions.value!!, onSearchResultClickListener)
         }
     }
-
 }

@@ -61,6 +61,7 @@ import kotlin.collections.MutableList
 import java.util.Locale
 import com.android.volley.Response
 import com.droidhats.campuscompass.MainActivity
+import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.Building
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -72,7 +73,7 @@ import kotlinx.android.synthetic.main.search_bar_layout.radioTransportGroup
 import org.json.JSONArray
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener {
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -126,8 +127,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
-        //Use this Fragment's implemented calendar event click callback
+        //Event click callbacks
         CalendarFragment.onCalendarEventClickListener = this
+        SearchFragment.onSearchResultClickListener = this
 
         createLocationRequest()
         initBottomSheetBehavior()
@@ -613,6 +615,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onCalendarEventClick(item: CalendarEvent?) {
         findNavController().navigateUp()
         Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onSearchResultClickListener(item: String?) {
+        findNavController().navigateUp()
+        Toast.makeText(context, "Clicked $item", Toast.LENGTH_LONG).show()
     }
 
 }

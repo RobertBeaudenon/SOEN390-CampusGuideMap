@@ -7,6 +7,7 @@
     android:layout_margin="6dp"
     app:cardElevation="4dp"
     app:contentPadding="1dp"
+    android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/quantum_grey500">
 
     <LinearLayout

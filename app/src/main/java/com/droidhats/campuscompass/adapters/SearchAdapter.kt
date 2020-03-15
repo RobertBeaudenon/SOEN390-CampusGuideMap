@@ -4,12 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.views.SearchFragment
 import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.*
 
 class SearchAdapter(
-    private val items: List<String>  //the search results
+    private val items: List<String>,  //the search results
+    private val listener: OnSearchResultClickListener?
 ) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     private val onClickListener: View.OnClickListener
@@ -18,6 +21,7 @@ class SearchAdapter(
         onClickListener = View.OnClickListener { view ->
             val item = view.tag as String
             // Notify the activity/fragment that an item has been clicked
+            listener?.onSearchResultClickListener(item)
         }
     }
 
@@ -32,7 +36,7 @@ class SearchAdapter(
         holder.suggestion.text = item
         with(holder.view) {
             tag = item
-            setOnClickListener(onClickListener)
+           setOnClickListener(onClickListener)
         }
     }
 
@@ -41,6 +45,10 @@ class SearchAdapter(
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         val suggestion: TextView = view.search_suggestion
+    }
+
+    interface OnSearchResultClickListener {
+        fun onSearchResultClickListener(item: String?)
     }
 
 }
