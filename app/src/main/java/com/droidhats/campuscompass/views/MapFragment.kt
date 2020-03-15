@@ -562,12 +562,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "Loyola Jesuit and Conference Centre" -> buildingImage.setImageResource(R.drawable.building_ljacc)
                         "Vanier Library Building" -> buildingImage.setImageResource(R.drawable.building_vl)
                         "Vanier Extension" -> buildingImage.setImageResource(R.drawable.building_ve)
-                        "Student Center" -> buildingImage.setImageResource(R.drawable.building_sc)
+                        "Student Centre" -> buildingImage.setImageResource(R.drawable.building_sc)
                         "F.C. Smith. Building" -> buildingImage.setImageResource(R.drawable.building_fc)
                         "Stinger Dome" -> buildingImage.setImageResource(R.drawable.building_do)
                         "PERFORM centre" -> buildingImage.setImageResource(R.drawable.building_pc)
                         "Jesuit Residence" -> buildingImage.setImageResource(R.drawable.building_jr)
                         "Physical Services Building" -> buildingImage.setImageResource(R.drawable.building_ps)
+                        "Oscar Peterson Concert Hall" -> buildingImage.setImageResource(R.drawable.building_pt)
 
 
                         else -> Log.v("Error loading images", "couldn't load image")
