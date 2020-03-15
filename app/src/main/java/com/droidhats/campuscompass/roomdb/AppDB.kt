@@ -13,22 +13,18 @@ abstract class AppDB : RoomDatabase() {
     abstract fun shuttleBusDAO(): ShuttleBus_DAO
 
     companion object {
-        private var INSTANCE: AppDB? = null
-        fun getInstance(context: Context): AppDB? {
-            if (INSTANCE == null) {
-                synchronized(AppDB::class) {
-                    INSTANCE = Room.databaseBuilder(context,
+        // Singleton instantiation
+        private var instance: AppDB? = null
+
+        fun getInstance(context: Context) =
+            instance
+                ?: synchronized(this) {
+                    instance
+                        ?: Room.databaseBuilder(context,
                         AppDB::class.java, "CampusCompassDB")
                         .createFromAsset("database/ShuttleBus.db").fallbackToDestructiveMigration()
-                        .build()
+                        .build().also { instance = it }
                 }
-            }
-            return INSTANCE
-        }
-        fun destroyInstance() {
-            INSTANCE = null
-        }
     }
-
-
 }
+

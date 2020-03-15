@@ -66,10 +66,12 @@ import java.util.Locale
 import com.android.volley.Response
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.viewmodels.NavigationViewModel
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
 import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
+import androidx.lifecycle.Observer
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
@@ -94,6 +96,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private var stepInstructions: String = ""
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
+    private lateinit var navigationViewModel: NavigationViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,6 +108,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+
+        navigationViewModel = ViewModelProviders.of(this)
+            .get(NavigationViewModel::class.java)
+
+        navigationViewModel.getLoyolaShuttleTime().observe(viewLifecycleOwner , Observer {
+
+            println("Robert" + it.size)
+
+        })
+
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)

@@ -13,20 +13,12 @@ data class ShuttleBus_SGW_Entity(
     @ColumnInfo(name = "ID")
     var ID: Int,
 
-
     @ColumnInfo(name ="SHUTTLE_DAY")
     @NotNull
     var shuttle_day: String= "",
-
 
     @ColumnInfo(name ="SHUTTLE_TIME")
     @NotNull
     var shuttle_time: String= ""
 
-) {
-
-
-
-
-
-}
+) {}

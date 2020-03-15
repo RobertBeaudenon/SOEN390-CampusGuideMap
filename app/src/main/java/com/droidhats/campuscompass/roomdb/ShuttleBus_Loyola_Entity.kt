@@ -17,7 +17,6 @@ data class ShuttleBus_Loyola_Entity (
     @ColumnInfo(name ="SHUTTLE_DAY")
     var shuttle_day: String= "",
 
-
     @NotNull
     @ColumnInfo(name ="SHUTTLE_TIME")
     var shuttle_time: String= ""
