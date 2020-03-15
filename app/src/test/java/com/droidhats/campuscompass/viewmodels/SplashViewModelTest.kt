@@ -1,6 +1,5 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.viewmodels
 
-import com.droidhats.campuscompass.viewmodels.SplashViewModel
 import org.junit.Test
 import org.junit.Before
 import org.junit.Rule
@@ -21,7 +20,8 @@ class SplashViewModelTest {
     companion object {
         @ClassRule
         @JvmField
-        val schedulers = RxImmediateSchedulerRule()
+        val schedulers =
+            RxImmediateSchedulerRule()
     }
 
     private lateinit var splashViewModel: SplashViewModel

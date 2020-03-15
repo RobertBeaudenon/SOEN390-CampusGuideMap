@@ -158,7 +158,7 @@ class CalendarFragment : DialogFragment() {
     }
 
     private fun saveChecked(checkedArr: BooleanArray) {
-        CalendarViewModel.selectedColors = checkedArr
+        calendarViewModel.selectedColors = checkedArr
         val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
         val editor = sharedPreferences?.edit()
         for (i in checkedArr.indices) {
@@ -173,7 +173,7 @@ class CalendarFragment : DialogFragment() {
         for (i in checkedArr.indices) {
             checkedArr[i] = sharedPreferences!!.getBoolean(i.toString(), false)
         }
-        CalendarViewModel.selectedColors = checkedArr
+        calendarViewModel.selectedColors = checkedArr
         return checkedArr
     }
 }
