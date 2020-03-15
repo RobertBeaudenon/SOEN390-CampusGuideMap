@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Location
+import com.droidhats.campuscompass.views.SearchFragment
+import com.droidhats.campuscompass.views.SearchFragment.Companion.isNavigationViewOpen
 import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.*
 
 class SearchAdapter(
@@ -18,10 +20,6 @@ class SearchAdapter(
 ) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     private var onClickListener: View.OnClickListener
-
-    companion object{
-        var navigateClick = false
-    }
 
     init {
         onClickListener = View.OnClickListener { view ->
@@ -47,7 +45,7 @@ class SearchAdapter(
             val swapButton  = root.findViewById<ImageButton>(R.id.swapSearchButton)
             val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
             setNavigation.setOnClickListener {
-                navigateClick = true
+                isNavigationViewOpen = true
                 destinationBar.visibility = View.VISIBLE
                 swapButton.visibility = View.VISIBLE
                 backButton.visibility = View.VISIBLE
@@ -60,7 +58,7 @@ class SearchAdapter(
 
             }
 
-            if (!navigateClick)
+            if (!isNavigationViewOpen)
                 view.setOnClickListener(onClickListener)
             else
                 view.setOnClickListener{

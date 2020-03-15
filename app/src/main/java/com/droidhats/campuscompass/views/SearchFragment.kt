@@ -27,6 +27,7 @@ class SearchFragment : Fragment()  {
 
     companion object{
         var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
+        var isNavigationViewOpen = false
     }
 
 
@@ -48,7 +49,7 @@ class SearchFragment : Fragment()  {
 
         val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
         backButton.setOnClickListener{
-            SearchAdapter.navigateClick = false
+            isNavigationViewOpen = false
             requireFragmentManager().beginTransaction().detach(this).attach(this).commit()
 
         }
@@ -127,5 +128,10 @@ class SearchFragment : Fragment()  {
             }
             adapter = SearchAdapter(viewModel.searchSuggestions.value!!, onSearchResultClickListener, root)
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        isNavigationViewOpen = false
     }
 }
