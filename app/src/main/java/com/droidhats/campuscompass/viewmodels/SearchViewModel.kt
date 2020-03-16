@@ -33,16 +33,14 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     private lateinit var indoorLocationDatabase: IndoorLocationDatabase
     private lateinit var placesClient : PlacesClient // Used to query google places
-    internal lateinit var indoorLocationRepository : IndoorLocationRepository //Used to query indoorLocations
+    private lateinit var indoorLocationRepository : IndoorLocationRepository //Used to query indoorLocations
 
     private val context = getApplication<Application>().applicationContext
 
     fun init(){
-
         initPlacesSearch()
         indoorLocationDatabase = Room.inMemoryDatabaseBuilder(context, IndoorLocationDatabase::class.java).build()
         indoorLocationRepository = IndoorLocationRepository.getInstance(IndoorLocationDatabase.getInstance(context).indoorLocationDao())
-        indoorSearchSuggestions = null
     }
 
     private fun initPlacesSearch() {
@@ -88,21 +86,20 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun sendSQLiteQuery(query : String) : Boolean
     {
-     if (query.isNullOrBlank()) return false
-     var qEsc = query.replace("'","")
+     if (query.isBlank()) return false
+     val qEsc = query.replace("'","")
         val queryString =
             "SELECT * " +
             "FROM IndoorLocation " +
              "WHERE location_type ='classroom' " +
               "AND location_name like '%$qEsc%' " +
-               "OR location_name like '%${qEsc.toUpperCase()}%' " +
+               "OR location_name like '%${qEsc.toUpperCase(Locale.ROOT)}%' " +
                     "LIMIT 3"
 
         val sqliteQuery = SimpleSQLiteQuery(queryString)
         indoorSearchSuggestions = indoorLocationRepository.getMatchedClassrooms(sqliteQuery)
 
         return indoorSearchSuggestions != null
-
     }
 
     // Send indoor and outdoor queries ASYNCHRONOUSLY
@@ -111,6 +108,4 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         sendSQLiteQuery(query)
         return success
     }
-
-
 }
