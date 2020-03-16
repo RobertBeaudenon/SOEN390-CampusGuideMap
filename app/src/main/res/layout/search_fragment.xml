@@ -37,7 +37,7 @@
                 app:searchIcon="@null"
                 android:layout_toRightOf="@id/backFromNavigationButton"
                 app:iconifiedByDefault="false"
-                app:queryHint="Search" />
+                app:queryHint="Enter Street,Address,Concordia Room..." />
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/secondarySearchBar"
@@ -56,15 +56,14 @@
         </RelativeLayout>
 
         <ImageButton
-            android:id="@+id/swapSearchButton"
+            android:id="@+id/startNavigationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_swap_vert_black_42dp"
+            android:src="@drawable/ic_directions_black_48dp"
             android:visibility="gone"
             android:background="?selectableItemBackgroundBorderless"
             android:layout_gravity="end|center_vertical"
-            android:contentDescription="Navigate"
-            android:layout_marginEnd="10dp" />
+            android:contentDescription="Navigate" />
 
     </androidx.cardview.widget.CardView>
 

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
+import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 
 class SearchFragment : Fragment()  {
@@ -28,8 +30,27 @@ class SearchFragment : Fragment()  {
     companion object{
         var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
         var isNavigationViewOpen = false
-    }
+        // The Navigation Start and End points. Each search bar must contain a valid location to initiate navigation
+        var NavigationPoints = mutableMapOf<Int, Location?>(R.id.mainSearchBar to null,
+                                                            R.id.secondarySearchBar to null)
 
+        fun expandNavigationView(root : View){
+            isNavigationViewOpen = true
+            val startNavButton  = root.findViewById<ImageButton>(R.id.startNavigationButton)
+            val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
+            val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
+            val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
+
+            mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
+            destinationBar.visibility = View.VISIBLE
+            startNavButton.visibility = View.VISIBLE
+            backButton.visibility = View.VISIBLE
+            mainBar.queryHint = "From"
+
+            if (NavigationPoints[mainBar.id] == null)
+                mainBar.setQuery("", true)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,21 +72,17 @@ class SearchFragment : Fragment()  {
         backButton.setOnClickListener{
             isNavigationViewOpen = false
             requireFragmentManager().beginTransaction().detach(this).attach(this).commit()
-
         }
     }
-
 
     private fun observeSearchSuggestions()
     {
         viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googlePredictions ->
-
             viewModel.indoorSearchSuggestions.observe(viewLifecycleOwner , Observer {indoorResults ->
                 //Prepending indoor results to the google places results
                 viewModel.searchSuggestions.value = indoorResults + googlePredictions
             })
         })
-
         //On change to the above results, the recycler view will be updated here
         viewModel.searchSuggestions.observe(viewLifecycleOwner, Observer {
             updateRecyclerView()
@@ -75,48 +92,57 @@ class SearchFragment : Fragment()  {
 
     private fun  initSearch(){
         val mainSearchBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
-        val mainSearchText = mainSearchBar.findViewById<EditText>(R.id.search_src_text)
-        mainSearchText.setTextColor(Color.WHITE)
         mainSearchBar.isIconified = false
         mainSearchBar.isActivated = true
 
         val secondarySearchBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
-        val secondarySearchText = secondarySearchBar.findViewById<EditText>(R.id.search_src_text)
-        secondarySearchText.setTextColor(Color.WHITE)
-        secondarySearchText.isActivated = false
-
-        val swapButton  = root.findViewById<ImageButton>(R.id.swapSearchButton)
-        swapButton.setOnClickListener{
-            var temp = mainSearchBar.query
-            mainSearchBar.setQuery(secondarySearchBar.query, false)
-            secondarySearchBar.setQuery(temp, false)
-        }
+        secondarySearchBar.isActivated = false
 
         initQueryTextListener(mainSearchBar)
         initQueryTextListener(secondarySearchBar)
+
+        val startNavButton  = root.findViewById<ImageButton>(R.id.startNavigationButton)
+        startNavButton.setOnClickListener{
+
+            if (!areRouteParametersSet()) {
+                Toast.makeText(context, "Set Your Route To Begin Navigation", Toast.LENGTH_LONG).show()
+            }
+            else { //Initiate Navigation
+                Toast.makeText(context, "Start Navigation\n" +
+                "From: ${NavigationPoints[mainSearchBar.id]?.name}\n" +
+                "To: ${NavigationPoints[secondarySearchBar.id]?.name}",
+                 Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun areRouteParametersSet() : Boolean{
+        return (NavigationPoints[R.id.mainSearchBar] != null && NavigationPoints[R.id.secondarySearchBar] != null)
     }
 
     private fun initQueryTextListener(searchView: SearchView)
     {
+        val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return false
             }
             override fun onQueryTextChange(p0: String?): Boolean {
-
-                return if (!p0.isNullOrBlank()) viewModel.sendSearchQueries(p0)
+                searchText.setTextColor(Color.WHITE)
+                NavigationPoints[searchView.id] = null
+                if (!p0.isNullOrBlank()) {
+                   return viewModel.sendSearchQueries(p0)
+                }
                 else {
                     viewModel.searchSuggestions.value = emptyList()
                     return false
                 }
             }
         })
-
        searchView.setOnQueryTextFocusChangeListener { _, isFocused ->
             searchView.isActivated = isFocused
           if(searchView.isActivated)
            viewModel.sendSearchQueries(searchView.query.toString())
-
         }
     }
 
@@ -132,6 +158,11 @@ class SearchFragment : Fragment()  {
 
     override fun onDetach() {
         super.onDetach()
+        reset()
+    }
+
+    private fun reset(){
         isNavigationViewOpen = false
+        NavigationPoints = mutableMapOf(R.id.mainSearchBar to null, R.id.secondarySearchBar to null)
     }
 }

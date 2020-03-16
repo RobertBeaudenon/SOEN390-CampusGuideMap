@@ -1,8 +1,10 @@
 package com.droidhats.campuscompass.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.widget.SearchView
 import android.widget.TextView
@@ -28,7 +30,6 @@ class SearchAdapter(
             listener?.onSearchResultClickListener(item)
         }
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.search_suggestion_recycler_item, parent, false)
         return ViewHolder(view)
@@ -40,35 +41,34 @@ class SearchAdapter(
         with (holder){
             suggestion.text = item.name
             view.tag = item
+
             val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
             val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
-            val swapButton  = root.findViewById<ImageButton>(R.id.swapSearchButton)
-            val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
+
             setNavigation.setOnClickListener {
-                isNavigationViewOpen = true
-                destinationBar.visibility = View.VISIBLE
-                swapButton.visibility = View.VISIBLE
-                backButton.visibility = View.VISIBLE
-                mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
-
-                destinationBar.setQuery(item.name, false)
-
-                mainBar.setQuery(mainBar.query, true)
-                mainBar.queryHint = "From"
-
+                SearchFragment.expandNavigationView(root)
+                confirmSelection(destinationBar, item, false)
             }
 
             if (!isNavigationViewOpen)
                 view.setOnClickListener(onClickListener)
             else
                 view.setOnClickListener{
-                    if (mainBar.isActivated)
-                        mainBar.setQuery(item.name, true)
-                    if(destinationBar.isActivated)
-                        destinationBar.setQuery(item.name, true)
+                    if (mainBar.isActivated){
+                        confirmSelection(mainBar, item, true)
+                    }
+                    if(destinationBar.isActivated) {
+                        confirmSelection(destinationBar, item, true)
+                    }
                 }
         }
+    }
 
+    private fun confirmSelection(searchView: SearchView, location: Location, submit : Boolean){
+        searchView.setQuery(location.name, submit)
+        val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
+        searchText.setTextColor(Color.GREEN)
+        SearchFragment.NavigationPoints[searchView.id] = location
     }
 
     override fun getItemCount(): Int = items.size
