@@ -160,6 +160,7 @@ class SearchFragment : Fragment()  {
 
     private fun initQueryTextListener(searchView: SearchView) {
         val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
+        searchText.textSize = 14f
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return false

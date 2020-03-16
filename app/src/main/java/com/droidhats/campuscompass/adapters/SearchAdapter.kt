@@ -39,6 +39,11 @@ class SearchAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = items[position]
+        val infoMessage = root.findViewById<TextView>(R.id.search_info)
+        if (items.isEmpty())
+            infoMessage.visibility = View.VISIBLE
+        else
+            infoMessage.visibility = View.GONE
 
         with (holder){
             view.tag = item

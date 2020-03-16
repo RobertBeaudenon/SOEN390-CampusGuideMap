@@ -37,7 +37,7 @@
                 app:searchIcon="@null"
                 android:layout_toRightOf="@id/backFromNavigationButton"
                 app:iconifiedByDefault="false"
-                app:queryHint="Enter Street,Address,Concordia Room..." />
+                app:queryHint="Search" />
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/secondarySearchBar"
@@ -59,7 +59,7 @@
             android:id="@+id/startNavigationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_directions_black_48dp"
+            android:src="@drawable/ic_directions_black_56dp"
             android:visibility="gone"
             android:background="?selectableItemBackgroundBorderless"
             android:layout_gravity="end|center_vertical"
@@ -96,6 +96,17 @@
         android:src="@drawable/ic_my_location_blue_36dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        />
+
+    <TextView
+        android:id="@+id/search_info"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter Street, Address, Concordia Classroom..."
+        android:visibility="visible"
+        android:textAlignment="center"
+        android:textSize="15sp"
         />
 
 </RelativeLayout>
