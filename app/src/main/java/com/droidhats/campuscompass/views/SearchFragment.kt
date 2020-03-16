@@ -84,7 +84,8 @@ class SearchFragment : Fragment()  {
 
     private fun observeSearchSuggestions() {
         viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googlePredictions ->
-            viewModel.indoorSearchSuggestions.observe(viewLifecycleOwner , Observer {indoorResults ->
+          if (viewModel.indoorSearchSuggestions !=null)
+            viewModel.indoorSearchSuggestions?.observe(viewLifecycleOwner , Observer {indoorResults ->
                 //Prepending indoor results to the google places results
                 viewModel.searchSuggestions.value = indoorResults + googlePredictions
             })

@@ -28,7 +28,7 @@ import java.util.Locale
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
     internal var googleSearchSuggestions = MutableLiveData<MutableList<GooglePlace>>()  //google places search results to be displayed
-    internal lateinit var indoorSearchSuggestions : LiveData<List<IndoorLocation>> // concordia indoor location search results from SQLite database to be displayed
+    internal var indoorSearchSuggestions : LiveData<List<IndoorLocation>>? = null // concordia indoor location search results from SQLite database to be displayed
     internal var searchSuggestions =  MutableLiveData<List<Location>>()  // The combined indoor and google search results to be displayed
 
     private lateinit var indoorLocationDatabase: IndoorLocationDatabase
@@ -42,6 +42,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         initPlacesSearch()
         indoorLocationDatabase = Room.inMemoryDatabaseBuilder(context, IndoorLocationDatabase::class.java).build()
         indoorLocationRepository = IndoorLocationRepository.getInstance(IndoorLocationDatabase.getInstance(context).indoorLocationDao())
+        indoorSearchSuggestions = null
     }
 
     private fun initPlacesSearch() {
@@ -100,7 +101,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         val sqliteQuery = SimpleSQLiteQuery(queryString)
         indoorSearchSuggestions = indoorLocationRepository.getMatchedClassrooms(sqliteQuery)
 
-        return !indoorSearchSuggestions.value.isNullOrEmpty()
+        return indoorSearchSuggestions != null
 
     }
 
