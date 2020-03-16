@@ -7,21 +7,21 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(entities = [ShuttleBus_Loyola_Entity::class,ShuttleBus_SGW_Entity::class],version = 3, exportSchema = false)
-abstract class AppDB : RoomDatabase() {
+abstract class ShuttleBusDB : RoomDatabase() {
 
    //When we invoke this function it will call the DAO class
     abstract fun shuttleBusDAO(): ShuttleBus_DAO
 
     companion object {
         // Singleton instantiation
-        private var instance: AppDB? = null
+        private var instance: ShuttleBusDB? = null
 
         fun getInstance(context: Context) =
             instance
                 ?: synchronized(this) {
                     instance
                         ?: Room.databaseBuilder(context,
-                        AppDB::class.java, "CampusCompassDB")
+                            ShuttleBusDB ::class.java, "CampusCompassDB")
                         .createFromAsset("database/ShuttleBus.db").fallbackToDestructiveMigration()
                         .build().also { instance = it }
                 }

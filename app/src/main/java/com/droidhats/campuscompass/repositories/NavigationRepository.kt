@@ -2,10 +2,7 @@ package com.droidhats.campuscompass.repositories
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import com.droidhats.campuscompass.roomdb.AppDB
-import com.droidhats.campuscompass.roomdb.ShuttleBus_DAO
-import com.droidhats.campuscompass.roomdb.ShuttleBus_Loyola_Entity
-import com.droidhats.campuscompass.roomdb.ShuttleBus_SGW_Entity
+import com.droidhats.campuscompass.roomdb.*
 
 class NavigationRepository {
 
@@ -14,7 +11,7 @@ class NavigationRepository {
     private  var sgwShuttleTimes: LiveData<List<ShuttleBus_SGW_Entity>>
 
     constructor(application: Application){
-        val db = AppDB.getInstance(application)
+        val db = ShuttleBusDB.getInstance(application)
         shuttleBusDAO = db!!.shuttleBusDAO()
         loyolaShuttleTimes = shuttleBusDAO.getLoyolaShuttleTime()
         sgwShuttleTimes = shuttleBusDAO.getSGWShuttleTime()
