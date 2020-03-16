@@ -1,19 +1,16 @@
 package com.droidhats.campuscompass.views
 
-import android.Manifest
 import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.text.Html
 import android.text.Html.fromHtml
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,7 +20,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -32,32 +28,43 @@ import androidx.navigation.fragment.findNavController
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
-import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.map_fragment.*
+import java.io.IOException
+import java.util.Locale
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.listOf
+import kotlin.collections.MutableList
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
+import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
+import kotlinx.android.synthetic.main.map_fragment.searchBar
+import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.IOException
-import java.util.*
-import kotlin.collections.ArrayList
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
@@ -70,7 +77,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private var locationUpdateState = false
 
     companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
         private const val MAP_PADDING_TOP = 200
@@ -127,6 +133,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
@@ -146,9 +153,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.isIndoorEnabled = true
         map.uiSettings.isIndoorLevelPickerEnabled = true
 
-        //Enables the my-location layer which draws a light blue dot on the user’s location.
-        // It also adds a button to the map that, when tapped, centers the map on the user’s location.
-        map.isMyLocationEnabled = true
+        //Checks if location permissions were granted before enabling my-location layer
+        //Purpose: users can still generate directions without supplying their current location
+        if ((activity as MainActivity).checkLocationPermission()) {
+            //Enables the my-location layer which draws a light blue dot on the user’s location.
+            // It also adds a button to the map that, when tapped, centers the map on the user’s location.
+            map.isMyLocationEnabled = true
+        }
 
         //Current Location Icon has been adjusted to be at the bottom right sid eof the search bar.
         map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
@@ -216,20 +227,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //get real time updates of current location
     private fun startLocationUpdates() {
-        //If the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
-        if (ActivityCompat.checkSelfPermission(
-                activity as Activity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                activity as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            return
-        }
-        //If there is permission, request for location updates.
+        //requests for location updates.
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -306,7 +304,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null) {
 
-                    if (tansportationMode() == "shuttle") {
+                    if (transportationMode() == "shuttle") {
                         //Setting the top bar "from" to the name of the selected building.
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
@@ -319,12 +317,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         }
                     } else {
                         if (selectedBuilding != null) {
-                            generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                            generateDirections(location, selectedBuilding.getLocation(), transportationMode())
                         }
                     }
                 }
 
-                if (tansportationMode()!= "shuttle") {
+                if (transportationMode()!= "shuttle") {
                     //Move the camera to the starting location
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
                 }
@@ -336,7 +334,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun tansportationMode() : String {
+    private fun transportationMode() : String {
 
         //Checking which transportation mode is selected, default is walking.
         var transportationMode = "driving"
@@ -376,7 +374,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.addMarker(markerOptions)
     }
 
-    //This method get address from coordinates
     private fun getAddress(latLng: LatLng): String {
         // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
         val geocoder = Geocoder(activity as Activity)
