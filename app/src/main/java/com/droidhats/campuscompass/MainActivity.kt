@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+        private const val READ_CALENDAR_PERMISSION_REQUEST_CODE = 1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,5 +42,21 @@ class MainActivity : AppCompatActivity() {
             == PackageManager.PERMISSION_DENIED
         ) {return false}
         return true
+    }
+
+    fun checkCalendarPermission(): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_CALENDAR)
+            == PackageManager.PERMISSION_DENIED
+        ) {return false}
+        return true
+    }
+
+    fun requestCalendarPermission() {
+        requestPermissions(
+            arrayOf(Manifest.permission.READ_CALENDAR),
+            READ_CALENDAR_PERMISSION_REQUEST_CODE
+        )
     }
 }

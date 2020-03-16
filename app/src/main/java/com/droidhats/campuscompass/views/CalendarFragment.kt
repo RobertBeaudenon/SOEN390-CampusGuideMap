@@ -1,18 +1,15 @@
 package com.droidhats.campuscompass.views
 
-import android.Manifest
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -20,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.CalendarAdapter
 import com.droidhats.campuscompass.models.CalendarEvent
@@ -33,17 +31,18 @@ class CalendarFragment : DialogFragment() {
     private var columnCount = 1
 
     companion object {
-        private const val READ_CALENDAR_PERMISSION_REQUEST_CODE = 1
-
         // This callback could also be private and be set on the host(main) Activity
         var onCalendarEventClickListener: OnCalendarEventClickListener? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestCalendarPermission()
       calendarViewModel = ViewModelProviders.of(this)
           .get(CalendarViewModel::class.java)
+
+        if(!(activity as MainActivity).checkCalendarPermission()) {
+            (activity as MainActivity).requestCalendarPermission()
+        }
     }
 
     override fun onCreateView(
@@ -51,12 +50,9 @@ class CalendarFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
        val root = inflater.inflate(R.layout.calendar_fragment, container, false)
 
-        calendarViewModel.init()
-        loadChecked()
-        calendarViewModel.selectCalendars()
+        refresh()
 
         val textView: TextView = root.findViewById(R.id.text_info)
         calendarViewModel.info.observe(viewLifecycleOwner, Observer {
@@ -92,22 +88,10 @@ class CalendarFragment : DialogFragment() {
         dialog.show(requireFragmentManager(), "select calendars dialog")
     }
 
-    private fun refresh()
-    {
+    private fun refresh() {
         calendarViewModel.init()
         loadChecked()
         calendarViewModel.selectCalendars()
-    }
-
-    private fun requestCalendarPermission() {
-
-        if (checkSelfPermission(requireContext(), Manifest.permission.READ_CALENDAR)
-            != PackageManager.PERMISSION_GRANTED
-        )
-            requestPermissions(
-                arrayOf(Manifest.permission.READ_CALENDAR),
-                READ_CALENDAR_PERMISSION_REQUEST_CODE
-            )
     }
 
     private fun updateRecyclerView() {
@@ -138,7 +122,6 @@ class CalendarFragment : DialogFragment() {
                 ) { _, which, isChecked ->
                     selectedBool!![which] = isChecked
                 }.setPositiveButton(R.string.ok) { _, _ ->
-
                     saveChecked(selectedBool!!)
                     targetFragment!!.onActivityResult(targetRequestCode, 1, null)
                 }
@@ -152,9 +135,9 @@ class CalendarFragment : DialogFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        refresh()
         loadChecked()
         calendarViewModel.selectCalendars()
-
     }
 
     private fun saveChecked(checkedArr: BooleanArray) {
