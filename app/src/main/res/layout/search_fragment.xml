@@ -82,4 +82,20 @@
         app:layoutManager="LinearLayoutManager"
         tools:context=".views.SearchFragment" />
 
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/myCurrentLocationFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/white"
+        android:layout_margin="15dp"
+        app:borderWidth="15dp"
+        app:elevation="6dp"
+        android:visibility="invisible"
+        android:textAllCaps="false"
+        android:src="@drawable/ic_my_location_blue_36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        />
+
 </RelativeLayout>

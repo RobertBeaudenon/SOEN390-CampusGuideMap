@@ -1,5 +1,6 @@
 package com.droidhats.campuscompass.views
 
+import android.app.Activity
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -17,8 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
+import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class SearchFragment : Fragment()  {
 
@@ -38,6 +43,7 @@ class SearchFragment : Fragment()  {
             isNavigationViewOpen = true
             val startNavButton  = root.findViewById<ImageButton>(R.id.startNavigationButton)
             val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
+            val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
             val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
             val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
 
@@ -45,6 +51,7 @@ class SearchFragment : Fragment()  {
             destinationBar.visibility = View.VISIBLE
             startNavButton.visibility = View.VISIBLE
             backButton.visibility = View.VISIBLE
+            myLocationFAB.show()
             mainBar.queryHint = "From"
 
             if (NavigationPoints[mainBar.id] == null)
@@ -75,8 +82,7 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    private fun observeSearchSuggestions()
-    {
+    private fun observeSearchSuggestions() {
         viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googlePredictions ->
             viewModel.indoorSearchSuggestions.observe(viewLifecycleOwner , Observer {indoorResults ->
                 //Prepending indoor results to the google places results
@@ -90,7 +96,7 @@ class SearchFragment : Fragment()  {
         })
     }
 
-    private fun  initSearch(){
+    private fun initSearch() {
         val mainSearchBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
         mainSearchBar.isIconified = false
         mainSearchBar.isActivated = true
@@ -113,14 +119,46 @@ class SearchFragment : Fragment()  {
                  Toast.LENGTH_LONG).show()
             }
         }
+        initCurrentLocationHandler(mainSearchBar, secondarySearchBar)
     }
 
-    private fun areRouteParametersSet() : Boolean{
+    private fun areRouteParametersSet() : Boolean {
         return (NavigationPoints[R.id.mainSearchBar] != null && NavigationPoints[R.id.secondarySearchBar] != null)
     }
 
-    private fun initQueryTextListener(searchView: SearchView)
-    {
+    private fun initCurrentLocationHandler(mainSearchView: SearchView, secondarySearchView : SearchView){
+        val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
+        myLocationFAB.setOnClickListener{
+            if (mainSearchView.isActivated){
+               setCurrentLocation(mainSearchView)
+            }
+            if (secondarySearchView.isActivated) {
+                setCurrentLocation(secondarySearchView)
+            }
+        }
+    }
+
+    private fun setCurrentLocation(searchView: SearchView) {
+       val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
+        fusedLocationClient.lastLocation.addOnSuccessListener{
+            if (it != null) {
+                val coordinates = LatLng(it.latitude, it.longitude)
+                val currentLocation = GooglePlace(
+                    it.toString(),
+                    "Your Freakin Location",
+                    coordinates.toString(),
+                    coordinates
+                )
+                searchView.setQuery(currentLocation.name, false)
+                val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
+                searchText.setTextColor(Color.GREEN)
+                NavigationPoints[searchView.id] = currentLocation
+                Toast.makeText(context, "Current Location Set\n $coordinates", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun initQueryTextListener(searchView: SearchView) {
         val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
