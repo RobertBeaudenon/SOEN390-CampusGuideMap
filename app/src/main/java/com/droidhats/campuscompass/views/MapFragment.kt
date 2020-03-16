@@ -88,7 +88,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private var stepInstructions: String = ""
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
-    private lateinit var navigationViewModel: NavigationViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -100,15 +99,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-
-        navigationViewModel = ViewModelProviders.of(this)
-            .get(NavigationViewModel::class.java)
-
-        navigationViewModel.getLoyolaShuttleTime().observe(viewLifecycleOwner , Observer {
-
-            println("Robert" + it.size)
-
-        })
 
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
