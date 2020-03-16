@@ -1,12 +1,9 @@
 apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'kotlin-kapt'
-
 apply plugin: 'jacoco'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'org.jetbrains.dokka'
 
 jacoco {
     toolVersion = '0.8.5'
@@ -58,6 +55,20 @@ android {
             }
         }
     }
+    dokka {
+        outputFormat = 'javadoc'
+        outputDirectory = "$buildDir/dokka"
+        configuration {
+            // Use to include or exclude non public members.
+            includeNonPublic = true
+            // Do not output deprecated members. Applies globally, can be overridden by packageOptions
+            skipDeprecated = false
+            // Emit warnings about not documented members. Applies globally, also can be overridden by packageOptions
+            reportUndocumented = true
+            // Do not create index pages for empty packages
+            skipEmptyPackages = true
+        }
+    }
 }
 
 def buildDir = '/Users/nicholasnagy/StudioProjects/SOEN390-CampusGuideMap/app/build/'
@@ -100,12 +111,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:0.5'
-    implementation 'com.google.android.libraries.places:places:2.1.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.6.2'
+    implementation 'com.google.android.libraries.places:places:2.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
@@ -154,4 +165,6 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
 
+    compile 'org.jetbrains.anko:anko-sdk15:0.8.2' //<--
+    compile 'com.beust:klaxon:0.30' //<--
 }
