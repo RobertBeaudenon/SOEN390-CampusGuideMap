@@ -5,6 +5,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.jetbrains.annotations.NotNull
 
+/**
+ * This class will create the ShuttleBus_Loyola_Entity table
+ * @param ID
+ * @param SHUTTLE_DAY
+ * @param SHUTTLE_TIME
+ */
 @Entity()
 data class ShuttleBus_Loyola_Entity (
 

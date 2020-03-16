@@ -4,6 +4,11 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import com.droidhats.campuscompass.roomdb.*
 
+/**
+ * This class will create a connection with the SQLite DB in order to get the
+ * SGW and Loyola shuttle times
+ * @param application
+ */
 class NavigationRepository {
 
     private  var shuttleBusDAO: ShuttleBus_DAO
@@ -17,11 +22,16 @@ class NavigationRepository {
         sgwShuttleTimes = shuttleBusDAO.getSGWShuttleTime()
     }
 
-    //to access times from View model
+    /**
+    * @return loyolaShuttleTimes
+    */
     fun getLoyolaShuttleTime(): LiveData<List<ShuttleBus_Loyola_Entity>> {
         return loyolaShuttleTimes
     }
 
+    /**
+     * @return sgwShuttleTimes
+     */
     fun getSGWShuttleTime(): LiveData<List<ShuttleBus_SGW_Entity>> {
         return sgwShuttleTimes
     }
