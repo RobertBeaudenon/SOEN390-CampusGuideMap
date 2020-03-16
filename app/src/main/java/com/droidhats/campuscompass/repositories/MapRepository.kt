@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.StringBuilder
 
 class MapRepository(json: String) {
 
@@ -78,26 +79,46 @@ class MapRepository(json: String) {
             // Traverse each building in the array
             for(i in 0 until buildingsArray.length()) {
                 val buildingName : String = buildingsArray.getJSONObject(i).get("name").toString()
+                val buildingAddress : String = buildingsArray.getJSONObject(i).get("address").toString()
                 val buildingLocationArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("location")
+                val departmentsArray: JSONArray = buildingsArray.getJSONObject(i)
+                    .getJSONArray("departments")
+                val servicesArray: JSONArray = buildingsArray.getJSONObject(i)
+                    .getJSONArray("services")
                 val buildingLocation = LatLng(
                     buildingLocationArray[0].toString().toDouble(),
                     buildingLocationArray[1].toString().toDouble()
                 )
 
                 coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
+                var openHoursArray = buildingsArray.getJSONObject(i).getJSONArray("open_hours")
                 var polygonCoordinatesList: MutableList<LatLng> = mutableListOf()
 
+                var hoursBuilder = StringBuilder()
+
+                //Traverse each opening hours array of each building
+                for(j in 0 until openHoursArray.length()) {
+                    val day: String = openHoursArray.getJSONArray(j)[0].toString()
+                    val hours: String = openHoursArray.getJSONArray(j)[1].toString()
+
+                    if(j == openHoursArray.length()){
+                        hoursBuilder.append(day + "\t" + hours)
+                    } else {
+                        hoursBuilder.append(day + "\t" + hours + "\n")
+                    }
+                }
+
                 // Traverse each coordinate arrays of each building
-                for(j in 0 until coordinatesArray.length()){
-                    val latCoordinate: Double = coordinatesArray.getJSONArray(j)[0].toString().toDouble()
-                    val longCoordinate: Double = coordinatesArray.getJSONArray(j)[1].toString().toDouble()
+                for(k in 0 until coordinatesArray.length()) {
+                    val latCoordinate: Double = coordinatesArray.getJSONArray(k)[0].toString().toDouble()
+                    val longCoordinate: Double = coordinatesArray.getJSONArray(k)[1].toString().toDouble()
 
                     // Add all the edge coordinates of the building to the list
                     polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
                 }
 
-                buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList))
+                buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList, buildingAddress, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
             }
         } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +
@@ -106,5 +127,20 @@ class MapRepository(json: String) {
             Log.v("Parsing error", e.toString())
         }
         return buildingsList
+    }
+
+    //Helper method
+    private fun getInfoFromTraversal(jsonArray: JSONArray): String{
+        val builder = StringBuilder()
+
+        //Traverse each object in the array
+        for(k in 0 until jsonArray.length()){
+            if(k == jsonArray.length()){
+                builder.append(jsonArray[k].toString())
+            }else{
+                builder.append(jsonArray[k].toString() + "\n")
+            }
+        }
+        return builder.toString()
     }
 }

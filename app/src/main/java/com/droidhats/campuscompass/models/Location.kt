@@ -1,6 +1,7 @@
 package com.droidhats.campuscompass.models
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
 
 /*
@@ -28,12 +29,27 @@ class Campus(
 class Building(
     private val coordinate: LatLng,
     private val name: String,
-    private val polygonCoordinatesList: List<LatLng>
+    private val polygonCoordinatesList: List<LatLng>,
+    private val address: String,
+    private val openHours: String,
+    private val departments: String,
+    private val services: String
 ) : Location(coordinate) {
     private val polygonColor = 4289544510.toInt()
+    private lateinit var polygon: Polygon
 
     fun getName(): String = name
     fun getLocation(): LatLng = coordinate
+    fun getAddress(): String = address
+    fun getDepartments(): String = departments
+    fun getServices(): String = services
+    fun getOpenHours(): String = openHours
+    fun getPolygon(): Polygon = polygon
+
+    fun setPolygon(polygon: Polygon){
+        this.polygon = polygon
+        this.polygon.tag = name
+    }
 
     fun getPolygonOptions(): PolygonOptions {
         var polygonOptions = PolygonOptions()
