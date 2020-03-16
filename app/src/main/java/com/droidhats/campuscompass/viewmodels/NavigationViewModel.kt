@@ -19,6 +19,9 @@ class NavigationViewModel: AndroidViewModel {
         sgwShuttleTimes = navigationRepository.getSGWShuttleTime()
     }
 
+    /**
+     * 
+     */
     fun getLoyolaShuttleTime(): LiveData<List<ShuttleBus_Loyola_Entity>> {
         return loyolaShuttleTimes
     }

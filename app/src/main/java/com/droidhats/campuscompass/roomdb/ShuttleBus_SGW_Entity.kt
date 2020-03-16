@@ -20,5 +20,4 @@ data class ShuttleBus_SGW_Entity(
     @ColumnInfo(name ="SHUTTLE_TIME")
     @NotNull
     var shuttle_time: String= ""
-
 ) {}
