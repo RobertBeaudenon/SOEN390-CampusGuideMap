@@ -103,7 +103,6 @@ class SearchFragment : Fragment()  {
 
         val startNavButton  = root.findViewById<ImageButton>(R.id.startNavigationButton)
         startNavButton.setOnClickListener{
-
             if (!areRouteParametersSet()) {
                 Toast.makeText(context, "Set Your Route To Begin Navigation", Toast.LENGTH_LONG).show()
             }

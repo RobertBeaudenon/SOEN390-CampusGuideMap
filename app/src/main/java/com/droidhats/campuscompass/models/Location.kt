@@ -66,6 +66,7 @@ class Building(
 class GooglePlace(
     val placeID : String,
     override val name: String,
+    val category : String,
     override var coordinate: LatLng
 ) : Location()
 {

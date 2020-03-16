@@ -49,9 +49,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         placesClient = Places.createClient(context)
     }
 
-
     private fun sendGooglePlacesQuery(query : String) : Boolean{
-
         var success = false
         //Set up your query here
         val token : AutocompleteSessionToken = AutocompleteSessionToken.newInstance()
@@ -69,7 +67,10 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         placesClient.findAutocompletePredictions(request).addOnSuccessListener {
 
             for ( prediction in it.autocompletePredictions) {
-                queryResults.add(GooglePlace(prediction.placeId, prediction.getPrimaryText(null).toString(), LatLng(0.0, 0.0)))
+                queryResults.add(GooglePlace(prediction.placeId,
+                    prediction.getPrimaryText(null).toString(),
+                    prediction.getSecondaryText(null).toString(),
+                    LatLng(0.0, 0.0)))
             }
             if (queryResults.size > 0)
                 success = true

@@ -10,6 +10,8 @@ import androidx.appcompat.widget.SearchView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.views.SearchFragment
 import com.droidhats.campuscompass.views.SearchFragment.Companion.isNavigationViewOpen
@@ -39,8 +41,14 @@ class SearchAdapter(
         val item = items[position]
 
         with (holder){
-            suggestion.text = item.name
             view.tag = item
+            suggestion.text = item.name
+            if (item is GooglePlace)
+                category.text = item.category
+            else if (item is IndoorLocation) {
+                val indoorType = "Concordia University ${item.type}"
+                category.text = indoorType
+            }
 
             val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
             val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
@@ -76,6 +84,7 @@ class SearchAdapter(
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         val suggestion: TextView = view.search_suggestion
+        val category : TextView = view.search_category
         val setNavigation: ImageButton = view.setNavigationPoint
     }
 
