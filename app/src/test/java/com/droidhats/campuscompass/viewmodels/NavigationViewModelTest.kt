@@ -11,10 +11,10 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import com.droidhats.campuscompass.roomdb.ShuttleBus_Loyola_Entity
 
-
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
 class NavigationViewModelTest {
+    
     val viewmodel: NavigationViewModel = NavigationViewModel(RuntimeEnvironment.application)
 
     @Test
