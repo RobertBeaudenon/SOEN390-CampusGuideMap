@@ -15,6 +15,7 @@ abstract class ShuttleBusDB : RoomDatabase() {
    //When we invoke this function it will call the DAO class
     abstract fun shuttleBusDAO(): ShuttleBus_DAO
 
+
     companion object {
         private var instance: ShuttleBusDB? = null
 
@@ -28,7 +29,7 @@ abstract class ShuttleBusDB : RoomDatabase() {
                     instance
                         ?: Room.databaseBuilder(context,
                             ShuttleBusDB ::class.java, "CampusCompassDB")
-                        .createFromAsset("database/ShuttleBus.db").fallbackToDestructiveMigration()
+                        .createFromAsset("database/ShuttleBus.db").allowMainThreadQueries().fallbackToDestructiveMigration()
                         .build().also { instance = it }
                 }
     }
