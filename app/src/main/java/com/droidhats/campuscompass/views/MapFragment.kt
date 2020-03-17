@@ -1,18 +1,19 @@
 package com.droidhats.campuscompass.views
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.text.Html
+import android.text.Html.fromHtml
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -26,56 +27,40 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.adapters.SearchAdapter
+import com.droidhats.campuscompass.MainActivity
+import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.MapViewModel
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.FetchPlaceResponse
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import org.json.JSONObject
 import java.io.IOException
-import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import java.util.Locale
-import com.android.volley.Response
-import com.droidhats.campuscompass.MainActivity
-import com.droidhats.campuscompass.adapters.SearchAdapter
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.GooglePlace
-import com.google.android.gms.common.api.ApiException
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.api.net.FetchPlaceResponse
-import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
-import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
-import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
-import kotlinx.android.synthetic.main.search_bar_layout.radioTransportGroup
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.map_fragment.*
+import kotlinx.android.synthetic.main.search_bar_layout.*
 import org.json.JSONArray
+import org.json.JSONObject
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener {
@@ -86,7 +71,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private lateinit var placesClient : PlacesClient
-    private lateinit var mapFragment: View
     private var locationUpdateState = false
 
     companion object {
@@ -94,18 +78,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
-
-         var stepInsts : String = ""
+        var stepInsts : String = ""
     }
 
     private var instructions = arrayListOf<String>()
     private var stepInstructions: String = ""
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
-
-    private var checker = 0
-    private var coordOne = ""
-    private var coordTwo = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -141,6 +120,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initSearchBar()
         handleCampusSwitch()
         instructionsButton()
+        transportRadioButton()
     }
 
     /**
@@ -150,6 +130,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      * we just add a marker near Sydney, Australia.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
      * installed Google Play services and returned to the app.
      */
     override fun onMapReady(googleMap: GoogleMap) {
@@ -211,8 +192,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         locationRequest.fastestInterval = 5000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
         // 4 check location settings before asking for location updates
         val client = LocationServices.getSettingsClient(requireActivity())
@@ -265,7 +245,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
-                var status = data?.let { Autocomplete.getStatusFromIntent(it) }
+                //var status = data?.let { Autocomplete.getStatusFromIntent(it) }
             } else if (resultCode == RESULT_CANCELED) {
                 // TODO: Handle user cancelling the operation.
             }
@@ -356,6 +336,54 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    private fun transportRadioButton() {
+        radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
+            run {
+                when (optionId) {
+                    R.id.drivingId -> {
+                        transportRadioButtonSelector("car")
+                    }
+                    R.id.transitId -> {
+                        transportRadioButtonSelector("transit")
+                    }
+                    R.id.walkingId -> {
+                        transportRadioButtonSelector("walking")
+                    }
+                    R.id.bicyclingId -> {
+                        transportRadioButtonSelector("bicycle")
+                    }
+                    R.id.shuttleId -> {
+                        transportRadioButtonSelector("shuttle")
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    private fun transportRadioButtonSelector(buttonSelected: String) {
+        drivingId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
+        transitId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
+        walkingId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
+        bicyclingId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
+        shuttleId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
+        if (buttonSelected == "car") {
+            return drivingId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
+        }
+        if (buttonSelected == "transit") {
+            return transitId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
+        }
+        if (buttonSelected == "walking") {
+            return walkingId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
+        }
+        if (buttonSelected == "bicycle") {
+            return bicyclingId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
+        }
+        if (buttonSelected == "shuttle") {
+            return shuttleId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
+        }
+    }
+
     private fun transportationMode() : String {
 
         //Checking which transportation mode is selected, default is walking.
@@ -363,6 +391,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         when (radioTransportGroup.checkedRadioButtonId) {
             R.id.drivingId -> {
                 transportationMode = "driving"
+            }
+            R.id.transitId -> {
+                transportationMode = "transit"
             }
             R.id.walkingId -> {
                 transportationMode = "walking"
@@ -393,7 +424,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.addMarker(markerOptions)
     }
 
-    //This method get address from coordinates
     private fun getAddress(latLng: LatLng): String {
         // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
         val geocoder = Geocoder(activity as Activity)
@@ -439,11 +469,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun instructionsButton() {
         //instruction button listener
         buttonInstructions.setOnClickListener {
-
             for (item in instructions) {
-                stepInstructions += item + "\n\n"
+                stepInstructions += item
             }
-            stepInsts = Html.fromHtml(stepInstructions).toString()
+            stepInsts = fromHtml(stepInstructions).toString()
+            instructions.clear() // Array is cleared
+            stepInstructions = "" // String instruction cleared
             findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
         }
     }
@@ -453,7 +484,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
                 map.addPolygon(building.getPolygonOptions()).tag = building.name
-                var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
+                val polygon: Polygon = map.addPolygon(building.getPolygonOptions())
                 building.setPolygon(polygon)
             }
         }
@@ -575,7 +606,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val directionsRequest = object : StringRequest(
             Method.GET,
             directionsURL,
-            Response.Listener<String> { response ->
+            Response.Listener { response ->
 
                 //Retrieve response (a JSON object)
                 val jsonResponse = JSONObject(response)
@@ -585,24 +616,40 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val routes = routesArray.getJSONObject(0)
                 val legsArray: JSONArray = routes.getJSONArray("legs")
                 val legs = legsArray.getJSONObject(0)
-                val steps = legsArray.getJSONObject(0).getJSONArray("steps")
-                val totalKm:JSONObject = legs.getJSONObject("distance")
-                val travelTime:JSONObject = legs.getJSONObject("duration")
+                val stepsArray = legs.getJSONArray("steps")
 
                 //Debug
                 for (x in 1..3) {
-                    Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${legs.getJSONObject("distance").getString("text")}. Total travel time is: ${legs.getJSONObject("duration").getString("text")}", Toast.LENGTH_LONG).show()
                 }
 
 
                 val path: MutableList<List<LatLng>> = ArrayList()
 
-                //Build the path polyline
-                for (i in 0 until steps.length()) {
-                    val points =steps.getJSONObject(i).getJSONObject("polyline").getString("points")
-                    instructions.add(steps.getJSONObject(i).getString("html_instructions"))  //Getting the route instructions and storing it into an array.
+                //Build the path polyline as well as store instruction between 2 path into an array.
+                for (i in 0 until stepsArray.length()) {
+                    val points = stepsArray.getJSONObject(i).getJSONObject("polyline").getString("points")
+
+                    if (mode == "transit" || mode == "walking") {
+                        instructions.add(stepsArray.getJSONObject(i).getString("html_instructions") + "<br>Distance: " + stepsArray.getJSONObject(i).getJSONObject("distance").getString("text") + "<br>Duration: " + stepsArray.getJSONObject(i).getJSONObject("duration").getString("text") + "<br>")
+                        if (stepsArray.getJSONObject(i).has("steps")) {
+                            instructions.add("Instructions:<br>")
+                            for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {instructions.add(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j).getString("html_instructions") + "<br>")
+                            }
+                            instructions.add("<br>")
+                        }
+                        if (stepsArray.getJSONObject(i).has("transit_details")) {
+                            instructions.add("Information:<br>")
+                            instructions.add("Departure Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getJSONObject("departure_stop").getString("name") + "<br>")
+                            instructions.add("Arrival Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getJSONObject("arrival_stop").getString("name") + "<br>")
+                            instructions.add("Total Number of Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getString("num_stops") + "<br><br>")
+                        }
+                    } else {
+                        instructions.add(stepsArray.getJSONObject(i).getString("html_instructions") + "<br>")
+                    }
                     path.add(PolyUtil.decode(points))
                 }
+
                 //Draw the path polyline
                 for (i in 0 until path.size) {
                     this.map.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
@@ -634,7 +681,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
    /** This FetchPlaceRequest is not sent at search time because it is required on
     *   on top of the FindAutocompletePredictionsRequest
     *  It would be possible though more challenging to synchronize two requests all the while
-    *  showing live autocompleted results. This minor compromise is okay for now
+    *  showing live autocomplete results. This minor compromise is okay for now
    **/
     private fun moveToLocation(location: GooglePlace){
         val placeFields: List<Place.Field> =

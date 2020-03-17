@@ -1,13 +1,12 @@
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'jacoco'
+apply plugin: "com.android.application"
+apply plugin: "jacoco"
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-android-extensions"
+apply plugin: "kotlin-kapt"
+apply plugin: "org.jetbrains.dokka"
 
 jacoco {
-    toolVersion = '0.8.5'
+    toolVersion = "0.8.5"
 }
 
 android {
@@ -37,15 +36,15 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField 'String', "ApiKey", API_KEY
-            resValue 'string', "ApiKey", API_KEY
+            buildConfigField "String", "ApiKey", API_KEY
+            resValue "string", "ApiKey", API_KEY
             testCoverageEnabled true
         }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', "ApiKey", API_KEY
-            resValue 'string', "ApiKey", API_KEY
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            buildConfigField "String", "ApiKey", API_KEY
+            resValue "string", "ApiKey", API_KEY
             testCoverageEnabled false
         }
     }
@@ -61,6 +60,20 @@ android {
                     includeNoLocationClasses = true
                 }
             }
+        }
+    }
+    dokka {
+        outputFormat = "javadoc"
+        outputDirectory = "$buildDir/dokka"
+        configuration {
+            // Use to include or exclude non public members.
+            includeNonPublic = true
+            // Do not output deprecated members. Applies globally, can be overridden by packageOptions
+            skipDeprecated = false
+            // Emit warnings about not documented members. Applies globally, also can be overridden by packageOptions
+            reportUndocumented = true
+            // Do not create index pages for empty packages
+            skipEmptyPackages = true
         }
     }
 
@@ -108,41 +121,42 @@ def buildDir = '/Users/nicholasnagy/StudioProjects/SOEN390-CampusGuideMap/app/bu
 apply plugin: "kotlin-kapt"
 dependencies {
     def fragment_version = "1.2.2"
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.3.0-alpha01'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:0.6.2'
-    implementation 'com.google.android.libraries.places:places:2.2.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-    implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestCompile 'com.android.support.test:rules:0.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation "androidx.appcompat:appcompat:1.1.0"
+    implementation "androidx.core:core-ktx:1.3.0-alpha02"
+    implementation "com.google.android.gms:play-services-maps:17.0.0"
+    implementation "com.google.android.gms:play-services-location:17.0.0"
+    implementation "com.google.android.gms:play-services-gcm:17.0.0"
+    implementation "com.google.maps.android:android-maps-utils:0.6.2"
+    implementation "com.google.android.libraries.places:places:2.2.0"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "com.github.mancj:MaterialSearchBar:0.8.5"
+    testImplementation "junit:junit:4.12"
+    androidTestImplementation "androidx.test.ext:junit:1.1.1"
+    androidTestCompile "com.android.support.test:rules:0.4"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
     debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
     // Because RxAndroid releases are few and far between, it is recommended you also
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+    implementation "io.reactivex.rxjava3:rxjava:3.0.0"
 
     // Navigation
-    def nav_version = "2.3.0-alpha02"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    testImplementation 'org.robolectric:robolectric:4.3'
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha03"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha03"
+    testImplementation "org.robolectric:robolectric:4.3"
     // Dynamic Feature Module Support
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.0-alpha03"
     // Testing Navigation
-    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    androidTestImplementation "androidx.navigation:navigation-testing:2.3.0-alpha03"
     testImplementation "com.google.truth:truth:1.0.1"
+    compile "org.jetbrains.anko:anko-sdk15:0.8.2"
+    compile "com.beust:klaxon:0.30"
 
     //Room (SQLite)
     def room_version = "2.2.4"
@@ -157,5 +171,4 @@ dependencies {
     implementation "androidx.room:room-guava:$room_version"
     // Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
-
 }

@@ -4,7 +4,7 @@
         xmlns:map="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
 
     <com.mancj.materialsearchbar.MaterialSearchBar
         style="@style/MaterialSearchBarLight"
@@ -18,63 +18,95 @@
         map:mt_navIconEnabled="true"
         map:mt_placeholder="Search"
         android:elevation="5dp"
-        android:outlineProvider="bounds"
-        />
+        android:outlineProvider="bounds" />
 
     <!--hardcoded margins for now as the search bars can expand -->
     <ToggleButton
-            android:id="@+id/toggleButton"
-            android:layout_width="230.65px"
-            android:layout_height="100px"
-            android:layout_below="@+id/radioTransportGroup"
-            android:background="@drawable/toggle_switch"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:text="ToggleButton"
-            android:textColor="#FFFFFF"
-            android:textOff="LOY"
-            android:textOn="SGW"
-            android:textSize="14sp"
-            android:elevation="0dp"
-            android:textStyle="bold" />
+        android:id="@+id/toggleButton"
+        android:layout_width="230.65px"
+        android:layout_height="100px"
+        android:layout_below="@+id/radioTransportGroup"
+        android:background="@drawable/toggle_switch"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="ToggleButton"
+        android:textColor="#FFFFFF"
+        android:textOff="LOY"
+        android:textOn="SGW"
+        android:textSize="14sp"
+        android:elevation="0dp"
+        android:textStyle="bold" />
 
     <RadioGroup
-            android:id="@+id/radioTransportGroup"
-            android:layout_width="match_parent"
+        android:id="@+id/radioTransportGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_below="@+id/mapFragSearchBar"
+        android:orientation="horizontal"
+        android:checkedButton="@id/drivingId"
+        android:paddingTop="5dp" >
+
+        <RadioButton
+            android:id="@+id/drivingId"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:layout_below="@+id/mapFragSearchBar"
-            android:orientation="horizontal"
-            android:checkedButton="@id/drivingId">
+            android:drawableTop="@drawable/direction_car"
+            android:gravity="center"
+            android:button="@null"
+            android:text = "-"
+            android:drawableTint="@color/colorPrimaryDark"
+            />
 
         <RadioButton
-                android:id="@+id/drivingId"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Driving" />
+            android:id="@+id/transitId"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/direction_transit"
+            android:gravity="center"
+            android:button="@null"
+            android:text = "-"
+            android:drawableTint="@color/colorBlack"
+            />
 
         <RadioButton
-                android:id="@+id/walkingId"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Walking" />
+            android:id="@+id/walkingId"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/direction_walking"
+            android:gravity="center"
+            android:button="@null"
+            android:text = "-"
+            android:drawableTint="@color/colorBlack"
+            />
 
         <RadioButton
-                android:id="@+id/bicyclingId"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Bicycle" />
+            android:id="@+id/bicyclingId"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/direction_bicycle"
+            android:gravity="center"
+            android:button="@null"
+            android:text = "-"
+            android:drawableTint="@color/colorBlack"
+            />
 
         <RadioButton
-                android:id="@+id/shuttleId"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Shuttle" />
+            android:id="@+id/shuttleId"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:drawableTop="@drawable/direction_shuttle"
+            android:gravity="center"
+            android:button="@null"
+            android:text = "-"
+            android:drawableTint="@color/colorBlack"
+            />
+
     </RadioGroup>
-
 
 </RelativeLayout>
