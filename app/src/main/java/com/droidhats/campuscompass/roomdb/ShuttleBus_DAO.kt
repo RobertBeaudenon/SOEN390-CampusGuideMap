@@ -27,6 +27,13 @@ interface ShuttleBus_DAO {
     fun getLoyolaShuttleTime() : LiveData<List<ShuttleBus_Loyola_Entity>>
 
     /**
+     * Returns the number of rows in loyola shuttle bus table
+     * @return: count
+     */
+    @Query("select count(*) from ShuttleBus_Loyola_Entity")
+    fun getLoyolaShuttleTimeCount() : Int
+
+    /**
      * Insert the timing and the day of a scheduled sgw shuttle bus
      * in the ShuttleBus_SGW_Entity table
      * @param shuttleBus
@@ -40,4 +47,11 @@ interface ShuttleBus_DAO {
      */
     @Query("select * from ShuttleBus_SGW_Entity")
     fun getSGWShuttleTime(): LiveData<List<ShuttleBus_SGW_Entity>>
+
+    /**
+     * Returns the number of rows in sgw shuttle bus table
+     * @return: count
+     */
+    @Query("select count(*) from ShuttleBus_SGW_Entity")
+    fun getSGWShuttleTimeCount() : Int
 }
