@@ -51,9 +51,7 @@ class CalendarFragment : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
        val root = inflater.inflate(R.layout.calendar_fragment, container, false)
-
         refresh()
-
         val textView: TextView = root.findViewById(R.id.text_info)
         calendarViewModel.info.observe(viewLifecycleOwner, Observer {
             textView.text = it
@@ -88,7 +86,7 @@ class CalendarFragment : DialogFragment() {
         dialog.show(requireFragmentManager(), "select calendars dialog")
     }
 
-    private fun refresh() {
+     fun refresh() {
         calendarViewModel.init()
         loadChecked()
         calendarViewModel.selectCalendars()
@@ -135,7 +133,6 @@ class CalendarFragment : DialogFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        refresh()
         loadChecked()
         calendarViewModel.selectCalendars()
     }
