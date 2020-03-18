@@ -71,7 +71,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
-    private lateinit var placesClient : PlacesClient
+    private lateinit var placesClient: PlacesClient
     private var locationUpdateState = false
 
     companion object {

@@ -11,10 +11,5 @@ data class IndoorLocation(
     @ColumnInfo(name = "floor_num") val floorNum: Int,
     @ColumnInfo(name = "location_type") val type: String
 ) :Location(){
-
-    override val coordinate: LatLng
-        get() =
-            coordinate
-
-
+    override val coordinate: LatLng get() = coordinate
 }

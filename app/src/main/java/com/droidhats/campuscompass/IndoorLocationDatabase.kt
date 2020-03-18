@@ -16,7 +16,6 @@ import com.droidhats.campuscompass.repositories.IndoorLocationDao
 abstract class IndoorLocationDatabase : RoomDatabase() {
     abstract fun indoorLocationDao(): IndoorLocationDao
 
-
     companion object {
 
         // For Singleton instantiation

@@ -18,12 +18,9 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.*
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import java.util.Locale
-
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -84,8 +81,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         return success
     }
 
-    private fun sendSQLiteQuery(query : String) : Boolean
-    {
+    private fun sendSQLiteQuery(query: String): Boolean {
      if (query.isBlank()) return false
      val qEsc = query.replace("'","")
         val queryString =
@@ -103,7 +99,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     // Send indoor and outdoor queries ASYNCHRONOUSLY
-    fun sendSearchQueries(query : String) : Boolean{
+    fun sendSearchQueries(query: String): Boolean{
         val success = sendGooglePlacesQuery(query)
         sendSQLiteQuery(query)
         return success

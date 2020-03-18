@@ -15,7 +15,9 @@ import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.views.SearchFragment
 import com.droidhats.campuscompass.views.SearchFragment.Companion.isNavigationViewOpen
-import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.*
+import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.setNavigationPoint
+import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.search_category
+import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.search_suggestion
 
 class SearchAdapter(
     private val items: List<Location>,  //the search results
@@ -63,21 +65,23 @@ class SearchAdapter(
                 confirmSelection(destinationBar, item, false)
             }
 
-            if (!isNavigationViewOpen)
+            if (!isNavigationViewOpen) {
                 view.setOnClickListener(onClickListener)
-            else
-                view.setOnClickListener{
-                    if (mainBar.isActivated){
+            }
+            else {
+                view.setOnClickListener {
+                    if (mainBar.isActivated) {
                         confirmSelection(mainBar, item, true)
                     }
-                    if(destinationBar.isActivated) {
+                    if (destinationBar.isActivated) {
                         confirmSelection(destinationBar, item, true)
                     }
                 }
+            }
         }
     }
 
-    private fun confirmSelection(searchView: SearchView, location: Location, submit : Boolean){
+    private fun confirmSelection(searchView: SearchView, location: Location, submit: Boolean) {
         searchView.setQuery(location.name, submit)
         val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
         searchText.setTextColor(Color.GREEN)

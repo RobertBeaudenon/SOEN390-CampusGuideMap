@@ -52,7 +52,7 @@ class Building(
     }
 
     fun getPolygonOptions(): PolygonOptions {
-        var polygonOptions = PolygonOptions()
+        val polygonOptions = PolygonOptions()
             .fillColor(polygonColor)
             .strokeWidth(2F)
             .clickable(true)
@@ -71,5 +71,4 @@ class GooglePlace(
 ) : Location()
 {
     var place : Place? = null
-
 }
