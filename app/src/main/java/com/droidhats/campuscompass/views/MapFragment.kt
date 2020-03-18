@@ -98,6 +98,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -416,7 +417,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         val directionRequest = StringRequest(
             Request.Method.GET, directionsURL,
-            Response.Listener<String> { response ->
+            Response.Listener { response ->
 
                 //Retrieve response (a JSON object)
                 val jsonResponse = JSONObject(response)
@@ -440,7 +441,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     bicyclingId.text = legs.getJSONObject("duration").getString("text")
                 }
                 if (mode == "shuttle") {
-                    shuttleId.text = legs.getJSONObject("duration").getString("text")
+                    //shuttleId.text = legs.getJSONObject("duration").getString("text")
                 }
             },
             Response.ErrorListener { Log.e("Volley Error:", "HTTP response error") })
