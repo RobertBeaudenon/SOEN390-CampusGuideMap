@@ -33,12 +33,10 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         campuses = MapRepository.getInstance(context).getCampuses()
     }
 
-
     /**
      * Returns a list of campus objects (SJW and Loyola).
      */
     fun getCampuses(): List<Campus> = campuses!!
-
 
     /**
      * Uses the Map Model to initialize the map, and then it draws teh polygons of the campus buildings.
@@ -65,7 +63,6 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         return googleMap
     }
 
-
     /**
      * Searches and returns the building object that matches the polygon tag from the mapFragment
      */
@@ -83,10 +80,5 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
 
         return selectedBuilding
     }
-
-
-
-
-
 }
 

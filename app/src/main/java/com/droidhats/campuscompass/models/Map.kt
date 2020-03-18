@@ -26,7 +26,6 @@ class Map(
         private const val MAP_PADDING_RIGHT = 15
     }
 
-
     /**
      * Initializes the map, and attaches listeners to it.
      */
@@ -37,7 +36,6 @@ class Map(
         //initializing vars for get last current location
         googleMap.uiSettings.isZoomControlsEnabled = true
         googleMap.setOnMarkerClickListener(mapFragmentOnMarkerClickListener)
-
 
         //enable the zoom controls on the map and declare MainActivity as the callback triggered when the user clicks a marker on this map
         googleMap.uiSettings.isZoomControlsEnabled = true
@@ -50,7 +48,6 @@ class Map(
         //Current Location Icon has been adjusted to be at the bottom right sid eof the search bar.
         googleMap.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
 
-
         if ((activity as MainActivity).checkLocationPermission()) {
             //Enables the my-location layer which draws a light blue dot on the user’s location.
             // It also adds a button to the map that, when tapped, centers the map on the user’s location.
@@ -59,7 +56,6 @@ class Map(
 
         googleMap.setOnPolygonClickListener(mapFragmentOnPolygonClickListener)
     }
-
 
     /**
      * @return the initialized GoogleMap.

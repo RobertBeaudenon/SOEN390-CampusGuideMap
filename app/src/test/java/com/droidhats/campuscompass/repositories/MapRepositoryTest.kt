@@ -54,13 +54,11 @@ class MapRepositoryTest {
             "    }]\n" +
             "}"
 
-
     // App context is needed to create the repository and read the external file
     private val context : Context = RuntimeEnvironment.application.applicationContext
 
     @Test
     fun testExternalFileExistence(){
-
         var inputStream: InputStream? = null
 
         // Try to open the file

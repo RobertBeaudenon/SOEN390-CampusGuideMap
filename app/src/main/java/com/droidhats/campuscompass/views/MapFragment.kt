@@ -259,7 +259,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             //Get the building object from the polygon that the user clicked on
             var selectedBuilding : Building? = viewModel.findBuildingByPolygonTag(p.tag.toString())
 
-
             //TODO: This full clear and redraw should probably be removed when the directions
             // system is implemented. It was added to show only one route at a time
             map.clear()
