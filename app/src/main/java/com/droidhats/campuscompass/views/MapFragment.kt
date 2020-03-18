@@ -436,7 +436,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 if (mode == "walking") {
                     walkingId.text = legs.getJSONObject("duration").getString("text")
                 }
-                if (mode == "bicycling") {
+                if (mode == "bicycle") {
                     bicyclingId.text = legs.getJSONObject("duration").getString("text")
                 }
                 if (mode == "shuttle") {
@@ -672,7 +672,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         transportationTime(origin, destination, "driving")
         transportationTime(origin, destination, "transit")
         transportationTime(origin, destination, "walking")
-        transportationTime(origin, destination, "bicycling")
+        transportationTime(origin, destination, "bicycle")
         transportationTime(origin, destination, "shuttle")
 
         //Creating the HTTP request with the directions URL
