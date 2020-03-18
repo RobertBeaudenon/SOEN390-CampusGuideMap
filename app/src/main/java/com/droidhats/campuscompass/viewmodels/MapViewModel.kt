@@ -3,6 +3,7 @@ package com.droidhats.campuscompass.viewmodels
 import android.app.Application
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
+import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.Map
 import com.droidhats.campuscompass.repositories.MapRepository
@@ -29,7 +30,7 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
     init {
         val inputStream: InputStream = context.assets.open("buildings.json")
         val json: String = inputStream.bufferedReader().use { it.readText() }
-        campuses = MapRepository.getInstance(json).getCampuses()
+        campuses = MapRepository.getInstance(context).getCampuses()
     }
 
 
@@ -63,6 +64,27 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
 
         return googleMap
     }
+
+
+    /**
+     * Searches and returns the building object that matches the polygon tag from the mapFragment
+     */
+    fun findBuildingByPolygonTag(polygonTag: String): Building?
+    {
+        var selectedBuilding : Building? = null
+
+        //Iterate through all buildings in both campuses until the polygon tag matches the building Name
+        for (campus in this.campuses!!) {
+            for (building in campus.getBuildings()) {
+                if (polygonTag == building.getName())
+                    selectedBuilding = building
+            }
+        }
+
+        return selectedBuilding
+    }
+
+
 
 
 

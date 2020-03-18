@@ -133,13 +133,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * Initializes the map and adds markers or lines and attaches listeners
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     *
+     * @param googleMap a necessary google map object on which we add markers and attach listeners.
      */
     override fun onMapReady(googleMap: GoogleMap) {
 
@@ -263,14 +262,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         directionsButton.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            //Get the building that the user clicked on
-            var selectedBuilding : Building? = null
-            for (campus in viewModel.getCampuses()) {
-                for (building in campus.getBuildings()) {
-                    if (p.tag.toString() == building.getName())
-                        selectedBuilding  = building
-                }
-            }
+            //Get the building object from the polygon that the user clicked on
+            var selectedBuilding : Building? = viewModel.findBuildingByPolygonTag(p.tag.toString())
+
 
             //TODO: This full clear and redraw should probably be removed when the directions
             // system is implemented. It was added to show only one route at a time
