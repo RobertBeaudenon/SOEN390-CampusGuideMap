@@ -27,40 +27,41 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.MainActivity
+import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.*
+import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.mancj.materialsearchbar.MaterialSearchBar
-import java.io.IOException
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.map_fragment.*
 import kotlinx.android.synthetic.main.search_bar_layout.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.IOException
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener {
@@ -336,6 +337,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * This method serves the purpose as an listener for different kind of transportation mode radio group.
+     * When a transportation mode is selected, it's color will change to signify that it has been selected.
+     */
     private fun transportRadioButton() {
         radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
             run {
@@ -360,6 +365,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * This method sets all radio icon to black color then returns only the selected icon in a burgundy color.
+     * @param buttonSelected: The selected radio button.
+     */
     @SuppressLint("ResourceType")
     private fun transportRadioButtonSelector(buttonSelected: String) {
         drivingId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
@@ -382,6 +391,63 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (buttonSelected == "shuttle") {
             return shuttleId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
         }
+    }
+
+    /**
+     * Based on the given origin, destination and transportation mode.
+     * This method will save in a global variable named timeTravel the time it takes to reach the destination based on the chosen transportation mode.
+     * @param origin: The starting point from where the travel begins.
+     * @param destination: The destination point where the travel ends.
+     * @param mode: The selected transportation mode.
+     */
+    private fun transportationTime(origin: Location, destination: LatLng, mode: String) {
+
+        val directionsURL:String = when (mode) {
+            "shuttleToSGW" -> {
+                "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
+            }
+            "shuttleToLOY" -> {
+                "https://maps.googleapis.com/maps/api/directions/json?origin=45.458398,-73.638241&destination=45.497132,-73.578519&mode=" + mode + "&key=" + getString(R.string.ApiKey)
+            }
+            else -> {
+                "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude.toString() + "," + origin.longitude.toString() + "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +"&mode=" + mode +"&key=" + getString(R.string.ApiKey)
+            }
+        }
+
+        val directionRequest = StringRequest(
+            Request.Method.GET, directionsURL,
+            Response.Listener<String> { response ->
+
+                //Retrieve response (a JSON object)
+                val jsonResponse = JSONObject(response)
+
+                // Get route information from json response
+                val routesArray = jsonResponse.getJSONArray("routes")
+                val routes = routesArray.getJSONObject(0)
+                val legsArray: JSONArray = routes.getJSONArray("legs")
+                val legs = legsArray.getJSONObject(0)
+
+                if (mode == "driving") {
+                    drivingId.text = legs.getJSONObject("duration").getString("text")
+                }
+                if (mode == "transit") {
+                    transitId.text = legs.getJSONObject("duration").getString("text")
+                }
+                if (mode == "walking") {
+                    walkingId.text = legs.getJSONObject("duration").getString("text")
+                }
+                if (mode == "bicycling") {
+                    bicyclingId.text = legs.getJSONObject("duration").getString("text")
+                }
+                if (mode == "shuttle") {
+                    shuttleId.text = legs.getJSONObject("duration").getString("text")
+                }
+            },
+            Response.ErrorListener { Log.e("Volley Error:", "HTTP response error") })
+
+        //Confirm and add the request with Volley
+        val requestQueue = Volley.newRequestQueue(activity)
+        requestQueue.add(directionRequest)
     }
 
     private fun transportationMode() : String {
@@ -602,6 +668,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(45.497132,-73.578519), 16.0f))
         }
 
+        transportationTime(origin, destination, "driving")
+        transportationTime(origin, destination, "driving")
+        transportationTime(origin, destination, "transit")
+        transportationTime(origin, destination, "walking")
+        transportationTime(origin, destination, "bicycling")
+        transportationTime(origin, destination, "shuttle")
+
         //Creating the HTTP request with the directions URL
         val directionsRequest = object : StringRequest(
             Method.GET,
@@ -617,12 +690,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val legsArray: JSONArray = routes.getJSONArray("legs")
                 val legs = legsArray.getJSONObject(0)
                 val stepsArray = legs.getJSONArray("steps")
-
-                //Debug
-                for (x in 1..3) {
-                    Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${legs.getJSONObject("distance").getString("text")}. Total travel time is: ${legs.getJSONObject("duration").getString("text")}", Toast.LENGTH_LONG).show()
-                }
-
 
                 val path: MutableList<List<LatLng>> = ArrayList()
 

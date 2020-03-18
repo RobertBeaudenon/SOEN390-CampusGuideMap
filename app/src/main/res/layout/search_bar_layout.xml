@@ -56,8 +56,7 @@
             android:gravity="center"
             android:button="@null"
             android:text = "-"
-            android:drawableTint="@color/colorPrimaryDark"
-            />
+            android:drawableTint="@color/colorPrimaryDark" />
 
         <RadioButton
             android:id="@+id/transitId"
@@ -68,8 +67,7 @@
             android:gravity="center"
             android:button="@null"
             android:text = "-"
-            android:drawableTint="@color/colorBlack"
-            />
+            android:drawableTint="@color/colorBlack" />
 
         <RadioButton
             android:id="@+id/walkingId"
@@ -80,8 +78,7 @@
             android:gravity="center"
             android:button="@null"
             android:text = "-"
-            android:drawableTint="@color/colorBlack"
-            />
+            android:drawableTint="@color/colorBlack" />
 
         <RadioButton
             android:id="@+id/bicyclingId"
@@ -92,8 +89,7 @@
             android:gravity="center"
             android:button="@null"
             android:text = "-"
-            android:drawableTint="@color/colorBlack"
-            />
+            android:drawableTint="@color/colorBlack" />
 
         <RadioButton
             android:id="@+id/shuttleId"
@@ -104,8 +100,7 @@
             android:gravity="center"
             android:button="@null"
             android:text = "-"
-            android:drawableTint="@color/colorBlack"
-            />
+            android:drawableTint="@color/colorBlack" />
 
     </RadioGroup>
 
