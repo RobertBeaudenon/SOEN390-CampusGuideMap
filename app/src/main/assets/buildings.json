@@ -1,8 +1,8 @@
 {
     "SGW_buildings": [{
             "name": "Henry F. Hall Building",
-            "address": "Boulevard de Maisonneuve O, Montreal, QC H3G 1M8",
-            "location": [45.497320, -73.579031],
+            "address": "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8",
+            "location": [45.4972727,-73.5812125],
             "coordinates": [
                 [45.497164, -73.579544],
                 [45.497710, -73.579034],
@@ -32,8 +32,8 @@
             ]
         }, {
             "name": "EV Building",
-            "address": "1515 Saint-Catherine St W, Montreal, Quebec H3G 1S6",
-            "location": [45.495469, -73.577632],
+            "address": "1515 Saint-Catherine St W, Montreal, Quebec H3G 2W1",
+            "location": [45.4954741,-73.5789051],
             "coordinates": [
                 [45.495594, -73.578761],
                 [45.495175, -73.577855],
@@ -75,7 +75,7 @@
         }, {
             "name": "John Molson School of Business",
             "address": "1450 Guy St, Montreal, Quebec H3H 0A1",
-            "location": [45.495496, -73.579162],
+            "location": [45.495495,-73.5813604],
             "coordinates": [
                 [45.495362, -73.579385],
                 [45.495224, -73.579121],
@@ -115,7 +115,7 @@
         }, {
             "name": "Faubourg Saint-Catherine Building",
             "address": "1616 Saint-Catherine St W, Montreal, QC H3H 1L7",
-            "location": [45.494231, -73.578363],
+            "location": [45.4943412,-73.5806225],
             "coordinates": [
                 [45.493822, -73.579069],
                 [45.493619, -73.578735],
@@ -141,7 +141,7 @@
         }, {
             "name": "Guy-De Maisonneuve Building",
             "address": "1435 Guy St, Montreal, Quebec H3H 2L5",
-            "location": [45.495924, -73.578884],
+            "location": [45.4957789,-73.5810041],
             "coordinates": [
                 [45.495782, -73.579159],
                 [45.495765, -73.579118],
@@ -185,7 +185,7 @@
         }, {
             "name": "Faubourg Building",
             "address": "1250 Guy St, Montreal, Quebec H3H 2L3",
-            "location": [45.494855, -73.577820],
+            "location": [45.4947213,-73.5798938],
             "coordinates": [
                 [45.494911, -73.577786],
                 [45.494655, -73.577218],
@@ -216,8 +216,8 @@
             ]
         }, {
             "name": "Visual Arts Building",
-            "address": "1395 René-Lévesque Blvd W, Montreal, Quebec H3G 2M5",
-            "location": [45.495671, -73.573622],
+            "address": "1395 Boulevard René-Lévesque O, Montreal, QC H3G 2M5",
+            "location": [45.495525,-73.5759826],
             "coordinates": [
                 [45.496179, -73.573797],
                 [45.495661, -73.574293],
@@ -248,7 +248,7 @@
         }, {
             "name": "Pavillion J.W. McConnell Building",
             "address": "1400 Maisonneuve Blvd W, Montreal, Quebec H3G 1M8",
-            "location": [45.495469, -73.577632],
+            "location": [45.4968739,-73.5802261],
             "coordinates": [
                 [45.497283, -73.578079],
                 [45.496682, -73.578637],
@@ -292,7 +292,7 @@
     "LOY_buildings": [{
             "name": "Psychology Building",
             "address": "Refectory, Montreal, Quebec H4B 2Z3",
-            "location": [45.459075, -73.640518],
+            "location": [45.4590401,-73.6427835],
             "coordinates": [
                 [45.459285, -73.640559],
                 [45.459199, -73.640621],
@@ -320,8 +320,8 @@
             ]
         }, {
             "name": "Richard J. Renaud Science Complex",
-            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 2A7",
-            "location": [45.457972, -73.641366],
+            "address": "3475 Rue West Broadway Montreal, QC H4B 2A7",
+            "location": [45.4578426,-73.6437569],
             "coordinates": [
                 [45.458323, -73.641412],
                 [45.457673, -73.641924],
@@ -371,7 +371,7 @@
         }, {
             "name": "Central Building",
             "address": "7141 Rue Sherbrooke O, Montréal, QC H4B 2B5",
-            "location": [45.458251, -73.640353],
+            "location": [45.4581071,-73.6403527],
             "coordinates": [
                 [45.458527, -73.640695],
                 [45.458427, -73.640453],
@@ -405,7 +405,7 @@
         }, {
             "name": "Communication Studies and Journalism Building",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.457437, -73.640159],
+            "location": [45.457415,-73.6423217],
             "coordinates": [
                 [45.457830, -73.640483],
                 [45.457755, -73.640293],
@@ -452,7 +452,7 @@
         }, {
             "name": "Administration Building",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.458100, -73.639814],
+            "location": [45.4580679,-73.6403957],
             "coordinates": [
                 [45.458376, -73.639773],
                 [45.458249, -73.639445],
@@ -497,7 +497,7 @@
         }, {
             "name": "Loyola Jesuit and Conference Centre",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.458528, -73.640930],
+            "location": [45.4586562,-73.6420871],
             "coordinates": [
                 [45.458743, -73.640962],
                 [45.458693, -73.640836],
