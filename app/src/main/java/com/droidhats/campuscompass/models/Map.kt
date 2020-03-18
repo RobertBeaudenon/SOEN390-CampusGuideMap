@@ -1,11 +1,19 @@
 package com.droidhats.campuscompass.models
 
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.droidhats.campuscompass.MainActivity
 import com.google.android.gms.maps.GoogleMap
 
-
+/**
+ * A Model for the map.
+ * This class has the objective of initializing the map and attaching listeners to it.
+ *
+ * @constructor Creates an initialized GoogleMap object.
+ * @param googleMap: A GoogleMap Object will be used to initialize the map.
+ * @param mapFragmentOnMarkerClickListener: a listener for marker clicks that will be attached to the map.
+ * @param mapFragmentOnPolygonClickListener: a listener for polygon clicks that will be attached to the map.
+ * @param activity: Used to check the location permission from the main activity.
+ */
 class Map(
     var googleMap: GoogleMap,
     var mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
@@ -19,6 +27,9 @@ class Map(
     }
 
 
+    /**
+     * Initializes the map, and attaches listeners to it.
+     */
     init {
         //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
         googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
@@ -49,6 +60,10 @@ class Map(
         googleMap.setOnPolygonClickListener(mapFragmentOnPolygonClickListener)
     }
 
+
+    /**
+     * @return the initialized GoogleMap.
+     */
     fun getMap(): GoogleMap {
         return googleMap
     }

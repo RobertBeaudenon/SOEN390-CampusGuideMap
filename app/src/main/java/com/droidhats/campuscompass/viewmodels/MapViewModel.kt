@@ -10,12 +10,19 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Polygon
 import java.io.InputStream
 
+
+/**
+ * A ViewModel for the map.
+ * Receives data from the MapRepository and Sends initialized map and other information to the MapFragment .
+ *
+ * @constructor Reads data from the map repository.
+ *
+ * @param application: The android view model interface requires that the (not null) main application be passed.
+ */
 class  MapViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>().applicationContext
     private var campuses: List<Campus>? = null
-
-    fun getCampuses(): List<Campus> = campuses!!
 
     // The activity is required to access the assets to open our json file where the info
     // is stored
@@ -25,16 +32,27 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         campuses = MapRepository.getInstance(json).getCampuses()
     }
 
+
+    /**
+     * Returns a list of campus objects (SJW and Loyola).
+     */
+    fun getCampuses(): List<Campus> = campuses!!
+
+
+    /**
+     * Uses the Map Model to initialize the map, and then it draws teh polygons of the campus buildings.
+     * Returns an initialized GoogleMap object.
+     */
     fun getMap(googleMap: GoogleMap,
                mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
                mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
                activity: FragmentActivity
     ): GoogleMap
     {
+        //Get initialized map from Map Model.
         var initializedGoogleMap: GoogleMap = Map(googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener, activity).getMap()
 
-
-        //Highlight both SGW and Loyola Campuses
+        //Highlight the buildings in both SGW and Loyola Campuses
         for (campus in this.campuses!!) {
             for (building in campus.getBuildings()) {
                 initializedGoogleMap.addPolygon(building.getPolygonOptions()).tag = building.getName()
