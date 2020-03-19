@@ -14,7 +14,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import junit.framework.TestCase
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
+
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MapFragmentTest {
@@ -73,5 +80,36 @@ class MapFragmentTest {
 
         //Ensuring the text of the toggle just clicked is indeed LOY
         onView(withId(R.id.toggleButton)).check(matches(withText("LOY")))
+    }
+
+    @Test
+    fun test_additionalMenuBar(){
+        GlobalScope.launch {
+            delay(2000) //to allow bottomsheet to load
+
+            BottomSheetBehavior.from(activityRule.activity.bottom_sheet).state =
+                BottomSheetBehavior.STATE_EXPANDED
+
+            //Checking if building image is displayed
+            onView(withId(R.id.building_image)).check(matches(isDisplayed()))
+            //Checking if separator bar is displayed
+            onView(withId(R.id.separator_bar)).check(matches(isDisplayed()))
+            //Checking if building name is displayed
+            onView(withId(R.id.bottom_sheet_building_name)).check(matches(isDisplayed()))
+            //Checking if building address is displayed
+            onView(withId(R.id.bottom_sheet_building_address)).check(matches(isDisplayed()))
+            //Checking if opening hours are displayed
+            onView(withId(R.id.bottom_sheet_open_hours)).check(matches(isDisplayed()))
+            //Checking if services are displayed
+            onView(withId(R.id.bottom_sheet_services)).check(matches(isDisplayed()))
+            //Checking if departments are displayed
+            onView(withId(R.id.bottom_sheet_departments)).check(matches(isDisplayed()))
+            //Checking if the direction button is displayed
+            onView(withId(R.id.bottom_sheet_directions_button)).check(matches(isDisplayed()))
+            //Ensuring the text of the direction button is indeed Directions
+            onView(withId(R.id.bottom_sheet_directions_button)).check(matches(withText("Directions")))
+            // check the color of the button
+            // check the image on the button
+        }
     }
 }
