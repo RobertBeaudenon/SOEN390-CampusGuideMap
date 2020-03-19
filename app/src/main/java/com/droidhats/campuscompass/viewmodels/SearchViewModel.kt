@@ -50,7 +50,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         //Set up your query here
         val token : AutocompleteSessionToken = AutocompleteSessionToken.newInstance()
         //Here you would bound your search (to montreal for example)
-        val bounds : RectangularBounds = RectangularBounds.newInstance(LatLng(45.011585, -73.812401), LatLng(46.166268, -73.514113))
+        val bounds : RectangularBounds = RectangularBounds.newInstance(LatLng(45.477803, -73.580243), LatLng(45.511822, -73.578240))
         val request : FindAutocompletePredictionsRequest = FindAutocompletePredictionsRequest.builder()
             .setLocationBias(bounds)
             .setSessionToken(token)
