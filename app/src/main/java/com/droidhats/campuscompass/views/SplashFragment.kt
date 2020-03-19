@@ -51,7 +51,7 @@ class SplashFragment : Fragment() {
 
     fun navigateToMapFragment() {
         GlobalScope.launch {
-            delay(1000)
+            delay(2000)
             findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
         }
 
