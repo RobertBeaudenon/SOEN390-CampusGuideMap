@@ -138,7 +138,7 @@ class CalendarFragmentTest {
                             0
                         )
                     ),
-                    8
+                    0
                 ),
                 isDisplayed()
             )
@@ -149,7 +149,7 @@ class CalendarFragmentTest {
         //checks if there exists a button with text "okay" within the calendar selection widget an performs a click on it
         val appCompatButton2 = onView(
             allOf(
-                withId(android.R.id.button1), withText("Okay"),
+                withId(android.R.id.button1), withText("OK"),
                 childAtPosition(
                     childAtPosition(
                         withClassName(`is`("android.widget.ScrollView")),
