@@ -1,5 +1,6 @@
 package com.droidhats.campuscompass.views
 
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
@@ -14,6 +15,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import junit.framework.TestCase
 
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -74,4 +77,34 @@ class MapFragmentTest {
         //Ensuring the text of the toggle just clicked is indeed LOY
         onView(withId(R.id.toggleButton)).check(matches(withText("LOY")))
     }
+
+    @Test
+    fun test_NavigationDrawer(){
+            //Opening side Menu
+            onView(withId(R.id.drawer_layout)).perform(DrawerActions.open())
+            onView(withId(R.id.drawer_layout)).check(matches(isOpen()));
+            Thread.sleep(2000);
+
+
+            //Checking if logo is displayed
+            onView(withId(R.id.nav_logo)).check(matches(isDisplayed()))
+
+            //Checking if title is displayed
+            onView(withId(R.id.nav_title)).check(matches(isDisplayed()))
+
+            //Checking if My places menu item is displayed
+            onView(withText("My Places")).check(matches(isDisplayed()))
+
+            //Checking if Schedule menu item is displayed
+            onView(withText("Schedule")).check(matches(isDisplayed()))
+
+            //Checking if Resources menu item is displayed
+            onView(withText("Resources")).check(matches(isDisplayed()))
+
+            //Checking if Explore menu item is displayed
+            onView(withText("Explore")).check(matches(isDisplayed()))
+
+            //Checking if Settings menu item is displayed
+            onView(withText("Settings")).check(matches(isDisplayed()))
+   }
 }
