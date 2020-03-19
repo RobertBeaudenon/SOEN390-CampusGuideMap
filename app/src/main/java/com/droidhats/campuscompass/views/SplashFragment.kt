@@ -9,6 +9,7 @@ import androidx.activity.addCallback
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.SplashViewModel
 import kotlinx.coroutines.GlobalScope
@@ -38,15 +39,24 @@ class SplashFragment : Fragment() {
         splashViewModel = ViewModelProviders.of(this).get(SplashViewModel::class.java)
         splashViewModel.init()
 
-        //thread is used to represent initialization time
-        //I couldn't put it in SplashViewModel (wouldn't let me change value in background thread)
-        GlobalScope.launch {
-            delay(3000)
-                findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
-
-            //UnLock drawer
-            val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        //this structure will change based on refactoring our app
+        //for now, it lets MainActiivty manage the navigation if no permissions were given
+        if(!(activity as MainActivity).checkLocationPermission()) {
+            (activity as MainActivity).requestLocationPermission()
+        } else {
+            //if permission is granted, navigate to MapFragment
+            navigateToMapFragment()
         }
+    }
+
+    fun navigateToMapFragment() {
+        GlobalScope.launch {
+            delay(1000)
+            findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
+        }
+
+        //UnLock drawer
+        val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 }
