@@ -77,7 +77,7 @@ class MapRepositoryTest {
     fun testCreateCampuses() {
         // Assert campus variables are well assigned
         val campuses: List<Campus> = instance.getCampuses()
-        Assert.assertEquals(campuses[0].getName(), "SGW")
+        Assert.assertEquals(campuses[0].name, "SGW")
         Assert.assertEquals(campuses[0].getLocation(), LatLng(45.495637, -73.578235))
     }
 
@@ -86,7 +86,7 @@ class MapRepositoryTest {
         // Assert building variables were well assigned
         val buildings: List<Building> = instance.getCampuses()[0].getBuildings()
         val HBuilding: Building = buildings[0]
-        Assert.assertEquals(HBuilding.getName(), "Henry F. Hall Building", HBuilding.getName())
+        Assert.assertEquals(HBuilding.name, "Henry F. Hall Building", HBuilding.name)
         Assert.assertEquals(HBuilding.getOpenHours(), "Monday\t9a.m.-5p.m.\n" +
                 "Tuesday\t9a.m.-5p.m.\n" +
                 "Wednesday\t9a.m.-5p.m.\n" +
