@@ -51,8 +51,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.mancj.materialsearchbar.MaterialSearchBar
@@ -61,7 +59,6 @@ import kotlinx.android.synthetic.main.map_fragment.*
 import kotlinx.android.synthetic.main.search_bar_layout.*
 import org.json.JSONArray
 import org.json.JSONObject
-import com.droidhats.campuscompass.models.Map
 import java.io.IOException
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
@@ -209,19 +206,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+        if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
-                val place = data?.let { Autocomplete.getPlaceFromIntent(it) }
-                if (place != null) {
-                    Log.i(TAG,"Place: " + place.name + ", " + place.id + ", " + place.latLng)
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 16.0f))
-                }
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
-                //var status = data?.let { Autocomplete.getStatusFromIntent(it) }
-            } else if (resultCode == RESULT_CANCELED) {
-                // TODO: Handle user cancelling the operation.
+                locationUpdateState = true
+                startLocationUpdates()
             }
         }
     }
