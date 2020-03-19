@@ -44,6 +44,10 @@ android {
     dataBinding {
         enabled = true
     }
+    dokka {
+        outputFormat = 'html'
+        outputDirectory = "$buildDir/dokka"
+    }
     testOptions {
         animationsDisabled true
         unitTests {
