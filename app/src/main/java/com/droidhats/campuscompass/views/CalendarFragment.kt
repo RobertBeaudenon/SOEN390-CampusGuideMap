@@ -33,6 +33,7 @@ class CalendarFragment : DialogFragment() {
     companion object {
         // This callback could also be private and be set on the host(main) Activity
         var onCalendarEventClickListener: OnCalendarEventClickListener? = null
+        var isDialogOpen = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,10 +81,13 @@ class CalendarFragment : DialogFragment() {
       return root
     }
 
-    private fun showDialog() {
+     fun showDialog() {
+        if (isDialogOpen) return
         val dialog = CalendarFragment()
         dialog.setTargetFragment(this, targetRequestCode)
         dialog.show(requireFragmentManager(), "select calendars dialog")
+         isDialogOpen = true
+
     }
 
      fun refresh() {
@@ -133,6 +137,7 @@ class CalendarFragment : DialogFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        isDialogOpen = false
         loadChecked()
         calendarViewModel.selectCalendars()
     }

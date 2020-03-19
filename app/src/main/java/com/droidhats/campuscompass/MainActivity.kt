@@ -73,7 +73,8 @@ class MainActivity : AppCompatActivity() {
                     //If the user allowed the READ_CALENDAR permission, refresh the calendar fragment
                     //Note: This assumes the permission request was launched from CalendarFragment !
                       val calendarFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as CalendarFragment
-                      calendarFragment.refresh()
+                        calendarFragment.showDialog()
+                        calendarFragment.refresh()
                 }
                 return
             }
