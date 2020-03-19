@@ -1,8 +1,7 @@
 package com.droidhats.campuscompass.models
 
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.MarkerOptions
 
 /*
 * Model for location classes
@@ -28,6 +27,7 @@ class Campus(
 // Model for building class, data relating to buildings should be stored here
 class Building(
     private val coordinate: LatLng,
+    private val centerLocation: LatLng,
     private val name: String,
     private val polygonCoordinatesList: List<LatLng>,
     private val address: String,
@@ -37,6 +37,7 @@ class Building(
 ) : Location(coordinate) {
     private val polygonColor = 4289544510.toInt()
     private lateinit var polygon: Polygon
+    private lateinit var marker: Marker
 
     fun getName(): String = name
     fun getLocation(): LatLng = coordinate
@@ -45,10 +46,15 @@ class Building(
     fun getServices(): String = services
     fun getOpenHours(): String = openHours
     fun getPolygon(): Polygon = polygon
+    fun getMarker(): Marker = marker
 
     fun setPolygon(polygon: Polygon){
         this.polygon = polygon
         this.polygon.tag = name
+    }
+
+    fun setMarker(marker: Marker){
+        this.marker = marker
     }
 
     fun getPolygonOptions(): PolygonOptions {
@@ -60,5 +66,19 @@ class Building(
             polygonOptions.add(polygonCoordinate)
         }
         return polygonOptions
+    }
+
+    fun getMarkerOptions(): MarkerOptions{
+        return MarkerOptions()
+            .position(centerLocation).anchor(0.5f, 0.5f)
+            .title(name)
+    }
+
+    /*
+    A building does not have center location if in the buildings.json it is set to [0,0].
+    This center location is used to place the Marker (initials) of specific buildings.
+     */
+    fun hasCenterLocation(): Boolean{
+        return centerLocation != LatLng(0.0,0.0)
     }
 }

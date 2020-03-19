@@ -55,6 +55,13 @@ android {
             }
         }
     }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res', 'src/main/res/mipmap/ic_buildings'
+            }
+        }
+    }
     dokka {
         outputFormat = 'javadoc'
         outputDirectory = "$buildDir/dokka"

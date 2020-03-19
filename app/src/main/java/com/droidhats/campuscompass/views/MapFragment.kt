@@ -37,13 +37,9 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.widget.Autocomplete
@@ -175,11 +171,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
-        drawBuildingPolygons()
+        drawBuildingPolygonsAndMarkers()
+        setBuildingMarkersIcons()
         map.setOnPolygonClickListener(this)
+        map.setOnMarkerClickListener(this)
 
         map.setOnMapClickListener {
-
             //Dismiss the bottom sheet when clicking anywhere on the map
             dismissBottomSheet()
         }
@@ -275,8 +272,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
 
-        // Populate the bottom sheet with building information
-        populateAdditionalInfoBottomSheet(p)
+        // update the bottom sheet with building information
+        updateAdditionalInfoBottomSheet(p)
 
         //Navigation here
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
@@ -295,7 +292,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             //TODO: This full clear and redraw should probably be removed when the directions
             // system is implemented. It was added to show only one route at a time
             map.clear()
-            drawBuildingPolygons()
+            drawBuildingPolygonsAndMarkers()
+            setBuildingMarkersIcons()
             if (selectedBuilding != null) {
                 placeMarkerOnMap(LatLng(selectedBuilding.getLocation().latitude, selectedBuilding.getLocation().longitude))
             }
@@ -359,7 +357,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
-    override fun onMarkerClick(p0: Marker?) = false
+    override fun onMarkerClick(marker: Marker?): Boolean{
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if (marker != null) {
+                    if (building.getName() == marker.title) {
+                        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                        }
+                        updateAdditionalInfoBottomSheet(building.getPolygon())
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
 
     //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
     private fun placeMarkerOnMap(location: LatLng) {
@@ -440,16 +453,62 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun drawBuildingPolygons() {
+    private fun drawBuildingPolygonsAndMarkers() {
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
-                map.addPolygon(building.getPolygonOptions()).tag = building.getName()
-                val polygon = map.addPolygon(building.getPolygonOptions())
+                var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
+                polygon.tag = building.getName()
+                // Place marker on buildings that have center locations specified in buildings.json
+                if(building.hasCenterLocation()){
+                    var marker: Marker = map.addMarker(building.getMarkerOptions())
+                    building.setMarker(marker)
+                }
+
                 building.setPolygon(polygon)
             }
         }
     }
+
+    private fun setBuildingMarkersIcons(){
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if(building.hasCenterLocation()){
+                    when(building.getName()){
+                        "Henry F. Hall Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_h))
+                        "EV Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ev))
+                        "John Molson School of Business" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_jm))
+                        "Faubourg Saint-Catherine Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_fg))
+                        "Guy-De Maisonneuve Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_gm))
+                        "Faubourg Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_fb))
+                        "Visual Arts Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_va))
+                        "Pavillion J.W. McConnell Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_lb))
+                        "Grey Nuns Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_gn))
+                        "Samuel Bronfman Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_sb))
+                        "GS Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_gs))
+                        "Learning Square" ->  building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ls))
+                        "Psychology Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_py))
+                        "Richard J. Renaud Science Complex" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_sp))
+                        "Central Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_cc))
+                        "Communication Studies and Journalism Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_cj))
+                        "Administration Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ad))
+                        "Loyola Jesuit and Conference Centre" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_rf))
+                        "Vanier Library Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_vl))
+                        "Vanier Extension" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ve))
+                        "Student Centre" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_sc))
+                        "F.C. Smith Building" ->building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_fc))
+                        "Stinger Dome" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_do))
+                        "PERFORM Centre" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_pc))
+                        "Jesuit Residence" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_jr))
+                        "Physical Services Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ps))
+                        "Oscar Peterson Concert Hall" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_pt))
+                        else -> Log.v("Error loading marker", "couldn't load marker icons")
+                    }
+                }
+            }
+        }
+     }
+
 
     private fun initSearchBar() {
         searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
@@ -501,8 +560,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    private fun populateAdditionalInfoBottomSheet(p: Polygon) {
-        // Populate the bottom sheet with building information
+    private fun updateAdditionalInfoBottomSheet(p: Polygon) {
+        // Update the bottom sheet with building information
         val buildingName: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
         val buildingAddress: TextView =
             requireActivity().findViewById(R.id.bottom_sheet_building_address)
@@ -514,14 +573,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
-                if (building.getPolygon().tag == p.tag) {
+                if (building.getName() == p.tag) {
                     buildingName.text = p.tag.toString()
                     buildingAddress.text = building.getAddress()
                     buildingOpenHours.text = building.getOpenHours()
                     buildingServices.text = building.getServices()
                     buildingDepartments.text = building.getDepartments()
 
-                    when(building.getPolygon().tag){
+                    when(building.getName()){
                         "Henry F. Hall Building" -> buildingImage.setImageResource(R.drawable.building_hall)
                         "EV Building" -> buildingImage.setImageResource(R.drawable.building_ev)
                         "John Molson School of Business" -> buildingImage.setImageResource(R.drawable.building_jmsb)
@@ -533,7 +592,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "Grey Nuns Building" -> buildingImage.setImageResource(R.drawable.building_grey_nuns)
                         "Samuel Bronfman Building" -> buildingImage.setImageResource(R.drawable.building_sb)
                         "GS Building" -> buildingImage.setImageResource(R.drawable.building_gs)
-                        "CB Building" -> buildingImage.setImageResource(R.drawable.building_cbb)
                         "Grey Nuns Annex" -> buildingImage.setImageResource(R.drawable.building_ga)
                         "CL Annex" -> buildingImage.setImageResource(R.drawable.building_cl)
                         "Q Annex" -> buildingImage.setImageResource(R.drawable.building_q)
@@ -560,18 +618,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "Vanier Library Building" -> buildingImage.setImageResource(R.drawable.building_vl)
                         "Vanier Extension" -> buildingImage.setImageResource(R.drawable.building_ve)
                         "Student Centre" -> buildingImage.setImageResource(R.drawable.building_sc)
-                        "F.C. Smith. Building" -> buildingImage.setImageResource(R.drawable.building_fc)
+                        "F.C. Smith Building" -> buildingImage.setImageResource(R.drawable.building_fc)
                         "Stinger Dome" -> buildingImage.setImageResource(R.drawable.building_do)
-                        "PERFORM centre" -> buildingImage.setImageResource(R.drawable.building_pc)
+                        "PERFORM Center" -> buildingImage.setImageResource(R.drawable.building_pc)
                         "Jesuit Residence" -> buildingImage.setImageResource(R.drawable.building_jr)
                         "Physical Services Building" -> buildingImage.setImageResource(R.drawable.building_ps)
                         "Oscar Peterson Concert Hall" -> buildingImage.setImageResource(R.drawable.building_pt)
 
-
                         else -> Log.v("Error loading images", "couldn't load image")
                     }
                     //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
-                } 
+                }
             }
         }
     }
