@@ -1,13 +1,10 @@
 package com.droidhats.campuscompass.views
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
@@ -74,7 +71,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     companion object {
         private const val REQUEST_CHECK_SETTINGS = 2
-        private const val AUTOCOMPLETE_REQUEST_CODE = 3
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
         var stepInsts : String = ""
@@ -120,7 +116,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initSearchBar()
         handleCampusSwitch()
         instructionsButton()
-        transportRadioButton()
     }
 
     /**
@@ -259,7 +254,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null) {
 
-                    if (transportationMode() == "shuttle") {
+                /*    if (transportationMode() == "shuttle") {
                         //Setting the top bar "from" to the name of the selected building.
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
@@ -277,74 +272,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         if (selectedBuilding != null) {
                             generateDirections(location, selectedBuilding.getLocation(), transportationMode())
                         }
-                    }
+                    }*/
                 }
 
-                if (transportationMode()!= "shuttle") {
+              /*  if (transportationMode()!= "shuttle") {
                     //Move the camera to the starting location
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
-                }
+                }*/
 
                 buttonInstructions.visibility = View.VISIBLE
 
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
-        }
-    }
-
-    /**
-     * This method serves the purpose as an listener for different kind of transportation mode radio group.
-     * When a transportation mode is selected, it's color will change to signify that it has been selected.
-     */
-    private fun transportRadioButton() {
-        radioTransportGroup.setOnCheckedChangeListener { _, optionId ->
-            run {
-                when (optionId) {
-                    R.id.drivingId -> {
-                        transportRadioButtonSelector("car")
-                    }
-                    R.id.transitId -> {
-                        transportRadioButtonSelector("transit")
-                    }
-                    R.id.walkingId -> {
-                        transportRadioButtonSelector("walking")
-                    }
-                    R.id.bicyclingId -> {
-                        transportRadioButtonSelector("bicycle")
-                    }
-                    R.id.shuttleId -> {
-                        transportRadioButtonSelector("shuttle")
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * This method sets all radio icon to black color then returns only the selected icon in a burgundy color.
-     * @param buttonSelected: The selected radio button.
-     */
-    @SuppressLint("ResourceType")
-    private fun transportRadioButtonSelector(buttonSelected: String) {
-        drivingId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
-        transitId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
-        walkingId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
-        bicyclingId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
-        shuttleId.compoundDrawableTintList = ColorStateList.valueOf(Color.parseColor(getString(R.color.colorBlack)))
-        if (buttonSelected == "car") {
-            return drivingId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
-        }
-        if (buttonSelected == "transit") {
-            return transitId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
-        }
-        if (buttonSelected == "walking") {
-            return walkingId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
-        }
-        if (buttonSelected == "bicycle") {
-            return bicyclingId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
-        }
-        if (buttonSelected == "shuttle") {
-            return shuttleId.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor(getString(R.color.colorPrimaryDark))))
         }
     }
 
@@ -355,79 +294,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      * @param destination: The destination point where the travel ends.
      * @param mode: The selected transportation mode.
      */
-    private fun transportationTime(origin: Location, destination: LatLng, mode: String) {
 
-        val directionsURL:String = when (mode) {
-            "shuttleToSGW" -> {
-                "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
-            }
-            "shuttleToLOY" -> {
-                "https://maps.googleapis.com/maps/api/directions/json?origin=45.458398,-73.638241&destination=45.497132,-73.578519&mode=" + mode + "&key=" + getString(R.string.ApiKey)
-            }
-            else -> {
-                "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin.latitude.toString() + "," + origin.longitude.toString() + "&destination=" + destination.latitude.toString() + "," + destination.longitude.toString() +"&mode=" + mode +"&key=" + getString(R.string.ApiKey)
-            }
-        }
-
-        val directionRequest = StringRequest(
-            Request.Method.GET, directionsURL,
-            Response.Listener { response ->
-
-                //Retrieve response (a JSON object)
-                val jsonResponse = JSONObject(response)
-
-                // Get route information from json response
-                val routesArray = jsonResponse.getJSONArray("routes")
-                val routes = routesArray.getJSONObject(0)
-                val legsArray: JSONArray = routes.getJSONArray("legs")
-                val legs = legsArray.getJSONObject(0)
-
-                if (mode == "driving") {
-                    drivingId.text = legs.getJSONObject("duration").getString("text")
-                }
-                if (mode == "transit") {
-                    transitId.text = legs.getJSONObject("duration").getString("text")
-                }
-                if (mode == "walking") {
-                    walkingId.text = legs.getJSONObject("duration").getString("text")
-                }
-                if (mode == "bicycle") {
-                    bicyclingId.text = legs.getJSONObject("duration").getString("text")
-                }
-                if (mode == "shuttle") {
-                    //shuttleId.text = legs.getJSONObject("duration").getString("text")
-                }
-            },
-            Response.ErrorListener { Log.e("Volley Error:", "HTTP response error") })
-
-        //Confirm and add the request with Volley
-        val requestQueue = Volley.newRequestQueue(activity)
-        requestQueue.add(directionRequest)
-    }
-
-    private fun transportationMode() : String {
-
-        //Checking which transportation mode is selected, default is walking.
-        var transportationMode = "driving"
-        when (radioTransportGroup.checkedRadioButtonId) {
-            R.id.drivingId -> {
-                transportationMode = "driving"
-            }
-            R.id.transitId -> {
-                transportationMode = "transit"
-            }
-            R.id.walkingId -> {
-                transportationMode = "walking"
-            }
-            R.id.bicyclingId -> {
-                transportationMode = "bicycling"
-            }
-            R.id.shuttleId -> {
-                transportationMode = "shuttle"
-            }
-        }
-        return transportationMode
-    }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
     override fun onMarkerClick(p0: Marker?) = false
@@ -622,13 +489,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (mode == "shuttleToLOY") {
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(45.497132,-73.578519), 16.0f))
         }
-
-        transportationTime(origin, destination, "driving")
-        transportationTime(origin, destination, "driving")
-        transportationTime(origin, destination, "transit")
-        transportationTime(origin, destination, "walking")
-        transportationTime(origin, destination, "bicycle")
-        transportationTime(origin, destination, "shuttle")
 
         //Creating the HTTP request with the directions URL
         val directionsRequest = object : StringRequest(

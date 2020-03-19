@@ -14,6 +14,7 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.repositories.IndoorLocationRepository
+import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -31,6 +32,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     private lateinit var indoorLocationDatabase: IndoorLocationDatabase
     private lateinit var placesClient : PlacesClient // Used to query google places
     private lateinit var indoorLocationRepository : IndoorLocationRepository //Used to query indoorLocations
+    internal lateinit var navigationRepository: NavigationRepository  //Used to retrieve route information (ie: transportation times)
 
     private val context = getApplication<Application>().applicationContext
 
@@ -38,6 +40,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         initPlacesSearch()
         indoorLocationDatabase = Room.inMemoryDatabaseBuilder(context, IndoorLocationDatabase::class.java).build()
         indoorLocationRepository = IndoorLocationRepository.getInstance(IndoorLocationDatabase.getInstance(context).indoorLocationDao())
+        navigationRepository = NavigationRepository(getApplication())
     }
 
     private fun initPlacesSearch() {
@@ -103,5 +106,9 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         val success = sendGooglePlacesQuery(query)
         sendSQLiteQuery(query)
         return success
+    }
+
+    fun getRouteTimes(origin : Location, destination : Location) : MutableLiveData<MutableMap<String, String>> {
+        return navigationRepository.getRouteTimes(origin, destination)
     }
 }

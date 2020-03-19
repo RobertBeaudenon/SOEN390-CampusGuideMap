@@ -71,4 +71,5 @@ class GooglePlace(
 ) : Location()
 {
     var place : Place? = null
+    var isCurrentLocation : Boolean = false
 }

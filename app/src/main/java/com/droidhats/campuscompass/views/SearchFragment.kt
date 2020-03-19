@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.RadioGroup
+import android.widget.RadioButton
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
@@ -20,6 +22,7 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
+import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
@@ -31,6 +34,7 @@ class SearchFragment : Fragment()  {
     private lateinit var recyclerView: RecyclerView
     private lateinit var root: View
     private var columnCount = 1
+    private lateinit var selectedTransportationMethod : String
 
     companion object{
         var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
@@ -46,16 +50,22 @@ class SearchFragment : Fragment()  {
             val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
             val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
             val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
+            val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
 
             mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
             destinationBar.visibility = View.VISIBLE
             startNavButton.visibility = View.VISIBLE
             backButton.visibility = View.VISIBLE
+            radioTransportationGroup.visibility = View.VISIBLE
             myLocationFAB.show()
             mainBar.queryHint = "From"
 
             if (NavigationPoints[mainBar.id] == null)
                 mainBar.setQuery("", true)
+        }
+
+        fun areRouteParametersSet() : Boolean {
+            return (NavigationPoints[R.id.mainSearchBar] != null && NavigationPoints[R.id.secondarySearchBar] != null)
         }
     }
 
@@ -74,11 +84,17 @@ class SearchFragment : Fragment()  {
         viewModel.init()
         initSearch()
         observeSearchSuggestions()
+        initTransportationRadioGroup()
+        observeRouteTimes()
 
         val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
         backButton.setOnClickListener{
             isNavigationViewOpen = false
             requireFragmentManager().beginTransaction().detach(this).attach(this).commit()
+        }
+
+        for (method in NavigationRoute.TransportationMethods.values()) {
+            println(method.string)
         }
     }
 
@@ -94,6 +110,12 @@ class SearchFragment : Fragment()  {
         viewModel.searchSuggestions.observe(viewLifecycleOwner, Observer {
             updateRecyclerView()
             recyclerView.adapter!!.notifyDataSetChanged()
+        })
+    }
+
+    private fun observeRouteTimes() {
+        viewModel.navigationRepository.routeTimes.observe(viewLifecycleOwner, Observer {
+            showRouteTimes(it)
         })
     }
 
@@ -113,18 +135,19 @@ class SearchFragment : Fragment()  {
             if (!areRouteParametersSet()) {
                 Toast.makeText(context, "Set Your Route To Begin Navigation", Toast.LENGTH_LONG).show()
             }
-            else { //Initiate Navigation
-                Toast.makeText(context, "Start Navigation\n" +
-                "From: ${NavigationPoints[mainSearchBar.id]?.name}\n" +
-                "To: ${NavigationPoints[secondarySearchBar.id]?.name}",
-                 Toast.LENGTH_LONG).show()
+            else {
+               initiateNavigation()
             }
         }
         initCurrentLocationHandler(mainSearchBar, secondarySearchBar)
     }
 
-    private fun areRouteParametersSet() : Boolean {
-        return (NavigationPoints[R.id.mainSearchBar] != null && NavigationPoints[R.id.secondarySearchBar] != null)
+    private fun initiateNavigation(){
+        Toast.makeText(context, "Start Navigation\n" +
+                "From: ${NavigationPoints[R.id.mainSearchBar]?.name}\n" +
+                "To: ${NavigationPoints[R.id.secondarySearchBar]?.name}\n" +
+                "By: $selectedTransportationMethod",
+            Toast.LENGTH_LONG).show()
     }
 
     private fun initCurrentLocationHandler(mainSearchView: SearchView, secondarySearchView : SearchView){
@@ -150,11 +173,15 @@ class SearchFragment : Fragment()  {
                     coordinates.toString(),
                     coordinates
                 )
+                currentLocation.isCurrentLocation = true
                 searchView.setQuery(currentLocation.name, false)
                 val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
                 searchText.setTextColor(Color.GREEN)
                 NavigationPoints[searchView.id] = currentLocation
                 Toast.makeText(context, "Current Location Set\n $coordinates", Toast.LENGTH_LONG).show()
+
+                if (areRouteParametersSet())
+                    viewModel.getRouteTimes(NavigationPoints[R.id.mainSearchBar]!!, NavigationPoints[R.id.secondarySearchBar]!!)
             }
         }
     }
@@ -191,8 +218,49 @@ class SearchFragment : Fragment()  {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = SearchAdapter(viewModel.searchSuggestions.value!!, onSearchResultClickListener, root)
+            adapter = SearchAdapter(viewModel.searchSuggestions.value!!, onSearchResultClickListener, root, viewModel)
         }
+    }
+
+    private fun initTransportationRadioGroup(){
+        selectedTransportationMethod = NavigationRoute.TransportationMethods.DRIVING.string
+        val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
+        radioTransportationGroup.setOnCheckedChangeListener{ radioGroup: RadioGroup?, id: Int ->
+
+            when (radioGroup?.checkedRadioButtonId) {
+                R.id.radio_transport_mode_driving -> {
+                    selectedTransportationMethod = NavigationRoute.TransportationMethods.DRIVING.string
+                }
+                R.id.radio_transport_mode_transit -> {
+                    selectedTransportationMethod = NavigationRoute.TransportationMethods.TRANSIT.string
+                }
+                R.id.radio_transport_mode_walking -> {
+                    selectedTransportationMethod = NavigationRoute.TransportationMethods.WALKING.string
+                }
+                R.id.radio_transport_mode_bicycle -> {
+                    selectedTransportationMethod = NavigationRoute.TransportationMethods.BICYCLE.string
+                }
+                 R.id.radio_transport_mode_shuttle -> {
+                     selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
+                 }
+            }
+        }
+    }
+
+
+    private fun showRouteTimes(routeTimes : MutableMap<String, String>){
+        val drivingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_driving)
+        val transitRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_transit)
+        val walkingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_walking)
+        val bicycleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle)
+        val shuttleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle)
+
+        drivingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.DRIVING.string]
+        transitRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.TRANSIT.string]
+        walkingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.WALKING.string]
+        bicycleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.BICYCLE.string]
+        shuttleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
+
     }
 
     override fun onDetach() {

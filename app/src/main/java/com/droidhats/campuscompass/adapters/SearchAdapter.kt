@@ -8,11 +8,14 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
+import com.droidhats.campuscompass.repositories.NavigationRepository
+import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.droidhats.campuscompass.views.SearchFragment
 import com.droidhats.campuscompass.views.SearchFragment.Companion.isNavigationViewOpen
 import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.setNavigationPoint
@@ -22,7 +25,8 @@ import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.searc
 class SearchAdapter(
     private val items: List<Location>,  //the search results
     private val listener: OnSearchResultClickListener?,
-    private val root: View
+    private val root: View,
+    private val viewModel: SearchViewModel
 ) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     private var onClickListener: View.OnClickListener
@@ -82,10 +86,18 @@ class SearchAdapter(
     }
 
     private fun confirmSelection(searchView: SearchView, location: Location, submit: Boolean) {
+
+        val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
+        val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
+
         searchView.setQuery(location.name, submit)
         val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
         searchText.setTextColor(Color.GREEN)
         SearchFragment.NavigationPoints[searchView.id] = location
+
+        if (SearchFragment.areRouteParametersSet())
+            viewModel.getRouteTimes(SearchFragment.NavigationPoints[mainBar.id]!!, SearchFragment.NavigationPoints[destinationBar.id]!!)
+
     }
 
     override fun getItemCount(): Int = items.size
