@@ -1,15 +1,19 @@
 package com.droidhats.campuscompass.repositories
 
+import android.content.Context
 import android.os.Build
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
-import org.junit.Test
 import org.junit.Assert
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import java.io.IOException
+import java.io.InputStream
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
@@ -49,7 +53,25 @@ class MapRepositoryTest {
             "        ]\n" +
             "    }]\n" +
             "}"
-    private var instance: MapRepository = MapRepository.getInstance(json)
+
+    // App context is needed to create the repository and read the external file
+    private val context : Context = RuntimeEnvironment.application.applicationContext
+
+    @Test
+    fun testExternalFileExistence(){
+        var inputStream: InputStream? = null
+
+        // Try to open the file
+        try {
+            inputStream = context.assets.open("buildings.json")
+        } catch (e: IOException){}
+
+        // Assert if input stream is null to check if the file exists
+        Assert.assertNotNull("Buildings.json file does not exist", inputStream)
+    }
+
+    // If the External file exists, then the repository can be created.
+    private var instance: MapRepository = MapRepository.getInstance(context)
 
     @Test
     fun testCreateCampuses() {
