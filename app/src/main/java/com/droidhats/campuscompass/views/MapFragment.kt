@@ -61,6 +61,7 @@ import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
 import org.json.JSONObject
+import com.droidhats.campuscompass.models.Map
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
@@ -96,6 +97,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
+
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -122,43 +124,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * Initializes the map and adds markers or lines and attaches listeners
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
-     * installed Google Play services and returned to the app.
+     *
+     * @param googleMap a necessary google map object on which we add markers and attach listeners.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
 
-        //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
-        map.mapType = GoogleMap.MAP_TYPE_NORMAL
-
-        //initializing vars for get last current location
-        map.uiSettings.isZoomControlsEnabled = true
-        map.setOnMarkerClickListener(this)
-
-        //enable the zoom controls on the map and declare MainActivity as the callback triggered when the user clicks a marker on this map
-        map.uiSettings.isZoomControlsEnabled = true
-        map.setOnMarkerClickListener(this)
-
-        //enable indoor level picker
-        map.isIndoorEnabled = true
-        map.uiSettings.isIndoorLevelPickerEnabled = true
-
-        //Checks if location permissions were granted before enabling my-location layer
-        //Purpose: users can still generate directions without supplying their current location
-        if ((activity as MainActivity).checkLocationPermission()) {
-            //Enables the my-location layer which draws a light blue dot on the user’s location.
-            // It also adds a button to the map that, when tapped, centers the map on the user’s location.
-            map.isMyLocationEnabled = true
-        }
-
-        //Current Location Icon has been adjusted to be at the bottom right sid eof the search bar.
-        map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
+        // Get the map from the viewModel.
+        map = viewModel.getMap(googleMap, this, this, this.activity as MainActivity)
 
         //Gives you the most recent location currently available.
         fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
@@ -280,14 +256,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         directionsButton.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            //Get the building that the user clicked on
-            var selectedBuilding : Building? = null
-            for (campus in viewModel.getCampuses()) {
-                for (building in campus.getBuildings()) {
-                    if (p.tag.toString() == building.getName())
-                        selectedBuilding  = building
-                }
-            }
+            //Get the building object from the polygon that the user clicked on
+            var selectedBuilding : Building? = viewModel.findBuildingByPolygonTag(p.tag.toString())
 
             //TODO: This full clear and redraw should probably be removed when the directions
             // system is implemented. It was added to show only one route at a time

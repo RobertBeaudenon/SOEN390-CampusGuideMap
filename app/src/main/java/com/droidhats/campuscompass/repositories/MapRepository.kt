@@ -1,5 +1,7 @@
 package com.droidhats.campuscompass.repositories
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
@@ -7,16 +9,28 @@ import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.InputStream
 import java.lang.StringBuilder
 
-class MapRepository(json: String) {
+/**
+ * A Repository for the map.
+ * Reads data from external files and process this data to initialize campus and building objects.
+ *
+ * @constructor Uses the application context to locate and read external files.
+ *
+ * @param applicationContext: Used to start an input stream that reads external files.
+ */
+class MapRepository(applicationContext: Context) {
 
     private var campuses: MutableList<Campus> = mutableListOf()
-    private val jsonObject: JSONObject = JSONObject(json)
+    private val jsonObject: JSONObject
 
     fun getCampuses(): List<Campus> = campuses
 
     init {
+        val inputStream: InputStream = applicationContext.assets.open("buildings.json")
+        val json: String = inputStream.bufferedReader().use { it.readText() }
+        jsonObject = JSONObject(json)
         createCampuses()
     }
 
@@ -24,11 +38,11 @@ class MapRepository(json: String) {
         // Singleton instantiation
         private var instance: MapRepository? = null
 
-        fun getInstance(json: String) =
+        fun getInstance(applicationContext: Context) =
             instance
                 ?: synchronized(this) {
                     instance
-                        ?: MapRepository(json).also { instance = it }
+                        ?: MapRepository(applicationContext).also { instance = it }
                 }
     }
 
