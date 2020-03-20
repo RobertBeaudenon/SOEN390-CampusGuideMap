@@ -194,8 +194,8 @@ class SearchFragment : Fragment()  {
                 return false
             }
             override fun onQueryTextChange(p0: String?): Boolean {
-                searchText.setTextColor(Color.WHITE)
-                NavigationPoints[searchView.id] = null
+               resetQuery(searchText, searchView)
+               resetRouteTimes()
                 if (!p0.isNullOrBlank()) {
                    return viewModel.sendSearchQueries(p0)
                 }
@@ -219,6 +219,20 @@ class SearchFragment : Fragment()  {
                 else -> GridLayoutManager(context, columnCount)
             }
             adapter = SearchAdapter(viewModel.searchSuggestions.value!!, onSearchResultClickListener, root, viewModel)
+        }
+    }
+
+    private fun resetQuery(queryText : EditText, searchView: SearchView){
+        queryText.setTextColor(Color.WHITE)
+        NavigationPoints[searchView.id] = null
+    }
+
+    private fun resetRouteTimes(){
+        if (isNavigationViewOpen) {
+            val defaultTextView = mutableMapOf<String, String>()
+            for (i in NavigationRoute.TransportationMethods.values())
+                defaultTextView[i.string] = "-"
+            viewModel.navigationRepository.routeTimes.value = defaultTextView
         }
     }
 
@@ -247,7 +261,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-
     private fun showRouteTimes(routeTimes : MutableMap<String, String>){
         val drivingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_driving)
         val transitRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_transit)
@@ -260,7 +273,6 @@ class SearchFragment : Fragment()  {
         walkingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.WALKING.string]
         bicycleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.BICYCLE.string]
         shuttleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
-
     }
 
     override fun onDetach() {
