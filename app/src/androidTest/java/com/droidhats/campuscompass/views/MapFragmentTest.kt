@@ -15,7 +15,6 @@ import org.junit.runner.RunWith
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import junit.framework.Assert.assertEquals
-import junit.framework.TestCase
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MapFragmentTest {

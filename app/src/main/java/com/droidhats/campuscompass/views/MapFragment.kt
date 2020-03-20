@@ -147,10 +147,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
-        drawBuildingPolygonsAndMarkers()
         setBuildingMarkersIcons()
-        map.setOnPolygonClickListener(this)
-        map.setOnMarkerClickListener(this)
 
         map.setOnMapClickListener {
             //Dismiss the bottom sheet when clicking anywhere on the map
@@ -242,10 +239,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
-        // Expand the bottom sheet when clicking on a polygon
-        // TODO: Limit only to campus buildings as polygons could highlight anything
-        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        //Get the building object from the polygon that the user clicked on
+        var selectedBuilding: Building? = viewModel.findBuildingByPolygonTag(p.tag.toString())
+
+        //Ensure bottom sheet expands only if the building has a polygon associated to it
+        if (selectedBuilding != null) {
+            if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            }
+        } else {
+            return
         }
 
         // update the bottom sheet with building information
@@ -256,14 +259,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         directionsButton.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            //Get the building object from the polygon that the user clicked on
-            var selectedBuilding : Building? = viewModel.findBuildingByPolygonTag(p.tag.toString())
-
             //TODO: This full clear and redraw should probably be removed when the directions
             // system is implemented. It was added to show only one route at a time
             map.clear()
             drawBuildingPolygonsAndMarkers()
             setBuildingMarkersIcons()
+
             if (selectedBuilding != null) {
                 placeMarkerOnMap(LatLng(selectedBuilding.getLocation().latitude, selectedBuilding.getLocation().longitude))
             }
@@ -303,7 +304,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun transportationMode() : String {
-
         //Checking which transportation mode is selected, default is walking.
         var transportationMode = "driving"
         when (radioTransportGroup.checkedRadioButtonId) {
@@ -327,33 +327,30 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
-    override fun onMarkerClick(marker: Marker?): Boolean{
-        for (campus in viewModel.getCampuses()) {
-            for (building in campus.getBuildings()) {
-                if (marker != null) {
-                    if (building.getName() == marker.title) {
-                        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-                        }
-                        updateAdditionalInfoBottomSheet(building.getPolygon())
-                        return true
-                    }
-                }
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        var selectedBuilding: Building? = viewModel.findBuildingByMarkerTitle(marker)
+
+        //There is a building associated with the marker that was clicked
+        if (selectedBuilding != null) {
+            if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
             }
+            updateAdditionalInfoBottomSheet(selectedBuilding.getPolygon())
+            return true //disable ability to tap the marker to avoid default behavior
         }
         return false
     }
 
     //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
     private fun placeMarkerOnMap(location: LatLng) {
-        // 1 Create a MarkerOptions object and sets the user’s current location as the position for the marker
+        // 1. Create a MarkerOptions object and sets the user’s current location as the position for the marker
         val markerOptions = MarkerOptions().position(location)
 
         //added a call to getAddress() and added this address as the marker title.
         val titleStr = getAddress(location)
         markerOptions.title(titleStr)
 
-        // 2 Add the marker to the map
+        // 2. Add the marker to the map
         map.addMarker(markerOptions)
     }
 
@@ -562,6 +559,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "Grey Nuns Building" -> buildingImage.setImageResource(R.drawable.building_grey_nuns)
                         "Samuel Bronfman Building" -> buildingImage.setImageResource(R.drawable.building_sb)
                         "GS Building" -> buildingImage.setImageResource(R.drawable.building_gs)
+                        "Learning Square" -> buildingImage.setImageResource(R.drawable.building_ls)
                         "Grey Nuns Annex" -> buildingImage.setImageResource(R.drawable.building_ga)
                         "CL Annex" -> buildingImage.setImageResource(R.drawable.building_cl)
                         "Q Annex" -> buildingImage.setImageResource(R.drawable.building_q)

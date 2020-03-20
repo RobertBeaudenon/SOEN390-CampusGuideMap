@@ -1,13 +1,17 @@
 package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
+import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.Map
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.Polygon
 import java.io.InputStream
 
@@ -39,7 +43,7 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
     fun getCampuses(): List<Campus> = campuses!!
 
     /**
-     * Uses the Map Model to initialize the map, and then it draws teh polygons of the campus buildings.
+     * Uses the Map Model to initialize the map, and then it draws the polygons and some markers of the campus buildings.
      * Returns an initialized GoogleMap object.
      */
     fun getMap(googleMap: GoogleMap,
@@ -56,12 +60,21 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
             for (building in campus.getBuildings()) {
                 initializedGoogleMap.addPolygon(building.getPolygonOptions()).tag = building.getName()
                 var polygon: Polygon = initializedGoogleMap.addPolygon(building.getPolygonOptions())
+
+                // Place marker on buildings that have center locations specified in buildings.json
+                if(building.hasCenterLocation()){
+                    var marker: Marker = initializedGoogleMap.addMarker(building.getMarkerOptions())
+                    building.setMarker(marker)
+                }
                 building.setPolygon(polygon)
             }
         }
-
         return googleMap
     }
+
+    /**
+     * Searches and returns the building object that matches the polygon tag from the mapFragment
+     */
 
     /**
      * Searches and returns the building object that matches the polygon tag from the mapFragment
@@ -78,6 +91,27 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
+        return selectedBuilding
+    }
+
+    /**
+     * Searches and returns the building object with the corresponding marker title.
+     * @return If there is no match, it will return a null building object
+     */
+
+    fun findBuildingByMarkerTitle(marker: Marker?): Building?{
+        var selectedBuilding: Building? = null
+
+        //Iterate through all buildings in both campuses until the marker matches the building name
+        for (campus in this.campuses!!) {
+            for (building in campus.getBuildings()) {
+                if (marker != null) {
+                    if (building.getName() == marker.title) {
+                        selectedBuilding = building
+                    }
+                }
+            }
+        }
         return selectedBuilding
     }
 }

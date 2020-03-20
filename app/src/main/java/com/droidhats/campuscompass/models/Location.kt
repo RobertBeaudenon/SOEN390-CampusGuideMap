@@ -3,16 +3,16 @@ package com.droidhats.campuscompass.models
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.MarkerOptions
 
-/*
-* Model for location classes
-* Data relating to locations should be stored in this file
-* */
-
+/**
+ * Model for Location, data pertaining to location are stored here
+ */
 abstract class Location(coordinate: LatLng) {
     private var coordinate: LatLng = coordinate
 }
 
-// Model for Campus class
+/**
+ * Model for Campus
+ */
 class Campus(
     private val coordinate: LatLng,
     private val name: String,
@@ -24,7 +24,9 @@ class Campus(
     fun getBuildings(): List<Building> = buildingsList
 }
 
-// Model for building class, data relating to buildings should be stored here
+/**
+ * Model for Building, data relating to buildings are stored here
+ */
 class Building(
     private val coordinate: LatLng,
     private val centerLocation: LatLng,
@@ -74,9 +76,9 @@ class Building(
             .title(name)
     }
 
-    /*
-    A building does not have center location if in the buildings.json it is set to [0,0].
-    This center location is used to place the Marker (initials) of specific buildings.
+    /**
+     * A building has a center location if in the buildings.json it is set to a coordinate other than [0,0]
+     * @return center location used to placed Marker holding the initials of the building
      */
     fun hasCenterLocation(): Boolean{
         return centerLocation != LatLng(0.0,0.0)
