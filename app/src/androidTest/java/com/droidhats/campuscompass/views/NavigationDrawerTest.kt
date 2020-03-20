@@ -36,7 +36,7 @@ class NavigationDrawerTest {
     }
 
     @Test
-    fun test_isNavigationCorrect(){
+    fun test_isNavigationCorrect() {
 
         //Opening side menu by clicking on menu  button
         onView(withId(R.id.mt_nav)).check(matches(isDisplayed())).perform(click())
@@ -49,7 +49,7 @@ class NavigationDrawerTest {
     }
 
     @Test
-    fun test_isSideMenuListElementsInView(){
+    fun test_isSideMenuListElementsInView() {
 
         //Opening side menu by clicking on menu  button
         onView(withId(R.id.mt_nav)).check(matches(isDisplayed())).perform(click())
@@ -71,21 +71,5 @@ class NavigationDrawerTest {
 
         //Checking if Settings menu item is displayed
         onView(withText("Settings")).check(matches(isDisplayed()))
-
-
-    }
-
-    @Test
-    fun test_isNagivationToCalendarCorrect(){
-
-        //Opening side menu by clicking on menu  button
-        onView(withId(R.id.mt_nav)).check(matches(isDisplayed())).perform(click())
-        //Checking if Schedule menu item is displayed and clicks that option
-        onView(withText("Schedule")).perform(click())
-        //Checking if that action did take you to map_fragment view
-        onView(withId(R.id.calendar_fragment)).check(matches(isDisplayed()))
-        Espresso.pressBack()
-        //Checking if that action id did take you to map_fragment view
-        onView(withId(R.id.coordinate_layout)).check(matches(isDisplayed()))
     }
 }
