@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    >
 
     <fragment
         android:id="@+id/nav_host_fragment"
@@ -26,6 +27,30 @@
         app:headerLayout="@layout/nav_drawer_header_main_layout"
         app:menu="@menu/nav_drawer_main_menu">
 
+        <LinearLayout
+            android:id="@+id/nav_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/icon_settings"
+                android:backgroundTint="#7B7B7B"></ImageView>
+
+            <TextView
+                android:layout_width="186dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="sans-serif-medium"
+                android:icon="@drawable/icon_settings"
+                android:text="@string/Settings"
+                android:textColor="#181818" />
+        </LinearLayout>
 
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
