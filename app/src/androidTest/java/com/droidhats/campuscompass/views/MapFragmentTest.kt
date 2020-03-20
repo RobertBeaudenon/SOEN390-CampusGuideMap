@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import junit.framework.Assert.assertEquals
 import junit.framework.TestCase
 
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -37,7 +38,7 @@ class MapFragmentTest {
             navController.navigate(R.id.action_splashFragment_to_mapsActivity);
 
             //Checking if action id indeed took you to the correct destination id
-            TestCase.assertEquals(navController.currentDestination?.id!!, R.id.map_fragment)
+            assertEquals(navController.currentDestination?.id!!, R.id.map_fragment)
 
             //Waiting 5 seconds for splash screen to load
             Thread.sleep(5000);
