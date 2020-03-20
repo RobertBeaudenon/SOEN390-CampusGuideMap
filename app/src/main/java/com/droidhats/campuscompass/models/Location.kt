@@ -33,7 +33,8 @@ class Building(
     private val address: String,
     private val openHours: String,
     private val departments: String,
-    private val services: String
+    private val services: String,
+    private val buildingImageResId: Int
 ) : Location(coordinate) {
     private val polygonColor = 4289544510.toInt()
     private lateinit var polygon: Polygon
@@ -45,6 +46,7 @@ class Building(
     fun getServices(): String = services
     fun getOpenHours(): String = openHours
     fun getPolygon(): Polygon = polygon
+    fun getBuildingImageResId(): Int = buildingImageResId
 
     fun setPolygon(polygon: Polygon){
         this.polygon = polygon

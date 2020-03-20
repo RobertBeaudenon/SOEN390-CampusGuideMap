@@ -65,8 +65,11 @@ import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
 import org.json.JSONObject
-import com.droidhats.campuscompass.models.Map
 
+/**
+ * A View Fragment for the map.
+ * It displays all the UI components of the map and dynamically interacts with the user input.
+ */
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
 
@@ -409,14 +412,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun drawBuildingPolygons() {
         //Highlight both SGW and Loyola Campuses
-        for (campus in viewModel.getCampuses()) {
-            for (building in campus.getBuildings()) {
-                map.addPolygon(building.getPolygonOptions()).tag = building.getName()
-                val polygon = map.addPolygon(building.getPolygonOptions())
-                building.setPolygon(polygon)
-            }
+        for (building in viewModel.getBuildings()) {
+            map.addPolygon(building.getPolygonOptions()).tag = building.getName()
+            val polygon = map.addPolygon(building.getPolygonOptions())
+            building.setPolygon(polygon)
         }
-    }
+   }
 
     private fun initSearchBar() {
         searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
@@ -447,7 +448,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
-                //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
+                // Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
                 map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
             }
         })
@@ -469,34 +470,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             requireActivity().findViewById(R.id.bottom_sheet_departments)
         val buildingImage: ImageView = requireActivity().findViewById(R.id.building_image)
 
-        for (campus in viewModel.getCampuses()) {
-            for (building in campus.getBuildings()) {
-                if (building.getPolygon().tag == p.tag) {
-                    buildingName.text = p.tag.toString()
-                    buildingAddress.text = building.getAddress()
-                    buildingOpenHours.text = building.getOpenHours()
-                    buildingServices.text = building.getServices()
-                    buildingDepartments.text = building.getDepartments()
-
-                    when(building.getPolygon().tag){
-                        "Henry F. Hall Building" -> buildingImage.setImageResource(R.drawable.building_hall)
-                        "EV Building" -> buildingImage.setImageResource(R.drawable.building_ev)
-                        "John Molson School of Business" -> buildingImage.setImageResource(R.drawable.building_jmsb)
-                        "Faubourg Saint-Catherine Building" -> buildingImage.setImageResource(R.drawable.building_fg_sc)
-                        "Guy-De Maisonneuve Building" -> buildingImage.setImageResource(R.drawable.building_gm)
-                        "Faubourg Building" -> buildingImage.setImageResource(R.drawable.building_fg)
-                        "Visual Arts Building" -> buildingImage.setImageResource(R.drawable.building_va)
-                        "Pavillion J.W. McConnell Building" -> buildingImage.setImageResource(R.drawable.building_webster_library)
-                        "Psychology Building" -> buildingImage.setImageResource(R.drawable.building_p)
-                        "Richard J. Renaud Science Complex" -> buildingImage.setImageResource(R.drawable.building_rjrsc)
-                        "Central Building" -> buildingImage.setImageResource(R.drawable.building_cb)
-                        "Communication Studies and Journalism Building" -> buildingImage.setImageResource(R.drawable.building_csj)
-                        "Administration Building" -> buildingImage.setImageResource(R.drawable.building_a)
-                        "Loyola Jesuit and Conference Centre" -> buildingImage.setImageResource(R.drawable.building_ljacc)
-                        else -> Log.v("Error loading images", "couldn't load image")
-                    }
-                    //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
-                }
+        for (building in viewModel.getBuildings()) {
+            if (building.getPolygon().tag == p.tag) {
+                buildingName.text = p.tag.toString()
+                buildingAddress.text = building.getAddress()
+                buildingOpenHours.text = building.getOpenHours()
+                buildingServices.text = building.getServices()
+                buildingDepartments.text = building.getDepartments()
+                buildingImage.setImageResource(building.getBuildingImageResId())
             }
         }
     }

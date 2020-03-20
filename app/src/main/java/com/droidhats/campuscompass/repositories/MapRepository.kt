@@ -1,8 +1,8 @@
 package com.droidhats.campuscompass.repositories
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
+import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
 import com.google.android.gms.maps.model.LatLng
@@ -17,21 +17,28 @@ import java.lang.StringBuilder
  * Reads data from external files and process this data to initialize campus and building objects.
  *
  * @constructor Uses the application context to locate and read external files.
- *
  * @param applicationContext: Used to start an input stream that reads external files.
  */
 class MapRepository(applicationContext: Context) {
 
     private var campuses: MutableList<Campus> = mutableListOf()
+    private var buildings: MutableList<Building> = mutableListOf()
     private val jsonObject: JSONObject
 
     fun getCampuses(): List<Campus> = campuses
+
+    /**
+     * Returns a list of all buildings.
+     */
+    fun getBuildings(): List<Building> = buildings
 
     init {
         val inputStream: InputStream = applicationContext.assets.open("buildings.json")
         val json: String = inputStream.bufferedReader().use { it.readText() }
         jsonObject = JSONObject(json)
-        createCampuses()
+        initializeCampuses()
+        initializeBuildings()
+
     }
 
     companion object {
@@ -46,7 +53,7 @@ class MapRepository(applicationContext: Context) {
                 }
     }
 
-    private fun createCampuses() {
+    private fun initializeCampuses() {
 
         //TODO: Refactor LatLng to not have to hardcode these values (get them from the JSON)
         campuses.add(
@@ -65,6 +72,12 @@ class MapRepository(applicationContext: Context) {
         )
     }
 
+    /**
+     * Initializes and returns a list of all building objects in a specific campus by parsing
+     * the buildings.json data
+     *
+     * @param campusName: Specifies which campus data will be processed.
+     */
     private fun getBuildingsFromJSON(campusName: String): List<Building> {
         var buildingsList: MutableList<Building> = mutableListOf()
         try {
@@ -104,6 +117,7 @@ class MapRepository(applicationContext: Context) {
                     buildingLocationArray[0].toString().toDouble(),
                     buildingLocationArray[1].toString().toDouble()
                 )
+                var buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)!!
 
                 coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
                 var openHoursArray = buildingsArray.getJSONObject(i).getJSONArray("open_hours")
@@ -132,7 +146,8 @@ class MapRepository(applicationContext: Context) {
                     polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
                 }
 
-                buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList, buildingAddress, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
+                // Create the building object and add it to the list of buildings
+                buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList, buildingAddress, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray), buildingImageResourceID))
             }
         } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +
@@ -157,4 +172,44 @@ class MapRepository(applicationContext: Context) {
         }
         return builder.toString()
     }
+
+    /**
+     * Constructs a list of all Concordia buildings by combining the lists of all buildings in each
+     * campus
+     */
+    private fun initializeBuildings() {
+        // Iterate through both campuses and add all the buildings in each to the buildings class var
+        for (campus in this.campuses) {
+            buildings.addAll(campus.getBuildings())
+        }
+    }
+
+    /**
+     * Returns the building image from drawable resources
+     *
+     * @param buildingName: Used to map the building name to the building image.
+     */
+    private fun getBuildingImageResourceID(buildingName: String): Int? {
+
+        // The id for the building image resource is of Int type
+        // Return the building image resource id that corresponds to the building name
+        return when (buildingName) {
+            "Henry F. Hall Building" -> R.drawable.building_hall
+            "EV Building" -> R.drawable.building_ev
+            "John Molson School of Business" -> R.drawable.building_jmsb
+            "Faubourg Saint-Catherine Building" -> R.drawable.building_fg_sc
+            "Guy-De Maisonneuve Building" -> R.drawable.building_gm
+            "Faubourg Building" -> R.drawable.building_fg
+            "Visual Arts Building" -> R.drawable.building_va
+            "Pavillion J.W. McConnell Building" -> R.drawable.building_webster_library
+            "Psychology Building" -> R.drawable.building_p
+            "Richard J. Renaud Science Complex" -> R.drawable.building_rjrsc
+            "Central Building" -> R.drawable.building_cb
+            "Communication Studies and Journalism Building" -> R.drawable.building_csj
+            "Administration Building" -> R.drawable.building_a
+            "Loyola Jesuit and Conference Centre" -> R.drawable.building_ljacc
+            else -> Log.v("Error loading images", "couldn't load image")
+        }
+    }
+
 }
