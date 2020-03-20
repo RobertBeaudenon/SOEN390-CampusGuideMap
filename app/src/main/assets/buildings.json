@@ -1,7 +1,7 @@
 {
     "SGW_buildings": [{
             "name": "Henry F. Hall Building",
-            "address": "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8",
+            "address": "1455, de Maisonneuve Blvd W, Montréal, QC H3G 1M8",
             "location": [45.4972727,-73.5812125],
             "coordinates": [
                 [45.497164, -73.579544],

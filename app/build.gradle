@@ -1,5 +1,5 @@
 apply plugin: "com.android.application"
-apply plugin: "jacoco"
+apply plugin: "com.vanniktech.android.junit.jacoco"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
 apply plugin: "kotlin-kapt"
@@ -52,14 +52,11 @@ android {
     dokka {
         outputFormat = "javadoc"
         outputDirectory = "$buildDir/dokka"
+
         configuration {
-            // Use to include or exclude non public members.
             includeNonPublic = true
-            // Do not output deprecated members. Applies globally, can be overridden by packageOptions
             skipDeprecated = false
-            // Emit warnings about not documented members. Applies globally, also can be overridden by packageOptions
             reportUndocumented = true
-            // Do not create index pages for empty packages
             skipEmptyPackages = true
         }
     }
@@ -73,48 +70,39 @@ android {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 
-    testOptions {
-        animationsDisabled true
-        unitTests {
-            includeAndroidResources = true
-            all {
-                jacoco {
-                    includeNoLocationClasses = true
-                }
-            }
-        }
+    junitJacoco {
+        jacocoVersion = '0.8.2'
+        ignoreProjects = []
+        excludes
+        includeNoLocationClasses = false
+        includeInstrumentationCoverageInMergedReport = false
     }
 
 }
 
-def buildDir = '/Users/nicholasnagy/StudioProjects/SOEN390-CampusGuideMap/app/build/'
-
-//task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
-//    def coverageSourceDirs = ["src/main/java"]
-//    def fileFilter = ['**/R.class','**/R$*.class','**/*$ViewInjector*.*','**/*$ViewBinder*.*','**/BuildConfig.*','**/Manifest*.*']
-//    def javaClasses = fileTree(dir: "$buildDir/intermediates/classes/debug",excludes: fileFilter)
-//    def kotlinClasses = fileTree(dir: "$buildDir/tmp/kotlin-classes/debug",excludes: fileFilter)
-//    classDirectories = files([javaClasses], [kotlinClasses])
-//    additionalSourceDirs = files(coverageSourceDirs)
-//    sourceDirectories = files(coverageSourceDirs)
-//    executionData = fileTree(dir: "$buildDir", includes: ["jacoco/testDebugUnitTest.exec","output/code-coverage/connected/*.ec"])
-//    reports {
-//        xml.enabled = true
-//        html.enabled = true
-//    }
-//}
-
 dependencies {
-    androidTestCompile "com.android.support.test:rules:0.4"
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
+    androidTestImplementation 'androidx.test:core:1.2.0'
+    androidTestImplementation "androidx.navigation:navigation-testing:2.3.0-alpha03"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
     androidTestImplementation "androidx.test.ext:junit:1.1.1"
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestUtil 'androidx.test:orchestrator:1.3.0-alpha04'
     debugImplementation "androidx.fragment:fragment-testing:1.2.3"
     implementation "androidx.appcompat:appcompat:1.1.0"
     implementation "androidx.core:core-ktx:1.3.0-alpha02"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.0-alpha03"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha03"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha03"
+    implementation "androidx.room:room-guava:2.2.4"
+    implementation "androidx.room:room-ktx:2.2.4"
+    implementation "androidx.room:room-runtime:2.2.4"
+    implementation "androidx.room:room-rxjava2:2.2.4"
     implementation "com.github.mancj:MaterialSearchBar:0.8.5"
     implementation "com.google.android.gms:play-services-gcm:17.0.0"
     implementation "com.google.android.gms:play-services-location:17.0.0"
@@ -125,33 +113,10 @@ dependencies {
     implementation "io.reactivex.rxjava3:rxjava:3.0.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
-    testImplementation "junit:junit:4.12"
-
-    // Testing Navigation
-    androidTestImplementation "androidx.navigation:navigation-testing:2.3.0-alpha03"
-    // Dynamic Feature Module Support
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.0-alpha03"
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha03"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha03"
-    testImplementation "com.google.truth:truth:1.0.1"
-    testImplementation "org.robolectric:robolectric:4.3"
-
-    //dependancies for using room for SQlite
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
-    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation "androidx.room:room-guava:2.2.4"
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation "androidx.room:room-ktx:2.2.4"
-    implementation "androidx.room:room-runtime:2.2.4"
-    // optional - RxJava support for Room
-    implementation "androidx.room:room-rxjava2:2.2.4"
-    // For Kotlin use kapt instead of annotationProcessor
     kapt "androidx.room:room-compiler:2.2.4"
-    // Test helpers
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "androidx.room:room-testing:2.2.4"
-}
-
-jacoco {
-    toolVersion = "0.8.5"
+    testImplementation "com.google.truth:truth:1.0.1"
+    testImplementation "junit:junit:4.13"
+    testImplementation "org.robolectric:robolectric:4.3.1"
 }

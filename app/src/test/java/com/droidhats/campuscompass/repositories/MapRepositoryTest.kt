@@ -94,8 +94,8 @@ class MapRepositoryTest {
                 "Friday\t9a.m.-5p.m.\n" +
                 "Saturday\t9a.m.-5p.m.\n" +
                 "Sunday\t9a.m.-5p.m.\n", HBuilding.getOpenHours())
-        Assert.assertEquals(HBuilding.getLocation(), LatLng(45.497320, -73.579031))
-        Assert.assertEquals(HBuilding.getAddress(), "Boulevard de Maisonneuve O, Montreal, QC H3G 1M8", HBuilding.getAddress())
+        Assert.assertEquals(HBuilding.getLocation(), LatLng(45.4972727, -73.5812125))
+        Assert.assertEquals(HBuilding.getAddress(), "1455, de Maisonneuve Blvd W, Montréal, QC H3G 1M8", HBuilding.getAddress())
         Assert.assertEquals(HBuilding.getDepartments(), "Geography, Planning and Environment\n" +
                 "Political Science, Sociology and Anthropology, Economics\n" +
                 "School of Irish Studies\n", HBuilding.getDepartments())
