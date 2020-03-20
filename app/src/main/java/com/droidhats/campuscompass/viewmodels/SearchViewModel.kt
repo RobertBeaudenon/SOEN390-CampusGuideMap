@@ -59,7 +59,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             .setSessionToken(token)
             .setQuery(query)
             .build()
-
         //Get your query results here
         val queryResults  = arrayListOf<GooglePlace>()
         placesClient.findAutocompletePredictions(request).addOnSuccessListener {
@@ -108,7 +107,18 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         return success
     }
 
-    fun getRouteTimes(origin : Location, destination : Location) : MutableLiveData<MutableMap<String, String>> {
-        return navigationRepository.getRouteTimes(origin, destination)
+    fun getRouteTimes(origin : Location, destination : Location)  {
+        if (origin is GooglePlace && destination is GooglePlace) {
+            Thread {
+                if (!origin.isCurrentLocation)
+
+                    navigationRepository.fetchPlace(origin)
+
+                if (!destination.isCurrentLocation)
+                    navigationRepository.fetchPlace(destination)
+
+                navigationRepository.fetchRouteTimes(origin, destination)
+            }.start()
+        }
     }
 }

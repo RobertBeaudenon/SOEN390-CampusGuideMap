@@ -8,13 +8,11 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.widget.SearchView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
-import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.droidhats.campuscompass.views.SearchFragment
 import com.droidhats.campuscompass.views.SearchFragment.Companion.isNavigationViewOpen
