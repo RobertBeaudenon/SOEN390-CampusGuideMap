@@ -2,20 +2,25 @@ package com.droidhats.campuscompass.views
 
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import junit.framework.Assert.assertEquals
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
-import junit.framework.Assert.assertEquals
-import junit.framework.TestCase
+import org.junit.Test
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MapFragmentTest {
@@ -76,5 +81,33 @@ class MapFragmentTest {
 
         //Ensuring the text of the toggle just clicked is indeed LOY
         onView(withId(R.id.toggleButton)).check(matches(withText("LOY")))
+    }
+
+    @Test
+    fun test_additionalMenuBar(){
+        BottomSheetBehavior.from(activityRule.activity.bottom_sheet).state =
+                BottomSheetBehavior.STATE_EXPANDED
+
+        //Setting a delay to allow the bottom sheet to load
+        Thread.sleep(1000)
+
+        //Checking if building image is displayed
+        onView(withId(R.id.building_image)).check(matches(isDisplayed()))
+        //Checking if separator bar is displayed
+        onView(withId(R.id.separator_bar)).check(matches(isDisplayed()))
+        //Checking if building name is displayed
+        onView(withId(R.id.bottom_sheet_building_name)).check(matches(isDisplayed()))
+        //Checking if building address is displayed
+        onView(withId(R.id.bottom_sheet_building_address)).check(matches(isDisplayed()))
+        //Checking if opening hours are displayed
+        onView(withId(R.id.bottom_sheet_open_hours)).check(matches(isDisplayed()))
+        //Checking if services are displayed
+        onView(withId(R.id.bottom_sheet_services)).check(matches(isDisplayed()))
+        //Checking if departments are displayed
+        onView(withId(R.id.bottom_sheet_departments)).check(matches(isDisplayed()))
+        //Checking if the direction button is displayed
+        onView(withId(R.id.bottom_sheet_directions_button)).check(matches(isDisplayed()))
+        //Ensuring the text of the direction button is indeed Directions
+        onView(withId(R.id.bottom_sheet_directions_button)).check(matches(withText("Directions")))
     }
 }
