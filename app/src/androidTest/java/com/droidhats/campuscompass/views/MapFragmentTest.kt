@@ -2,22 +2,25 @@ package com.droidhats.campuscompass.views
 
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import junit.framework.Assert.assertEquals
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import junit.framework.TestCase
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-
+import org.junit.Test
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MapFragmentTest {
@@ -40,7 +43,7 @@ class MapFragmentTest {
             navController.navigate(R.id.action_splashFragment_to_mapsActivity);
 
             //Checking if action id indeed took you to the correct destination id
-            TestCase.assertEquals(navController.currentDestination?.id!!, R.id.map_fragment)
+            assertEquals(navController.currentDestination?.id!!, R.id.map_fragment)
 
             //Waiting 5 seconds for splash screen to load
             Thread.sleep(5000);
