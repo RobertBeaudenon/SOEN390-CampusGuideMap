@@ -1,16 +1,13 @@
 package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
-import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.Map
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.Polygon
 import java.io.InputStream
@@ -49,11 +46,12 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
     fun getMap(googleMap: GoogleMap,
                mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
                mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
+               mapFragmentOnCameraIdleListener: GoogleMap.OnCameraIdleListener,
                activity: FragmentActivity
     ): GoogleMap
     {
         //Get initialized map from Map Model.
-        var initializedGoogleMap: GoogleMap = Map(googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener, activity).getMap()
+        var initializedGoogleMap: GoogleMap = Map(googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener, mapFragmentOnCameraIdleListener, activity).getMap()
 
         //Highlight the buildings in both SGW and Loyola Campuses
         for (campus in this.campuses!!) {
@@ -71,10 +69,6 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         }
         return googleMap
     }
-
-    /**
-     * Searches and returns the building object that matches the polygon tag from the mapFragment
-     */
 
     /**
      * Searches and returns the building object that matches the polygon tag from the mapFragment
@@ -98,7 +92,6 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
      * Searches and returns the building object with the corresponding marker title.
      * @return If there is no match, it will return a null building object
      */
-
     fun findBuildingByMarkerTitle(marker: Marker?): Building?{
         var selectedBuilding: Building? = null
 

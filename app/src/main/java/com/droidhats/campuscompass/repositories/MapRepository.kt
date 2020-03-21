@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.repositories
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.droidhats.campuscompass.models.Building

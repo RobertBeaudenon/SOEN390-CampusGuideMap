@@ -1,5 +1,7 @@
 package com.droidhats.campuscompass.models
 
+import android.util.Log
+import com.droidhats.campuscompass.helpers.Observer
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -36,10 +38,15 @@ class Building(
     private val openHours: String,
     private val departments: String,
     private val services: String
-) : Location(coordinate) {
-    private val polygonColor = 4289544510.toInt()
+) : Location(coordinate), Observer {
+
     private lateinit var polygon: Polygon
     private lateinit var marker: Marker
+
+    companion object {
+        private const val POLYGON_COLOR = 4289544510.toInt()
+        private const val MARKER_VISIBILITY_ZOOM_LEVEL = 16f
+    }
 
     fun getName(): String = name
     fun getLocation(): LatLng = coordinate
@@ -61,7 +68,7 @@ class Building(
 
     fun getPolygonOptions(): PolygonOptions {
         var polygonOptions = PolygonOptions()
-            .fillColor(polygonColor)
+            .fillColor(POLYGON_COLOR)
             .strokeWidth(2F)
             .clickable(true)
         for (polygonCoordinate in polygonCoordinatesList) {
@@ -82,5 +89,13 @@ class Building(
      */
     fun hasCenterLocation(): Boolean{
         return centerLocation != LatLng(0.0,0.0)
+    }
+
+    /**
+     * A building's marker is visible only at its visibility zoom level
+     */
+    override fun update(mapZoomLevel: Float) {
+        marker.isVisible = mapZoomLevel >= MARKER_VISIBILITY_ZOOM_LEVEL
+        Log.v("VISIBLE", "" + marker.isVisible)
     }
 }

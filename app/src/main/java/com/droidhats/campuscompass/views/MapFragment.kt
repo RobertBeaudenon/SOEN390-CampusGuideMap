@@ -37,6 +37,7 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
@@ -61,16 +62,18 @@ import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
 import org.json.JSONObject
-import com.droidhats.campuscompass.models.Map
+import com.droidhats.campuscompass.helpers.Observer
+import com.droidhats.campuscompass.helpers.Subject
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, OnCameraIdleListener, Subject{
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
+    private val observerList = mutableListOf<Observer>()
     private var locationUpdateState = false
 
     companion object {
@@ -134,7 +137,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onMapReady(googleMap: GoogleMap) {
 
         // Get the map from the viewModel.
-        map = viewModel.getMap(googleMap, this, this, this.activity as MainActivity)
+        map = viewModel.getMap(googleMap, this, this, this, this.activity as MainActivity)
 
         //Gives you the most recent location currently available.
         fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
@@ -144,6 +147,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
+            }
+        }
+
+        // Attach all observer buildings with initial markers
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if (building.hasCenterLocation()) {
+                    attach(building)
+                }
             }
         }
 
@@ -689,5 +701,30 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onCalendarEventClick(item: CalendarEvent?) {
         findNavController().navigateUp()
         Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * Notify observers whenever the camera is idle
+     */
+    override fun onCameraIdle() {
+        notifyObservers()
+    }
+
+    override fun attach(observer: Observer) {
+        if (observer != null) {
+            observerList.add(observer)
+        }
+    }
+
+    override fun detach(observer: Observer) {
+        if (observer != null) {
+            observerList.remove(observer)
+        }
+    }
+
+    override fun notifyObservers() {
+        for (observer in observerList) {
+            observer.update(map.cameraPosition.zoom)
+        }
     }
 }
