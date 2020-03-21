@@ -17,10 +17,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import junit.framework.TestCase
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.launch
 
 
 @RunWith(AndroidJUnit4ClassRunner::class)
@@ -84,11 +80,11 @@ class MapFragmentTest {
 
     @Test
     fun test_additionalMenuBar(){
-        GlobalScope.launch {
-            delay(2000) //to allow bottomsheet to load
-
-            BottomSheetBehavior.from(activityRule.activity.bottom_sheet).state =
+        BottomSheetBehavior.from(activityRule.activity.bottom_sheet).state =
                 BottomSheetBehavior.STATE_EXPANDED
+
+        //Setting a delay to allow the bottom sheet to load
+        Thread.sleep(1000)
 
             //Checking if building image is displayed
             onView(withId(R.id.building_image)).check(matches(isDisplayed()))
@@ -108,8 +104,5 @@ class MapFragmentTest {
             onView(withId(R.id.bottom_sheet_directions_button)).check(matches(isDisplayed()))
             //Ensuring the text of the direction button is indeed Directions
             onView(withId(R.id.bottom_sheet_directions_button)).check(matches(withText("Directions")))
-            // check the color of the button
-            // check the image on the button
-        }
     }
 }

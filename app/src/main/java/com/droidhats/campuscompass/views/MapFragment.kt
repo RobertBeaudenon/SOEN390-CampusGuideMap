@@ -456,7 +456,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     searchBar.visibility = View.VISIBLE
                     toggleButton.visibility =  View.VISIBLE
                 }
-
            }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -537,7 +536,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "PERFORM centre" -> buildingImage.setImageResource(R.drawable.building_pc)
                         "Jesuit Residence" -> buildingImage.setImageResource(R.drawable.building_jr)
                         "Physical Services Building" -> buildingImage.setImageResource(R.drawable.building_ps)
-
+                        "Learning Square" -> buildingImage.setImageResource(R.drawable.building_ls)
 
                         else -> Log.v("Error loading images", "couldn't load image")
                     }
