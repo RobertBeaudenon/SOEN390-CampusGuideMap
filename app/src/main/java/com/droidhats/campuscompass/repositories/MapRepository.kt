@@ -204,12 +204,42 @@ class MapRepository(applicationContext: Context) {
             "Faubourg Building" -> R.drawable.building_fg
             "Visual Arts Building" -> R.drawable.building_va
             "Pavillion J.W. McConnell Building" -> R.drawable.building_webster_library
+            "Grey Nuns Building" -> R.drawable.building_grey_nuns
+            "Samuel Bronfman Building" -> R.drawable.building_sb
+            "GS Building" -> R.drawable.building_gs
+            "CB Building" -> R.drawable.building_cbb
+            "Grey Nuns Annex" -> R.drawable.building_ga
+            "CL Annex" -> R.drawable.building_cl
+            "Q Annex" -> R.drawable.building_q
+            "T Annex" -> R.drawable.building_t
+            "RR Annex" -> R.drawable.building_rr
+            "R Annex" -> R.drawable.building_r
+            "FA Annex" -> R.drawable.building_fa
+            "LD Building" -> R.drawable.building_ld
+            "X Annex" -> R.drawable.building_x
+            "Z Annex" -> R.drawable.building_z
+            "V Annex" -> R.drawable.building_v
+            "S Annex" -> R.drawable.building_s
+            "CI Annex" -> R.drawable.building_ci
+            "MU Annex" -> R.drawable.building_mu
+            "B Annex" -> R.drawable.building_b
+            "D Annex" -> R.drawable.building_d
+            "MI Annex" -> R.drawable.building_mi
             "Psychology Building" -> R.drawable.building_p
             "Richard J. Renaud Science Complex" -> R.drawable.building_rjrsc
             "Central Building" -> R.drawable.building_cb
             "Communication Studies and Journalism Building" -> R.drawable.building_csj
             "Administration Building" -> R.drawable.building_a
             "Loyola Jesuit and Conference Centre" -> R.drawable.building_ljacc
+            "Vanier Library Building" -> R.drawable.building_vl
+            "Vanier Extension" -> R.drawable.building_ve
+            "Student Center" -> R.drawable.building_sc
+            "F.C. Smith. Building" -> R.drawable.building_fc
+            "Stinger Dome" -> R.drawable.building_do
+            "PERFORM centre" -> R.drawable.building_pc
+            "Jesuit Residence" -> R.drawable.building_jr
+            "Physical Services Building" -> R.drawable.building_ps
+            "Learning Square" -> R.drawable.building_ls
             else -> Log.v("Error loading images", "couldn't load image")
         }
     }

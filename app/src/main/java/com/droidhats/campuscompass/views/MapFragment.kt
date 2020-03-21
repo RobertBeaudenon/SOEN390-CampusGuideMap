@@ -21,6 +21,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.GravityCompat
+import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -90,14 +91,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private var instructions = arrayListOf<String>()
     private var stepInstructions: String = ""
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    internal lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
+
+    private lateinit var root : View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.map_fragment, container, false)
+
+        root = inflater.inflate(R.layout.map_fragment, container, false)
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -279,10 +284,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
                         if (selectedBuilding != null) {
-                            if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
-                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
-                            } else {
+                            if (selectedBuilding.getName() == "Psychology Building" || selectedBuilding.getName() == "Richard J. Renaud Science Complex" || selectedBuilding.getName() == "Central Building" || selectedBuilding.getName() == "Communication Studies and Journalism Building" || selectedBuilding.getName() == "Administration Building" || selectedBuilding.getName() == "Loyola Jesuit and Conference Centre") { //<-- TO FIX
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
+                            } else {
+                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
                             }
                         }
                     } else {
@@ -444,12 +449,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-            }
+                if(newState == BottomSheetBehavior.STATE_EXPANDED){
+                    searchBar.visibility = View.INVISIBLE
+                    toggleButton.visibility =  View.INVISIBLE
+                }
+                else{
+                    searchBar.visibility = View.VISIBLE
+                    toggleButton.visibility =  View.VISIBLE
+                }
+           }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
-                // Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
-                map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
+                //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
+                map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * root.findViewById<NestedScrollView>(R.id.bottom_sheet).height).toInt())
+                //searchBar and campus toggle button become invisible when bottom sheet is open
             }
         })
     }
@@ -478,6 +492,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 buildingServices.text = building.getServices()
                 buildingDepartments.text = building.getDepartments()
                 buildingImage.setImageResource(building.getBuildingImageResId())
+                    //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
             }
         }
     }
@@ -485,10 +500,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
 
         val directionsURL:String = when (mode) {
-            "shuttleToSGW" -> {
+            "shuttleToLOY" -> {
                 "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
             }
-            "shuttleToLOY" -> {
+            "shuttleToSGW" -> {
                 "https://maps.googleapis.com/maps/api/directions/json?origin=45.458398,-73.638241&destination=45.497132,-73.578519&mode=" + mode + "&key=" + getString(R.string.ApiKey)
             }
             else -> {
