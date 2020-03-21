@@ -21,7 +21,10 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.*
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.coroutines.suspendCoroutine
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -101,7 +104,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     // Send indoor and outdoor queries ASYNCHRONOUSLY
-    fun sendSearchQueries(query: String): Boolean{
+    fun sendSearchQueries(query: String): Boolean {
         val success = sendGooglePlacesQuery(query)
         sendSQLiteQuery(query)
         return success
@@ -109,16 +112,15 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     fun getRouteTimes(origin : Location, destination : Location)  {
         if (origin is GooglePlace && destination is GooglePlace) {
-            Thread {
+            GlobalScope.launch {
                 if (!origin.isCurrentLocation)
-
                     navigationRepository.fetchPlace(origin)
 
                 if (!destination.isCurrentLocation)
                     navigationRepository.fetchPlace(destination)
 
                 navigationRepository.fetchRouteTimes(origin, destination)
-            }.start()
+            }
         }
     }
 }

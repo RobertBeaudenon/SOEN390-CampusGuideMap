@@ -1,6 +1,7 @@
 package com.droidhats.campuscompass.repositories
 
 import android.app.Application
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,12 +14,14 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.roomdb.*
-import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.common.api.ApiException
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * This class will create a connection with the SQLite DB in order to get the
@@ -65,9 +68,6 @@ class NavigationRepository(private val application: Application) {
                     "&mode=" + method.string +
                     "&key=" + application.applicationContext.getString(R.string.ApiKey)
 
-            println("ORIGIN" + origin.coordinate.toString())
-            println("DESTINATION" + destination.coordinate.toString())
-
             val directionRequest = StringRequest(
                 Request.Method.GET, directionsURL,
                 Response.Listener { response ->
@@ -94,17 +94,23 @@ class NavigationRepository(private val application: Application) {
             requestQueue.add(directionRequest)
         }
     }
-
-    fun fetchPlace(location: Location) {
+    suspend fun fetchPlace(location: Location) : Unit = suspendCoroutine  { cont->
         if (location is GooglePlace) {
-                val placeFields: List<Place.Field> =
-                    arrayListOf(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG)
-                val placesClient = Places.createClient(application.applicationContext)
-                val request = FetchPlaceRequest.newInstance(location.placeID, placeFields)
+            val placeFields: List<Place.Field> =
+                arrayListOf(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG)
+            val placesClient = Places.createClient(application.applicationContext)
+            val request = FetchPlaceRequest.newInstance(location.placeID, placeFields)
 
-                val fetchPlaceResponse = Tasks.await(placesClient.fetchPlace(request))
-                location.place = fetchPlaceResponse.place
-                location.coordinate = fetchPlaceResponse.place.latLng!!
+            placesClient.fetchPlace(request)
+                .addOnSuccessListener {
+                    location.place = it.place
+                    location.coordinate = it.place.latLng!!
+                }.addOnFailureListener {
+                    if (it is ApiException)
+                        Log.e(TAG, "Place not found: " + it.message)
+                }.addOnCompleteListener {
+                    cont.resume(Unit)
+                }
         }
     }
 }

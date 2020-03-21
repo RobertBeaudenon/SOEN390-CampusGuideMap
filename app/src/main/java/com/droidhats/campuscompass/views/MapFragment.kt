@@ -33,6 +33,7 @@ import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
@@ -53,6 +54,8 @@ import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.map_fragment.*
 import kotlinx.android.synthetic.main.search_bar_layout.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
@@ -65,7 +68,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
-    private lateinit var placesClient: PlacesClient
     private var locationUpdateState = false
 
     companion object {
@@ -551,37 +553,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
-        if (item is GooglePlace)
-        {
+        if (item is GooglePlace) {
             findNavController().navigateUp()
             moveToLocation(item)
         }
         Toast.makeText(context, item?.name, Toast.LENGTH_LONG).show()
     }
 
-   /** This FetchPlaceRequest is not sent at search time because it is required on
-    *   on top of the FindAutocompletePredictionsRequest
-    *  It would be possible though more challenging to synchronize two requests all the while
-    *  showing live autocomplete results. This minor compromise is okay for now
-   **/
     private fun moveToLocation(location: GooglePlace){
-        val placeFields: List<Place.Field> =
-            arrayListOf(Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG)
-        val request = FetchPlaceRequest.newInstance(location.placeID, placeFields)
-        placesClient = Places.createClient(requireContext())
-        placesClient.fetchPlace(request)
-            .addOnSuccessListener { response: FetchPlaceResponse ->
-                val place= response.place
-                Log.i(TAG, "Place found: " + place.id)
-                location.place = place
-                location.coordinate = place.latLng!!
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(place.latLng, 17.0f))
-            }
-            .addOnFailureListener { exception: Exception ->
-                if (exception is ApiException) {
-                    Log.e(TAG, "Place not found: " + exception.message)
-                }
-            }
+       GlobalScope.launch {
+           viewModel.navigationRepository.fetchPlace(location)
+       }.invokeOnCompletion {
+           requireActivity().runOnUiThread{
+               map.animateCamera(CameraUpdateFactory.newLatLngZoom(location.coordinate, 17.0f))
+           }
+       }
     }
 
 }

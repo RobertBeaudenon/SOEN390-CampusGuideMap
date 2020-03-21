@@ -40,7 +40,7 @@
                 android:layout_height="25dp"
                 android:layout_marginRight="30dp"
                 android:background="@drawable/icon_settings"
-                android:backgroundTint="#7B7B7B"></ImageView>
+                android:backgroundTint="#7B7B7B"/>
 
             <TextView
                 android:layout_width="186dp"
