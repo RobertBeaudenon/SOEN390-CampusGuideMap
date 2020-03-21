@@ -66,7 +66,8 @@ import com.droidhats.campuscompass.helpers.Observer
 import com.droidhats.campuscompass.helpers.Subject
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, OnCameraIdleListener, Subject{
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener,
+    OnCameraIdleListener, Subject{
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -488,7 +489,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
      }
 
-
     private fun initSearchBar() {
         searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
 
@@ -522,7 +522,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     searchBar.visibility = View.VISIBLE
                     toggleButton.visibility =  View.VISIBLE
                 }
-
            }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -704,19 +703,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     /**
-     * Notify observers whenever the camera is idle
+     * Notify observers whenever the camera of the Google map is idle
      */
     override fun onCameraIdle() {
         notifyObservers()
     }
 
-    override fun attach(observer: Observer) {
+    override fun attach(observer: Observer?) {
         if (observer != null) {
             observerList.add(observer)
         }
     }
 
-    override fun detach(observer: Observer) {
+    override fun detach(observer: Observer?) {
         if (observer != null) {
             observerList.remove(observer)
         }

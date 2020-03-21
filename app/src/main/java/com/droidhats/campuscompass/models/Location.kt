@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.models
 
-import android.util.Log
 import com.droidhats.campuscompass.helpers.Observer
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.MarkerOptions
@@ -85,7 +84,7 @@ class Building(
 
     /**
      * A building has a center location if in the buildings.json it is set to a coordinate other than [0,0]
-     * @return center location used to placed Marker holding the initials of the building
+     * @return center location used to place the Marker holding the initials of the building
      */
     fun hasCenterLocation(): Boolean{
         return centerLocation != LatLng(0.0,0.0)
@@ -96,6 +95,5 @@ class Building(
      */
     override fun update(mapZoomLevel: Float) {
         marker.isVisible = mapZoomLevel >= MARKER_VISIBILITY_ZOOM_LEVEL
-        Log.v("VISIBLE", "" + marker.isVisible)
     }
 }
