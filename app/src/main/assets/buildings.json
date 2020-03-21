@@ -1,6 +1,7 @@
 {
     "SGW_buildings": [{
             "name": "Henry F. Hall Building",
+            "initial": "H",
             "address": "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8",
 			"center_location": [45.497320, -73.579031],
             "location": [45.497320, -73.579031],
@@ -33,6 +34,7 @@
             ]
         }, {
             "name": "EV Building",
+            "initial": "EV",
 			"center_location": [45.495473, -73.577949],
             "location": [45.495469, -73.577632],
             "address": "1515 Saint-Catherine St W, Montreal, Quebec H3G 2W1",
@@ -226,6 +228,7 @@
             ]
         }, {
             "name": "Visual Arts Building",
+            "initial": "VA",
             "address": "1395 Boulevard René-Lévesque O, Montreal, QC H3G 2M5",
 			"center_location": [45.495696, -73.573973],
             "location": [45.495671, -73.573622],
@@ -991,6 +994,7 @@
             ]
         }, {
             "name": "Richard J. Renaud Science Complex",
+            "initial": "SP",
             "address": "3475 Rue West Broadway Montreal, QC H4B 2A7",
             "center_location": [45.457826, -73.641522],
 			"location": [45.457972, -73.641366],
