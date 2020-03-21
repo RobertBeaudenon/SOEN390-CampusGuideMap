@@ -89,23 +89,23 @@ class MapFragmentTest {
         //Setting a delay to allow the bottom sheet to load
         Thread.sleep(1000)
 
-            //Checking if building image is displayed
-            onView(withId(R.id.building_image)).check(matches(isDisplayed()))
-            //Checking if separator bar is displayed
-            onView(withId(R.id.separator_bar)).check(matches(isDisplayed()))
-            //Checking if building name is displayed
-            onView(withId(R.id.bottom_sheet_building_name)).check(matches(isDisplayed()))
-            //Checking if building address is displayed
-            onView(withId(R.id.bottom_sheet_building_address)).check(matches(isDisplayed()))
-            //Checking if opening hours are displayed
-            onView(withId(R.id.bottom_sheet_open_hours)).check(matches(isDisplayed()))
-            //Checking if services are displayed
-            onView(withId(R.id.bottom_sheet_services)).check(matches(isDisplayed()))
-            //Checking if departments are displayed
-            onView(withId(R.id.bottom_sheet_departments)).check(matches(isDisplayed()))
-            //Checking if the direction button is displayed
-            onView(withId(R.id.bottom_sheet_directions_button)).check(matches(isDisplayed()))
-            //Ensuring the text of the direction button is indeed Directions
-            onView(withId(R.id.bottom_sheet_directions_button)).check(matches(withText("Directions")))
+        //Checking if building image is displayed
+        onView(withId(R.id.building_image)).check(matches(isDisplayed()))
+        //Checking if separator bar is displayed
+        onView(withId(R.id.separator_bar)).check(matches(isDisplayed()))
+        //Checking if building name is displayed
+        onView(withId(R.id.bottom_sheet_building_name)).check(matches(isDisplayed()))
+        //Checking if building address is displayed
+        onView(withId(R.id.bottom_sheet_building_address)).check(matches(isDisplayed()))
+        //Checking if opening hours are displayed
+        onView(withId(R.id.bottom_sheet_open_hours)).check(matches(isDisplayed()))
+        //Checking if services are displayed
+        onView(withId(R.id.bottom_sheet_services)).check(matches(isDisplayed()))
+        //Checking if departments are displayed
+        onView(withId(R.id.bottom_sheet_departments)).check(matches(isDisplayed()))
+        //Checking if the direction button is displayed
+        onView(withId(R.id.bottom_sheet_directions_button)).check(matches(isDisplayed()))
+        //Ensuring the text of the direction button is indeed Directions
+        onView(withId(R.id.bottom_sheet_directions_button)).check(matches(withText("Directions")))
     }
 }
