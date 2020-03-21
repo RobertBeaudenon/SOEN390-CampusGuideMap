@@ -38,7 +38,6 @@ class MapRepository(applicationContext: Context) {
         jsonObject = JSONObject(json)
         initializeCampuses()
         initializeBuildings()
-
     }
 
     companion object {
@@ -53,22 +52,25 @@ class MapRepository(applicationContext: Context) {
                 }
     }
 
+    /**
+     * Initializes the objects for both the SGW and Loyola campuses
+     */
     private fun initializeCampuses() {
 
-        //TODO: Refactor LatLng to not have to hardcode these values (get them from the JSON)
+        // Parse the json object to read the lat and lang coordinates of both campuses
+        val SGW_LatCoordinate: Double = jsonObject.getJSONArray("SGW_Campus_Location")[0].toString().toDouble()
+        val SGW_LongCoordinate: Double = jsonObject.getJSONArray("SGW_Campus_Location")[1].toString().toDouble()
+        val Loyola_LatCoordinate: Double = jsonObject.getJSONArray("Loyola_Campus_Location")[0].toString().toDouble()
+        val Loyola_LongCoordinate: Double = jsonObject.getJSONArray("Loyola_Campus_Location")[1].toString().toDouble()
+        val SGW_Campus_Coordinates = LatLng(SGW_LatCoordinate, SGW_LongCoordinate)
+        val Loyola_Campus_Coordinates = LatLng(Loyola_LatCoordinate, Loyola_LongCoordinate)
+
+        // Initialize both campuses using the parsed coordinates and the list of buildings.
         campuses.add(
-            Campus(
-                LatLng(45.495637, -73.578235),
-                "SGW",
-                getBuildingsFromJSON("SGW")
-            )
+            Campus(SGW_Campus_Coordinates, "SGW", getBuildingsFromJSON("SGW"))
         )
         campuses.add(
-            Campus(
-                LatLng(45.458159, -73.640450),
-                "Loyola",
-                getBuildingsFromJSON("Loyola")
-            )
+            Campus(Loyola_Campus_Coordinates, "Loyola", getBuildingsFromJSON("Loyola"))
         )
     }
 
