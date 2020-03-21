@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,20 +13,6 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_weight="1"/>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="150dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:text="Instructions"
-        android:background="#791b0f"
-        android:textColor="#FFF"
-        android:textAllCaps="false"
-        android:visibility="invisible" />
 
     <Button
         android:id="@+id/buttonInstructions"
@@ -42,5 +27,6 @@
 
     <include layout="@layout/bottom_sheet_layout"/>
     <include layout="@layout/search_bar_layout"/>
+    <include layout="@layout/place_info_card"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -8,11 +8,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.RadioButton
-import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,12 +27,14 @@ import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class SearchFragment : Fragment()  {
 
     private lateinit var viewModel: SearchViewModel
     private lateinit var recyclerView: RecyclerView
+    private lateinit var searchAdapter: SearchAdapter
     private lateinit var root: View
     private var columnCount = 1
     private lateinit var selectedTransportationMethod : String
@@ -42,28 +45,6 @@ class SearchFragment : Fragment()  {
         // The Navigation Start and End points. Each search bar must contain a valid location to initiate navigation
         var NavigationPoints = mutableMapOf<Int, Location?>(R.id.mainSearchBar to null,
                                                             R.id.secondarySearchBar to null)
-
-        fun expandNavigationView(root : View){
-            isNavigationViewOpen = true
-            val startNavButton  = root.findViewById<ImageButton>(R.id.startNavigationButton)
-            val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
-            val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
-            val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
-            val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
-            val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
-
-            mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
-            destinationBar.visibility = View.VISIBLE
-            startNavButton.visibility = View.VISIBLE
-            backButton.visibility = View.VISIBLE
-            radioTransportationGroup.visibility = View.VISIBLE
-            myLocationFAB.show()
-            mainBar.queryHint = "From"
-
-            if (NavigationPoints[mainBar.id] == null)
-                mainBar.setQuery("", true)
-        }
-
         fun areRouteParametersSet() : Boolean {
             return (NavigationPoints[R.id.mainSearchBar] != null && NavigationPoints[R.id.secondarySearchBar] != null)
         }
@@ -93,8 +74,14 @@ class SearchFragment : Fragment()  {
             requireFragmentManager().beginTransaction().detach(this).attach(this).commit()
         }
 
-        for (method in NavigationRoute.TransportationMethods.values()) {
-            println(method.string)
+       val destinationPlace = arguments?.getParcelable<Place>("dest")
+        if (destinationPlace != null) {
+            val googlePlace = GooglePlace(destinationPlace.id!!,
+                                          destinationPlace.name!!,
+                                          destinationPlace.address!!,
+                                          destinationPlace.latLng!!)
+            showNavigationView(googlePlace, true)
+            arguments?.clear()
         }
     }
 
@@ -213,12 +200,14 @@ class SearchFragment : Fragment()  {
     }
 
     private fun updateRecyclerView() {
+        val fragment= this
         with(recyclerView) {
             layoutManager = when {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = SearchAdapter(viewModel.searchSuggestions.value!!, onSearchResultClickListener, root, viewModel)
+            searchAdapter = SearchAdapter(viewModel.searchSuggestions.value!!, onSearchResultClickListener, fragment, root)
+            adapter = searchAdapter
         }
     }
 
@@ -283,5 +272,47 @@ class SearchFragment : Fragment()  {
     private fun reset(){
         isNavigationViewOpen = false
         NavigationPoints = mutableMapOf(R.id.mainSearchBar to null, R.id.secondarySearchBar to null)
+    }
+
+    fun showNavigationView(destinationPlace : Location, startFromCurrentLocation : Boolean){
+            isNavigationViewOpen = true
+             val startNavButton = root.findViewById<ImageButton>(R.id.startNavigationButton)
+             val backButton = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
+             val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
+             val mainBar = root.findViewById<SearchView>(R.id.mainSearchBar)
+             val destinationBar = root.findViewById<SearchView>(R.id.secondarySearchBar)
+             val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
+             val infoMessage = root.findViewById<TextView>(R.id.search_info)
+
+             mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
+             destinationBar.visibility = View.VISIBLE
+             startNavButton.visibility = View.VISIBLE
+             backButton.visibility = View.VISIBLE
+             radioTransportationGroup.visibility = View.VISIBLE
+             infoMessage.visibility = View.INVISIBLE
+             myLocationFAB.show()
+             mainBar.queryHint = "From"
+
+             if (NavigationPoints[mainBar.id] == null)
+                 mainBar.setQuery("", true)
+
+             if (startFromCurrentLocation)
+                 setCurrentLocation(mainBar)
+
+              destinationBar.setQuery(destinationPlace.name, false)
+              confirmSelection(destinationBar, destinationPlace, false)
+    }
+
+    internal fun confirmSelection(searchView: SearchView, location: Location, submit: Boolean) {
+        val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
+        val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
+
+        searchView.setQuery(location.name, submit)
+        val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
+        searchText.setTextColor(Color.GREEN)
+        NavigationPoints[searchView.id] = location
+
+        if (areRouteParametersSet())
+            viewModel.getRouteTimes(NavigationPoints[mainBar.id]!!, NavigationPoints[destinationBar.id]!!)
     }
 }

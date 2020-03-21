@@ -2,7 +2,6 @@ package com.droidhats.campuscompass.views
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.Color
@@ -19,6 +18,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -33,9 +33,7 @@ import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.droidhats.campuscompass.viewmodels.MapViewModel
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -43,11 +41,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.api.net.FetchPlaceRequest
-import com.google.android.libraries.places.api.net.FetchPlaceResponse
-import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.mancj.materialsearchbar.MaterialSearchBar
@@ -229,6 +222,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         // Expand the bottom sheet when clicking on a polygon
         // TODO: Limit only to campus buildings as polygons could highlight anything
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+            togglePlaceCard(false)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
 
@@ -557,7 +551,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             findNavController().navigateUp()
             moveToLocation(item)
         }
-        Toast.makeText(context, item?.name, Toast.LENGTH_LONG).show()
     }
 
     private fun moveToLocation(location: GooglePlace){
@@ -566,8 +559,51 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
        }.invokeOnCompletion {
            requireActivity().runOnUiThread{
                map.animateCamera(CameraUpdateFactory.newLatLngZoom(location.coordinate, 17.0f))
+               populatePlaceInfoCard(location)
            }
        }
     }
+    private fun populatePlaceInfoCard(location: GooglePlace){
+
+        val favoritesButton : Button = requireActivity().findViewById(R.id.place_card_favorites_button)
+        val startNavButton : Button = requireActivity().findViewById(R.id.place_card_startNav_button)
+        val placeName: TextView = requireActivity().findViewById(R.id.place_card_name)
+        val placeCategory: TextView = requireActivity().findViewById(R.id.place_card_category)
+        val closeButton : ImageView = requireActivity().findViewById(R.id.place_card_close_button)
+
+        placeName.text = location.name
+        placeCategory.text = location.place?.address
+
+        placeName.setOnClickListener {
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(location.coordinate, 17.0f))
+        }
+
+        closeButton.setOnClickListener{
+            togglePlaceCard(false)
+        }
+
+        val directionsButton : Button = requireActivity().findViewById(R.id.place_card_directions_button)
+        directionsButton.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putParcelable("dest", location.place)
+            findNavController().navigate(R.id.search_fragment, bundle)
+        }
+        togglePlaceCard(true)
+}
+
+    private fun togglePlaceCard(isVisible : Boolean){
+        val placeCard : CardView = requireActivity().findViewById(R.id.place_card)
+        if(isVisible){
+            placeCard.visibility = View.VISIBLE
+            map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, placeCard.height+75)
+        }
+        else{
+            placeCard.visibility = View.INVISIBLE
+            map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
+        }
+    }
 
 }
+
+
+
