@@ -3,9 +3,11 @@ package com.droidhats.campuscompass.viewmodels
 import android.app.Application
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.Map
+import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.google.android.gms.maps.GoogleMap
@@ -33,7 +35,7 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         val inputStream: InputStream = context.assets.open("buildings.json")
         val json: String = inputStream.bufferedReader().use { it.readText() }
         campuses = MapRepository.getInstance(context).getCampuses()
-        navigationRepository = NavigationRepository(getApplication())
+        navigationRepository = NavigationRepository.getInstance(getApplication())
     }
 
     /**
@@ -80,8 +82,9 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
                     selectedBuilding = building
             }
         }
-
         return selectedBuilding
     }
+
+    fun getNavigationRoute() : MutableLiveData<NavigationRoute> = navigationRepository.getNavigationRoute()
 }
 

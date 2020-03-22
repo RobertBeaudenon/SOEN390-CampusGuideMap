@@ -10,15 +10,16 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.R
-import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.roomdb.*
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.maps.android.PolyUtil
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.coroutines.resume
@@ -34,7 +35,22 @@ class NavigationRepository(private val application: Application) {
     private var shuttleBusDAO: ShuttleBus_DAO
     private var loyolaShuttleTimes: LiveData<List<ShuttleBus_Loyola_Entity>>
     private var sgwShuttleTimes: LiveData<List<ShuttleBus_SGW_Entity>>
+    private var navigationRoute = MutableLiveData<NavigationRoute>()
     var routeTimes = MutableLiveData<MutableMap<String, String>>()
+
+
+
+    companion object {
+        // Singleton instantiation
+        private var instance: NavigationRepository? = null
+
+        fun getInstance(application: Application) =
+            instance
+                ?: synchronized(this) {
+                    instance
+                        ?: NavigationRepository(application).also { instance = it }
+                }
+    }
 
     init {
         val db = ShuttleBusDB.getInstance(application)
@@ -57,6 +73,25 @@ class NavigationRepository(private val application: Application) {
         return sgwShuttleTimes
     }
 
+    suspend fun fetchPlace(location: Location) : Unit = suspendCoroutine  { cont->
+        if (location is GooglePlace) {
+            val placeFields: List<Place.Field> = Place.Field.values().toList()
+            val placesClient = Places.createClient(application.applicationContext)
+            val request = FetchPlaceRequest.newInstance(location.placeID, placeFields)
+
+            placesClient.fetchPlace(request)
+                .addOnSuccessListener {
+                    location.place = it.place
+                    location.coordinate = it.place.latLng!!
+                }.addOnFailureListener {
+                    if (it is ApiException)
+                        Log.e(TAG, "Place not found: " + it.message)
+                }.addOnCompleteListener {
+                    cont.resume(Unit)
+                }
+        }
+    }
+
     /**
      * Fetches the time it takes to reach the destination for all transportation methods
      * @param origin: The starting point from where the travel begins.
@@ -65,19 +100,12 @@ class NavigationRepository(private val application: Application) {
     fun fetchRouteTimes(origin: Location, destination: Location) {
         val times = mutableMapOf<String, String>()
         for (method in NavigationRoute.TransportationMethods.values()) {
-            val directionsURL = "https://maps.googleapis.com/maps/api/directions/json?" +
-                    "origin=" + origin.coordinate.latitude.toString() + "," + origin.coordinate.longitude.toString() +
-                    "&destination=" + destination.coordinate.latitude.toString() + "," + destination.coordinate.longitude.toString() +
-                    "&mode=" + method.string +
-                    "&key=" + application.applicationContext.getString(R.string.ApiKey)
-
             val directionRequest = StringRequest(
-                Request.Method.GET, directionsURL,
+                Request.Method.GET, constructRequestURL(origin, destination, method.string),
                 Response.Listener { response ->
 
                     //Retrieve response (a JSON object)
                     val jsonResponse = JSONObject(response)
-
                     // Get route information from json response
                     val routesArray: JSONArray = jsonResponse.getJSONArray("routes")
                     if (routesArray.length() > 0) {
@@ -97,22 +125,71 @@ class NavigationRepository(private val application: Application) {
             requestQueue.add(directionRequest)
         }
     }
-    suspend fun fetchPlace(location: Location) : Unit = suspendCoroutine  { cont->
-        if (location is GooglePlace) {
-            val placeFields: List<Place.Field> = Place.Field.values().toList()
-            val placesClient = Places.createClient(application.applicationContext)
-            val request = FetchPlaceRequest.newInstance(location.placeID, placeFields)
 
-            placesClient.fetchPlace(request)
-                .addOnSuccessListener {
-                    location.place = it.place
-                    location.coordinate = it.place.latLng!!
-                }.addOnFailureListener {
-                    if (it is ApiException)
-                        Log.e(TAG, "Place not found: " + it.message)
-                }.addOnCompleteListener {
-                    cont.resume(Unit)
+    fun generateDirections(origin: Location, destination: Location, mode: String) {
+         val instructions = arrayListOf<String>()
+
+        val directionsRequest = object : StringRequest(
+            Method.GET,
+            constructRequestURL(origin, destination, mode),
+            Response.Listener { response ->
+
+                //Retrieve response (a JSON object)
+                val jsonResponse = JSONObject(response)
+
+                // Get route information from json response
+                val routesArray = jsonResponse.getJSONArray("routes")
+                val routes = routesArray.getJSONObject(0)
+                val legsArray: JSONArray = routes.getJSONArray("legs")
+                val legs = legsArray.getJSONObject(0)
+                val stepsArray = legs.getJSONArray("steps")
+
+                val path: MutableList<List<LatLng>> = ArrayList()
+
+                //Build the path polyline as well as store instruction between 2 path into an array.
+                for (i in 0 until stepsArray.length()) {
+                    val points = stepsArray.getJSONObject(i).getJSONObject("polyline").getString("points")
+
+                    if (mode == "transit" || mode == "walking") {
+                        instructions.add(stepsArray.getJSONObject(i).getString("html_instructions") + "<br>Distance: " + stepsArray.getJSONObject(i).getJSONObject("distance").getString("text") + "<br>Duration: " + stepsArray.getJSONObject(i).getJSONObject("duration").getString("text") + "<br>")
+                        if (stepsArray.getJSONObject(i).has("steps")) {
+                            instructions.add("Instructions:<br>")
+                            for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {instructions.add(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j).getString("html_instructions") + "<br>")
+                            }
+                            instructions.add("<br>")
+                        }
+                        if (stepsArray.getJSONObject(i).has("transit_details")) {
+                            instructions.add("Information:<br>")
+                            instructions.add("Departure Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getJSONObject("departure_stop").getString("name") + "<br>")
+                            instructions.add("Arrival Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getJSONObject("arrival_stop").getString("name") + "<br>")
+                            instructions.add("Total Number of Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getString("num_stops") + "<br><br>")
+                        }
+                    } else {
+                        instructions.add(stepsArray.getJSONObject(i).getString("html_instructions") + "<br>")
+                    }
+                    path.add(PolyUtil.decode(points))
+
                 }
-        }
+                val navigation = NavigationRoute(origin, destination, mode, path, instructions)
+                navigationRoute.value = navigation
+            },
+            Response.ErrorListener {
+                Log.e("Volley Error:", "HTTP response error")
+            }) {}
+
+        //Confirm and add the request with Volley
+        val requestQueue = Volley.newRequestQueue(application)
+        requestQueue.add(directionsRequest)
     }
+
+
+    private fun constructRequestURL(origin: Location, destination: Location, transportationMethod : String) : String {
+        return "https://maps.googleapis.com/maps/api/directions/json?" +
+                "origin=" + origin.coordinate.latitude.toString() + "," + origin.coordinate.longitude.toString() +
+                "&destination=" + destination.coordinate.latitude.toString() + "," + destination.coordinate.longitude.toString() +
+                "&mode=" + transportationMethod +
+                "&key=" + application.applicationContext.getString(R.string.ApiKey)
+    }
+
+    fun getNavigationRoute() : MutableLiveData<NavigationRoute> = navigationRoute
 }

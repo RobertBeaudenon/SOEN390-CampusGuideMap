@@ -44,7 +44,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         initPlacesSearch()
         indoorLocationDatabase = Room.inMemoryDatabaseBuilder(context, IndoorLocationDatabase::class.java).build()
         indoorLocationRepository = IndoorLocationRepository.getInstance(IndoorLocationDatabase.getInstance(context).indoorLocationDao())
-        navigationRepository = NavigationRepository(getApplication())
+        navigationRepository = NavigationRepository.getInstance(getApplication())
     }
 
     private fun initPlacesSearch() {

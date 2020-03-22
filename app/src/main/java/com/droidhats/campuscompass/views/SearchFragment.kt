@@ -16,6 +16,7 @@ import android.widget.RadioGroup
 import android.widget.RadioButton
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,7 @@ import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -94,8 +96,6 @@ class SearchFragment : Fragment()  {
             showNavigationView(destinationBuilding, true)
             arguments?.clear()
         }
-
-
     }
 
     private fun observeSearchSuggestions() {
@@ -136,6 +136,7 @@ class SearchFragment : Fragment()  {
                 Toast.makeText(context, "Set Your Route To Begin Navigation", Toast.LENGTH_LONG).show()
             }
             else {
+
                initiateNavigation()
             }
         }
@@ -148,6 +149,11 @@ class SearchFragment : Fragment()  {
                 "To: ${NavigationPoints[R.id.secondarySearchBar]?.name}\n" +
                 "By: $selectedTransportationMethod",
             Toast.LENGTH_LONG).show()
+
+        viewModel.navigationRepository.generateDirections(NavigationPoints[R.id.mainSearchBar]!!,
+                                                          NavigationPoints[R.id.secondarySearchBar]!!,
+                                                          selectedTransportationMethod)
+        findNavController().navigateUp() // Navigate Back To MapFragment
     }
 
     private fun initCurrentLocationHandler(mainSearchView: SearchView, secondarySearchView : SearchView){
