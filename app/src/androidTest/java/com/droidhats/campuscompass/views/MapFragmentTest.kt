@@ -15,7 +15,7 @@ import androidx.test.rule.ActivityTestRule
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.junit.Before
 import org.junit.Rule
@@ -39,14 +39,15 @@ class MapFragmentTest {
         //Ensuring the app starts with splash_fragment
         if (navController.currentDestination?.id == R.id.splash_fragment) {
 
-            //navigating to map_fragment - You can put either action id or destination id. I chose the action id so I can check that it indeed takes you the specified destination id.
-            navController.navigate(R.id.action_splashFragment_to_mapsActivity);
+            //navigating to map_fragment - You can put either action id or destination id.
+            //I chose the action id so I can check that it indeed takes you the specified destination id.
+            navController.navigate(R.id.action_splashFragment_to_mapsActivity)
 
             //Checking if action id indeed took you to the correct destination id
             assertEquals(navController.currentDestination?.id!!, R.id.map_fragment)
 
             //Waiting 5 seconds for splash screen to load
-            Thread.sleep(5000);
+            Thread.sleep(5000)
 
             //Checking if that action id did take you to map_fragment view
             onView(withId(R.id.coordinate_layout)).check(matches(isDisplayed()))
@@ -70,42 +71,50 @@ class MapFragmentTest {
 
         //Checking when the toggle is clicked, it's indeed checked
         onView(withId(R.id.toggleButton)).perform(click()).check(matches(isChecked()))
+        Thread.sleep(2000)
 
         //Ensuring the text of the toggle just clicked is indeed SWG
         onView(withId(R.id.toggleButton)).check(matches(withText("SGW")))
 
         //Checking when the toggle is clicked again, it's indeed not checked
         onView(withId(R.id.toggleButton)).perform(click()).check(matches(isNotChecked()))
+        Thread.sleep(2000)
 
         //Ensuring the text of the toggle just clicked is indeed LOY
         onView(withId(R.id.toggleButton)).check(matches(withText("LOY")))
     }
 
     @Test
-    fun test_additionalMenuBar(){
+    fun test_additionalMenuBar() {
+
         BottomSheetBehavior.from(activityRule.activity.bottom_sheet).state =
-                BottomSheetBehavior.STATE_EXPANDED
+            BottomSheetBehavior.STATE_EXPANDED
 
         //Setting a delay to allow the bottom sheet to load
         Thread.sleep(1000)
 
         //Checking if building image is displayed
         onView(withId(R.id.building_image)).check(matches(isDisplayed()))
+
         //Checking if separator bar is displayed
         onView(withId(R.id.separator_bar)).check(matches(isDisplayed()))
+
         //Checking if building name is displayed
         onView(withId(R.id.bottom_sheet_building_name)).check(matches(isDisplayed()))
+
         //Checking if building address is displayed
         onView(withId(R.id.bottom_sheet_building_address)).check(matches(isDisplayed()))
+
         //Checking if opening hours are displayed
         onView(withId(R.id.bottom_sheet_open_hours)).check(matches(isDisplayed()))
+
         //Checking if services are displayed
         onView(withId(R.id.bottom_sheet_services)).check(matches(isDisplayed()))
+
         //Checking if departments are displayed
         onView(withId(R.id.bottom_sheet_departments)).check(matches(isDisplayed()))
-        //Checking if the direction button is displayed
-        onView(withId(R.id.bottom_sheet_directions_button)).check(matches(isDisplayed()))
-        //Ensuring the text of the direction button is indeed Directions
-        onView(withId(R.id.bottom_sheet_directions_button)).check(matches(withText("Directions")))
+
+        //Checking if the direction button is displayed and named Directions
+        onView(withId(R.id.bottom_sheet_directions_button)).check(matches(isDisplayed())).check(matches(withText("Directions")))
     }
 }
