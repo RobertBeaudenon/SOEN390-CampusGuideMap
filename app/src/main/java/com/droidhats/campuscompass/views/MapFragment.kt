@@ -9,6 +9,7 @@ import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.text.Html.fromHtml
 import android.util.Log
 import android.view.LayoutInflater
@@ -33,6 +34,7 @@ import com.droidhats.campuscompass.helpers.Subject
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -68,9 +70,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
         var stepInsts = ""
+        private var currentNavigationRoute : NavigationRoute? = null
     }
 
-    private var instructions = arrayListOf<String>()
     private var stepInstructions: String = ""
     internal lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
@@ -116,14 +118,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         observeNavigation()
     }
 
-    private fun observeNavigation() {
-        viewModel.getNavigationRoute().observe(viewLifecycleOwner, Observer {
-            drawPathPolyline(it.polyLinePath)
-            showInstructions(it.instructions)
-            moveTo(it.origin!!.coordinate, 20.0f)
-        })
-    }
-
     /**
      * Initializes the map and adds markers or lines and attaches listeners
      * If Google Play services is not installed on the device, the user will be prompted to install
@@ -144,7 +138,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
+                moveTo(currentLatLng, 12f)
             }
         }
 
@@ -163,6 +157,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             //Dismiss the bottom sheet when clicking anywhere on the map
             dismissBottomSheet()
         }
+
+    }
+
+    private fun observeNavigation() {
+        viewModel.getNavigationRoute().observe(viewLifecycleOwner, Observer {
+            //The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
+            //Remove the condition check to keep the path drawn on the screen even after changing activities
+            //If the condition is removed though, camera movement must be handled properly not to override other movement
+            if ( it != null && it != currentNavigationRoute) {
+                currentNavigationRoute = it
+                drawPathPolyline(it.polyLinePath)
+                showInstructions(it.instructions)
+                Handler().postDelayed({
+                    moveTo(it.origin!!.coordinate, 19.0f)
+                }, 100)
+            }
+        })
     }
 
     private fun createLocationRequest() {
