@@ -1,8 +1,11 @@
 package com.droidhats.campuscompass.models
 
 import com.droidhats.campuscompass.helpers.Observer
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolygonOptions
 
 /**
  * Model for Location, data pertaining to location are stored here
