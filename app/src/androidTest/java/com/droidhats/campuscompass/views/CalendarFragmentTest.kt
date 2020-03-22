@@ -195,7 +195,7 @@ class CalendarFragmentTest {
         checkBox(10)
         checkBox(11)
 
-        //checks if there exists a button with text "okay" within the calendar selection widget an
+        //checks if there exists a button with text "OK" within the calendar selection widget an
         //performs a click on it
         onView(
             allOf(
