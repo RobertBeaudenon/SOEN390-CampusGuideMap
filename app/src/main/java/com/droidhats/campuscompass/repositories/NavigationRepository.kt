@@ -10,6 +10,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.NavigationRoute
@@ -57,7 +58,9 @@ class NavigationRepository(private val application: Application) {
     }
 
     /**
-     * route times for all transportation methods
+     * Fetches the time it takes to reach the destination for all transportation methods
+     * @param origin: The starting point from where the travel begins.
+     * @param destination: The destination point where the travel ends.
      */
     fun fetchRouteTimes(origin: Location, destination: Location) {
         val times = mutableMapOf<String, String>()

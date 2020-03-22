@@ -1,9 +1,11 @@
 package com.droidhats.campuscompass.models
 
+import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.libraries.places.api.model.Place
+import kotlinx.android.parcel.Parcelize
 
 /*
 * Model for location classes
@@ -27,6 +29,7 @@ class Campus(
 }
 
 // Model for building class, data relating to buildings should be stored here
+@Parcelize
 class Building(
     override val coordinate: LatLng,
     override val name: String,
@@ -35,7 +38,7 @@ class Building(
     private val openHours: String,
     private val departments: String,
     private val services: String
-) : Location(){
+) : Location(), Parcelable {
     private val polygonColor = 4289544510.toInt()
     private lateinit var polygon: Polygon
 

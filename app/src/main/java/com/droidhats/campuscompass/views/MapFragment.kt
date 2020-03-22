@@ -20,10 +20,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
+import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.room.RoomDatabase
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -61,6 +63,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
+    private lateinit var root : View
     private var locationUpdateState = false
 
     companion object {
@@ -79,7 +82,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.map_fragment, container, false)
+        root = inflater.inflate(R.layout.map_fragment, container, false)
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -219,77 +223,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
-        // Expand the bottom sheet when clicking on a polygon
-        // TODO: Limit only to campus buildings as polygons could highlight anything
-        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-            togglePlaceCard(false)
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        }
+        val selectedBuilding : Building = viewModel.findBuildingByPolygonTag(p.tag.toString())
+            ?: return
 
-        // Populate the bottom sheet with building information
+        expandBottomSheet()
         populateAdditionalInfoBottomSheet(p)
 
-        //Navigation here
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            dismissBottomSheet()
 
-            //Get the building object from the polygon that the user clicked on
-            var selectedBuilding : Building? = viewModel.findBuildingByPolygonTag(p.tag.toString())
-
-            //TODO: This full clear and redraw should probably be removed when the directions
-            // system is implemented. It was added to show only one route at a time
-            map.clear()
-            drawBuildingPolygons()
-            if (selectedBuilding != null) {
-                placeMarkerOnMap(LatLng(selectedBuilding.getLocation().latitude, selectedBuilding.getLocation().longitude))
-            }
-
-            //Generate directions from current location to the selected building
-            fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
-                if (location != null) {
-
-                /*    if (transportationMode() == "shuttle") {
-                        //Setting the top bar "from" to the name of the selected building.
-
-                        // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
-                        if (selectedBuilding != null) {
-                            if (selectedBuilding.name == "Henry F. Hall Building" || selectedBuilding.name == "EV Building" || selectedBuilding.name == "John Molson School of Business" || selectedBuilding.name == "Faubourg Saint-Catherine Building" || selectedBuilding.name == "Guy-De Maisonneuve Building" || selectedBuilding.name == "Faubourg Building" || selectedBuilding.name == "Visual Arts Building" || selectedBuilding.name == "Pavillion J.W. McConnell Building") { //<-- TO FIX
-                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
-
-                                mapFragSearchBar.text = "Shuttle Bus Stop Loyola"
-                            } else {
-                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
-                                mapFragSearchBar.text = "Shuttle Bus Stop SGW"
-                            }
-                        }
-                    } else {
-                        if (selectedBuilding != null) {
-                            generateDirections(location, selectedBuilding.getLocation(), transportationMode())
-                        }
-                    }*/
-                }
-
-              /*  if (transportationMode()!= "shuttle") {
-                    //Move the camera to the starting location
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
-                }*/
-
-                buttonInstructions.visibility = View.VISIBLE
-
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            }
+            val bundle = Bundle()
+            bundle.putParcelable("destBuilding", selectedBuilding)
+            findNavController().navigate(R.id.search_fragment, bundle)
         }
     }
-
-    /**
-     * Based on the given origin, destination and transportation mode.
-     * This method will save in a global variable named timeTravel the time it takes to reach the destination based on the chosen transportation mode.
-     * @param origin: The starting point from where the travel begins.
-     * @param destination: The destination point where the travel ends.
-     * @param mode: The selected transportation mode.
-     */
-
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
     override fun onMarkerClick(p0: Marker?) = false
@@ -386,6 +334,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
             override fun onSearchStateChanged(enabled: Boolean) {
                   if (enabled) {
+                      dismissBottomSheet()
                       findNavController().navigate(R.id.search_fragment)
                       mapFragSearchBar.closeSearch()
                   }
@@ -408,7 +357,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
-                map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
+                map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * root.findViewById<NestedScrollView>(R.id.bottom_sheet).height).toInt())
             }
         })
     }
@@ -416,6 +365,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun dismissBottomSheet() {
         if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED || bottomSheetBehavior.state == BottomSheetBehavior.STATE_HALF_EXPANDED)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun expandBottomSheet() {
+        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+            togglePlaceCard(false)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        }
     }
 
     private fun populateAdditionalInfoBottomSheet(p: Polygon) {
@@ -585,7 +541,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val directionsButton : Button = requireActivity().findViewById(R.id.place_card_directions_button)
         directionsButton.setOnClickListener {
             val bundle = Bundle()
-            bundle.putParcelable("dest", location.place)
+            bundle.putParcelable("destPlace", location.place)
             findNavController().navigate(R.id.search_fragment, bundle)
         }
         togglePlaceCard(true)
@@ -602,7 +558,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
         }
     }
-
 }
 
 

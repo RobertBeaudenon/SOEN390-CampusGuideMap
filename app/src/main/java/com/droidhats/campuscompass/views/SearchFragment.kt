@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
+import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.NavigationRoute
@@ -74,15 +75,27 @@ class SearchFragment : Fragment()  {
             requireFragmentManager().beginTransaction().detach(this).attach(this).commit()
         }
 
-       val destinationPlace = arguments?.getParcelable<Place>("dest")
+        retrieveArguments()
+    }
+
+    private fun retrieveArguments(){
+        val destinationPlace = arguments?.getParcelable<Place>("destPlace")
         if (destinationPlace != null) {
             val googlePlace = GooglePlace(destinationPlace.id!!,
-                                          destinationPlace.name!!,
-                                          destinationPlace.address!!,
-                                          destinationPlace.latLng!!)
+                destinationPlace.name!!,
+                destinationPlace.address!!,
+                destinationPlace.latLng!!)
             showNavigationView(googlePlace, true)
             arguments?.clear()
         }
+
+        val destinationBuilding = arguments?.getParcelable<Building>("destBuilding")
+        if (destinationBuilding != null) {
+            showNavigationView(destinationBuilding, true)
+            arguments?.clear()
+        }
+
+
     }
 
     private fun observeSearchSuggestions() {

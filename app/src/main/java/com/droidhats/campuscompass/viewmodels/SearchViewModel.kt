@@ -10,6 +10,7 @@ import androidx.room.Room
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.droidhats.campuscompass.IndoorLocationDatabase
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
@@ -111,16 +112,16 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun getRouteTimes(origin : Location, destination : Location)  {
-        if (origin is GooglePlace && destination is GooglePlace) {
-            GlobalScope.launch {
-                if (!origin.isCurrentLocation)
-                    navigationRepository.fetchPlace(origin)
+       GlobalScope.launch {
+           if (origin is GooglePlace && !origin.isCurrentLocation)
+               navigationRepository.fetchPlace(origin)
+           if (destination is GooglePlace && !destination.isCurrentLocation)
+               navigationRepository.fetchPlace(destination)
 
-                if (!destination.isCurrentLocation)
-                    navigationRepository.fetchPlace(destination)
+           navigationRepository.fetchRouteTimes(origin, destination)
 
-                navigationRepository.fetchRouteTimes(origin, destination)
-            }
-        }
+           if (destination is Building)
+               navigationRepository.fetchRouteTimes(origin, destination)
+       }
     }
 }
