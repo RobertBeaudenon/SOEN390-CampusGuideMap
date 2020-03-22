@@ -53,6 +53,7 @@ class Building(
     fun getDepartments(): String = departments
     fun getServices(): String = services
     fun getOpenHours(): String = openHours
+    fun getCenterLocation(): LatLng = centerLocation
     fun getPolygon(): Polygon = polygon
     fun getMarker(): Marker = marker
 
