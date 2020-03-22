@@ -1,19 +1,17 @@
 package com.droidhats.campuscompass.views
 
-import android.Manifest
 import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.IntentSender
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.text.Html
+import android.text.Html.fromHtml
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,56 +20,53 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
+import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.MainActivity
+import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.libraries.places.api.Places
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.PolyUtil
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import org.json.JSONObject
 import java.io.IOException
+import java.util.Locale
 import kotlin.collections.ArrayList
 import kotlin.collections.List
-import kotlin.collections.MutableList
 import kotlin.collections.listOf
+import kotlin.collections.MutableList
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
-import java.util.Locale
-import com.android.volley.Response
-import com.droidhats.campuscompass.models.Building
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
 import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
+import org.json.JSONObject
+import com.droidhats.campuscompass.models.Map
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
@@ -84,30 +79,33 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private var locationUpdateState = false
 
     companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val AUTOCOMPLETE_REQUEST_CODE = 3
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
-
-         var stepInsts : String = ""
+        var stepInsts : String = ""
     }
 
     private var instructions = arrayListOf<String>()
     private var stepInstructions: String = ""
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    internal lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
+
+    private lateinit var root : View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.map_fragment, container, false)
+
+        root = inflater.inflate(R.layout.map_fragment, container, false)
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -135,38 +133,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * Initializes the map and adds markers or lines and attaches listeners
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     *
+     * @param googleMap a necessary google map object on which we add markers and attach listeners.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
 
-        //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
-        map.mapType = GoogleMap.MAP_TYPE_NORMAL
-
-        //initializing vars for get last current location
-        map.uiSettings.isZoomControlsEnabled = true
-        map.setOnMarkerClickListener(this)
-
-        //enable the zoom controls on the map and declare MainActivity as the callback triggered when the user clicks a marker on this map
-        map.uiSettings.isZoomControlsEnabled = true
-        map.setOnMarkerClickListener(this)
-
-        //enable indoor level picker
-        map.isIndoorEnabled = true
-        map.uiSettings.isIndoorLevelPickerEnabled = true
-
-        //Enables the my-location layer which draws a light blue dot on the user’s location.
-        // It also adds a button to the map that, when tapped, centers the map on the user’s location.
-        map.isMyLocationEnabled = true
-
-        //Current Location Icon has been adjusted to be at the bottom right sid eof the search bar.
-        map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
+        // Get the map from the viewModel.
+        map = viewModel.getMap(googleMap, this, this, this.activity as MainActivity)
 
         //Gives you the most recent location currently available.
         fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
@@ -178,9 +155,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
             }
         }
-
-        drawBuildingPolygons()
-        map.setOnPolygonClickListener(this)
 
         map.setOnMapClickListener {
 
@@ -198,8 +172,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         locationRequest.fastestInterval = 5000
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
-        val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
         // 4 check location settings before asking for location updates
         val client = LocationServices.getSettingsClient(requireActivity())
@@ -232,20 +205,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //get real time updates of current location
     private fun startLocationUpdates() {
-        //If the ACCESS_FINE_LOCATION permission has not been granted, request it now and return.
-        if (ActivityCompat.checkSelfPermission(
-                activity as Activity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                activity as Activity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            return
-        }
-        //If there is permission, request for location updates.
+        //requests for location updates.
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -301,14 +261,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         directionsButton.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            //Get the building that the user clicked on
-            var selectedBuilding : Building? = null
-            for (campus in viewModel.getCampuses()) {
-                for (building in campus.getBuildings()) {
-                    if (p.tag.toString() == building.getName())
-                        selectedBuilding  = building
-                }
-            }
+            //Get the building object from the polygon that the user clicked on
+            var selectedBuilding : Building? = viewModel.findBuildingByPolygonTag(p.tag.toString())
 
             //TODO: This full clear and redraw should probably be removed when the directions
             // system is implemented. It was added to show only one route at a time
@@ -322,25 +276,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
                 if (location != null) {
 
-                    if (tansportationMode() == "shuttle") {
+                    if (transportationMode() == "shuttle") {
                         //Setting the top bar "from" to the name of the selected building.
 
                         // TODO: In the future check selectedBuilding.getName() == SGW_buildings <-- Grab this part from campus.
                         if (selectedBuilding != null) {
-                            if (selectedBuilding.getName() == "Henry F. Hall Building" || selectedBuilding.getName() == "EV Building" || selectedBuilding.getName() == "John Molson School of Business" || selectedBuilding.getName() == "Faubourg Saint-Catherine Building" || selectedBuilding.getName() == "Guy-De Maisonneuve Building" || selectedBuilding.getName() == "Faubourg Building" || selectedBuilding.getName() == "Visual Arts Building" || selectedBuilding.getName() == "Pavillion J.W. McConnell Building") { //<-- TO FIX
-                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
-                            } else {
+                            if (selectedBuilding.getName() == "Psychology Building" || selectedBuilding.getName() == "Richard J. Renaud Science Complex" || selectedBuilding.getName() == "Central Building" || selectedBuilding.getName() == "Communication Studies and Journalism Building" || selectedBuilding.getName() == "Administration Building" || selectedBuilding.getName() == "Loyola Jesuit and Conference Centre") { //<-- TO FIX
                                 generateDirections(location, selectedBuilding.getLocation(), "shuttleToLOY")
+                            } else {
+                                generateDirections(location, selectedBuilding.getLocation(), "shuttleToSGW")
                             }
                         }
                     } else {
                         if (selectedBuilding != null) {
-                            generateDirections(location, selectedBuilding.getLocation(), tansportationMode())
+                            generateDirections(location, selectedBuilding.getLocation(), transportationMode())
                         }
                     }
                 }
 
-                if (tansportationMode()!= "shuttle") {
+                if (transportationMode()!= "shuttle") {
                     //Move the camera to the starting location
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude,location.longitude), 16.0f))
                 }
@@ -360,13 +314,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     }
 
-    private fun tansportationMode() : String {
+    private fun transportationMode() : String {
 
         //Checking which transportation mode is selected, default is walking.
         var transportationMode = "driving"
         when (radioTransportGroup.checkedRadioButtonId) {
             R.id.drivingId -> {
                 transportationMode = "driving"
+            }
+            R.id.transitId -> {
+                transportationMode = "transit"
             }
             R.id.walkingId -> {
                 transportationMode = "walking"
@@ -397,7 +354,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         map.addMarker(markerOptions)
     }
 
-    //This method get address from coordinates
     private fun getAddress(latLng: LatLng): String {
         // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
         val geocoder = Geocoder(activity as Activity)
@@ -454,11 +410,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun instructionsButton() {
         //instruction button listener
         buttonInstructions.setOnClickListener {
-
             for (item in instructions) {
-                stepInstructions += item + "\n\n"
+                stepInstructions += item
             }
-            stepInsts = Html.fromHtml(stepInstructions).toString()
+            stepInsts = fromHtml(stepInstructions).toString()
+            instructions.clear() // Array is cleared
+            stepInstructions = "" // String instruction cleared
             findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
         }
     }
@@ -468,7 +425,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
                 map.addPolygon(building.getPolygonOptions()).tag = building.getName()
-                var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
+                val polygon = map.addPolygon(building.getPolygonOptions())
                 building.setPolygon(polygon)
             }
         }
@@ -499,12 +456,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-            }
+                if(newState == BottomSheetBehavior.STATE_EXPANDED){
+                    searchBar.visibility = View.INVISIBLE
+                    toggleButton.visibility =  View.INVISIBLE
+                }
+                else{
+                    searchBar.visibility = View.VISIBLE
+                    toggleButton.visibility =  View.VISIBLE
+                }
+           }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
-                map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * bottom_sheet.height).toInt())
+                map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * root.findViewById<NestedScrollView>(R.id.bottom_sheet).height).toInt())
+                //searchBar and campus toggle button become invisible when bottom sheet is open
             }
         })
     }
@@ -543,16 +509,47 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "Faubourg Building" -> buildingImage.setImageResource(R.drawable.building_fg)
                         "Visual Arts Building" -> buildingImage.setImageResource(R.drawable.building_va)
                         "Pavillion J.W. McConnell Building" -> buildingImage.setImageResource(R.drawable.building_webster_library)
+                        "Grey Nuns Building" -> buildingImage.setImageResource(R.drawable.building_grey_nuns)
+                        "Samuel Bronfman Building" -> buildingImage.setImageResource(R.drawable.building_sb)
+                        "GS Building" -> buildingImage.setImageResource(R.drawable.building_gs)
+                        "CB Building" -> buildingImage.setImageResource(R.drawable.building_cbb)
+                        "Grey Nuns Annex" -> buildingImage.setImageResource(R.drawable.building_ga)
+                        "CL Annex" -> buildingImage.setImageResource(R.drawable.building_cl)
+                        "Q Annex" -> buildingImage.setImageResource(R.drawable.building_q)
+                        "T Annex" -> buildingImage.setImageResource(R.drawable.building_t)
+                        "RR Annex" -> buildingImage.setImageResource(R.drawable.building_rr)
+                        "R Annex" -> buildingImage.setImageResource(R.drawable.building_r)
+                        "FA Annex" -> buildingImage.setImageResource(R.drawable.building_fa)
+                        "LD Building" -> buildingImage.setImageResource(R.drawable.building_ld)
+                        "X Annex" -> buildingImage.setImageResource(R.drawable.building_x)
+                        "Z Annex" -> buildingImage.setImageResource(R.drawable.building_z)
+                        "V Annex" -> buildingImage.setImageResource(R.drawable.building_v)
+                        "S Annex" -> buildingImage.setImageResource(R.drawable.building_s)
+                        "CI Annex" -> buildingImage.setImageResource(R.drawable.building_ci)
+                        "MU Annex" -> buildingImage.setImageResource(R.drawable.building_mu)
+                        "B Annex" -> buildingImage.setImageResource(R.drawable.building_b)
+                        "D Annex" -> buildingImage.setImageResource(R.drawable.building_d)
+                        "MI Annex" -> buildingImage.setImageResource(R.drawable.building_mi)
                         "Psychology Building" -> buildingImage.setImageResource(R.drawable.building_p)
                         "Richard J. Renaud Science Complex" -> buildingImage.setImageResource(R.drawable.building_rjrsc)
                         "Central Building" -> buildingImage.setImageResource(R.drawable.building_cb)
                         "Communication Studies and Journalism Building" -> buildingImage.setImageResource(R.drawable.building_csj)
                         "Administration Building" -> buildingImage.setImageResource(R.drawable.building_a)
                         "Loyola Jesuit and Conference Centre" -> buildingImage.setImageResource(R.drawable.building_ljacc)
+                        "Vanier Library Building" -> buildingImage.setImageResource(R.drawable.building_vl)
+                        "Vanier Extension" -> buildingImage.setImageResource(R.drawable.building_ve)
+                        "Student Center" -> buildingImage.setImageResource(R.drawable.building_sc)
+                        "F.C. Smith. Building" -> buildingImage.setImageResource(R.drawable.building_fc)
+                        "Stinger Dome" -> buildingImage.setImageResource(R.drawable.building_do)
+                        "PERFORM centre" -> buildingImage.setImageResource(R.drawable.building_pc)
+                        "Jesuit Residence" -> buildingImage.setImageResource(R.drawable.building_jr)
+                        "Physical Services Building" -> buildingImage.setImageResource(R.drawable.building_ps)
+                        "Learning Square" -> buildingImage.setImageResource(R.drawable.building_ls)
+
                         else -> Log.v("Error loading images", "couldn't load image")
                     }
                     //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
-                }
+                } 
             }
         }
     }
@@ -560,10 +557,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun generateDirections(origin: Location, destination: LatLng, mode: String) {
 
         val directionsURL:String = when (mode) {
-            "shuttleToSGW" -> {
+            "shuttleToLOY" -> {
                 "https://maps.googleapis.com/maps/api/directions/json?origin=45.497132,-73.578519&destination=45.458398,-73.638241&waypoints=via:45.492767,-73.582678|via:45.463749,-73.628861&mode=" + mode + "&key=" + getString(R.string.ApiKey)
             }
-            "shuttleToLOY" -> {
+            "shuttleToSGW" -> {
                 "https://maps.googleapis.com/maps/api/directions/json?origin=45.458398,-73.638241&destination=45.497132,-73.578519&mode=" + mode + "&key=" + getString(R.string.ApiKey)
             }
             else -> {
@@ -585,7 +582,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val directionsRequest = object : StringRequest(
             Method.GET,
             directionsURL,
-            Response.Listener<String> { response ->
+            Response.Listener { response ->
 
                 //Retrieve response (a JSON object)
                 val jsonResponse = JSONObject(response)
@@ -595,23 +592,39 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 val routes = routesArray.getJSONObject(0)
                 val legsArray: JSONArray = routes.getJSONArray("legs")
                 val legs = legsArray.getJSONObject(0)
-                val steps = legsArray.getJSONObject(0).getJSONArray("steps")
-                val totalKm:JSONObject = legs.getJSONObject("distance")
-                val travelTime:JSONObject = legs.getJSONObject("duration")
+                val stepsArray = legs.getJSONArray("steps")
 
                 //Debug
                 for (x in 1..3) {
-                    Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${totalKm.getString("text")}. Total travel time is: ${travelTime.getString("text")}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "The selected Transportation mode is: $mode. Total distance is: ${legs.getJSONObject("distance").getString("text")}. Total travel time is: ${legs.getJSONObject("duration").getString("text")}", Toast.LENGTH_LONG).show()
                 }
 
                 val path: MutableList<List<LatLng>> = ArrayList()
 
-                //Build the path polyline
-                for (i in 0 until steps.length()) {
-                    val points =steps.getJSONObject(i).getJSONObject("polyline").getString("points")
-                    instructions.add(steps.getJSONObject(i).getString("html_instructions"))  //Getting the route instructions and storing it into an array.
+                //Build the path polyline as well as store instruction between 2 path into an array.
+                for (i in 0 until stepsArray.length()) {
+                    val points = stepsArray.getJSONObject(i).getJSONObject("polyline").getString("points")
+
+                    if (mode == "transit" || mode == "walking") {
+                        instructions.add(stepsArray.getJSONObject(i).getString("html_instructions") + "<br>Distance: " + stepsArray.getJSONObject(i).getJSONObject("distance").getString("text") + "<br>Duration: " + stepsArray.getJSONObject(i).getJSONObject("duration").getString("text") + "<br>")
+                        if (stepsArray.getJSONObject(i).has("steps")) {
+                            instructions.add("Instructions:<br>")
+                            for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {instructions.add(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j).getString("html_instructions") + "<br>")
+                            }
+                            instructions.add("<br>")
+                        }
+                        if (stepsArray.getJSONObject(i).has("transit_details")) {
+                            instructions.add("Information:<br>")
+                            instructions.add("Departure Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getJSONObject("departure_stop").getString("name") + "<br>")
+                            instructions.add("Arrival Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getJSONObject("arrival_stop").getString("name") + "<br>")
+                            instructions.add("Total Number of Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getString("num_stops") + "<br><br>")
+                        }
+                    } else {
+                        instructions.add(stepsArray.getJSONObject(i).getString("html_instructions") + "<br>")
+                    }
                     path.add(PolyUtil.decode(points))
                 }
+
                 //Draw the path polyline
                 for (i in 0 until path.size) {
                     this.map.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))

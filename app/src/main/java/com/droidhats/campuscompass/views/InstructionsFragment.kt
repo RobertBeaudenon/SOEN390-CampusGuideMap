@@ -12,7 +12,7 @@ import com.droidhats.campuscompass.R
 import kotlinx.android.synthetic.main.instructions_sheet_layout.*
 
 class InstructionFragment : Fragment() {
-     lateinit var root : View
+     private lateinit var root : View
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,11 +26,10 @@ class InstructionFragment : Fragment() {
 
         //Handle the clicking of the closure of the instructions button. Should probably move from here later
         buttonCloseInstructions.setOnClickListener {
+            instructionsStepsID.text = ""
             findNavController().navigateUp()
         }
-
         root.findViewById<TextView>(R.id.instructionsStepsID)
         instructionsStepsID.text = MapFragment.stepInsts
-
     }
 }

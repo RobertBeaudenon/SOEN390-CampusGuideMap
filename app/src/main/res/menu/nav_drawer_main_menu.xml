@@ -8,19 +8,19 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_places"
+            android:icon="@drawable/icon_heart"
             android:title="@string/Favorites_Feature_Name" />
         <item
             android:id="@+id/nav_schedule"
+            android:icon="@drawable/icon_schedule"
             android:title="@string/Calendar_Feature_Name" />
         <item
             android:id="@+id/nav_resources"
+            android:icon="@drawable/icon_ressources"
             android:title="@string/Resources_Feature_Name" />
         <item
             android:id="@+id/nav_explore"
+            android:icon="@drawable/icon_explore"
             android:title="@string/Explore_Feature_Name" />
-
-        <item
-            android:id="@+id/nav_settings"
-            android:title="@string/Settings" />
     </group>
 </menu>

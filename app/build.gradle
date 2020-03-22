@@ -1,135 +1,105 @@
-apply plugin: 'com.android.application'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'kotlin-android-extensions'
-
-apply plugin: 'jacoco'
-
-jacoco {
-    toolVersion = '0.8.5'
-}
+apply plugin: "com.android.application"
+apply plugin: "com.vanniktech.android.junit.jacoco"
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-android-extensions"
+apply plugin: "kotlin-kapt"
+apply plugin: "org.jetbrains.dokka"
+apply plugin: "org.sonarqube"
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    defaultConfig {
-        applicationId "com.droidhats.campuscompass"
-        minSdkVersion 23
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
-    }
+
     buildTypes {
         debug {
-            buildConfigField 'String', "ApiKey", API_KEY
-            resValue 'string', "ApiKey", API_KEY
+            buildConfigField "String", "ApiKey", API_KEY
+            resValue "string", "ApiKey", API_KEY
             testCoverageEnabled true
         }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', "ApiKey", API_KEY
-            resValue 'string', "ApiKey", API_KEY
+            buildConfigField "String", "ApiKey", API_KEY
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            resValue "string", "ApiKey", API_KEY
             testCoverageEnabled false
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     dataBinding {
         enabled = true
     }
+
+    defaultConfig {
+        applicationId "com.droidhats.campuscompass"
+        minSdkVersion 23
+        targetSdkVersion 29
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionCode 2
+        versionName "2.0"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":"$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    dokka {
+        outputFormat = "javadoc"
+        outputDirectory = "$buildDir/dokka"
+
+        configuration {
+            includeNonPublic = true
+            reportUndocumented = true
+            skipDeprecated = false
+            skipEmptyPackages = true
+        }
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    sourceSets {
+        // Adds exported schema location as test app assets.
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
+    }
+
+    junitJacoco {
+        jacocoVersion = "0.8.2"
+        excludes
+        ignoreProjects = []
+        includeInstrumentationCoverageInMergedReport = false
+        includeNoLocationClasses = false
+    }
+
     testOptions {
-        animationsDisabled true
         unitTests {
             includeAndroidResources = true
-            all {
-                jacoco {
-                    includeNoLocationClasses = true
-                }
-            }
         }
     }
 }
 
-def buildDir = '/Users/nicholasnagy/StudioProjects/SOEN390-CampusGuideMap/app/build/'
-
-//task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
-//    def coverageSourceDirs = [
-//            "src/main/java"
-//    ]
-//    def fileFilter = [
-//            '**/R.class',
-//            '**/R$*.class',
-//            '**/*$ViewInjector*.*',
-//            '**/*$ViewBinder*.*',
-//            '**/BuildConfig.*',
-//            '**/Manifest*.*'
-//    ]
-//    def javaClasses = fileTree(
-//            dir: "$buildDir/intermediates/classes/debug",
-//            excludes: fileFilter
-//    )
-//    def kotlinClasses = fileTree(
-//            dir: "$buildDir/tmp/kotlin-classes/debug",
-//            excludes: fileFilter
-//    )
-//    classDirectories = files([ javaClasses ], [ kotlinClasses ])
-//    additionalSourceDirs = files(coverageSourceDirs)
-//    sourceDirectories = files(coverageSourceDirs)
-//    executionData = fileTree(dir: "$buildDir", includes: [
-//            "jacoco/testDebugUnitTest.exec",
-//            "output/code-coverage/connected/*.ec"
-//    ])
-//    reports {
-//        xml.enabled = true
-//        html.enabled = true
-//    }
-//}
-
 dependencies {
-    def fragment_version = "1.2.2"
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:0.5'
-    implementation 'com.google.android.libraries.places:places:2.1.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-    implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestCompile 'com.android.support.test:rules:0.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+    androidTestImplementation "androidx.navigation:navigation-testing:2.3.0-alpha04"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.2.0"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:2.2.0"
+    androidTestImplementation "com.android.support.test:rules:1.0.2"
+    debugImplementation "androidx.fragment:fragment-testing:1.2.3"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.0-alpha04"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha04"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha04"
+    implementation "androidx.room:room-rxjava2:2.2.5"
+    implementation "com.github.mancj:MaterialSearchBar:0.8.5"
+    implementation "com.google.android.libraries.places:places:2.2.0"
+    implementation "com.google.maps.android:android-maps-utils:1.0.2"
+    implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
+    kapt "androidx.room:room-compiler:2.2.5"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    // Because RxAndroid releases are few and far between, it is recommended you also
-    // explicitly depend on RxJava's latest version for bug fixes and new features.
-    // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
-    // Navigation
-    def nav_version = "2.3.0-alpha01"
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    testImplementation 'org.robolectric:robolectric:4.3'
-    // Dynamic Feature Module Support
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
-    // Testing Navigation
-    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
-    implementation 'com.github.mancj:MaterialSearchBar:0.8.5'
-    testImplementation "com.google.truth:truth:1.0.1"
-
+    testImplementation "org.robolectric:robolectric:4.3.1"
 }
