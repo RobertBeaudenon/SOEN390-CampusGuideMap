@@ -38,13 +38,10 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.widget.Autocomplete
@@ -66,16 +63,19 @@ import kotlinx.android.synthetic.main.map_fragment.searchBar
 import kotlinx.android.synthetic.main.map_fragment.toggleButton
 import org.json.JSONArray
 import org.json.JSONObject
-import com.droidhats.campuscompass.models.Map
+import com.droidhats.campuscompass.helpers.Observer
+import com.droidhats.campuscompass.helpers.Subject
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener {
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener,
+    OnCameraIdleListener, Subject{
 
     private lateinit var map: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
+    private val observerList = mutableListOf<Observer>()
     private var locationUpdateState = false
 
     companion object {
@@ -143,7 +143,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onMapReady(googleMap: GoogleMap) {
 
         // Get the map from the viewModel.
-        map = viewModel.getMap(googleMap, this, this, this.activity as MainActivity)
+        map = viewModel.getMap(googleMap, this, this, this, this.activity as MainActivity)
 
         //Gives you the most recent location currently available.
         fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
@@ -156,8 +156,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
-        map.setOnMapClickListener {
+        // Attach all observer buildings with initial markers
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if (building.hasCenterLocation()) {
+                    attach(building)
+                }
+            }
+        }
 
+        setBuildingMarkersIcons()
+
+        map.setOnMapClickListener {
             //Dismiss the bottom sheet when clicking anywhere on the map
             dismissBottomSheet()
         }
@@ -247,27 +257,32 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
     override fun onPolygonClick(p: Polygon) {
-        // Expand the bottom sheet when clicking on a polygon
-        // TODO: Limit only to campus buildings as polygons could highlight anything
-        if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+        //Get the building object from the polygon that the user clicked on
+        var selectedBuilding: Building? = viewModel.findBuildingByPolygonTag(p.tag.toString())
+
+        //Ensure bottom sheet expands only if the building has a polygon associated to it
+        if (selectedBuilding != null) {
+            if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            }
+        } else {
+            return
         }
 
-        // Populate the bottom sheet with building information
-        populateAdditionalInfoBottomSheet(p)
+        // update the bottom sheet with building information
+        updateAdditionalInfoBottomSheet(p)
 
         //Navigation here
         val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
         directionsButton.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            //Get the building object from the polygon that the user clicked on
-            var selectedBuilding : Building? = viewModel.findBuildingByPolygonTag(p.tag.toString())
-
             //TODO: This full clear and redraw should probably be removed when the directions
             // system is implemented. It was added to show only one route at a time
             map.clear()
-            drawBuildingPolygons()
+            drawBuildingPolygonsAndMarkers()
+            setBuildingMarkersIcons()
+
             if (selectedBuilding != null) {
                 placeMarkerOnMap(LatLng(selectedBuilding.getLocation().latitude, selectedBuilding.getLocation().longitude))
             }
@@ -307,7 +322,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun transportationMode() : String {
-
         //Checking which transportation mode is selected, default is walking.
         var transportationMode = "driving"
         when (radioTransportGroup.checkedRadioButtonId) {
@@ -331,18 +345,30 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
-    override fun onMarkerClick(p0: Marker?) = false
+    override fun onMarkerClick(marker: Marker?): Boolean {
+        var selectedBuilding: Building? = viewModel.findBuildingByMarkerTitle(marker)
+
+        //There is a building associated with the marker that was clicked
+        if (selectedBuilding != null) {
+            if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            }
+            updateAdditionalInfoBottomSheet(selectedBuilding.getPolygon())
+            return true //disable ability to tap the marker to avoid default behavior
+        }
+        return false
+    }
 
     //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
     private fun placeMarkerOnMap(location: LatLng) {
-        // 1 Create a MarkerOptions object and sets the user’s current location as the position for the marker
+        // 1. Create a MarkerOptions object and sets the user’s current location as the position for the marker
         val markerOptions = MarkerOptions().position(location)
 
         //added a call to getAddress() and added this address as the marker title.
         val titleStr = getAddress(location)
         markerOptions.title(titleStr)
 
-        // 2 Add the marker to the map
+        // 2. Add the marker to the map
         map.addMarker(markerOptions)
     }
 
@@ -412,16 +438,61 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun drawBuildingPolygons() {
+    private fun drawBuildingPolygonsAndMarkers() {
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
-                map.addPolygon(building.getPolygonOptions()).tag = building.getName()
-                val polygon = map.addPolygon(building.getPolygonOptions())
+                var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
+                polygon.tag = building.getName()
+                // Place marker on buildings that have center locations specified in buildings.json
+                if(building.hasCenterLocation()){
+                    var marker: Marker = map.addMarker(building.getMarkerOptions())
+                    building.setMarker(marker)
+                }
+
                 building.setPolygon(polygon)
             }
         }
     }
+
+    private fun setBuildingMarkersIcons(){
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if(building.hasCenterLocation()){
+                    when(building.getName()){
+                        "Henry F. Hall Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_h))
+                        "EV Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ev))
+                        "John Molson School of Business" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_jm))
+                        "Faubourg Saint-Catherine Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_fg))
+                        "Guy-De Maisonneuve Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_gm))
+                        "Faubourg Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_fb))
+                        "Visual Arts Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_va))
+                        "Pavillion J.W. McConnell Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_lb))
+                        "Grey Nuns Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_gn))
+                        "Samuel Bronfman Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_sb))
+                        "GS Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_gs))
+                        "Learning Square" ->  building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ls))
+                        "Psychology Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_py))
+                        "Richard J. Renaud Science Complex" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_sp))
+                        "Central Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_cc))
+                        "Communication Studies and Journalism Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_cj))
+                        "Administration Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ad))
+                        "Loyola Jesuit and Conference Centre" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_rf))
+                        "Vanier Library Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_vl))
+                        "Vanier Extension" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ve))
+                        "Student Centre" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_sc))
+                        "F.C. Smith Building" ->building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_fc))
+                        "Stinger Dome" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_do))
+                        "PERFORM Centre" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_pc))
+                        "Jesuit Residence" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_jr))
+                        "Physical Services Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ps))
+                        "Oscar Peterson Concert Hall" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_pt))
+                        else -> Log.v("Error loading marker", "couldn't load marker icons")
+                    }
+                }
+            }
+        }
+     }
 
     private fun initSearchBar() {
         searchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
@@ -472,8 +543,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    private fun populateAdditionalInfoBottomSheet(p: Polygon) {
-        // Populate the bottom sheet with building information
+    private fun updateAdditionalInfoBottomSheet(p: Polygon) {
+        // Update the bottom sheet with building information
         val buildingName: TextView = requireActivity().findViewById(R.id.bottom_sheet_building_name)
         val buildingAddress: TextView =
             requireActivity().findViewById(R.id.bottom_sheet_building_address)
@@ -485,14 +556,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
-                if (building.getPolygon().tag == p.tag) {
+                if (building.getName() == p.tag) {
                     buildingName.text = p.tag.toString()
                     buildingAddress.text = building.getAddress()
                     buildingOpenHours.text = building.getOpenHours()
                     buildingServices.text = building.getServices()
                     buildingDepartments.text = building.getDepartments()
 
-                    when(building.getPolygon().tag){
+                    when(building.getName()){
                         "Henry F. Hall Building" -> buildingImage.setImageResource(R.drawable.building_hall)
                         "EV Building" -> buildingImage.setImageResource(R.drawable.building_ev)
                         "John Molson School of Business" -> buildingImage.setImageResource(R.drawable.building_jmsb)
@@ -504,7 +575,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "Grey Nuns Building" -> buildingImage.setImageResource(R.drawable.building_grey_nuns)
                         "Samuel Bronfman Building" -> buildingImage.setImageResource(R.drawable.building_sb)
                         "GS Building" -> buildingImage.setImageResource(R.drawable.building_gs)
-                        "CB Building" -> buildingImage.setImageResource(R.drawable.building_cbb)
+                        "Learning Square" -> buildingImage.setImageResource(R.drawable.building_ls)
                         "Grey Nuns Annex" -> buildingImage.setImageResource(R.drawable.building_ga)
                         "CL Annex" -> buildingImage.setImageResource(R.drawable.building_cl)
                         "Q Annex" -> buildingImage.setImageResource(R.drawable.building_q)
@@ -530,18 +601,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         "Loyola Jesuit and Conference Centre" -> buildingImage.setImageResource(R.drawable.building_ljacc)
                         "Vanier Library Building" -> buildingImage.setImageResource(R.drawable.building_vl)
                         "Vanier Extension" -> buildingImage.setImageResource(R.drawable.building_ve)
-                        "Student Center" -> buildingImage.setImageResource(R.drawable.building_sc)
-                        "F.C. Smith. Building" -> buildingImage.setImageResource(R.drawable.building_fc)
+                        "Student Centre" -> buildingImage.setImageResource(R.drawable.building_sc)
+                        "F.C. Smith Building" -> buildingImage.setImageResource(R.drawable.building_fc)
                         "Stinger Dome" -> buildingImage.setImageResource(R.drawable.building_do)
-                        "PERFORM centre" -> buildingImage.setImageResource(R.drawable.building_pc)
+                        "PERFORM Center" -> buildingImage.setImageResource(R.drawable.building_pc)
                         "Jesuit Residence" -> buildingImage.setImageResource(R.drawable.building_jr)
                         "Physical Services Building" -> buildingImage.setImageResource(R.drawable.building_ps)
-                        "Learning Square" -> buildingImage.setImageResource(R.drawable.building_ls)
+                        "Oscar Peterson Concert Hall" -> buildingImage.setImageResource(R.drawable.building_pt)
 
                         else -> Log.v("Error loading images", "couldn't load image")
                     }
                     //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
-                } 
+                }
             }
         }
     }
@@ -634,5 +705,30 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onCalendarEventClick(item: CalendarEvent?) {
         findNavController().navigateUp()
         Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
+    }
+
+    /**
+     * Notify observers whenever the camera of the Google map is idle
+     */
+    override fun onCameraIdle() {
+        notifyObservers()
+    }
+
+    override fun attach(observer: Observer?) {
+        if (observer != null) {
+            observerList.add(observer)
+        }
+    }
+
+    override fun detach(observer: Observer?) {
+        if (observer != null) {
+            observerList.remove(observer)
+        }
+    }
+
+    override fun notifyObservers() {
+        for (observer in observerList) {
+            observer.update(map.cameraPosition.zoom)
+        }
     }
 }

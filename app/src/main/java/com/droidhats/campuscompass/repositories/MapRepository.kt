@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.repositories
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.droidhats.campuscompass.models.Building
@@ -96,6 +95,8 @@ class MapRepository(applicationContext: Context) {
                 val buildingAddress : String = buildingsArray.getJSONObject(i).get("address").toString()
                 val buildingLocationArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("location")
+                val buildingCenterLocationArray: JSONArray = buildingsArray.getJSONObject(i)
+                    .getJSONArray("center_location")
                 val departmentsArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("departments")
                 val servicesArray: JSONArray = buildingsArray.getJSONObject(i)
@@ -103,6 +104,10 @@ class MapRepository(applicationContext: Context) {
                 val buildingLocation = LatLng(
                     buildingLocationArray[0].toString().toDouble(),
                     buildingLocationArray[1].toString().toDouble()
+                )
+                val buildingCenterLocation = LatLng(
+                    buildingCenterLocationArray[0].toString().toDouble(),
+                    buildingCenterLocationArray[1].toString().toDouble()
                 )
 
                 coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
@@ -132,7 +137,7 @@ class MapRepository(applicationContext: Context) {
                     polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
                 }
 
-                buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList, buildingAddress, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
+                buildingsList.add(Building(buildingLocation, buildingCenterLocation, buildingName, polygonCoordinatesList, buildingAddress, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
             }
         } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +

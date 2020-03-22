@@ -12,12 +12,14 @@ import com.google.android.gms.maps.GoogleMap
  * @param googleMap: A GoogleMap Object will be used to initialize the map.
  * @param mapFragmentOnMarkerClickListener: a listener for marker clicks that will be attached to the map.
  * @param mapFragmentOnPolygonClickListener: a listener for polygon clicks that will be attached to the map.
+ * @param mapFragmentOnCameraIdleListener: a listener for when the camera is idle in the map.
  * @param activity: Used to check the location permission from the main activity.
  */
 class Map(
     var googleMap: GoogleMap,
     var mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
     var mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
+    var mapFragmentOnCameraIdleListener: GoogleMap.OnCameraIdleListener,
     var activity: FragmentActivity
 ) {
 
@@ -55,6 +57,7 @@ class Map(
         }
 
         googleMap.setOnPolygonClickListener(mapFragmentOnPolygonClickListener)
+        googleMap.setOnCameraIdleListener(mapFragmentOnCameraIdleListener)
     }
 
     /**
