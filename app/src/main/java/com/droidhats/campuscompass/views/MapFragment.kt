@@ -244,33 +244,34 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val selectedBuilding : Building = viewModel.findBuildingByPolygonTag(p.tag.toString())
             ?: return
 
-        expandBottomSheet()
-        updateAdditionalInfoBottomSheet(p)
-
-        val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
-        directionsButton.setOnClickListener {
-            dismissBottomSheet()
-
-            val bundle = Bundle()
-            bundle.putParcelable("destBuilding", selectedBuilding)
-            findNavController().navigate(R.id.search_fragment, bundle)
-        }
+        handleBuildingClick(selectedBuilding)
     }
 
     //implements methods of interface   GoogleMap.OnMarkerClickListener
     override fun onMarkerClick(marker: Marker?): Boolean {
-        var selectedBuilding: Building? = viewModel.findBuildingByMarkerTitle(marker)
+        val selectedBuilding: Building? = viewModel.findBuildingByMarkerTitle(marker)
         //There is a building associated with the marker that was clicked
         if (selectedBuilding != null) {
-            if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            }
-            updateAdditionalInfoBottomSheet(selectedBuilding.getPolygon())
+            handleBuildingClick(selectedBuilding)
             return true //disable ability to tap the marker to avoid default behavior
         }
         return false
     }
-    
+
+    private fun handleBuildingClick(building: Building){
+        expandBottomSheet()
+        updateAdditionalInfoBottomSheet(building.getPolygon())
+
+        val directionsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_directions_button)
+        directionsButton.setOnClickListener {
+            dismissBottomSheet()
+            val bundle = Bundle()
+            bundle.putParcelable("destBuilding", building)
+            findNavController().navigate(R.id.search_fragment, bundle)
+        }
+
+    }
+
     //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
     private fun placeMarkerOnMap(location: LatLng) {
         // 1. Create a MarkerOptions object and sets the user’s current location as the position for the marker
