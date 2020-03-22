@@ -1,5 +1,6 @@
 package com.droidhats.campuscompass.viewmodels
 
+import android.os.Build
 import org.junit.Test
 import org.junit.Before
 import org.junit.Rule
@@ -7,8 +8,10 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.junit.ClassRule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import org.robolectric.annotation.Config
 
 @RunWith(JUnit4::class)
+@Config(sdk = [Build.VERSION_CODES.O_MR1])
 class SplashViewModelTest {
 
     // Necessary for instantiating view model
