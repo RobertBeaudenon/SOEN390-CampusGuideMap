@@ -29,9 +29,10 @@ import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment()  {
 
@@ -144,16 +145,30 @@ class SearchFragment : Fragment()  {
     }
 
     private fun initiateNavigation(){
-        Toast.makeText(context, "Start Navigation\n" +
-                "From: ${NavigationPoints[R.id.mainSearchBar]?.name}\n" +
-                "To: ${NavigationPoints[R.id.secondarySearchBar]?.name}\n" +
+        val origin = NavigationPoints[R.id.mainSearchBar]
+        val destination = NavigationPoints[R.id.secondarySearchBar]
+        findNavController().navigateUp() // Navigate Back To MapFragment
+        Toast.makeText(context, "Starting Navigation\n" +
+                "From: ${origin?.name}\n" +
+                "To: ${destination?.name}\n" +
                 "By: $selectedTransportationMethod",
             Toast.LENGTH_LONG).show()
 
-        viewModel.navigationRepository.generateDirections(NavigationPoints[R.id.mainSearchBar]!!,
-                                                          NavigationPoints[R.id.secondarySearchBar]!!,
-                                                          selectedTransportationMethod)
-        findNavController().navigateUp() // Navigate Back To MapFragment
+        //Make sure BOTH coordinates are set before generating directions
+        if(origin?.coordinate == LatLng(0.0, 0.0) || destination?.coordinate == LatLng(0.0, 0.0)){
+            GlobalScope.launch {
+                viewModel.navigationRepository.fetchPlace(origin!!)
+                viewModel.navigationRepository.fetchPlace(destination!!)
+
+                viewModel.navigationRepository.generateDirections(origin,
+                    destination,
+                    selectedTransportationMethod)
+            }
+        }else {
+            viewModel.navigationRepository.generateDirections(origin!!,
+                destination!!,
+                selectedTransportationMethod)
+        }
     }
 
     private fun initCurrentLocationHandler(mainSearchView: SearchView, secondarySearchView : SearchView){
