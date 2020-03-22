@@ -3,7 +3,6 @@ package com.droidhats.campuscompass.views
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerMatchers
 import androidx.test.espresso.Espresso.onView
@@ -42,7 +41,7 @@ class NavigationDrawerTest {
         onView(withId(R.id.mt_nav)).check(matches(isDisplayed())).perform(click())
 
         //checking if side menu is opened
-        onView(withId(R.id.drawer_layout)).check(ViewAssertions.matches(DrawerMatchers.isOpen()));
+        onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isOpen()))
 
         //clicking outside of the menu to check if it closes
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(1200, 200)

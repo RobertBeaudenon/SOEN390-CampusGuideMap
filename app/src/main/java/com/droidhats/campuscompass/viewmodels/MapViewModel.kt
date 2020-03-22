@@ -11,6 +11,7 @@ import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.Polygon
 import java.io.InputStream
 
@@ -44,27 +45,33 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
     fun getCampuses(): List<Campus> = campuses!!
 
     /**
-     * Uses the Map Model to initialize the map, and then it draws teh polygons of the campus buildings.
+     * Uses the Map Model to initialize the map, and then it draws the polygons and some markers of the campus buildings.
      * Returns an initialized GoogleMap object.
      */
     fun getMap(googleMap: GoogleMap,
                mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
                mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
+               mapFragmentOnCameraIdleListener: GoogleMap.OnCameraIdleListener,
                activity: FragmentActivity
     ): GoogleMap
     {
         //Get initialized map from Map Model.
-        var initializedGoogleMap: GoogleMap = Map(googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener, activity).getMap()
+        var initializedGoogleMap: GoogleMap = Map(googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener, mapFragmentOnCameraIdleListener, activity).getMap()
 
         //Highlight the buildings in both SGW and Loyola Campuses
         for (campus in this.campuses!!) {
             for (building in campus.getBuildings()) {
                 initializedGoogleMap.addPolygon(building.getPolygonOptions()).tag = building.name
                 var polygon: Polygon = initializedGoogleMap.addPolygon(building.getPolygonOptions())
+
+                // Place marker on buildings that have center locations specified in buildings.json
+                if(building.hasCenterLocation()){
+                    var marker: Marker = initializedGoogleMap.addMarker(building.getMarkerOptions())
+                    building.setMarker(marker)
+                }
                 building.setPolygon(polygon)
             }
         }
-
         return googleMap
     }
 
@@ -85,6 +92,27 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         return selectedBuilding
     }
 
+
     fun getNavigationRoute() : MutableLiveData<NavigationRoute> = navigationRepository.getNavigationRoute()
+
+    /**
+     * Searches and returns the building object with the corresponding marker title.
+     * @return If there is no match, it will return a null building object
+     */
+    fun findBuildingByMarkerTitle(marker: Marker?): Building?{
+        var selectedBuilding: Building? = null
+
+        //Iterate through all buildings in both campuses until the marker matches the building name
+        for (campus in this.campuses!!) {
+            for (building in campus.getBuildings()) {
+                if (marker != null) {
+                    if (building.name == marker.title) {
+                        selectedBuilding = building
+                    }
+                }
+            }
+        }
+        return selectedBuilding
+    }
 }
 
