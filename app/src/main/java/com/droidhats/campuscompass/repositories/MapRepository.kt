@@ -111,6 +111,8 @@ class MapRepository(applicationContext: Context) {
                 val buildingAddress : String = buildingsArray.getJSONObject(i).get("address").toString()
                 val buildingLocationArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("location")
+                val buildingCenterLocationArray: JSONArray = buildingsArray.getJSONObject(i)
+                    .getJSONArray("center_location")
                 val departmentsArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("departments")
                 val servicesArray: JSONArray = buildingsArray.getJSONObject(i)
@@ -118,6 +120,10 @@ class MapRepository(applicationContext: Context) {
                 val buildingLocation = LatLng(
                     buildingLocationArray[0].toString().toDouble(),
                     buildingLocationArray[1].toString().toDouble()
+                )
+                val buildingCenterLocation = LatLng(
+                    buildingCenterLocationArray[0].toString().toDouble(),
+                    buildingCenterLocationArray[1].toString().toDouble()
                 )
                 var buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)!!
 
@@ -148,8 +154,9 @@ class MapRepository(applicationContext: Context) {
                     polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
                 }
 
-                // Create the building object and add it to the list of buildings
-                buildingsList.add(Building(buildingLocation, buildingName, polygonCoordinatesList, buildingAddress, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray), buildingImageResourceID))
+                buildingsList.add(Building(buildingLocation, buildingName, buildingCenterLocation,
+                     polygonCoordinatesList, buildingAddress, hoursBuilder.toString(),
+                    getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray), buildingImageResourceID))
             }
         } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +
@@ -207,7 +214,7 @@ class MapRepository(applicationContext: Context) {
             "Grey Nuns Building" -> R.drawable.building_grey_nuns
             "Samuel Bronfman Building" -> R.drawable.building_sb
             "GS Building" -> R.drawable.building_gs
-            "CB Building" -> R.drawable.building_cbb
+            "CB Building" -> R.drawable.building_cb
             "Grey Nuns Annex" -> R.drawable.building_ga
             "CL Annex" -> R.drawable.building_cl
             "Q Annex" -> R.drawable.building_q

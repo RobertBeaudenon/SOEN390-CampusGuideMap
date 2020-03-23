@@ -83,3 +83,8 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+app/.settings/
+app/.project
+app/.classpath
+.idea/misc.xml
+app/build/
