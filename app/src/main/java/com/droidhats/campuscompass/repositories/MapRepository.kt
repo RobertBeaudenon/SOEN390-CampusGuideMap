@@ -92,6 +92,7 @@ class MapRepository(applicationContext: Context) {
             // Traverse each building in the array
             for(i in 0 until buildingsArray.length()) {
                 val buildingName : String = buildingsArray.getJSONObject(i).get("name").toString()
+                val buildingPlaceId: String = buildingsArray.getJSONObject(i).get("place_id").toString()
                 val buildingAddress : String = buildingsArray.getJSONObject(i).get("address").toString()
                 val buildingLocationArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("location")
@@ -137,7 +138,7 @@ class MapRepository(applicationContext: Context) {
                     polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
                 }
 
-                buildingsList.add(Building(buildingLocation, buildingCenterLocation, buildingName, polygonCoordinatesList, buildingAddress, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
+                buildingsList.add(Building(buildingLocation, buildingCenterLocation, buildingName, polygonCoordinatesList, buildingAddress, buildingPlaceId, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
             }
         } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +

@@ -20,9 +20,10 @@ import java.io.InputStream
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
 class MapRepositoryTest {
 
-    private val json: String = "    \"SGW_buildings\": [{\n" +
+    private val json: String = "{\n" +
             "            \"name\": \"Henry F. Hall Building\",\n" +
             "            \"address\": \"1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8\",\n" +
+            "\t\t\t\"place_id\": \"ChIJtd6Zh2oayUwRAu_CnRIfoBw\",\n" +
             "\t\t\t\"center_location\": [45.497320, -73.579031],\n" +
             "            \"location\": [45.497320, -73.579031],\n" +
             "            \"coordinates\": [\n" +
@@ -104,6 +105,7 @@ class MapRepositoryTest {
                 "Sunday\t7a.m.-11p.m.\n", h_building.getOpenHours())
         Assert.assertEquals(h_building.getLocation(), LatLng(45.497320, -73.579031))
         Assert.assertEquals(h_building.getAddress(), "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8", h_building.getAddress())
+        Assert.assertEquals(h_building.getPlaceId(), "ChIJtd6Zh2oayUwRAu_CnRIfoBw", h_building.getPlaceId())
         Assert.assertEquals(h_building.getDepartments(), "Geography, Planning and Environment\n" +
                 "Political Science, Sociology and Anthropology, Economics\n" +
                 "School of Irish Studies\n", h_building.getDepartments())

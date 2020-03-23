@@ -37,6 +37,7 @@ class Building(
     private val name: String,
     private val polygonCoordinatesList: List<LatLng>,
     private val address: String,
+    private val placeId: String,
     private val openHours: String,
     private val departments: String,
     private val services: String
@@ -53,6 +54,7 @@ class Building(
     fun getName(): String = name
     fun getLocation(): LatLng = coordinate
     fun getAddress(): String = address
+    fun getPlaceId(): String = placeId
     fun getDepartments(): String = departments
     fun getServices(): String = services
     fun getOpenHours(): String = openHours
