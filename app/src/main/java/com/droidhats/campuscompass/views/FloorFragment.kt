@@ -1,10 +1,11 @@
 package com.droidhats.campuscompass.views
 
-import android.content.Intent
+import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,24 +17,31 @@ import com.DroidHats.ProcessMap
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
+import com.otaliastudios.zoom.ZoomImageView
 import java.io.InputStream
 
 
 class FloorFragment : Fragment() {
 
     private lateinit var viewModel: FloorViewModel
+    private lateinit var root: View
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var root: View = inflater.inflate(R.layout.floor_fragment, container, false)
+        root = inflater.inflate(R.layout.floor_fragment, container, false)
 
         val inputStream: InputStream = requireContext().assets.open("hall8.svg")
         val svg: SVG = SVG.getFromInputStream(inputStream)
-        var imageView: ImageView = root.findViewById(R.id.floormap)
-        svg.setDocumentWidth(imageView.layoutParams.width.toFloat())
-        val bitmap = Bitmap.createBitmap(imageView.layoutParams.width, imageView.layoutParams.height, Bitmap.Config.ARGB_8888)
+        val imageView: ZoomImageView = root.findViewById(R.id.floormap)
+        val displayMetrics = DisplayMetrics()
+        (context as Activity?)!!.windowManager
+            .defaultDisplay
+            .getMetrics(displayMetrics)
+
+        svg.setDocumentWidth(displayMetrics.widthPixels.toFloat())
+        val bitmap = Bitmap.createBitmap(displayMetrics.widthPixels, displayMetrics.widthPixels, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         canvas.drawARGB(0, 255, 255, 255)
         svg.renderToCanvas(canvas)
