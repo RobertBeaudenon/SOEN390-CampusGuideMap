@@ -30,7 +30,8 @@
             app:destination="@id/instructionFragment" />
         <action
             android:id="@+id/action_map_fragment_to_search_fragment"
-            app:destination="@id/search_fragment" />
+            app:destination="@id/search_fragment"
+            app:enterAnim="@android:anim/fade_in" />
     </fragment>
 
     <fragment

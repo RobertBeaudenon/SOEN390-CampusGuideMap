@@ -208,8 +208,13 @@ class SearchFragment : Fragment()  {
                 NavigationPoints[searchView.id] = currentLocation
                 Toast.makeText(context, "Current Location Set\n $coordinates", Toast.LENGTH_LONG).show()
 
-                if (areRouteParametersSet())
-                    viewModel.getRouteTimes(NavigationPoints[R.id.mainSearchBar]!!, NavigationPoints[R.id.secondarySearchBar]!!)
+                if (areRouteParametersSet()) {
+                    viewModel.getRouteTimes(
+                        NavigationPoints[R.id.mainSearchBar]!!,
+                        NavigationPoints[R.id.secondarySearchBar]!!
+                    )
+                    toggleNavigationButtonColor(Color.GREEN)
+                }
             }
         }
     }
@@ -253,8 +258,12 @@ class SearchFragment : Fragment()  {
     }
 
     private fun resetQuery(queryText : EditText, searchView: SearchView){
-        queryText.setTextColor(Color.WHITE)
         NavigationPoints[searchView.id] = null
+        toggleNavigationButtonColor(Color.WHITE)
+        if (isNavigationViewOpen)
+            queryText.setTextColor(Color.WHITE)
+        else
+            queryText.setTextColor(Color.BLACK)
     }
 
     private fun resetRouteTimes(){
@@ -324,6 +333,8 @@ class SearchFragment : Fragment()  {
              val destinationBar = root.findViewById<SearchView>(R.id.secondarySearchBar)
              val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
              val infoMessage = root.findViewById<TextView>(R.id.search_info)
+             val searchPlate = mainBar.findViewById<View>(R.id.search_plate)
+             searchPlate.setBackgroundResource(R.color.colorPrimaryDark);
 
              mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
              destinationBar.visibility = View.VISIBLE
@@ -353,7 +364,17 @@ class SearchFragment : Fragment()  {
         searchText.setTextColor(Color.GREEN)
         NavigationPoints[searchView.id] = location
 
-        if (areRouteParametersSet())
-            viewModel.getRouteTimes(NavigationPoints[mainBar.id]!!, NavigationPoints[destinationBar.id]!!)
+        if (areRouteParametersSet()) {
+            viewModel.getRouteTimes(
+                NavigationPoints[mainBar.id]!!,
+                NavigationPoints[destinationBar.id]!!
+            )
+            toggleNavigationButtonColor(Color.GREEN)
+        }
+    }
+
+    private fun toggleNavigationButtonColor(color : Int){
+        val startNavButton = root.findViewById<ImageButton>(R.id.startNavigationButton)
+        startNavButton.setColorFilter(color)
     }
 }

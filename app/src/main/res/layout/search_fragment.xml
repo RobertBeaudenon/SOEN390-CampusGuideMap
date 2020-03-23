@@ -16,6 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="@dimen/search_bar_margin"
             >
 
             <ImageButton
@@ -36,6 +37,7 @@
                 android:focusable="true"
                 app:searchIcon="@null"
                 android:layout_toEndOf="@id/backFromNavigationButton"
+                app:queryBackground="@color/white"
                 app:iconifiedByDefault="false"
                 app:queryHint="Search" />
 
@@ -63,7 +65,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_directions_white_56dp"
             android:visibility="gone"
-            android:background="?selectableItemBackgroundBorderless"
+            android:background="?selectableItemBackground"
             android:layout_gravity="end|center_vertical"
             android:contentDescription="Navigate" />
 
