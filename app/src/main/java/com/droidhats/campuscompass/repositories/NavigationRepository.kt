@@ -116,7 +116,9 @@ class NavigationRepository(private val application: Application) {
                     } else {
                         times[method.string] = "N/A"
                     }
-                    routeTimes.value = times
+                    //Set only after all the times have been retrieved (to display them all at the same time)
+                    if(times.size == NavigationRoute.TransportationMethods.values().size )
+                        routeTimes.value = times
                 },
                 Response.ErrorListener {
                     Log.e("Volley Error:", "HTTP response error")
