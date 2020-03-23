@@ -127,7 +127,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      * @param googleMap a necessary google map object on which we add markers and attach listeners.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-
         // Get the map from the viewModel.
         map = viewModel.getMap(googleMap, this, this, this, this.activity as MainActivity)
 
@@ -138,10 +137,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-                moveTo(currentLatLng, 12f)
+               // moveTo(currentLatLng, 12f)
             }
         }
+        map.setOnMapClickListener {
+            //Dismiss the bottom sheet when clicking anywhere on the map
+            dismissBottomSheet()
+        }
+        attachBuildingObservers()
+        setBuildingMarkersIcons()
+    }
 
+    private fun attachBuildingObservers(){
         // Attach all observer buildings with initial markers
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
@@ -150,14 +157,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
         }
+    }
 
-        setBuildingMarkersIcons()
-
-        map.setOnMapClickListener {
-            //Dismiss the bottom sheet when clicking anywhere on the map
-            dismissBottomSheet()
+    private fun detachBuildingObservers() {
+        // Attach all observer buildings with initial markers
+        for (campus in viewModel.getCampuses()) {
+            for (building in campus.getBuildings()) {
+                if (building.hasCenterLocation()) {
+                    detach(building)
+                }
+            }
         }
-
     }
 
     private fun observeNavigation() {
@@ -240,6 +250,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
+        detachBuildingObservers()
+        map.clear()
     }
 
     // 3 Override onResume() to restart the location update request.
@@ -419,7 +431,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
 
     private fun initSearchBar() {
-
         mapFragSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
 
             override fun onButtonClicked(buttonCode: Int) {
