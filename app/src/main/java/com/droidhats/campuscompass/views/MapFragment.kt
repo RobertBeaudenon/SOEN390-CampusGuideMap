@@ -52,6 +52,7 @@ import kotlinx.android.synthetic.main.search_bar_layout.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.IOException
+import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, OnCameraIdleListener,
@@ -62,7 +63,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
-    private val observerList = mutableListOf<com.droidhats.campuscompass.helpers.Observer?>()
+    private val observerList = mutableListOf<ModifiedObserver?>()
     private var locationUpdateState = false
 
     companion object {
@@ -91,7 +92,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -593,7 +593,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun populatePlaceInfoCard(location: GooglePlace){
         val favoritesButton : Button = requireActivity().findViewById(R.id.place_card_favorites_button)
-        val startNavButton : Button = requireActivity().findViewById(R.id.place_card_startNav_button)
         val placeName: TextView = requireActivity().findViewById(R.id.place_card_name)
         val placeCategory: TextView = requireActivity().findViewById(R.id.place_card_category)
         val closeButton : ImageView = requireActivity().findViewById(R.id.place_card_close_button)
@@ -637,13 +636,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         notifyObservers()
     }
 
-    override fun attach(observer: com.droidhats.campuscompass.helpers.Observer?) {
+    override fun attach(observer: ModifiedObserver?) {
         if (observer != null) {
             observerList.add(observer)
         }
     }
 
-    override fun detach(observer: com.droidhats.campuscompass.helpers.Observer?) {
+    override fun detach(observer: ModifiedObserver?) {
         if (observer != null) {
             observerList.remove(observer)
         }
