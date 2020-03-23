@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.repositories
 
-import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor

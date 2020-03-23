@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS "IndoorLocation" (
 	"floor_num"	INTEGER NOT NULL,
 	"location_type"	TEXT NOT NULL
 );
-INSERT INTO "IndoorLocation" VALUES (1,'H-400',4,'classroom'),
+INSERT INTO "IndoorLocation" VALUES
+ (1,'H-400',4,'classroom'),
  (2,'H-400-2',4,'classroom'),
  (3,'H-401',4,'classroom'),
  (4,'H-403',4,'classroom'),

@@ -65,17 +65,6 @@
                 android:text="Directions"/>
 
             <Button
-                android:id="@+id/place_card_startNav_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:drawableStart="@drawable/ic_navigation_blue_24dp"
-                android:textSize="12sp"
-                android:textAllCaps="false"
-                android:text="Start" />
-
-
-            <Button
                 android:id="@+id/place_card_favorites_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
