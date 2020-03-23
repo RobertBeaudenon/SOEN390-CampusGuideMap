@@ -2,6 +2,7 @@ package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -22,9 +23,12 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.*
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.suspendCoroutine
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
@@ -112,7 +116,10 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun getRouteTimes(origin : Location, destination : Location)  {
-       GlobalScope.launch {
+        val handler = CoroutineExceptionHandler{_, throwable ->
+            Log.e(TAG, throwable.message!!)
+        }
+       GlobalScope.launch(Dispatchers.Default + handler) {
            if (origin is GooglePlace && !origin.isCurrentLocation)
                navigationRepository.fetchPlace(origin)
            if (destination is GooglePlace && !destination.isCurrentLocation)

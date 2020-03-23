@@ -1,9 +1,11 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
+import android.content.ContentValues
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +33,8 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -156,7 +160,10 @@ class SearchFragment : Fragment()  {
 
         //Make sure BOTH coordinates are set before generating directions
         if(origin?.coordinate == LatLng(0.0, 0.0) || destination?.coordinate == LatLng(0.0, 0.0)){
-            GlobalScope.launch {
+            val handler = CoroutineExceptionHandler{_, throwable ->
+                Log.e(ContentValues.TAG, throwable.message!!)
+            }
+            GlobalScope.launch(Dispatchers.Default + handler) {
                 viewModel.navigationRepository.fetchPlace(origin!!)
                 viewModel.navigationRepository.fetchPlace(destination!!)
 
