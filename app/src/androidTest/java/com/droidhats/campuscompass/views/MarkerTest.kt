@@ -2,6 +2,9 @@ package com.droidhats.campuscompass.views
 
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
@@ -38,7 +41,8 @@ class MarkerTest {
 
         // Wait for the Map View to load
         waitFor(fiveSeconds)
-
+        Espresso.onView(ViewMatchers.withId(R.id.toggleButton)).perform(ViewActions.click())
+        waitFor(fiveSeconds)
         val device = UiDevice.getInstance(getInstrumentation())
         val marker = device.findObject(UiSelector().descriptionContains("EV Building. "))
         marker.click()
