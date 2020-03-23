@@ -57,7 +57,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, OnCameraIdleListener,
     Subject {
 
-    private lateinit var map: GoogleMap
+    private var map: GoogleMap? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
@@ -137,10 +137,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             if (location != null) {
                 lastLocation = location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
-               // moveTo(currentLatLng, 12f)
+                moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
             }
         }
-        map.setOnMapClickListener {
+        map!!.setOnMapClickListener {
             //Dismiss the bottom sheet when clicking anywhere on the map
             dismissBottomSheet()
         }
@@ -251,7 +251,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
         detachBuildingObservers()
-        map.clear()
+        map!!.clear()
     }
 
     // 3 Override onResume() to restart the location update request.
@@ -259,6 +259,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onResume()
         if (!locationUpdateState) {
             startLocationUpdates()
+        }
+        if (map != null) {
+            drawBuildingPolygonsAndMarkers()
+            setBuildingMarkersIcons()
         }
     }
 
@@ -305,7 +309,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         markerOptions.title(titleStr)
 
         // 2. Add the marker to the map
-        map.addMarker(markerOptions)
+        map!!.addMarker(markerOptions)
     }
 
     private fun getAddress(latLng: LatLng): String {
@@ -368,11 +372,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Highlight both SGW and Loyola Campuses
         for (campus in viewModel.getCampuses()) {
             for (building in campus.getBuildings()) {
-                var polygon: Polygon = map.addPolygon(building.getPolygonOptions())
+                var polygon: Polygon = map!!.addPolygon(building.getPolygonOptions())
                 polygon.tag = building.name
                 // Place marker on buildings that have center locations specified in buildings.json
                 if(building.hasCenterLocation()){
-                    var marker: Marker = map.addMarker(building.getMarkerOptions())
+                    var marker: Marker = map!!.addMarker(building.getMarkerOptions())
                     building.setMarker(marker)
                 }
 
@@ -382,11 +386,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
-        map.clear()
+        map!!.clear()
         drawBuildingPolygonsAndMarkers()
         setBuildingMarkersIcons()
         for (i in 0 until path.size) {
-            this.map.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+            this.map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
         }
     }
 
@@ -473,7 +477,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
-                map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * root.findViewById<NestedScrollView>(R.id.bottom_sheet).height).toInt())
+                map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * root.findViewById<NestedScrollView>(R.id.bottom_sheet).height).toInt())
             }
         })
     }
@@ -588,7 +592,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun moveTo(coordinates: LatLng, zoomLevel: Float){
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoomLevel))
+        map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoomLevel))
     }
 
     private fun populatePlaceInfoCard(location: GooglePlace){
@@ -622,11 +626,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val placeCard : CardView = requireActivity().findViewById(R.id.place_card)
         if(isVisible){
             placeCard.visibility = View.VISIBLE
-            map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, placeCard.height+75)
+            map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, placeCard.height+75)
         }
         else{
             placeCard.visibility = View.INVISIBLE
-            map.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
+            map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
         }
     }
 
@@ -651,7 +655,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun notifyObservers() {
         for (observer in observerList) {
-            observer?.update(map.cameraPosition.zoom)
+            observer?.update(map!!.cameraPosition.zoom)
         }
     }
 }

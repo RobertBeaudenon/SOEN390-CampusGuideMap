@@ -197,7 +197,7 @@ class SearchFragment : Fragment()  {
                 val coordinates = LatLng(it.latitude, it.longitude)
                 val currentLocation = GooglePlace(
                     it.toString(),
-                    "Your Freakin Location",
+                    "Your Location",
                     coordinates.toString(),
                     coordinates
                 )
