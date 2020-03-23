@@ -34,6 +34,23 @@ class FloorFragment : Fragment() {
 
         val inputStream: InputStream = requireContext().assets.open("hall8.svg")
         val svg: SVG = SVG.getFromInputStream(inputStream)
+        setImage(svg)
+
+        var randomPathBtn: Button = root.findViewById(R.id.randomPathBtn)
+
+        randomPathBtn.setOnClickListener{it ->
+            val inputStream: InputStream = requireContext().assets.open("hall8.svg")
+            val file: String = inputStream.bufferedReader().use { it.readText() }
+            val mapProcessor: ProcessMap = ProcessMap()
+            mapProcessor.readSVGFromString(file)
+            val svg: SVG = SVG.getFromString(mapProcessor.getSVGString())
+            setImage(svg)
+        }
+
+        return root
+    }
+
+    fun setImage(svg: SVG) {
         val imageView: ZoomImageView = root.findViewById(R.id.floormap)
         val displayMetrics = DisplayMetrics()
         (context as Activity?)!!.windowManager
@@ -46,25 +63,6 @@ class FloorFragment : Fragment() {
         canvas.drawARGB(0, 255, 255, 255)
         svg.renderToCanvas(canvas)
         imageView.setImageDrawable(BitmapDrawable(getResources(), bitmap))
-
-        var randomPathBtn: Button = root.findViewById(R.id.randomPathBtn)
-
-        randomPathBtn.setOnClickListener{it ->
-            val inputStream: InputStream = requireContext().assets.open("hall8.svg")
-            val file: String = inputStream.bufferedReader().use { it.readText() }
-            val mapProcessor: ProcessMap = ProcessMap()
-            mapProcessor.readSVGFromString(file)
-            val svg: SVG = SVG.getFromString(mapProcessor.getSVGString())
-            var imageView: ImageView = root.findViewById(R.id.floormap)
-            svg.setDocumentWidth(imageView.layoutParams.width.toFloat())
-            val bitmap = Bitmap.createBitmap(imageView.layoutParams.width, imageView.layoutParams.height, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            canvas.drawARGB(0, 255, 255, 255)
-            svg.renderToCanvas(canvas)
-            imageView.setImageDrawable(BitmapDrawable(getResources(), bitmap))
-        }
-
-        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
