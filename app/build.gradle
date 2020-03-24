@@ -48,7 +48,13 @@ android {
             }
         }
     }
-
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res', 'src/main/res/mipmap/ic_buildings'
+            }
+        }
+    }
     dokka {
         outputFormat = "javadoc"
         outputDirectory = "$buildDir/dokka"
@@ -72,7 +78,7 @@ android {
 
     junitJacoco {
         jacocoVersion = "0.8.2"
-        excludes
+        excludes = ["**/androidx/databinding**", "**/androidx.databinding.library.baseAdapters**"]
         ignoreProjects = []
         includeInstrumentationCoverageInMergedReport = false
         includeNoLocationClasses = false
