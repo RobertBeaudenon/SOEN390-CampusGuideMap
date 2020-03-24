@@ -21,6 +21,8 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
                     instance
                         ?: IndoorLocationRepository(indoorLocationDao).also { instance = it }
                 }
+
+        private var buildingNumberMap: MutableMap<String, MutableMap<Int, Int>> = mutableMapOf()
     }
 
     fun getIndoorLocations() : LiveData<List<IndoorLocation>> = indoorLocationDao.getAll()
@@ -54,14 +56,49 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
         var x = 0
         for (classRoom in classes) {
             val newClass = IndoorLocation(
-                classRoom.getID().substring(4, 7).toInt() + x,
-                classRoom.getID(),
+                classRoom.getID().substring(4, 8).toInt() + x,
+                convertIDToName(classRoom.getID(), "Hall", 8),
                 8,
                 "classroom"
             )
             indoorLocationDao.insertIndoorLocation(newClass)
             x++
         }
+    }
+
+    /**
+     * Converts id, building name and floor number into the proper name
+     * for the appropriate Class Room
+     * @param id This is the id generated from the svg file
+     * @param buildingName This is the name for which the room belongs
+     * @param floorNumber This is the number of the floor within the building
+     * @return returns the string of the generated room name
+     */
+    fun convertIDToName(id: String, buildingName: String, floorNumber: Int): String {
+        if (Character.getNumericValue(id[5]) == floorNumber) {
+            return buildingName + "-" + id.substring(5, 8)
+        }
+
+        if (buildingNumberMap[buildingName] == null) {
+            buildingNumberMap[buildingName] = mutableMapOf()
+        }
+
+        if (buildingNumberMap[buildingName]?.get(floorNumber) == null) {
+            buildingNumberMap[buildingName]?.set(floorNumber, 0)
+        }
+
+        buildingNumberMap[buildingName]?.set(floorNumber,
+            buildingNumberMap[buildingName]?.get(floorNumber)?.plus(2)!!
+        )
+
+        var baseName: String = buildingName + "-" + floorNumber.toString()
+
+        if (buildingNumberMap[buildingName]?.get(floorNumber)!! < 10) {
+            return baseName + "0" + buildingNumberMap[buildingName]?.get(floorNumber)!!
+        } else {
+            return baseName + buildingNumberMap[buildingName]?.get(floorNumber)!!
+        }
+
     }
 }
 
