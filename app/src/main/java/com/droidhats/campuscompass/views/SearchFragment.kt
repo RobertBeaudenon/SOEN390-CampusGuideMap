@@ -171,7 +171,7 @@ class SearchFragment : Fragment()  {
                     destination,
                     selectedTransportationMethod)
             }
-        }else {
+        } else {
             viewModel.navigationRepository.generateDirections(origin!!,
                 destination!!,
                 selectedTransportationMethod)
