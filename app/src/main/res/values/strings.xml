@@ -5,10 +5,6 @@
     <string name="cc_logo">Campus Compass Logo</string>
     <string name="cc_title">Campus Compass Title</string>
     <string name="cc_uni">Concordia University</string>
-
-    <string name="SGW_Campus_Name">SGW</string>
-    <string name="Loyola_Campus_Name">Loyola</string>
-
     <string name="Favorites_Feature_Name">My Places</string>
     <string name="Calendar_Feature_Name">Schedule</string>
     <string name="Resources_Feature_Name">Resources</string>

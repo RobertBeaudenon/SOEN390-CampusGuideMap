@@ -3,6 +3,7 @@ package com.droidhats.campuscompass.views
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -24,7 +25,7 @@ import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.viewmodels.CalendarViewModel
 import com.droidhats.campuscompass.viewmodels.CalendarViewModel.Companion.GOOGLE_CALENDAR_COLOR_MAP
 
-class CalendarFragment : DialogFragment() {
+class CalendarFragment : DialogFragment(), DialogInterface.OnDismissListener {
 
     private lateinit var calendarViewModel: CalendarViewModel
     private lateinit var recyclerView: RecyclerView
@@ -87,7 +88,6 @@ class CalendarFragment : DialogFragment() {
         dialog.setTargetFragment(this, targetRequestCode)
         dialog.show(requireFragmentManager(), "select calendars dialog")
          isDialogOpen = true
-
     }
 
      fun refresh() {
@@ -97,7 +97,6 @@ class CalendarFragment : DialogFragment() {
     }
 
     private fun updateRecyclerView() {
-
         val events: ArrayList<CalendarEvent> = arrayListOf()
         for (cal in calendarViewModel.getCalendars().value!!)
             events.addAll(cal.events)
@@ -114,7 +113,6 @@ class CalendarFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { it ->
-
             val selectedBool = loadChecked()
             val colorArray = GOOGLE_CALENDAR_COLOR_MAP.keys.toTypedArray()
 
@@ -137,7 +135,6 @@ class CalendarFragment : DialogFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        isDialogOpen = false
         loadChecked()
         calendarViewModel.selectCalendars()
     }
@@ -160,5 +157,10 @@ class CalendarFragment : DialogFragment() {
         }
         calendarViewModel.selectedColors = checkedArr
         return checkedArr
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        isDialogOpen = false
     }
 }

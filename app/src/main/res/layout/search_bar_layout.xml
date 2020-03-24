@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+    <com.mancj.materialsearchbar.MaterialSearchBar
+        style="@style/MaterialSearchBarLight"
+        app:mt_speechMode="false"
+        app:mt_hint="Search"
+        app:mt_maxSuggestionsCount="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mapFragSearchBar"
+        android:layout_margin="@dimen/search_bar_margin"
+        map:mt_navIconEnabled="true"
+        map:mt_placeholder="Search"
+        android:elevation="5dp"
+        android:outlineProvider="bounds" />
+
+    <!--hardcoded margins for now as the search bars can expand -->
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="230.65px"
+        android:layout_height="100px"
+        android:layout_below="@+id/mapFragSearchBar"
+        android:background="@drawable/toggle_switch"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="ToggleButton"
+        android:textColor="#FFFFFF"
+        android:textOff="LOY"
+        android:textOn="SGW"
+        android:textSize="14sp"
+        android:elevation="0dp"
+        android:textStyle="bold" />
+
+</RelativeLayout>
