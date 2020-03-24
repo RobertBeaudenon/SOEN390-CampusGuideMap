@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.roomdb
 
 import android.content.Context
 import androidx.room.Database

@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.droidhats.campuscompass.IndoorLocationDatabase
+import com.droidhats.campuscompass.roomdb.IndoorLocationDatabase
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.GooglePlace
