@@ -1,9 +1,11 @@
 {
     "SGW_buildings": [{
             "name": "Henry F. Hall Building",
-            "initial": "H",
-            "address": "Boulevard de Maisonneuve O, Montreal, QC H3G 1M8",
-            "location": [45.497326,-73.5812175],
+            "address": "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8",
+			"center_location": [45.497320, -73.579031],
+            "floor_maps": ["hall8.svg", "hall9.svg"],
+            "initial": "hall",
+            "location": [45.497320, -73.579031],
             "coordinates": [
                 [45.497164, -73.579544],
                 [45.497710, -73.579034],
@@ -11,13 +13,13 @@
                 [45.496828, -73.578850]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Geography, Planning and Environment",
@@ -33,9 +35,11 @@
             ]
         }, {
             "name": "EV Building",
-            "initial": "EV",
-            "address": "1515 Saint-Catherine St W, Montreal, Quebec H3G 1S6",
-            "location": [45.4953725,-73.5801851],
+			"center_location": [45.495473, -73.577949],
+            "location": [45.495469, -73.577632],
+            "floor_maps": [],
+            "initial": "ev",
+            "address": "1515 Saint-Catherine St W, Montreal, Quebec H3G 2W1",
             "coordinates": [
                 [45.495594, -73.578761],
                 [45.495175, -73.577855],
@@ -45,13 +49,13 @@
                 [45.495910, -73.578475]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Gina Cody School of Engineering and Computer Science",
@@ -76,9 +80,11 @@
             ]
         }, {
             "name": "John Molson School of Business",
-            "initial": "MB",
             "address": "1450 Guy St, Montreal, Quebec H3H 0A1",
-            "location": [45.4952816,-73.5812383],
+			"center_location": [45.495244, -73.578945],
+            "location": [45.495496, -73.579162],
+            "floor_maps": [],
+            "initial": "mb",
             "coordinates": [
                 [45.495362, -73.579385],
                 [45.495224, -73.579121],
@@ -90,13 +96,13 @@
                 [45.495529, -73.579209]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Accountancy",
@@ -117,9 +123,11 @@
             ]
         }, {
             "name": "Faubourg Saint-Catherine Building",
-            "initial": "FG",
             "address": "1616 Saint-Catherine St W, Montreal, QC H3H 1L7",
-            "location": [45.4942342,-73.5805486],
+			"center_location": [45.494231, -73.578363],
+            "location": [45.494231, -73.578363],
+            "floor_maps": [],
+            "initial": "fgs",
             "coordinates": [
                 [45.493822, -73.579069],
                 [45.493619, -73.578735],
@@ -128,13 +136,13 @@
                 [45.494363, -73.578439]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Education"
@@ -144,9 +152,11 @@
             ]
         }, {
             "name": "Guy-De Maisonneuve Building",
-            "initial": "GM",
             "address": "1435 Guy St, Montreal, Quebec H3H 2L5",
-            "location": [45.4954575,-73.5790789],
+			"center_location": [45.495856, -73.578809],
+            "location": [45.495924, -73.578884],
+            "floor_maps": [],
+            "initial": "gm",
             "coordinates": [
                 [45.495782, -73.579159],
                 [45.495765, -73.579118],
@@ -156,13 +166,13 @@
                 [45.496132, -73.578816]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Contemporary Dance",
@@ -189,9 +199,11 @@
             ]
         }, {
             "name": "Faubourg Building",
-            "initial": "FB",
             "address": "1250 Guy St, Montreal, Quebec H3H 2L3",
-            "location": [45.494713,-73.5797753],
+			"center_location": [45.494683, -73.577635],
+            "location": [45.494855, -73.577820],
+            "floor_maps": [],
+            "initial": "fg",
             "coordinates": [
                 [45.494911, -73.577786],
                 [45.494655, -73.577218],
@@ -199,13 +211,13 @@
                 [45.494696, -73.578037]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Classics, Modern Languages & Linguistics",
@@ -222,9 +234,11 @@
             ]
         }, {
             "name": "Visual Arts Building",
-            "address": "1395 René-Lévesque Blvd W, Montreal, Quebec H3G 2M5",
-            "initial": "VA",
-            "location": [45.4955287,-73.575988],
+            "address": "1395 Boulevard René-Lévesque O, Montreal, QC H3G 2M5",
+			"center_location": [45.495696, -73.573973],
+            "location": [45.495671, -73.573622],
+            "floor_maps": [],
+            "initial": "va",
             "coordinates": [
                 [45.496179, -73.573797],
                 [45.495661, -73.574293],
@@ -234,13 +248,13 @@
                 [45.496066, -73.573558]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Studio Arts",
@@ -254,9 +268,11 @@
             ]
         }, {
             "name": "Pavillion J.W. McConnell Building",
-            "initial": "LB",
             "address": "1400 Maisonneuve Blvd W, Montreal, Quebec H3G 1M8",
-            "location": [45.4968776,-73.5802314],
+			"center_location": [45.496802, -73.577935],
+            "location": [45.496907, -73.578216],
+            "floor_maps": [],
+            "initial": "pv",
             "coordinates": [
                 [45.497283, -73.578079],
                 [45.496682, -73.578637],
@@ -268,13 +284,13 @@
                 [45.496896, -73.577279]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "English",
@@ -299,7 +315,9 @@
             "name": "Grey Nuns Building",
             "address": "1190 Guy St, Montreal, Quebec H3H 2L4",
             "initial":"GN",
-            "location": [45.4927976,-73.5769415],
+            "floor_maps": [],
+			"center_location": [45.493488, -73.576723],
+            "location": [45.492919, -73.577276],
             "coordinates": [
                 [45.493975, -73.577559],
                 [45.494123, -73.577412],
@@ -365,7 +383,7 @@
                 ["Tuesday", "9a.m.-9p.m."],
                 ["Wednesday", "9a.m.-9p.m."],
                 ["Thursday", "9a.m.-9p.m."],
-                ["Friday", "9a.m.-5p.m."],
+                ["Friday", "7a.m.-11p.m."],
                 ["Saturday", "10a.m.-5p.m."],
                 ["Sunday", "10a.m.-5p.m."]
             ],
@@ -382,6 +400,8 @@
             "name": "Q Annex",
             "initial": "Q",
             "address": "2010 Mackay St, Montreal, Quebec H3G 2J1",
+			"center_location": [0,0],
+            "floor_maps": [],
             "location": [45.4966306,-73.5812891],
             "coordinates": [
                 [45.496725, -73.579164],
@@ -390,11 +410,11 @@
                 [45.496626, -73.579267]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
                 ["Saturday", "closed"],
                 ["Sunday", "closed"]
             ],
@@ -408,7 +428,9 @@
             "name": "T Annex",
             "initial": "T",
             "address": "2030 Mackay St, Montreal, Quebec H3G 2J1",
+			"center_location": [0,0],
             "location": [45.4966982,-73.579819],
+            "floor_maps": [],
             "coordinates": [
                 [45.496668, -73.579342],
                 [45.496631, -73.579264],
@@ -416,11 +438,11 @@
                 [45.496758, -73.579252]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
                 ["Saturday", "closed"],
                 ["Sunday", "closed"]
             ],
@@ -434,7 +456,9 @@
             "name": "RR Annex",
             "initial": "RR",
             "address": "2040 Mackay St, Montreal, Quebec H3G 2J1",
+			"center_location": [0,0],
             "location": [45.4967479,-73.5798796],
+            "floor_maps": [],
             "coordinates": [
                 [45.496613, -73.579400],
                 [45.496650, -73.579473],
@@ -442,13 +466,13 @@
                 [45.496765, -73.579247]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Liberal Arts College"
@@ -460,7 +484,9 @@
             "name": "R Annex",
             "initial": "R",
             "address": "2050 Mackay St, Montreal, Quebec H3G 2J1",
+			"center_location": [0,0],
             "location": [45.4968124,-73.5799381],
+            "floor_maps": [],
             "coordinates": [
                 [45.496807, -73.579321],
                 [45.496712, -73.579414],
@@ -468,13 +494,13 @@
                 [45.496840, -73.579387]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Religions and Cultures"
@@ -486,7 +512,9 @@
             "name": "FA Annex",
             "initial": "FA",
             "address": "2060 Mackay St, Montreal, Quebec H3G 2J1",
+			"center_location": [0,0],
             "location": [45.4968566,-73.5800161],
+            "floor_maps": [],
             "coordinates": [
                 [45.496835, -73.579394],
                 [45.496735, -73.579496],
@@ -494,13 +522,13 @@
                 [45.496875, -73.579473]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Religions and Cultures"
@@ -512,7 +540,9 @@
             "name": "LD Building",
             "initial": "LD",
             "address": "1424 Bishop St, Montréal, Québec H3G 2E6",
+			"center_location": [0,0],
             "location": [45.4970535,-73.57948],
+            "floor_maps": [],
             "coordinates": [
                 [45.496860, -73.577163],
                 [45.496822, -73.577091],
@@ -538,7 +568,9 @@
             "name": "X Annex",
             "initial": "X",
             "address": "2080 Mackay St, Montreal, Quebec H3G 2J1",
+			"center_location": [0,0],
             "location": [45.4966955,-73.5799352],
+            "floor_maps": [],
             "coordinates": [
                 [45.496911, -73.579577],
                 [45.496818, -73.579670],
@@ -546,11 +578,11 @@
                 [45.496950, -73.579664]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
                 ["Saturday", "closed"],
                 ["Sunday", "closed"]
             ],
@@ -564,7 +596,9 @@
             "name": "Z Annex",
             "initial": "Z",
             "address": "2090 Mackay St, Montreal, Quebec H3G 2J1",
+			"center_location": [0,0],
             "location": [45.4969687,-73.5802513],
+            "floor_maps": [],
             "coordinates": [
                 [45.496987, -73.579742],
                 [45.496910, -73.579815],
@@ -574,11 +608,11 @@
                 [45.496949, -73.579668]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
                 ["Saturday", "closed"],
                 ["Sunday", "closed"]
             ],
@@ -593,7 +627,9 @@
             "name": "V Annex",
             "initial": "V",
             "address": "2110 Mackay St, Montreal, Quebec H3G 2J1",
+			"center_location": [0,0],
             "location": [45.4970919,-73.5820971],
+            "floor_maps": [],
             "coordinates": [
                 [45.497090, -73.579905],
                 [45.497052, -73.579832],
@@ -601,11 +637,11 @@
                 [45.496984, -73.580017]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
                 ["Saturday", "closed"],
                 ["Sunday", "closed"]
             ],
@@ -620,7 +656,9 @@
             "name": "S Annex",
             "initial": "S",
             "address": "2145 Mackay St, Montreal, Quebec H3G 1M8",
+			"center_location": [0,0],
             "location": [45.4974075,-73.5803987],
+            "floor_maps": [],
             "coordinates": [
                 [45.497493, -73.579807],
                 [45.497457, -73.579743],
@@ -628,13 +666,13 @@
                 [45.497365, -73.579930]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Department of Philosophy"
@@ -646,7 +684,9 @@
             "name": "CI Annex",
             "initial": "CI",
             "address": "2149 Mackay St, Montreal, QC H3G 2J2",
+			"center_location": [0,0],
             "location": [45.4974564,-73.5804732],
+            "floor_maps": [],
             "coordinates": [
                 [45.497590, -73.579835],
                 [45.497546, -73.579745],
@@ -654,13 +694,13 @@
                 [45.497408, -73.580013]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "School of Community & Public Affairs"
@@ -672,7 +712,9 @@
             "name": "MU Annex",
             "initial": "MU",
             "address": "2170 Bishop St, Montreal, QC H3G 2E9",
+			"center_location": [0,0],
             "location": [45.497944,-73.580047],
+            "floor_maps": [],
             "coordinates": [
                 [45.497959, -73.579534],
                 [45.497923, -73.579456],
@@ -680,13 +722,13 @@
                 [45.497781, -73.579686]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "None"
@@ -696,9 +738,11 @@
             ]
         },{
             "name": "B Annex",
-            "initial": "B",
+            "initial": "BA",
             "address": "2160 Bishop St, Montreal, QC H3G 2E9",
+			"center_location": [0,0],
             "location": [45.4979309,-73.5799922],
+            "floor_maps": [],
             "coordinates": [
                 [45.497923, -73.579456],
                 [45.497887, -73.579379],
@@ -722,9 +766,11 @@
             ]
         },{
             "name": "D Annex",
-            "initial": "D",
+            "initial": "DA",
             "address": "2140 Bishop St, Montreal, QC H3G 2E9",
+			"center_location": [0,0],
             "location": [45.4977458,-73.5794691],
+            "floor_maps": [],
             "coordinates": [
                 [45.497852, -73.579306],
                 [45.497809, -73.579230],
@@ -732,13 +778,13 @@
                 [45.497741, -73.579412]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Theological Studies"
@@ -748,9 +794,11 @@
             ]
         },{
             "name": "MI Annex",
-            "initial": "MI",
+            "initial": "MIA",
             "address": "2130 Bishop St, Montreal, QC H3G 2E9",
+			"center_location": [0,0],
             "location": [45.4977939,-73.5798062],
+            "floor_maps": [],
             "coordinates": [
                 [45.497809, -73.579230],
                 [45.497779, -73.579169],
@@ -760,11 +808,11 @@
                 [45.497644, -73.579391]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
                 ["Saturday", "closed"],
                 ["Sunday", "closed"]
             ],
@@ -780,23 +828,37 @@
             ]
         },{
         "name": "Samuel Bronfman Building",
-        "initial": "SB",
+        "initial": "SBB",
         "address": "1590 Docteur Penfield, Montreal, QC",
-        "location": [45.4965936,-73.5882774],
-        "coordinates": [ //to update
-            [0,0],
-            [0,0],
-            [0,0],
-            [0,0]
+		"center_location": [45.496584, -73.586079],
+        "location": [45.496597, -73.586112],
+        "floor_maps": [],
+        "coordinates": [
+            [45.4964377, -73.5862048],
+            [45.4964988, -73.5862092],
+            [45.4965061, -73.5861358],
+            [45.4965202, -73.5861358],
+            [45.4965191, -73.5861673],
+            [45.4965388, -73.5862102],
+            [45.4966824, -73.5860861],
+            [45.4966523, -73.5860124],
+            [45.4966582, -73.5860080],
+            [45.4965818, -73.5858297],
+            [45.4965722, -73.5858394],
+            [45.4965522, -73.5857951],
+            [45.4965101, -73.5857931],
+            [45.4965099, -73.5857790],
+            [45.4964927, -73.5857415],
+            [45.4964671, -73.5857398]
         ],
         "open_hours": [ 
-            ["Monday", "9a.m.-5p.m."],
-            ["Tuesday", "9a.m.-5p.m."],
-            ["Wednesday", "9a.m.-5p.m."],
-            ["Thursday", "9a.m.-5p.m."],
-            ["Friday", "9a.m.-5p.m."],
-            ["Saturday", "9a.m.-5p.m."],
-            ["Sunday", "9a.m.-5p.m."]
+            ["Monday", "7a.m.-11p.m."],
+            ["Tuesday", "7a.m.-11p.m."],
+            ["Wednesday", "7a.m.-11p.m."],
+            ["Thursday", "7a.m.-11p.m."],
+            ["Friday", "7a.m.-11p.m."],
+            ["Saturday", "7a.m.-11p.m."],
+            ["Sunday", "7a.m.-11p.m."]
         ],
         "departments": [ 
             "None"
@@ -806,49 +868,30 @@
         ]
     },{
         "name": "GS Building",
-        "initial": "GS",
+        "initial": "GSB",
         "address": "1538 Sherbrooke St W, Montreal, QC H3H 2L9",
-        "location": [45.4965115,-73.5813888],
-        "coordinates": [ //to update
-            [0,0],
-            [0,0],
-            [0,0],
-            [0,0]
+        "center_location": [45.496572, -73.581139],
+		"location": [45.496729, -73.581239],
+        "floor_maps": [],
+        "coordinates": [
+            [45.496578, -73.581435],
+            [45.496627, -73.581451],
+            [45.496785, -73.581302],
+            [45.496711, -73.581130],
+            [45.496653, -73.581170],
+            [45.496518, -73.580805],
+            [45.496477, -73.580844],
+            [45.496487, -73.580871],
+            [45.496415, -73.580942]
         ],
         "open_hours": [ 
-            ["Monday", "9a.m.-5p.m."],
-            ["Tuesday", "9a.m.-5p.m."],
-            ["Wednesday", "9a.m.-5p.m."],
-            ["Thursday", "9a.m.-5p.m."],
-            ["Friday", "9a.m.-5p.m."],
-            ["Saturday", "9a.m.-5p.m."],
-            ["Sunday", "9a.m.-5p.m."]
-        ],
-        "departments": [ 
-            "None"
-        ],
-        "services": [ 
-            "None"
-        ]
-    },{
-        "name": "CB Building",
-        "initial": "CB",
-        "address": "1425 René-Lévesque Blvd W, Montreal, QC H3G 1T7",
-        "location": [45.4951236,-73.576302],
-        "coordinates": [ //to update
-            [0,0],
-            [0,0],
-            [0,0],
-            [0,0]
-        ],
-        "open_hours": [ 
-            ["Monday", "9a.m.-5p.m."],
-            ["Tuesday", "9a.m.-5p.m."],
-            ["Wednesday", "9a.m.-5p.m."],
-            ["Thursday", "9a.m.-5p.m."],
-            ["Friday", "9a.m.-5p.m."],
-            ["Saturday", "9a.m.-5p.m."],
-            ["Sunday", "9a.m.-5p.m."]
+            ["Monday", "7a.m.-11p.m."],
+            ["Tuesday", "7a.m.-11p.m."],
+            ["Wednesday", "7a.m.-11p.m."],
+            ["Thursday", "7a.m.-11p.m."],
+            ["Friday", "7a.m.-11p.m."],
+            ["Saturday", "7a.m.-11p.m."],
+            ["Sunday", "7a.m.-11p.m."]
         ],
         "departments": [ 
             "None"
@@ -858,9 +901,11 @@
         ]
     },{
         "name": "Grey Nuns Annex",
-        "initial": "GA",
+        "initial": "GNA",
         "address": "1211 Rue Saint Mathieu, Montréal, QC H3H 2S2",
+		"center_location": [0,0],
         "location": [45.4941589,-73.5789745],
+        "floor_maps": [],
         "coordinates": [
             [45.493851, -73.578358],
             [45.493793, -73.578248],
@@ -869,18 +914,16 @@
             [45.494286, -73.577628],
             [45.494346, -73.577735],
             [45.494119, -73.577983],
-            [45.494134, -73.578009],
-            [45.493846, -73.578351]
-
+            [45.494134, -73.578009]
         ],
         "open_hours": [ 
-            ["Monday", "9a.m.-5p.m."],
-            ["Tuesday", "9a.m.-5p.m."],
-            ["Wednesday", "9a.m.-5p.m."],
-            ["Thursday", "9a.m.-5p.m."],
-            ["Friday", "9a.m.-5p.m."],
-            ["Saturday", "9a.m.-5p.m."],
-            ["Sunday", "9a.m.-5p.m."]
+            ["Monday", "7a.m.-11p.m."],
+            ["Tuesday", "7a.m.-11p.m."],
+            ["Wednesday", "7a.m.-11p.m."],
+            ["Thursday", "7a.m.-11p.m."],
+            ["Friday", "7a.m.-11p.m."],
+            ["Saturday", "7a.m.-11p.m."],
+            ["Sunday", "7a.m.-11p.m."]
         ],
         "departments": [ 
             "Department of Education"
@@ -890,23 +933,25 @@
         ]
     },{
         "name": "CL Annex",
-        "initial": "CL",
+        "initial": "CLA",
         "address": "1665 Saint-Catherine St W, Montreal, QC H3H 1L9",
-        "location": [45.4939465,-73.5791085],
+		"center_location": [0,0],
+        "location": [45.494313, -73.578934],
+        "floor_maps": [],
         "coordinates": [
-            [0,0],
-            [0,0],
-            [0,0],
-            [0,0]
+            [45.494397, -73.579010],
+            [45.494327, -73.578841],
+            [45.494266, -73.578923],
+            [45.494351, -73.579060]
         ],
         "open_hours": [ 
-            ["Monday", "9a.m.-5p.m."],
-            ["Tuesday", "9a.m.-5p.m."],
-            ["Wednesday", "9a.m.-5p.m."],
-            ["Thursday", "9a.m.-5p.m."],
-            ["Friday", "9a.m.-5p.m."],
-            ["Saturday", "9a.m.-5p.m."],
-            ["Sunday", "9a.m.-5p.m."]
+            ["Monday", "7a.m.-11p.m."],
+            ["Tuesday", "7a.m.-11p.m."],
+            ["Wednesday", "7a.m.-11p.m."],
+            ["Thursday", "7a.m.-11p.m."],
+            ["Friday", "7a.m.-11p.m."],
+            ["Saturday", "7a.m.-11p.m."],
+            ["Sunday", "7a.m.-11p.m."]
         ],
         "departments": [ 
             "None"
@@ -918,23 +963,23 @@
         "name": "Learning Square",
         "initial": "LS",
         "address": "1535 Boulevard de Maisonneuve O, Montréal, QC H3G 1M9",
+		"center_location": [45.496279, -73.579482],
         "location": [45.4962049,-73.5795302],
+        "floor_maps": [],
         "coordinates": [
             [45.496143, -73.579461],
             [45.496239, -73.579691],
-            [45.496427, -73.579503],
-            [45.496361, -73.579272] //tochange
-
-
+            [45.496442, -73.579481],
+            [45.496361, -73.579272]
         ],
         "open_hours": [ 
-            ["Monday", "9a.m.-5p.m."],
-            ["Tuesday", "9a.m.-5p.m."],
-            ["Wednesday", "9a.m.-5p.m."],
-            ["Thursday", "9a.m.-5p.m."],
-            ["Friday", "9a.m.-5p.m."],
-            ["Saturday", "9a.m.-5p.m."],
-            ["Sunday", "9a.m.-5p.m."]
+            ["Monday", "7a.m.-11p.m."],
+            ["Tuesday", "7a.m.-11p.m."],
+            ["Wednesday", "7a.m.-11p.m."],
+            ["Thursday", "7a.m.-11p.m."],
+            ["Friday", "7a.m.-11p.m."],
+            ["Saturday", "7a.m.-11p.m."],
+            ["Sunday", "7a.m.-11p.m."]
         ],
         "departments": [ 
             "None"
@@ -947,9 +992,11 @@
     ],
     "LOY_buildings": [{
             "name": "Psychology Building",
-            "initial": "PY",
+            "initial": "PB",
             "address": "Refectory, Montreal, Quebec H4B 2Z3",
-            "location": [45.4587676,-73.6405752],
+			"center_location": [45.458997, -73.640475],
+            "location": [45.458997, -73.640475],
+            "floor_maps": [],
             "coordinates": [
                 [45.459285, -73.640559],
                 [45.459199, -73.640621],
@@ -960,13 +1007,13 @@
                 [45.459117, -73.640113]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Psychology",
@@ -977,9 +1024,11 @@
             ]
         }, {
             "name": "Richard J. Renaud Science Complex",
-            "initial": "SP",
-            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 2A7",
-            "location": [45.4580449,-73.6409915],
+            "initial": "RJNSC",
+            "address": "3475 Rue West Broadway Montreal, QC H4B 2A7",
+            "center_location": [45.457826, -73.641522],
+			"location": [45.457972, -73.641366],
+            "floor_maps": [],
             "coordinates": [
                 [45.458323, -73.641412],
                 [45.457673, -73.641924],
@@ -1011,13 +1060,13 @@
                 [45.458277, -73.641283]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Loyola and Jesuit Hall and Conference Centre",
@@ -1028,9 +1077,11 @@
             ]
         }, {
             "name": "Central Building",
-            "initial": "CC",
+            "initial": "CB",
             "address": "7141 Rue Sherbrooke O, Montréal, QC H4B 2B5",
-            "location": [45.4582843,-73.6405332],
+			"center_location": [45.458302, -73.640313],
+            "location": [45.458251, -73.640353],
+            "floor_maps": [],
             "coordinates": [
                 [45.458527, -73.640695],
                 [45.458427, -73.640453],
@@ -1046,13 +1097,13 @@
                 [45.458308, -73.640814]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "None"
@@ -1063,9 +1114,11 @@
             ]
         }, {
             "name": "Communication Studies and Journalism Building",
-            "initial": "CJ",
+            "initial": "CSaJB",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4573251,-73.6407986],
+			"center_location": [45.457361, -73.639928],
+            "location": [45.457448, -73.640104],
+            "floor_maps": [],
             "coordinates": [
                 [45.457830, -73.640483],
                 [45.457755, -73.640293],
@@ -1094,13 +1147,13 @@
                 [45.457652, -73.640631]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Communication Studies",
@@ -1111,9 +1164,11 @@
             ]
         }, {
             "name": "Administration Building",
-            "initial": "AD",
+            "initial": "AB",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4581092,-73.6402212],
+			"center_location": [45.458094, -73.639797],
+            "location": [45.458072, -73.639740],
+            "floor_maps": [],
             "coordinates": [
                 [45.458376, -73.639773],
                 [45.458249, -73.639445],
@@ -1133,13 +1188,13 @@
                 [45.458300, -73.639828]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Faculty of Arts & Science"
@@ -1157,9 +1212,11 @@
             ]
         }, {
             "name": "Loyola Jesuit and Conference Centre",
-            "initial": "RF",
+            "initial": "LJaCC",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4584073,-73.6406743],
+			"center_location": [45.458560, -73.641017],
+            "location": [45.458528, -73.640930],
+            "floor_maps": [],
             "coordinates": [
                 [45.458743, -73.640962],
                 [45.458693, -73.640836],
@@ -1171,13 +1228,13 @@
                 [45.458432, -73.641198]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "Loyola Jesuit and Hall and Conference Centre",
@@ -1186,20 +1243,43 @@
             "services": [
                 "None"
             ]
-        }, {//change the coordinates for buildings below
+        }, {
             "name": "Vanier Library Building",
-            "initial": "VL",
+            "initial": "VLB",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4584073,-73.6406743],
+			"center_location": [45.459015, -73.638561],
+            "location": [45.458831, -73.638801],
+            "floor_maps": [],
             "coordinates": [
-                [45.458743, -73.640962],
-                [45.458693, -73.640836],
-                [45.458573, -73.640919],
-                [45.458528, -73.640809],
-                [45.458448, -73.640865],
-                [45.458496, -73.640990],
-                [45.458378, -73.641071],
-                [45.458432, -73.641198]
+                [45.4593010, -73.6386709],
+                [45.4593099, -73.6386635],
+                [45.4591307, -73.6381961],
+                [45.4592114, -73.6381327],
+                [45.4591375, -73.6379403],
+                [45.4591305, -73.6379450],
+                [45.4591213, -73.6379182],
+                [45.4591267, -73.6379148],
+                [45.4591001, -73.6378474],
+                [45.4590722, -73.6378692],
+                [45.4590813, -73.6378880],
+                [45.4590451, -73.6379161],
+                [45.4590371, -73.6378950],
+                [45.4589019, -73.6380033],
+                [45.4589101, -73.6380278],
+                [45.4588817, -73.6380499],
+                [45.4589012, -73.6380995],
+                [45.4588685, -73.6381270],
+                [45.4588864, -73.6381753],
+                [45.4588525, -73.6382031],
+                [45.4588647, -73.6382373],
+                [45.4587036, -73.6383637],
+                [45.4587170, -73.6384000],
+                [45.4589374, -73.6389515],
+                [45.4590493, -73.6388643],
+                [45.4590898, -73.6389686],
+                [45.4591940, -73.6388868],
+                [45.4591538, -73.6387842],
+                [45.4591622, -73.6387798]
             ],
             "open_hours": [
                 ["Monday", "24 hours"],
@@ -1220,16 +1300,16 @@
             "name": "Vanier Extension",
             "initial": "VE",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4584073,-73.6406743],
+			"center_location": [45.458740, -73.638587],
+            "location":[45.458673, -73.638513],
+            "floor_maps": [],
             "coordinates": [
-                [45.458743, -73.640962],
-                [45.458693, -73.640836],
-                [45.458573, -73.640919],
-                [45.458528, -73.640809],
-                [45.458448, -73.640865],
-                [45.458496, -73.640990],
-                [45.458378, -73.641071],
-                [45.458432, -73.641198]
+                [45.4587170, -73.6384000],
+                [45.4586286, -73.6384683],
+                [45.4588276, -73.6389810],
+                [45.4588360, -73.6389770],
+                [45.4588530, -73.6390192],
+                [45.4589374, -73.6389515]
             ],
             "open_hours": [
                 ["Monday", "24 hours"],
@@ -1250,25 +1330,31 @@
             "name": "Student Centre",
             "initial": "SC",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4584073,-73.6406743],
+			"center_location": [45.459119, -73.639220],
+            "location": [45.459088, -73.639238],
+            "floor_maps": [],
             "coordinates": [
-                [45.458743, -73.640962],
-                [45.458693, -73.640836],
-                [45.458573, -73.640919],
-                [45.458528, -73.640809],
-                [45.458448, -73.640865],
-                [45.458496, -73.640990],
-                [45.458378, -73.641071],
-                [45.458432, -73.641198]
+                [45.4591058, -73.6394175],
+                [45.4592144, -73.6393297],
+                [45.4592330, -73.6393816],
+                [45.4593036, -73.6393250],
+                [45.4592645, -73.6392194],
+                [45.4593165, -73.6391771],
+                [45.4592203, -73.6389273],
+                [45.4591483, -73.6389850],
+                [45.4591347, -73.6389542],
+                [45.4590780, -73.6389977],
+                [45.4590952, -73.6390423],
+                [45.4589894, -73.6391272]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "None"
@@ -1281,25 +1367,78 @@
             ]
         }, {
             "name": "F.C. Smith Building",
-            "initial": "FC",
+            "initial": "FCSB",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4584073,-73.6406743],
+			"center_location": [45.458593, -73.639293],
+            "location": [45.458583, -73.639372],
+            "floor_maps": [],
             "coordinates": [
-                [45.458743, -73.640962],
-                [45.458693, -73.640836],
-                [45.458573, -73.640919],
-                [45.458528, -73.640809],
-                [45.458448, -73.640865],
-                [45.458496, -73.640990],
-                [45.458378, -73.641071],
-                [45.458432, -73.641198]
+                [45.4585183, -73.6389334],
+                [45.4583819, -73.6390393],
+                [45.4583930, -73.6390682],
+                [45.4584158, -73.6390547],
+                [45.4584271, -73.6390859],
+                [45.4584104, -73.6390983],
+                [45.4584308, -73.6391543],
+                [45.4584264, -73.6391617],
+                [45.4584315, -73.6391795],
+                [45.4584191, -73.6391882],
+                [45.4584424, -73.6392549],
+                [45.4584565, -73.6392465],
+                [45.4584739, -73.6392871],
+                [45.4584699, -73.6392918],
+                [45.4584746, -73.6393025],
+                [45.4584793, -73.6393005],
+                [45.4584969, -73.6393501],
+                [45.4584932, -73.6393541],
+                [45.4584976, -73.6393649],
+                [45.4585014, -73.6393635],
+                [45.4585164, -73.6394031],
+                [45.4585092, -73.6394118],
+                [45.4585124, -73.6394219],
+                [45.4584866, -73.6394403],
+                [45.4585400, -73.6395892],
+                [45.4585569, -73.6395939],
+                [45.4585823, -73.6395738],
+                [45.4585903, -73.6395932],
+                [45.4585973, -73.6395902],
+                [45.4586270, -73.6396629],
+                [45.458670, -73.639687],
+                [45.4587422, -73.6396217],
+                [45.4587540, -73.6395704],
+                [45.4587236, -73.6394930],
+                [45.4587344, -73.6394839],
+                [45.4587100, -73.6394192],
+                [45.4587182, -73.6394125],
+                [45.4587043, -73.6393723],
+                [45.4587194, -73.6393595],
+                [45.4587196, -73.6393538],
+                [45.4587455, -73.6393313],
+                [45.4587295, -73.6392965],
+                [45.4587041, -73.6393139],
+                [45.4586994, -73.6393025],
+                [45.4586818, -73.6393169],
+                [45.4586712, -73.6392878],
+                [45.4586639, -73.6392925],
+                [45.4586028, -73.6391335],
+                [45.4586110, -73.6391252],
+                [45.4586173, -73.6390953],
+                [45.4586046, -73.6390641],
+                [45.4585818, -73.6390558],
+                [45.4585755, -73.6390631],
+                [45.4585691, -73.6390480],
+                [45.4585602, -73.6390564],
+                [45.458539,-73.639003],
+                [45.4585211, -73.6390142],
+                [45.4585099, -73.6389820],
+                [45.4585299, -73.6389639]
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
                 ["Saturday", "closed"],
                 ["Sunday", "closed"]
             ],
@@ -1309,22 +1448,21 @@
             "services": [
                 "F.C. Smith Auditorium",
                 "Cazalet Theater",
-                "Concordia Multi-Faith and Spirituality Centre"
+                "Concordia Multi-Faith and Spirituality Centre",
+                "Hive Cafe Solidarity Cooperative"
             ]
         }, {
             "name": "PERFORM Centre",
-            "initial": "PS",
+            "initial": "PC",
             "address": "7200 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4584073,-73.6406743],
+			"center_location": [45.456934, -73.637146],
+            "location": [45.456960, -73.636988],
+            "floor_maps": [],
             "coordinates": [
-                [45.458743, -73.640962],
-                [45.458693, -73.640836],
-                [45.458573, -73.640919],
-                [45.458528, -73.640809],
-                [45.458448, -73.640865],
-                [45.458496, -73.640990],
-                [45.458378, -73.641071],
-                [45.458432, -73.641198]
+                [45.457015, -73.637854],
+                [45.457287, -73.637626],
+                [45.456948, -73.636772],
+                [45.456677, -73.636987]
             ],
             "open_hours": [
                 ["Monday", "6:30a.m.-10p.m."],
@@ -1343,18 +1481,16 @@
             ]
         }, {
             "name": "Stinger Dome",
-            "initial": "DO",
+            "initial": "SD",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4584073,-73.6406743],
+			"center_location": [45.457718, -73.636200], 
+            "location": [45.457718, -73.636200],
+            "floor_maps": [],
             "coordinates": [
-                [45.458743, -73.640962],
-                [45.458693, -73.640836],
-                [45.458573, -73.640919],
-                [45.458528, -73.640809],
-                [45.458448, -73.640865],
-                [45.458496, -73.640990],
-                [45.458378, -73.641071],
-                [45.458432, -73.641198]
+                [45.457373, -73.637083],
+                [45.458334, -73.635959],
+                [45.457926, -73.635243],
+                [45.456965, -73.636361]
             ],
             "open_hours": [
                 ["Monday", "9a.m.-11p.m."],
@@ -1375,16 +1511,28 @@
             "name": "Jesuit Residence",
             "initial": "JR",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4584073,-73.6406743],
+			"center_location": [45.458523, -73.643239],
+            "location": [45.458613, -73.643201],
+            "floor_maps": [],
             "coordinates": [
-                [45.458743, -73.640962],
-                [45.458693, -73.640836],
-                [45.458573, -73.640919],
-                [45.458528, -73.640809],
-                [45.458448, -73.640865],
-                [45.458496, -73.640990],
-                [45.458378, -73.641071],
-                [45.458432, -73.641198]
+                    [45.458495, -73.643400],
+                    [45.458558, -73.643347],
+                    [45.458566, -73.643363],
+                    [45.458633, -73.643309],
+                    [45.458606, -73.643234],
+                    [45.458623, -73.643220],
+                    [45.458583, -73.643121],
+                    [45.458569, -73.643132],
+                    [45.458539, -73.643057],
+                    [45.458486, -73.643100],
+                    [45.458490, -73.643114],
+                    [45.458479, -73.643122],
+                    [45.458468, -73.643097],
+                    [45.458397, -73.643154],
+                    [45.458426, -73.643229],
+                    [45.458410, -73.643243],
+                    [45.458449, -73.643340],
+                    [45.458465, -73.643329]
             ],
             "open_hours": [
                 ["Monday", "24 hours"],
@@ -1403,27 +1551,36 @@
             ]
         }, {
             "name": "Physical Services Building",
-            "initial": "PS",
-            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
-            "location": [45.4584073,-73.6406743],
+            "initial": "PSB",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 2B9",
+			"center_location": [45.459641, -73.639742],
+            "location": [45.4594836,-73.6393499],
+            "floor_maps": [],
             "coordinates": [
-                [45.458743, -73.640962],
-                [45.458693, -73.640836],
-                [45.458573, -73.640919],
-                [45.458528, -73.640809],
-                [45.458448, -73.640865],
-                [45.458496, -73.640990],
-                [45.458378, -73.641071],
-                [45.458432, -73.641198]
+                [45.4597055, -73.6403124],
+                [45.4598510, -73.6401970],
+                [45.4598618, -73.6402265],
+                [45.4599780, -73.6401360],
+                [45.4596615, -73.6393236],
+                [45.4596210, -73.6393548],
+                [45.4595764, -73.6392308],
+                [45.4592857, -73.6394571],
+                [45.4593337, -73.6395778],
+                [45.4594026, -73.6395261],
+                [45.4594442, -73.6396334],
+                [45.4594143, -73.6396572],
+                [45.4596065, -73.6401578],
+                [45.4596349, -73.6401370]
+
             ],
             "open_hours": [
-                ["Monday", "9a.m.-5p.m."],
-                ["Tuesday", "9a.m.-5p.m."],
-                ["Wednesday", "9a.m.-5p.m."],
-                ["Thursday", "9a.m.-5p.m."],
-                ["Friday", "9a.m.-5p.m."],
-                ["Saturday", "9a.m.-5p.m."],
-                ["Sunday", "9a.m.-5p.m."]
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
             ],
             "departments": [
                 "None"
@@ -1431,6 +1588,38 @@
             "services": [
                 "Environmental Health and Safety",
                 "Facilities Management"
+            ]
+        },{
+            "name": "Oscar Peterson Concert Hall",
+            "initial": "OSPCH",
+            "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"center_location": [45.459324, -73.638960],
+            "location": [45.459355, -73.638976],
+            "floor_maps": [],
+            "coordinates": [
+                [45.4593165, -73.6391771],
+                [45.4593344, -73.6392204],
+                [45.4593508, -73.6392086],
+                [45.4593598, -73.6392308],
+                [45.4594813, -73.6391359],
+                [45.4593010, -73.6386709],
+                [45.4591622, -73.6387798],
+                [45.4592203, -73.6389273]
+            ],
+            "open_hours": [
+                ["Monday", "7a.m.-11p.m."],
+                ["Tuesday", "7a.m.-11p.m."],
+                ["Wednesday", "7a.m.-11p.m."],
+                ["Thursday", "7a.m.-11p.m."],
+                ["Friday", "7a.m.-11p.m."],
+                ["Saturday", "7a.m.-11p.m."],
+                ["Sunday", "7a.m.-11p.m."]
+            ],
+            "departments": [
+                "None"
+            ],
+            "services": [
+                "Oscar Peterson Concert Hall"
             ]
         }
     ]

@@ -14,12 +14,11 @@ import com.droidhats.campuscompass.roomdb.ShuttleBus_SGW_Entity
  */
 class NavigationViewModel: AndroidViewModel {
 
-    private  var navigationRepository: NavigationRepository
+    private  var navigationRepository: NavigationRepository = NavigationRepository.getInstance(getApplication())
     private  var loyolaShuttleTimes: LiveData<List<ShuttleBus_Loyola_Entity>>
     private  var sgwShuttleTimes: LiveData<List<ShuttleBus_SGW_Entity>>
 
     constructor(application: Application) : super(application) {
-        navigationRepository = NavigationRepository(application)
         loyolaShuttleTimes  =  navigationRepository.getLoyolaShuttleTime()
         sgwShuttleTimes = navigationRepository.getSGWShuttleTime()
     }
