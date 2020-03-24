@@ -23,7 +23,7 @@ class MapViewModelTest {
         val loyola: String = "Loyola"
 
         // Assert that the proper campuses are there
-        Assert.assertEquals(sgw, campuses[0].getName())
-        Assert.assertEquals(loyola, campuses[1].getName())
+        Assert.assertEquals(sgw, campuses[0].name)
+        Assert.assertEquals(loyola, campuses[1].name)
     }
 }

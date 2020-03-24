@@ -94,7 +94,7 @@ class MapRepositoryTest {
         // Assert building variables were well assigned
         val buildings: List<Building> = instance.getCampuses()[0].getBuildings()
         val h_building: Building = buildings[0]
-        Assert.assertEquals(h_building.name, "Henry F. Hall Building", h_building.getName())
+        Assert.assertEquals(h_building.name, "Henry F. Hall Building", h_building.name)
         Assert.assertEquals(h_building.getOpenHours(), "Monday\t7a.m.-11p.m.\n" +
                 "Tuesday\t7a.m.-11p.m.\n" +
                 "Wednesday\t7a.m.-11p.m.\n" +
