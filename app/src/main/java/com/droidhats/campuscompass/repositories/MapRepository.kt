@@ -50,14 +50,14 @@ class MapRepository(applicationContext: Context) {
         //TODO: Refactor LatLng to not have to hardcode these values (get them from the JSON)
         campuses.add(
             Campus(
-                LatLng(45.495637, -73.578235),
+                LatLng(45.495784, -73.577197),
                 "SGW",
                 getBuildingsFromJSON("SGW")
             )
         )
         campuses.add(
             Campus(
-                LatLng(45.458159, -73.640450),
+                LatLng(45.458220, -73.639702),
                 "Loyola",
                 getBuildingsFromJSON("Loyola")
             )
@@ -138,7 +138,7 @@ class MapRepository(applicationContext: Context) {
                     polygonCoordinatesList.add(LatLng(latCoordinate, longCoordinate))
                 }
 
-                buildingsList.add(Building(buildingLocation, buildingCenterLocation, buildingName, polygonCoordinatesList, buildingAddress, buildingPlaceId, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
+                buildingsList.add(Building(buildingLocation, buildingName, buildingCenterLocation, polygonCoordinatesList, buildingAddress, buildingPlaceId, hoursBuilder.toString(), getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
             }
         } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +

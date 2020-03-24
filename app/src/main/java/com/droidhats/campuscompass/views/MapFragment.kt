@@ -343,11 +343,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Setting Toggle button listener
         toggleButton.setOnCheckedChangeListener { _, onSwitch ->
             if (onSwitch) {
-                campusView = LatLng(45.495637, -73.578235)
-                moveTo(campusView, 17.5f)
+                campusView = LatLng(45.458220, -73.639702)
+                moveTo(campusView, 16f)
             } else {
-                campusView = LatLng(45.458159, -73.640450)
-                moveTo(campusView, 17.5f)
+                campusView = LatLng(45.495784, -73.577197)
+                moveTo(campusView, 16f)
             }
             dismissBottomSheet()
         }
