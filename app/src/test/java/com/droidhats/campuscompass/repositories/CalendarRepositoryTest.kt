@@ -2,7 +2,6 @@ package com.droidhats.campuscompass.repositories
 
 import android.os.Build
 import com.droidhats.campuscompass.models.Calendar
-import com.droidhats.campuscompass.models.CalendarEvent
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,7 +23,7 @@ class CalendarRepositoryTest {
     @Test
     fun testSingleton() {
         val testCalRepository: CalendarRepository = CalendarRepository.getInstance()
-        val cal1: Calendar = Calendar(
+        val cal1 = Calendar(
             "123",
             "Account",
             "Type",
@@ -32,11 +31,11 @@ class CalendarRepositoryTest {
             "Owner",
             "color",
             true,
-            arrayListOf<CalendarEvent>()
+            arrayListOf()
         )
 
         // won't set any actual calendars because the resolver.query returns null
-        testCalRepository.setCalendars(mutableMapOf<String, Calendar>("cal1" to cal1))
+        testCalRepository.setCalendars(mutableMapOf("cal1" to cal1))
 
         // asserts that the value of one changed to an instance is the same referenced
         // by another instance
@@ -52,7 +51,7 @@ class CalendarRepositoryTest {
         val calendars: MutableMap<String, Calendar>? =
             calendarRepository.getCalendars(RuntimeEnvironment.systemContext).value
 
-        val emptyMap: MutableMap<String, Calendar> = mutableMapOf<String, Calendar>()
+        val emptyMap: MutableMap<String, Calendar> = mutableMapOf()
 
         // Asserting that null query does not initialize a map
         Assert.assertEquals(calendars, emptyMap)

@@ -16,10 +16,10 @@ import com.google.android.gms.maps.GoogleMap
  * @param activity: Used to check the location permission from the main activity.
  */
 class Map(
-    var googleMap: GoogleMap,
-    var mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
-    var mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
-    var mapFragmentOnCameraIdleListener: GoogleMap.OnCameraIdleListener,
+    private var googleMap: GoogleMap,
+    private var mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
+    private var mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
+    private var mapFragmentOnCameraIdleListener: GoogleMap.OnCameraIdleListener,
     var activity: FragmentActivity
 ) {
 

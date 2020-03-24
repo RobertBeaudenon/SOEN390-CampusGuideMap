@@ -93,27 +93,27 @@ class MapRepositoryTest {
     fun getBuildingsFromJSONTest() {
         // Assert building variables were well assigned
         val buildings: List<Building> = instance.getCampuses()[0].getBuildings()
-        val h_building: Building = buildings[0]
-        Assert.assertEquals(h_building.name, "Henry F. Hall Building", h_building.name)
-        Assert.assertEquals(h_building.getOpenHours(), "Monday\t7a.m.-11p.m.\n" +
+        val hBuilding: Building = buildings[0]
+        Assert.assertEquals(hBuilding.name, "Henry F. Hall Building", hBuilding.name)
+        Assert.assertEquals(hBuilding.getOpenHours(), "Monday\t7a.m.-11p.m.\n" +
                 "Tuesday\t7a.m.-11p.m.\n" +
                 "Wednesday\t7a.m.-11p.m.\n" +
                 "Thursday\t7a.m.-11p.m.\n" +
                 "Friday\t7a.m.-11p.m.\n" +
                 "Saturday\t7a.m.-11p.m.\n" +
-                "Sunday\t7a.m.-11p.m.\n", h_building.getOpenHours())
-        Assert.assertEquals(h_building.getLocation(), LatLng(45.497320, -73.579031))
-        Assert.assertEquals(h_building.getAddress(), "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8", h_building.getAddress())
-        Assert.assertEquals(h_building.getDepartments(), "Geography, Planning and Environment\n" +
+                "Sunday\t7a.m.-11p.m.\n", hBuilding.getOpenHours())
+        Assert.assertEquals(hBuilding.getLocation(), LatLng(45.497320, -73.579031))
+        Assert.assertEquals(hBuilding.getAddress(), "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8", hBuilding.getAddress())
+        Assert.assertEquals(hBuilding.getDepartments(), "Geography, Planning and Environment\n" +
                 "Political Science, Sociology and Anthropology, Economics\n" +
-                "School of Irish Studies\n", h_building.getDepartments())
-        Assert.assertEquals(h_building.getServices(), "Welcome Crew Office\n" +
+                "School of Irish Studies\n", hBuilding.getDepartments())
+        Assert.assertEquals(hBuilding.getServices(), "Welcome Crew Office\n" +
                 "DB Clarke Theatre\n" +
                 "Dean of Students\n" +
                 "Aboriginal Student Resource Centre\n" +
-                "Concordia Student Union\n", h_building.getServices())
+                "Concordia Student Union\n", hBuilding.getServices())
 
-        val buildingPolygonOptionsOptions: PolygonOptions = h_building.getPolygonOptions()
+        val buildingPolygonOptionsOptions: PolygonOptions = hBuilding.getPolygonOptions()
         Assert.assertEquals(buildingPolygonOptionsOptions.fillColor, 4289544510.toInt())
         Assert.assertEquals(buildingPolygonOptionsOptions.strokeWidth, 2F)
         Assert.assertTrue(buildingPolygonOptionsOptions.isClickable)
@@ -126,7 +126,7 @@ class MapRepositoryTest {
         )
         Assert.assertEquals(buildingPolygonOptionsOptions.points, coordinates)
 
-        val markerOptions: MarkerOptions = h_building.getMarkerOptions()
+        val markerOptions: MarkerOptions = hBuilding.getMarkerOptions()
         Assert.assertEquals(markerOptions.position, LatLng(45.497320, -73.579031))
         Assert.assertEquals(markerOptions.anchorU, 0.5f)
         Assert.assertEquals(markerOptions.anchorV, 0.5f)

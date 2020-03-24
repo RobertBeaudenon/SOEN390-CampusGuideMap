@@ -57,17 +57,17 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
     ): GoogleMap
     {
         //Get initialized map from Map Model.
-        var initializedGoogleMap: GoogleMap = Map(googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener, mapFragmentOnCameraIdleListener, activity).getMap()
+        val initializedGoogleMap: GoogleMap = Map(googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener, mapFragmentOnCameraIdleListener, activity).getMap()
 
         //Highlight the buildings in both SGW and Loyola Campuses
         for (building in this.buildings!!) {
             initializedGoogleMap.addPolygon(building.getPolygonOptions()).tag = building.name
-            var polygon: Polygon = initializedGoogleMap.addPolygon(building.getPolygonOptions())
+            val polygon: Polygon = initializedGoogleMap.addPolygon(building.getPolygonOptions())
             building.setPolygon(polygon)
             
             // Place marker on buildings that have center locations specified in buildings.json  
             if(building.hasCenterLocation()){
-                var marker: Marker = initializedGoogleMap.addMarker(building.getMarkerOptions())
+                val marker: Marker = initializedGoogleMap.addMarker(building.getMarkerOptions())
                 building.setMarker(marker)
             }
         }

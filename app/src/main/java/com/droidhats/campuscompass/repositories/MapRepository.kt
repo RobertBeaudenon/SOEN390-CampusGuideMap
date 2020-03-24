@@ -58,19 +58,19 @@ class MapRepository(applicationContext: Context) {
     private fun initializeCampuses() {
 
         // Parse the json object to read the lat and lang coordinates of both campuses
-        val SGW_LatCoordinate: Double = jsonObject.getJSONArray("SGW_Campus_Location")[0].toString().toDouble()
-        val SGW_LongCoordinate: Double = jsonObject.getJSONArray("SGW_Campus_Location")[1].toString().toDouble()
-        val Loyola_LatCoordinate: Double = jsonObject.getJSONArray("Loyola_Campus_Location")[0].toString().toDouble()
-        val Loyola_LongCoordinate: Double = jsonObject.getJSONArray("Loyola_Campus_Location")[1].toString().toDouble()
-        val SGW_Campus_Coordinates = LatLng(SGW_LatCoordinate, SGW_LongCoordinate)
-        val Loyola_Campus_Coordinates = LatLng(Loyola_LatCoordinate, Loyola_LongCoordinate)
+        val sgwLatCoordinate: Double = jsonObject.getJSONArray("SGW_Campus_Location")[0].toString().toDouble()
+        val sgwLongCoordinate: Double = jsonObject.getJSONArray("SGW_Campus_Location")[1].toString().toDouble()
+        val loyolaLatCoordinate: Double = jsonObject.getJSONArray("Loyola_Campus_Location")[0].toString().toDouble()
+        val loyolaLongCoordinate: Double = jsonObject.getJSONArray("Loyola_Campus_Location")[1].toString().toDouble()
+        val sgwCampusCoordinates = LatLng(sgwLatCoordinate, sgwLongCoordinate)
+        val loyolaCampusCoordinates = LatLng(loyolaLatCoordinate, loyolaLongCoordinate)
 
         // Initialize both campuses using the parsed coordinates and the list of buildings.
         campuses.add(
-            Campus(SGW_Campus_Coordinates, "SGW", getBuildingsFromJSON("SGW"))
+            Campus(sgwCampusCoordinates, "SGW", getBuildingsFromJSON("SGW"))
         )
         campuses.add(
-            Campus(Loyola_Campus_Coordinates, "Loyola", getBuildingsFromJSON("Loyola"))
+            Campus(loyolaCampusCoordinates, "Loyola", getBuildingsFromJSON("Loyola"))
         )
     }
 
@@ -81,9 +81,9 @@ class MapRepository(applicationContext: Context) {
      * @param campusName: Specifies which campus data will be processed.
      */
     private fun getBuildingsFromJSON(campusName: String): List<Building> {
-        var buildingsList: MutableList<Building> = mutableListOf()
+        val buildingsList: MutableList<Building> = mutableListOf()
         try {
-            var buildingsArray : JSONArray = when (campusName) {
+            val buildingsArray : JSONArray = when (campusName) {
                 // Important that at the creation of the campus object, its name is either SGW or
                 // Loyola; otherwise the parsing fails
                 "SGW" -> {
@@ -125,13 +125,13 @@ class MapRepository(applicationContext: Context) {
                     buildingCenterLocationArray[0].toString().toDouble(),
                     buildingCenterLocationArray[1].toString().toDouble()
                 )
-                var buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)!!
+                val buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)!!
 
                 coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
-                var openHoursArray = buildingsArray.getJSONObject(i).getJSONArray("open_hours")
-                var polygonCoordinatesList: MutableList<LatLng> = mutableListOf()
+                val openHoursArray = buildingsArray.getJSONObject(i).getJSONArray("open_hours")
+                val polygonCoordinatesList: MutableList<LatLng> = mutableListOf()
 
-                var hoursBuilder = StringBuilder()
+                val hoursBuilder = StringBuilder()
 
                 //Traverse each opening hours array of each building
                 for(j in 0 until openHoursArray.length()) {
@@ -214,7 +214,6 @@ class MapRepository(applicationContext: Context) {
             "Grey Nuns Building" -> R.drawable.building_grey_nuns
             "Samuel Bronfman Building" -> R.drawable.building_sb
             "GS Building" -> R.drawable.building_gs
-            "CB Building" -> R.drawable.building_cb
             "Grey Nuns Annex" -> R.drawable.building_ga
             "CL Annex" -> R.drawable.building_cl
             "Q Annex" -> R.drawable.building_q
@@ -234,7 +233,6 @@ class MapRepository(applicationContext: Context) {
             "MI Annex" -> R.drawable.building_mi
             "Psychology Building" -> R.drawable.building_p
             "Richard J. Renaud Science Complex" -> R.drawable.building_rjrsc
-            "Central Building" -> R.drawable.building_cb
             "Communication Studies and Journalism Building" -> R.drawable.building_csj
             "Administration Building" -> R.drawable.building_a
             "Loyola Jesuit and Conference Centre" -> R.drawable.building_ljacc
@@ -246,6 +244,7 @@ class MapRepository(applicationContext: Context) {
             "PERFORM centre" -> R.drawable.building_pc
             "Jesuit Residence" -> R.drawable.building_jr
             "Physical Services Building" -> R.drawable.building_ps
+            "Oscar Peterson Concert Hall" -> R.drawable.building_pt
             "Learning Square" -> R.drawable.building_ls
             else -> Log.v("Error loading images", "couldn't load image")
         }

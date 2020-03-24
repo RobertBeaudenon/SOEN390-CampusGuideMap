@@ -74,7 +74,7 @@ class Building(
     }
 
     fun getPolygonOptions(): PolygonOptions {
-        var polygonOptions = PolygonOptions()
+        val polygonOptions = PolygonOptions()
             .fillColor(POLYGON_COLOR)
             .strokeWidth(2F)
             .clickable(true)

@@ -23,16 +23,16 @@
     <!--hardcoded margins for now as the search bars can expand -->
     <ToggleButton
         android:id="@+id/toggleButton"
-        android:layout_width="230.65px"
-        android:layout_height="100px"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
         android:layout_below="@+id/mapFragSearchBar"
         android:background="@drawable/toggle_switch"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:text="ToggleButton"
+        android:text="@string/togglebutton"
         android:textColor="#FFFFFF"
-        android:textOff="LOY"
-        android:textOn="SGW"
+        android:textOff="@string/loy"
+        android:textOn="@string/sgw"
         android:textSize="14sp"
         android:elevation="0dp"
         android:textStyle="bold" />

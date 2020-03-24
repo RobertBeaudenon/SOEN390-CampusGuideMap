@@ -46,25 +46,16 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.map_fragment.*
 import kotlinx.android.synthetic.main.search_bar_layout.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.IOException
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
-import java.util.Locale
 import kotlin.collections.ArrayList
 import kotlin.collections.List
-import kotlin.collections.listOf
 import kotlin.collections.MutableList
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-//import kotlinx.android.synthetic.main.bottom_sheet_layout.radioTransportGroup
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
-//import kotlinx.android.synthetic.main.map_fragment.searchBar
-//import kotlinx.android.synthetic.main.map_fragment.toggleButton
-import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * A View Fragment for the map.
@@ -91,7 +82,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private var stepInstructions: String = ""
-    internal lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
 
     private lateinit var root : View
@@ -152,7 +143,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             // If  able to retrieve the the most recent location, then move the camera to the user’s current location.
             if (location != null) {
                 lastLocation = location
-                val currentLatLng = LatLng(location.latitude, location.longitude)
+                LatLng(location.latitude, location.longitude)
                 moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
             }
         }
@@ -393,7 +384,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             
             // Place marker on buildings that have center locations specified in buildings.json
             if(building.hasCenterLocation()){
-                var marker: Marker = map!!.addMarker(building.getMarkerOptions())
+                val marker: Marker = map!!.addMarker(building.getMarkerOptions())
                 building.setMarker(marker)
             }
         }
