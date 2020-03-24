@@ -16,9 +16,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
+/**
+ * Test for buildings initials (Markers) in the map of the MapFragment class.
+ */
 @RunWith(AndroidJUnit4ClassRunner::class)
-
 class MarkerTest {
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
