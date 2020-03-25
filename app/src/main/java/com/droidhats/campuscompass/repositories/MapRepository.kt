@@ -126,7 +126,7 @@ class MapRepository(applicationContext: Context) {
                     buildingCenterLocationArray[1].toString().toDouble()
                 )
                 val buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)!!
-                var buildingMarkersIcons: Int = this.getBuildingMarkersIcons(buildingName)!!
+                val buildingMarkersIcons: Int = this.getBuildingMarkersIcons(buildingName)!!
 
                 coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
                 val openHoursArray = buildingsArray.getJSONObject(i).getJSONArray("open_hours")
