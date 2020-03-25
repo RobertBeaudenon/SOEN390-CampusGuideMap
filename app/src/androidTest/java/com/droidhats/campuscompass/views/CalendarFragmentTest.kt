@@ -200,7 +200,7 @@ class CalendarFragmentTest {
         onView(
             allOf(
                 withId(android.R.id.button1),
-                withText("OKAY"),
+                withText("OK"),
                 childAtPosition(
                     childAtPosition(
                         withClassName(`is`("android.widget.ScrollView")),

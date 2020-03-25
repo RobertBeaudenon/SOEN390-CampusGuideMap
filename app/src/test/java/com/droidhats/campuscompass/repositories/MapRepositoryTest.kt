@@ -126,13 +126,13 @@ class MapRepositoryTest {
 
         Assert.assertEquals(ptbuilding.name, "Oscar Peterson Concert Hall", ptbuilding.name)
         Assert.assertEquals(
-            ptbuilding.getOpenHours(), "Monday\t7a.m.-11p.m.\n" +
-                    "Tuesday\t7a.m.-11p.m.\n" +
-                    "Wednesday\t7a.m.-11p.m.\n" +
-                    "Thursday\t7a.m.-11p.m.\n" +
-                    "Friday\t7a.m.-11p.m.\n" +
-                    "Saturday\t7a.m.-11p.m.\n" +
-                    "Sunday\t7a.m.-11p.m.\n", ptbuilding.getOpenHours()
+            ptbuilding.getOpenHours(), "Monday\t9a.m.-5p.m.\n" +
+                    "Tuesday\t9a.m.-5p.m.\n" +
+                    "Wednesday\t9a.m.-5p.m.\n" +
+                    "Thursday\t9a.m.-5p.m.\n" +
+                    "Friday\t9a.m.-5p.m.\n" +
+                    "Saturday\t9a.m.-5p.m.\n" +
+                    "Sunday\t9a.m.-5p.m.\n", ptbuilding.getOpenHours()
         )
         Assert.assertEquals(ptbuilding.getLocation(), LatLng(45.459355, -73.638976))
         Assert.assertEquals(
