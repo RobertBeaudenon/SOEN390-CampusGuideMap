@@ -127,6 +127,7 @@ class MapRepository(applicationContext: Context) {
                     buildingCenterLocationArray[1].toString().toDouble()
                 )
                 val buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)!!
+                var buildingMarkersIcons: Int = this.getBuildingMarkersIcons(buildingName)!!
 
                 coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
                 val openHoursArray = buildingsArray.getJSONObject(i).getJSONArray("open_hours")
@@ -156,8 +157,9 @@ class MapRepository(applicationContext: Context) {
                 }
 
                 buildingsList.add(Building(buildingLocation, buildingName, buildingCenterLocation,
-                     polygonCoordinatesList, buildingAddress, buildingPlaceId, hoursBuilder.toString(),
-                    getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray), buildingImageResourceID))
+                     polygonCoordinatesList, buildingAddress, hoursBuilder.toString(),
+                    getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray),
+                    buildingImageResourceID, buildingMarkersIcons))
             }
         } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +
@@ -196,7 +198,6 @@ class MapRepository(applicationContext: Context) {
 
     /**
      * Returns the building image from drawable resources
-     *
      * @param buildingName: Used to map the building name to the building image.
      */
     private fun getBuildingImageResourceID(buildingName: String): Int? {
@@ -248,6 +249,46 @@ class MapRepository(applicationContext: Context) {
             "Oscar Peterson Concert Hall" -> R.drawable.building_pt
             "Learning Square" -> R.drawable.building_ls
             else -> Log.v("Error loading images", "couldn't load image")
+        }
+    }
+
+    /**
+     * Returns the building marker icon from drawable resources
+     * @param buildingName: Used to map the building name to the building marker icon.
+     */
+    private fun getBuildingMarkersIcons(buildingName: String) : Int?{
+
+        // The id for the building icon resource is of Int type
+        // Return the building image resource id that corresponds to the building name
+        return when (buildingName) {
+            "Henry F. Hall Building" -> R.mipmap.ic_building_h
+            "EV Building" -> R.mipmap.ic_building_ev
+            "John Molson School of Business" -> R.mipmap.ic_building_jm
+            "Faubourg Saint-Catherine Building" -> R.mipmap.ic_building_fg
+            "Guy-De Maisonneuve Building" -> R.mipmap.ic_building_gm
+            "Faubourg Building" -> R.mipmap.ic_building_fb
+            "Visual Arts Building" -> R.mipmap.ic_building_va
+            "Pavillion J.W. McConnell Building" -> R.mipmap.ic_building_lb
+            "Grey Nuns Building" -> R.mipmap.ic_building_gn
+            "Samuel Bronfman Building" -> R.mipmap.ic_building_sb
+            "GS Building" -> R.mipmap.ic_building_gs
+            "Learning Square" ->  R.mipmap.ic_building_ls
+            "Psychology Building" -> R.mipmap.ic_building_py
+            "Richard J. Renaud Science Complex" -> R.mipmap.ic_building_sp
+            "Central Building" -> R.mipmap.ic_building_cc
+            "Communication Studies and Journalism Building" -> R.mipmap.ic_building_cj
+            "Administration Building" -> R.mipmap.ic_building_ad
+            "Loyola Jesuit and Conference Centre" -> R.mipmap.ic_building_rf
+            "Vanier Library Building" -> R.mipmap.ic_building_vl
+            "Vanier Extension" -> R.mipmap.ic_building_ve
+            "Student Centre" -> R.mipmap.ic_building_sc
+            "F.C. Smith Building" ->R.mipmap.ic_building_fc
+            "Stinger Dome" -> R.mipmap.ic_building_do
+            "PERFORM Centre" -> R.mipmap.ic_building_pc
+            "Jesuit Residence" -> R.mipmap.ic_building_jr
+            "Physical Services Building" -> R.mipmap.ic_building_ps
+            "Oscar Peterson Concert Hall" -> R.mipmap.ic_building_pt
+            else -> Log.v("Error loading marker", "couldn't load marker icons")
         }
     }
 
