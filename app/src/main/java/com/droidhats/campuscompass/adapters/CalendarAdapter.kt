@@ -1,14 +1,20 @@
 package com.droidhats.campuscompass.adapters
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.views.CalendarFragment
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.CalendarEvent
+import kotlinx.android.synthetic.main.calendar_recycler_item.navigateFromEvent
 import kotlinx.android.synthetic.main.calendar_recycler_item.view.*
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -19,12 +25,13 @@ class CalendarAdapter(
 ) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
 
     private val onClickListener: View.OnClickListener
-
+    //private val listener2: SearchFragment.OnCalendarEventClickListener?
     init {
         onClickListener = View.OnClickListener { view ->
-            val item = view.tag as CalendarEvent
+             val item = view.tag as CalendarEvent
             // Notify the activity/fragment that an item has been clicked
-            listener?.onCalendarEventClick(item)
+             listener?.onCalendarEventClick(item)
+
         }
     }
 
@@ -49,9 +56,16 @@ class CalendarAdapter(
 
         holder.cardView.setCardBackgroundColor(item.color!!.toInt())
 
+
         with(holder.view) {
             tag = item
-            setOnClickListener(onClickListener)
+            holder.navButton.setOnClickListener{
+                val bundle = Bundle()
+                bundle.putString("destEventLocation",item.location )
+                findNavController().popBackStack()
+                findNavController().navigate(R.id.search_fragment, bundle)
+            }
+
         }
     }
 
@@ -70,6 +84,7 @@ class CalendarAdapter(
         val dateView: TextView = view.event_date_item
         val locationView: TextView = view.event_location_item
         var cardView: CardView = view.findViewById(R.id.calendar_card_view)
+        var navButton : ImageButton = view.findViewById(R.id.navigateFromEvent)
 
     }
 
