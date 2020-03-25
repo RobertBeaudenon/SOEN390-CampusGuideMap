@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.text.Selection
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -24,10 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.Location
-import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.*
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
@@ -99,6 +97,14 @@ class SearchFragment : Fragment()  {
         val destinationBuilding = arguments?.getParcelable<Building>("destBuilding")
         if (destinationBuilding != null) {
             showNavigationView(destinationBuilding, true)
+            arguments?.clear()
+        }
+
+        val destinationEventLocation = arguments?.getString("destEventLocation")
+        if (destinationEventLocation != null) {
+        val calendarLocation = GooglePlace("",destinationEventLocation, "", LatLng(0.0,0.0) )
+
+            showNavigationView(calendarLocation, true)
             arguments?.clear()
         }
     }
@@ -197,7 +203,7 @@ class SearchFragment : Fragment()  {
                 val coordinates = LatLng(it.latitude, it.longitude)
                 val currentLocation = GooglePlace(
                     it.toString(),
-                    "Your Location",
+                    "Your Current Location",
                     coordinates.toString(),
                     coordinates
                 )
@@ -324,7 +330,7 @@ class SearchFragment : Fragment()  {
         NavigationPoints = mutableMapOf(R.id.mainSearchBar to null, R.id.secondarySearchBar to null)
     }
 
-    fun showNavigationView(destinationPlace : Location, startFromCurrentLocation : Boolean){
+    fun showNavigationView(destinationPlace : Location, startFromCurrentLocation : Boolean ){
             isNavigationViewOpen = true
              val startNavButton = root.findViewById<ImageButton>(R.id.startNavigationButton)
              val backButton = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
@@ -351,8 +357,17 @@ class SearchFragment : Fragment()  {
              if (startFromCurrentLocation)
                  setCurrentLocation(mainBar)
 
-              destinationBar.setQuery(destinationPlace.name, false)
-              confirmSelection(destinationBar, destinationPlace, false)
+        destinationBar.setQuery(destinationPlace.name, true)
+      //  mainBar.setIconified(false)
+
+       val searchText = destinationBar.findViewById(R.id.search_src_text) as EditText
+        searchText.setSelection( destinationPlace.name.length)
+
+
+        if(!(destinationPlace is GooglePlace && destinationPlace.placeID.isEmpty())){
+            confirmSelection(destinationBar, destinationPlace, false)
+        }
+        destinationBar.isIconified = false
     }
 
     internal fun confirmSelection(searchView: SearchView, location: Location, submit: Boolean) {
