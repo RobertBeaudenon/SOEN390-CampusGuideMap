@@ -13,7 +13,10 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.NavigationRoute
-import com.droidhats.campuscompass.roomdb.*
+import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
+import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
+import com.droidhats.campuscompass.roomdb.ShuttleBusDAO
+import com.droidhats.campuscompass.roomdb.ShuttleBusDB
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places

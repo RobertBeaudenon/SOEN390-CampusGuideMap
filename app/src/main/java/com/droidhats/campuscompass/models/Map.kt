@@ -1,7 +1,5 @@
 package com.droidhats.campuscompass.models
 
-import androidx.fragment.app.FragmentActivity
-import com.droidhats.campuscompass.MainActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
