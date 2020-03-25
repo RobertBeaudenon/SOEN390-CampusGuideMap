@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
+import androidx.test.rule.GrantPermissionRule
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -28,6 +29,12 @@ class MapFragmentTest {
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
+    @Rule
+    @JvmField
+    var mGrantPermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(
+            "android.permission.ACCESS_FINE_LOCATION"
+        )
     private lateinit var navController: TestNavHostController
 
     @Before
