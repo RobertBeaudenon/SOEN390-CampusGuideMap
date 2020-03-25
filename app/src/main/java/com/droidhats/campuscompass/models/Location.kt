@@ -44,9 +44,9 @@ class Building(
     private val placeId: String,
     private val openHours: String,
     private val departments: String,
-    private val services: String
+    private val services: String,
+    private val buildingImageResId: Int
 ) : Location(), Parcelable, Observer {
-  
     private lateinit var polygon: Polygon
     private lateinit var marker: Marker
 
@@ -63,6 +63,7 @@ class Building(
     fun getOpenHours(): String = openHours
     fun getCenterLocation(): LatLng = centerLocation
     fun getPolygon(): Polygon = polygon
+    fun getBuildingImageResId(): Int = buildingImageResId
     fun getMarker(): Marker = marker
 
     fun setPolygon(polygon: Polygon){
@@ -75,7 +76,7 @@ class Building(
     }
 
     fun getPolygonOptions(): PolygonOptions {
-        var polygonOptions = PolygonOptions()
+        val polygonOptions = PolygonOptions()
             .fillColor(POLYGON_COLOR)
             .strokeWidth(2F)
             .clickable(true)

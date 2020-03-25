@@ -46,14 +46,21 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.map_fragment.*
 import kotlinx.android.synthetic.main.search_bar_layout.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.IOException
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
+import kotlin.collections.ArrayList
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
 
+/**
+ * A View Fragment for the map.
+ * It displays all the UI components of the map and dynamically interacts with the user input.
+ */
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, OnCameraIdleListener,
     Subject {
@@ -75,7 +82,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private var stepInstructions: String = ""
-    internal lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
 
     private lateinit var root : View
@@ -136,7 +143,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             // If  able to retrieve the the most recent location, then move the camera to the user’s current location.
             if (location != null) {
                 lastLocation = location
-                val currentLatLng = LatLng(location.latitude, location.longitude)
+                LatLng(location.latitude, location.longitude)
                 moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
             }
         }
@@ -370,20 +377,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun drawBuildingPolygonsAndMarkers() {
         //Highlight both SGW and Loyola Campuses
-        for (campus in viewModel.getCampuses()) {
-            for (building in campus.getBuildings()) {
-                var polygon: Polygon = map!!.addPolygon(building.getPolygonOptions())
-                polygon.tag = building.name
-                // Place marker on buildings that have center locations specified in buildings.json
-                if(building.hasCenterLocation()){
-                    var marker: Marker = map!!.addMarker(building.getMarkerOptions())
-                    building.setMarker(marker)
-                }
-
-                building.setPolygon(polygon)
+        for (building in viewModel.getBuildings()) {
+            map?.addPolygon(building.getPolygonOptions())?.tag = building.name
+            val polygon = map?.addPolygon(building.getPolygonOptions())
+            building.setPolygon(polygon!!)
+            
+            // Place marker on buildings that have center locations specified in buildings.json
+            if(building.hasCenterLocation()){
+                val marker: Marker = map!!.addMarker(building.getMarkerOptions())
+                building.setMarker(marker)
             }
         }
-    }
+   }
 
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
         map!!.clear()
@@ -505,65 +510,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             requireActivity().findViewById(R.id.bottom_sheet_departments)
         val buildingImage: ImageView = requireActivity().findViewById(R.id.building_image)
 
-        for (campus in viewModel.getCampuses()) {
-            for (building in campus.getBuildings()) {
-                if (building.name == p.tag) {
-                    buildingName.text = p.tag.toString()
-                    buildingAddress.text = building.getAddress()
-                    buildingOpenHours.text = building.getOpenHours()
-                    buildingServices.text = building.getServices()
-                    buildingDepartments.text = building.getDepartments()
-
-                    when(building.name){
-                        "Henry F. Hall Building" -> buildingImage.setImageResource(R.drawable.building_hall)
-                        "EV Building" -> buildingImage.setImageResource(R.drawable.building_ev)
-                        "John Molson School of Business" -> buildingImage.setImageResource(R.drawable.building_jmsb)
-                        "Faubourg Saint-Catherine Building" -> buildingImage.setImageResource(R.drawable.building_fg_sc)
-                        "Guy-De Maisonneuve Building" -> buildingImage.setImageResource(R.drawable.building_gm)
-                        "Faubourg Building" -> buildingImage.setImageResource(R.drawable.building_fg)
-                        "Visual Arts Building" -> buildingImage.setImageResource(R.drawable.building_va)
-                        "Pavillion J.W. McConnell Building" -> buildingImage.setImageResource(R.drawable.building_webster_library)
-                        "Grey Nuns Building" -> buildingImage.setImageResource(R.drawable.building_grey_nuns)
-                        "Samuel Bronfman Building" -> buildingImage.setImageResource(R.drawable.building_sb)
-                        "GS Building" -> buildingImage.setImageResource(R.drawable.building_gs)
-                        "Learning Square" -> buildingImage.setImageResource(R.drawable.building_ls)
-                        "Grey Nuns Annex" -> buildingImage.setImageResource(R.drawable.building_ga)
-                        "CL Annex" -> buildingImage.setImageResource(R.drawable.building_cl)
-                        "Q Annex" -> buildingImage.setImageResource(R.drawable.building_q)
-                        "T Annex" -> buildingImage.setImageResource(R.drawable.building_t)
-                        "RR Annex" -> buildingImage.setImageResource(R.drawable.building_rr)
-                        "R Annex" -> buildingImage.setImageResource(R.drawable.building_r)
-                        "FA Annex" -> buildingImage.setImageResource(R.drawable.building_fa)
-                        "LD Building" -> buildingImage.setImageResource(R.drawable.building_ld)
-                        "X Annex" -> buildingImage.setImageResource(R.drawable.building_x)
-                        "Z Annex" -> buildingImage.setImageResource(R.drawable.building_z)
-                        "V Annex" -> buildingImage.setImageResource(R.drawable.building_v)
-                        "S Annex" -> buildingImage.setImageResource(R.drawable.building_s)
-                        "CI Annex" -> buildingImage.setImageResource(R.drawable.building_ci)
-                        "MU Annex" -> buildingImage.setImageResource(R.drawable.building_mu)
-                        "B Annex" -> buildingImage.setImageResource(R.drawable.building_b)
-                        "D Annex" -> buildingImage.setImageResource(R.drawable.building_d)
-                        "MI Annex" -> buildingImage.setImageResource(R.drawable.building_mi)
-                        "Psychology Building" -> buildingImage.setImageResource(R.drawable.building_p)
-                        "Richard J. Renaud Science Complex" -> buildingImage.setImageResource(R.drawable.building_rjrsc)
-                        "Central Building" -> buildingImage.setImageResource(R.drawable.building_cb)
-                        "Communication Studies and Journalism Building" -> buildingImage.setImageResource(R.drawable.building_csj)
-                        "Administration Building" -> buildingImage.setImageResource(R.drawable.building_a)
-                        "Loyola Jesuit and Conference Centre" -> buildingImage.setImageResource(R.drawable.building_ljacc)
-                        "Vanier Library Building" -> buildingImage.setImageResource(R.drawable.building_vl)
-                        "Vanier Extension" -> buildingImage.setImageResource(R.drawable.building_ve)
-                        "Student Centre" -> buildingImage.setImageResource(R.drawable.building_sc)
-                        "F.C. Smith Building" -> buildingImage.setImageResource(R.drawable.building_fc)
-                        "Stinger Dome" -> buildingImage.setImageResource(R.drawable.building_do)
-                        "PERFORM Center" -> buildingImage.setImageResource(R.drawable.building_pc)
-                        "Jesuit Residence" -> buildingImage.setImageResource(R.drawable.building_jr)
-                        "Physical Services Building" -> buildingImage.setImageResource(R.drawable.building_ps)
-                        "Oscar Peterson Concert Hall" -> buildingImage.setImageResource(R.drawable.building_pt)
-
-                        else -> Log.v("Error loading images", "couldn't load image")
-                    }
-                    //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
-                }
+        for (building in viewModel.getBuildings()) {
+            if (building.getPolygon().tag == p.tag) {
+                buildingName.text = p.tag.toString()
+                buildingAddress.text = building.getAddress()
+                buildingOpenHours.text = building.getOpenHours()
+                buildingServices.text = building.getServices()
+                buildingDepartments.text = building.getDepartments()
+                buildingImage.setImageResource(building.getBuildingImageResId())
+                //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -83,7 +82,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         }.addOnFailureListener {
             if (it is ApiException) {
                 val apiException =  it
-                Log.e(ContentValues.TAG, "Place not found: " + apiException.statusCode)
+                Log.e(TAG, "Place not found: " + apiException.statusCode)
             }
         }
         return success

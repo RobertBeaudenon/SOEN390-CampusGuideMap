@@ -7,7 +7,7 @@
     android:id="@+id/coordinate_layout"
     tools:context=".views.MapFragment">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="165dp"
-        android:text="Instructions"
+        android:text="@string/instructions"
         android:background="#791b0f"
         android:textColor="#FFF"
         android:textAllCaps="false"

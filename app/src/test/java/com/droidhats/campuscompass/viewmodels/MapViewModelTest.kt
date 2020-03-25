@@ -17,8 +17,8 @@ class MapViewModelTest {
     @Test
     fun testInit() {
         val campuses: List<Campus> = viewmodel.getCampuses()
-        val sgw: String = "SGW"
-        val loyola: String = "Loyola"
+        val sgw = "SGW"
+        val loyola = "Loyola"
 
         // Assert that the proper campuses are there
         Assert.assertEquals(sgw, campuses[0].name)
