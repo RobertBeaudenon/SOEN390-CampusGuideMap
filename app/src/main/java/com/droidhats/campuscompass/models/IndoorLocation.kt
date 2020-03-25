@@ -1,6 +1,8 @@
 package com.droidhats.campuscompass.models
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.ColumnInfo
 import com.google.android.gms.maps.model.LatLng
 
 @Entity(tableName = "IndoorLocation")
