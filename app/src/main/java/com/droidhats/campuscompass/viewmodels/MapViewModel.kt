@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.Map
@@ -38,16 +39,20 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * Returns a list of campus objects (SJW and Loyola).
      */
-    fun getCampuses(): List<Campus> = campuses!!
+    fun getCampuses(): List<Campus> = campuses
 
     /**
      * Returns a list of all buildings in both campuses
      */
-    fun getBuildings(): List<Building> = buildings!!
+    fun getBuildings(): List<Building> = buildings
 
     /**
      * Initializes a map model object that contains an initialized google map.
      * Returns an initialized Map (map model) object.
+     * @param mapFragmentOnMarkerClickListener: a listener for marker clicks that will be attached to the map.
+     * @param mapFragmentOnPolygonClickListener: a listener for polygon clicks that will be attached to the map.
+     * @param mapFragmentOnCameraIdleListener: a listener for when the camera is idle in the map.
+     * @param activity: Used to check the location permission from the main activity.
      */
     fun getMapModel(googleMap: GoogleMap,
                mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
@@ -56,11 +61,22 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
                activity: FragmentActivity
     ): Map
     {
-        //Get initialized map from Map Model.
-        return Map.getInstance(
-            googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener,
-            mapFragmentOnCameraIdleListener, activity, buildings
+        // Get initialized map model from Map Model using singleton.
+        val mapModel: Map = Map.getInstance(
+            googleMap, buildings
         )
+
+        if ((activity as MainActivity).checkLocationPermission()) {
+            // Enables the my-location layer which draws a light blue dot on the user’s location.
+            // It also adds a button to the map that, when tapped, centers the map on the user’s location.
+            mapModel.googleMap.isMyLocationEnabled = true
+        }
+
+        mapModel.googleMap.setOnPolygonClickListener(mapFragmentOnPolygonClickListener)
+        mapModel.googleMap.setOnCameraIdleListener(mapFragmentOnCameraIdleListener)
+        mapModel.googleMap.setOnMarkerClickListener(mapFragmentOnMarkerClickListener)
+
+        return mapModel
     }
 
     fun getNavigationRoute() : MutableLiveData<NavigationRoute> = navigationRepository.getNavigationRoute()
@@ -73,7 +89,7 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         var selectedBuilding : Building? = null
 
         //Iterate through all buildings in both campuses until the polygon tag matches the building Name
-        for (building in this.buildings!!) {
+        for (building in this.buildings) {
             if (polygonTag == building.name)
                 selectedBuilding = building
         }
@@ -88,7 +104,7 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         var selectedBuilding: Building? = null
 
         //Iterate through all buildings in both campuses until the marker matches the building name
-        for (building in this.buildings!!) {
+        for (building in this.buildings) {
             if (marker != null) {
                 if (building.name == marker.title) {
                     selectedBuilding = building
