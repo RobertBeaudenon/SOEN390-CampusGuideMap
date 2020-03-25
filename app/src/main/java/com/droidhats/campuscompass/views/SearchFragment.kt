@@ -111,6 +111,7 @@ class SearchFragment : Fragment()  {
 
     private fun observeSearchSuggestions() {
         viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googlePredictions ->
+            viewModel.searchSuggestions.value = googlePredictions
           if (viewModel.indoorSearchSuggestions !=null)
             viewModel.indoorSearchSuggestions?.observe(viewLifecycleOwner , Observer {indoorResults ->
                 //Prepending indoor results to the google places results
@@ -235,13 +236,13 @@ class SearchFragment : Fragment()  {
             override fun onQueryTextChange(p0: String?): Boolean {
                resetQuery(searchText, searchView)
                resetRouteTimes()
-                if (!p0.isNullOrBlank()) {
+                if (!p0.isNullOrBlank() && searchView.isActivated) {
                    return viewModel.sendSearchQueries(p0)
                 }
-                else {
+                else if (p0.isNullOrBlank()){
                     viewModel.searchSuggestions.value = emptyList()
-                    return false
                 }
+                return false
             }
         })
        searchView.setOnQueryTextFocusChangeListener { _, isFocused ->
@@ -337,6 +338,7 @@ class SearchFragment : Fragment()  {
              val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
              val mainBar = root.findViewById<SearchView>(R.id.mainSearchBar)
              val destinationBar = root.findViewById<SearchView>(R.id.secondarySearchBar)
+             val destSearchText = destinationBar.findViewById(R.id.search_src_text) as EditText
              val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
              val infoMessage = root.findViewById<TextView>(R.id.search_info)
              val searchPlate = mainBar.findViewById<View>(R.id.search_plate)
@@ -358,16 +360,12 @@ class SearchFragment : Fragment()  {
                  setCurrentLocation(mainBar)
 
         destinationBar.setQuery(destinationPlace.name, true)
-      //  mainBar.setIconified(false)
-
-       val searchText = destinationBar.findViewById(R.id.search_src_text) as EditText
-        searchText.setSelection( destinationPlace.name.length)
-
+        destSearchText.setSelection(destinationPlace.name.length) //Sets the cursor position
+        destinationBar.isIconified = false
 
         if(!(destinationPlace is GooglePlace && destinationPlace.placeID.isEmpty())){
             confirmSelection(destinationBar, destinationPlace, false)
         }
-        destinationBar.isIconified = false
     }
 
     internal fun confirmSelection(searchView: SearchView, location: Location, submit: Boolean) {

@@ -568,10 +568,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    override fun onCalendarEventClick(item: CalendarEvent?) {
-        findNavController().navigateUp()
-        Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
-    }
+    override fun onCalendarEventClick(item: CalendarEvent?) {}
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         if (item is GooglePlace) {
