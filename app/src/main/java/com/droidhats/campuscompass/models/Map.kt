@@ -81,7 +81,7 @@ class Map(
         if(building.hasCenterLocation()) {
             val marker: Marker = googleMap.addMarker(building.getMarkerOptions())
             building.setMarker(marker)
-            // Set the maker to become the new bitmap rather than the conventional map pin
+            // Set the marker to become the new bitmap rather than the conventional map pin
             building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(building.getMarkerResId()))
         }
     }

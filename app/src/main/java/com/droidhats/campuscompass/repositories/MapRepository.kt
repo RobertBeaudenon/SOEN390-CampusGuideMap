@@ -241,9 +241,9 @@ class MapRepository(applicationContext: Context) {
             "Vanier Library Building" -> R.drawable.building_vl
             "Vanier Extension" -> R.drawable.building_ve
             "Student Center" -> R.drawable.building_sc
-            "F.C. Smith. Building" -> R.drawable.building_fc
+            "F.C. Smith Building" -> R.drawable.building_fc
             "Stinger Dome" -> R.drawable.building_do
-            "PERFORM centre" -> R.drawable.building_pc
+            "PERFORM Centre" -> R.drawable.building_pc
             "Jesuit Residence" -> R.drawable.building_jr
             "Physical Services Building" -> R.drawable.building_ps
             "Oscar Peterson Concert Hall" -> R.drawable.building_pt
