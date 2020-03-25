@@ -3,10 +3,14 @@ package com.droidhats.campuscompass.models
 import androidx.fragment.app.FragmentActivity
 import com.droidhats.campuscompass.MainActivity
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.Marker
 
 /**
  * A Model for the map.
- * This class has the objective of initializing the map and attaching listeners to it.
+ * This class has the objective of initializing the map, attaching listeners to it, and drawing the
+ * polygons and markers for the buildings on the map. It follows a singelton design pattern because
+ * we only need to initialize the map once.
  *
  * @constructor Creates an initialized GoogleMap object.
  * @param googleMap: A GoogleMap Object will be used to initialize the map.
@@ -14,18 +18,42 @@ import com.google.android.gms.maps.GoogleMap
  * @param mapFragmentOnPolygonClickListener: a listener for polygon clicks that will be attached to the map.
  * @param mapFragmentOnCameraIdleListener: a listener for when the camera is idle in the map.
  * @param activity: Used to check the location permission from the main activity.
+ * @param buildings: A list of all concordia buildings that is used to draw map polygons and markers.
  */
 class Map(
-    private var googleMap: GoogleMap,
+    var googleMap: GoogleMap,
     private var mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
     private var mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
     private var mapFragmentOnCameraIdleListener: GoogleMap.OnCameraIdleListener,
-    var activity: FragmentActivity
+    private var activity: FragmentActivity,
+    private var buildings: List<Building>
 ) {
 
     companion object {
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
+
+        // Singleton instantiation
+        private var instance: Map? = null
+
+        fun getInstance(googleMap: GoogleMap,
+                        mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
+                        mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
+                        mapFragmentOnCameraIdleListener: GoogleMap.OnCameraIdleListener,
+                        activity: FragmentActivity,
+                        buildings: List<Building>
+        ) =
+            instance
+                ?: synchronized(this) {
+                    instance
+                        ?: Map(googleMap,
+                            mapFragmentOnMarkerClickListener,
+                            mapFragmentOnPolygonClickListener,
+                            mapFragmentOnCameraIdleListener,
+                            activity,
+                            buildings
+                        ).also { instance = it }
+                }
     }
 
     /**
@@ -58,14 +86,37 @@ class Map(
 
         googleMap.setOnPolygonClickListener(mapFragmentOnPolygonClickListener)
         googleMap.setOnCameraIdleListener(mapFragmentOnCameraIdleListener)
+
+        // Draw the buildings polygons and markers
+        for (building in buildings) {
+            drawBuildingPolygon(building)
+            setBuildingMarker(building)
+        }
+
     }
 
     /**
-     * @return the initialized GoogleMap.
+     * Draws the polygon for a single building on the map
      */
-    fun getMap(): GoogleMap {
-        return googleMap
+    private fun drawBuildingPolygon(building: Building){
+        googleMap.addPolygon(building.getPolygonOptions())?.tag = building.name
+        val polygon = googleMap.addPolygon(building.getPolygonOptions())
+        building.setPolygon(polygon!!)
     }
+
+    /**
+     * Draws the marker for a single building on the map
+     */
+    private fun setBuildingMarker(building: Building) {
+        if(building.hasCenterLocation()) {
+            val marker: Marker = googleMap.addMarker(building.getMarkerOptions())
+            building.setMarker(marker)
+            // Set the maker to become the new bitmap rather than the conventional map pin
+            building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(building.getMarkerResId()))
+        }
+    }
+
+
 }
 
 

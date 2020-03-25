@@ -12,7 +12,6 @@ import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.Polygon
 
 /**
  * A ViewModel for the map.
@@ -24,15 +23,16 @@ import com.google.android.gms.maps.model.Polygon
 class  MapViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>().applicationContext
-    private var campuses: List<Campus>? = null
-    private var buildings: List<Building>? = null
-    private val mapRepository = MapRepository.getInstance(context)
-    internal var navigationRepository: NavigationRepository
+    private val mapRepository: MapRepository
+    internal val navigationRepository: NavigationRepository
+    private var campuses: List<Campus>
+    private var buildings: List<Building>
 
     init {
+        mapRepository = MapRepository.getInstance(context)
+        navigationRepository = NavigationRepository.getInstance(getApplication())
         campuses = mapRepository.getCampuses()
         buildings = mapRepository.getBuildings()
-        navigationRepository = NavigationRepository.getInstance(getApplication())
     }
 
     /**
@@ -46,33 +46,24 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
     fun getBuildings(): List<Building> = buildings!!
 
     /**
-     * Uses the Map Model to initialize the map, and then it draws teh polygons of the campus buildings.
-     * Returns an initialized GoogleMap object.
+     * Initializes a map model object that contains an initialized google map.
+     * Returns an initialized Map (map model) object.
      */
-    fun getMap(googleMap: GoogleMap,
+    fun getMapModel(googleMap: GoogleMap,
                mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
                mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
                mapFragmentOnCameraIdleListener: GoogleMap.OnCameraIdleListener,
                activity: FragmentActivity
-    ): GoogleMap
+    ): Map
     {
         //Get initialized map from Map Model.
-        val initializedGoogleMap: GoogleMap = Map(googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener, mapFragmentOnCameraIdleListener, activity).getMap()
-
-        //Highlight the buildings in both SGW and Loyola Campuses
-        for (building in this.buildings!!) {
-            initializedGoogleMap.addPolygon(building.getPolygonOptions()).tag = building.name
-            val polygon: Polygon = initializedGoogleMap.addPolygon(building.getPolygonOptions())
-            building.setPolygon(polygon)
-            
-            // Place marker on buildings that have center locations specified in buildings.json  
-            if(building.hasCenterLocation()){
-                val marker: Marker = initializedGoogleMap.addMarker(building.getMarkerOptions())
-                building.setMarker(marker)
-            }
-        }
-        return googleMap
+        return Map.getInstance(
+            googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener,
+            mapFragmentOnCameraIdleListener, activity, buildings
+        )
     }
+
+    fun getNavigationRoute() : MutableLiveData<NavigationRoute> = navigationRepository.getNavigationRoute()
 
     /**
      * Searches and returns the building object that matches the polygon tag from the mapFragment
@@ -89,9 +80,6 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         return selectedBuilding
     }
 
-
-    fun getNavigationRoute() : MutableLiveData<NavigationRoute> = navigationRepository.getNavigationRoute()
-
     /**
      * Searches and returns the building object with the corresponding marker title.
      * @return If there is no match, it will return a null building object
@@ -100,12 +88,10 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         var selectedBuilding: Building? = null
 
         //Iterate through all buildings in both campuses until the marker matches the building name
-        for (campus in this.campuses!!) {
-            for (building in campus.getBuildings()) {
-                if (marker != null) {
-                    if (building.name == marker.title) {
-                        selectedBuilding = building
-                    }
+        for (building in this.buildings!!) {
+            if (marker != null) {
+                if (building.name == marker.title) {
+                    selectedBuilding = building
                 }
             }
         }

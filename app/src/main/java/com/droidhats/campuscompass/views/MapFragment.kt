@@ -56,6 +56,7 @@ import kotlin.collections.List
 import kotlin.collections.MutableList
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
+import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
  * A View Fragment for the map.
@@ -65,12 +66,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, OnCameraIdleListener,
     Subject {
 
+    private var mapModel: MapModel? = null
     private var map: GoogleMap? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var lastLocation: Location
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
     private val observerList = mutableListOf<ModifiedObserver?>()
+    private val currentNavigationPath = arrayListOf<Polyline>()
     private var locationUpdateState = false
 
     companion object {
@@ -99,6 +102,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -134,54 +138,37 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      * @param googleMap a necessary google map object on which we add markers and attach listeners.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-        // Get the map from the viewModel.
-        map = viewModel.getMap(googleMap, this, this, this, this.activity as MainActivity)
 
-        //Gives you the most recent location currently available.
-        fusedLocationClient.lastLocation.addOnSuccessListener(activity as Activity) { location ->
-            // Got last known location. In some rare situations this can be null.
-            // If  able to retrieve the the most recent location, then move the camera to the user’s current location.
-            if (location != null) {
-                lastLocation = location
-                LatLng(location.latitude, location.longitude)
-                moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
-            }
-        }
+        // Get the map from the viewModel.
+        mapModel = viewModel.getMapModel(googleMap, this, this, this, this.activity as MainActivity)
+        map = mapModel!!.googleMap
+
+        // Move camera to SGW
+        // TODO when navigation path is being shown, the camera should be moved to current location
+        moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
+
         map!!.setOnMapClickListener {
             //Dismiss the bottom sheet when clicking anywhere on the map
             dismissBottomSheet()
         }
+
         attachBuildingObservers()
-        setBuildingMarkersIcons()
     }
 
     private fun attachBuildingObservers(){
         // Attach all observer buildings with initial markers
-        for (campus in viewModel.getCampuses()) {
-            for (building in campus.getBuildings()) {
-                if (building.hasCenterLocation()) {
-                    attach(building)
-                }
-            }
-        }
-    }
-
-    private fun detachBuildingObservers() {
-        // Attach all observer buildings with initial markers
-        for (campus in viewModel.getCampuses()) {
-            for (building in campus.getBuildings()) {
-                if (building.hasCenterLocation()) {
-                    detach(building)
-                }
+        for (building in viewModel.getBuildings()) {
+            if (!observerList.contains(building) && building.hasCenterLocation()) {
+                attach(building)
             }
         }
     }
 
     private fun observeNavigation() {
         viewModel.getNavigationRoute().observe(viewLifecycleOwner, Observer {
-            //The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
-            //Remove the condition check to keep the path drawn on the screen even after changing activities
-            //If the condition is removed though, camera movement must be handled properly not to override other movement
+            // The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
+            // Remove the condition check to keep the path drawn on the screen even after changing activities
+            // If the condition is removed though, camera movement must be handled properly not to override other movement
             if ( it != null && it != currentNavigationRoute) {
                 currentNavigationRoute = it
                 drawPathPolyline(it.polyLinePath)
@@ -194,9 +181,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun createLocationRequest() {
-        // 1  create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
+        // 1 create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
         locationRequest = LocationRequest()
-        // 2   specifies the rate at which your app will like to receive updates.
+        // 2 specifies the rate at which your app will like to receive updates.
         locationRequest.interval = 10000
         // 3 specifies the fastest rate at which the app can handle updates. Setting the fastestInterval rate places a limit on how fast updates will be sent to your app.
         locationRequest.fastestInterval = 5000
@@ -257,8 +244,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
-        detachBuildingObservers()
-        map!!.clear()
+        //map!!.clear()
     }
 
     // 3 Override onResume() to restart the location update request.
@@ -266,10 +252,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onResume()
         if (!locationUpdateState) {
             startLocationUpdates()
-        }
-        if (map != null) {
-            drawBuildingPolygonsAndMarkers()
-            setBuildingMarkersIcons()
         }
     }
 
@@ -375,69 +357,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun drawBuildingPolygonsAndMarkers() {
-        //Highlight both SGW and Loyola Campuses
-        for (building in viewModel.getBuildings()) {
-            map?.addPolygon(building.getPolygonOptions())?.tag = building.name
-            val polygon = map?.addPolygon(building.getPolygonOptions())
-            building.setPolygon(polygon!!)
-            
-            // Place marker on buildings that have center locations specified in buildings.json
-            if(building.hasCenterLocation()){
-                val marker: Marker = map!!.addMarker(building.getMarkerOptions())
-                building.setMarker(marker)
-            }
-        }
-   }
-
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
-        map!!.clear()
-        drawBuildingPolygonsAndMarkers()
-        setBuildingMarkersIcons()
+        clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
-            this.map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+         val path= map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+            currentNavigationPath.add(path)
         }
     }
 
-    private fun setBuildingMarkersIcons(){
-        for (campus in viewModel.getCampuses()) {
-            for (building in campus.getBuildings()) {
-                if(building.hasCenterLocation()){
-                    when(building.name){
-                        "Henry F. Hall Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_h))
-                        "EV Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ev))
-                        "John Molson School of Business" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_jm))
-                        "Faubourg Saint-Catherine Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_fg))
-                        "Guy-De Maisonneuve Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_gm))
-                        "Faubourg Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_fb))
-                        "Visual Arts Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_va))
-                        "Pavillion J.W. McConnell Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_lb))
-                        "Grey Nuns Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_gn))
-                        "Samuel Bronfman Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_sb))
-                        "GS Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_gs))
-                        "Learning Square" ->  building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ls))
-                        "Psychology Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_py))
-                        "Richard J. Renaud Science Complex" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_sp))
-                        "Central Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_cc))
-                        "Communication Studies and Journalism Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_cj))
-                        "Administration Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ad))
-                        "Loyola Jesuit and Conference Centre" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_rf))
-                        "Vanier Library Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_vl))
-                        "Vanier Extension" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ve))
-                        "Student Centre" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_sc))
-                        "F.C. Smith Building" ->building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_fc))
-                        "Stinger Dome" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_do))
-                        "PERFORM Centre" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_pc))
-                        "Jesuit Residence" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_jr))
-                        "Physical Services Building" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_ps))
-                        "Oscar Peterson Concert Hall" -> building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_building_pt))
-                        else -> Log.v("Error loading marker", "couldn't load marker icons")
-                    }
-                }
-            }
+    private fun clearNavigationPath(){
+        for ( polyline in currentNavigationPath){
+            polyline.remove()
         }
-     }
-
+        currentNavigationPath.clear()
+    }
 
     private fun initSearchBar() {
         mapFragSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
@@ -517,7 +450,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 buildingOpenHours.text = building.getOpenHours()
                 buildingServices.text = building.getServices()
                 buildingDepartments.text = building.getDepartments()
-                buildingImage.setImageResource(building.getBuildingImageResId())
+                buildingImage.setImageResource(building.getImageResId())
                 //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
             }
         }
@@ -574,7 +507,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             findNavController().navigate(R.id.search_fragment, bundle)
         }
         togglePlaceCard(true)
-}
+    }
 
     private fun togglePlaceCard(isVisible : Boolean){
         val placeCard : CardView = requireActivity().findViewById(R.id.place_card)
