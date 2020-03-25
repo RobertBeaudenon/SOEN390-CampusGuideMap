@@ -247,6 +247,7 @@ class MapRepository(applicationContext: Context) {
             "Physical Services Building" -> R.drawable.building_ps
             "Oscar Peterson Concert Hall" -> R.drawable.building_pt
             "Learning Square" -> R.drawable.building_ls
+            "Central Building" -> R.drawable.building_cc
             else -> Log.v("Error loading images", "couldn't load image")
         }
     }

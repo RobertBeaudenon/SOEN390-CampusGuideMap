@@ -1030,6 +1030,7 @@
             ]
         }, {
             "name": "Central Building",
+            "initial": "CC",
             "address": "7141 Rue Sherbrooke O, Montréal, QC H4B 2B5",
 			"center_location": [45.458302, -73.640313],
             "location": [45.458251, -73.640353],
@@ -1269,6 +1270,7 @@
             ]
         }, {
             "name": "Student Centre",
+            "initial": "SC",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
 			"center_location": [45.459119, -73.639220],
             "location": [45.459088, -73.639238],
@@ -1306,6 +1308,7 @@
             ]
         }, {
             "name": "F.C. Smith Building",
+            "initial": "FC",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
 			"center_location": [45.458593, -73.639293],
             "location": [45.458583, -73.639372],
@@ -1390,7 +1393,7 @@
             ]
         }, {
             "name": "PERFORM Centre",
-            "initial": "PS",
+            "initial": "PC",
             "address": "7200 Sherbrooke St W, Montreal, Quebec H4B 1R6",
 			"center_location": [45.456934, -73.637146],
             "location": [45.456960, -73.636988],
@@ -1413,7 +1416,7 @@
                 "None"
             ],
             "services": [
-                "PEFORM centre"
+                "PERFORM Centre"
             ]
         }, {
             "name": "Stinger Dome",
