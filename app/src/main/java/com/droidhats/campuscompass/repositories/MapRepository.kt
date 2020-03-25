@@ -156,7 +156,7 @@ class MapRepository(applicationContext: Context) {
                 }
 
                 buildingsList.add(Building(buildingLocation, buildingName, buildingCenterLocation,
-                     polygonCoordinatesList, buildingAddress, hoursBuilder.toString(),
+                     polygonCoordinatesList, buildingAddress, buildingPlaceId, hoursBuilder.toString(),
                     getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray), buildingImageResourceID))
             }
         } catch(e: JSONException) {
