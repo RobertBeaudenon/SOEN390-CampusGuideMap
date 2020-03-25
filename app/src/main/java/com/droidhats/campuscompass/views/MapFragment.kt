@@ -56,6 +56,7 @@ import kotlin.collections.List
 import kotlin.collections.MutableList
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
+import kotlin.system.exitProcess
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -244,7 +245,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
-        //map!!.clear()
     }
 
     // 3 Override onResume() to restart the location update request.
@@ -253,6 +253,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (!locationUpdateState) {
             startLocationUpdates()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requireActivity().finish()
+        exitProcess(0)
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
