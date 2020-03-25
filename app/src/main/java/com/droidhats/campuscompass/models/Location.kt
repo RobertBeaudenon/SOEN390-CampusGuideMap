@@ -59,6 +59,7 @@ class Building(
     fun getLocation(): LatLng = coordinate
     fun getAddress(): String = address
     fun getPlaceId(): String = placeId
+    fun getCenterLocation(): LatLng = centerLocation
     fun getDepartments(): String = departments
     fun getServices(): String = services
     fun getOpenHours(): String = openHours
