@@ -56,7 +56,6 @@ import kotlin.collections.List
 import kotlin.collections.MutableList
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
-import kotlin.system.exitProcess
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -257,8 +256,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onDestroy() {
         super.onDestroy()
-        requireActivity().finish()
-        exitProcess(0)
+        mapModel?.killInstance()
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
