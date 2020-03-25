@@ -26,6 +26,14 @@ class MapRepository(applicationContext: Context) {
 
     fun getCampuses(): List<Campus> = campuses
 
+    fun forEachBuilding(apply: (building: Building) -> Unit) {
+        for (campus in campuses) {
+            for (building in campus.getBuildings()) {
+                apply(building)
+            }
+        }
+    }
+
     init {
         val inputStream: InputStream = applicationContext.assets.open("buildings.json")
         val json: String = inputStream.bufferedReader().use { it.readText() }
@@ -101,6 +109,15 @@ class MapRepository(applicationContext: Context) {
                     .getJSONArray("departments")
                 val servicesArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("services")
+
+                val initial: String = buildingsArray.getJSONObject(i).get("initial").toString()
+                val floorMapArray: JSONArray = buildingsArray.getJSONObject(i)
+                    .getJSONArray("floor_maps")
+                var floorMaps: MutableList<String> = mutableListOf()
+                for (x in 0 until floorMapArray.length()) {
+                    floorMaps.add(floorMapArray.getString(x))
+                }
+
                 val buildingLocation = LatLng(
                     buildingLocationArray[0].toString().toDouble(),
                     buildingLocationArray[1].toString().toDouble()
@@ -139,7 +156,9 @@ class MapRepository(applicationContext: Context) {
 
                 buildingsList.add(Building(buildingLocation, buildingName, buildingCenterLocation,
                      polygonCoordinatesList, buildingAddress, hoursBuilder.toString(),
-                    getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray)))
+                    getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray),
+                    Pair(initial, floorMaps)))
+
             }
         } catch(e: JSONException) {
             Log.v("Parsing error", "Make sure that:" +

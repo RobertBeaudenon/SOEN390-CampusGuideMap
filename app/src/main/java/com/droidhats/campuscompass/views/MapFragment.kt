@@ -180,7 +180,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 drawPathPolyline(it.polyLinePath)
                 showInstructions(it.instructions)
                 Handler().postDelayed({
-                    moveTo(it.origin!!.coordinate, 19.0f)
+                    moveTo(it.origin!!.getLocation(), 19.0f)
                 }, 100)
             }
         })

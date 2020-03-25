@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.droidhats.campuscompass.repositories.IndoorLocationRepository
+import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.roomdb.IndoorLocationDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -23,8 +24,9 @@ class SplashViewModel(application: Application) : AndroidViewModel(application) 
         val context = getApplication<Application>().applicationContext
         val indoorInitializer = IndoorLocationRepository.getInstance(
             IndoorLocationDatabase.getInstance(context).indoorLocationDao())
+        val mapInitializer = MapRepository.getInstance(context)
         GlobalScope.launch {
-            indoorInitializer.initializeIndoorLocations(context)
+            indoorInitializer.initializeIndoorLocations(context, mapInitializer)
         }
 
     }

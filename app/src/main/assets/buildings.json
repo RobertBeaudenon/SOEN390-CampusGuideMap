@@ -3,7 +3,7 @@
             "name": "Henry F. Hall Building",
             "address": "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8",
 			"center_location": [45.497320, -73.579031],
-            "floor_maps": ["hall8.svg", "hall9.svg"],
+            "floor_maps": ["hall8.svg"],
             "initial": "hall",
             "location": [45.497320, -73.579031],
             "coordinates": [
