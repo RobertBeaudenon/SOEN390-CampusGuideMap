@@ -240,7 +240,7 @@ class MapRepository(applicationContext: Context) {
             "Loyola Jesuit and Conference Centre" -> R.drawable.building_ljacc
             "Vanier Library Building" -> R.drawable.building_vl
             "Vanier Extension" -> R.drawable.building_ve
-            "Student Center" -> R.drawable.building_sc
+            "Student Centre" -> R.drawable.building_sc
             "F.C. Smith Building" -> R.drawable.building_fc
             "Stinger Dome" -> R.drawable.building_do
             "PERFORM Centre" -> R.drawable.building_pc

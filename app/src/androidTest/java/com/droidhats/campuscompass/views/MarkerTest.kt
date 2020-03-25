@@ -71,10 +71,8 @@ class MarkerTest {
         val toggleButton = device.findObject(By.res("com.droidhats.campuscompass:id/toggleButton"))
         val googleMap = device.findObject(UiSelector().descriptionContains("Google Map"))
 
-        //Press toggle twice to make sure map redirects to SGW
-        toggleButton.click()
-        toggleButton.click()
-        waitFor(fiveSeconds)
+        //Allow downtown map to fully load
+        waitFor(twoSeconds)
 
         val hMarker = device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. "))
         hMarker.click()
@@ -99,15 +97,6 @@ class MarkerTest {
         lsMarker.click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        //Pinch closer to ensure click precision on GS marker
-        googleMap.pinchOut(20, 50)
-
-        val gmMarker = device.findObject(UiSelector().descriptionContains("Guy-De Maisonneuve Building. "))
-        gmMarker.clickTopLeft()
-        bottomSheet.swipe(Direction.DOWN, 1.0f)
-
-        googleMap.pinchIn(40, 100)
-
         val evMarker = device.findObject(UiSelector().descriptionContains("EV Building. "))
         evMarker.click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
@@ -124,11 +113,15 @@ class MarkerTest {
         gnMarker.click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        //Pinch closer to ensure click precision on FG marker
+        //Pinch closer to ensure click precision on FG, GM marker
         googleMap.pinchOut(20, 50)
 
         val fgMarker = device.findObject(UiSelector().descriptionContains("Faubourg Saint-Catherine Building. "))
         fgMarker.click()
+        bottomSheet.swipe(Direction.DOWN, 1.0f)
+
+        val gmMarker = device.findObject(UiSelector().descriptionContains("Guy-De Maisonneuve Building. "))
+        gmMarker.clickTopLeft()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
         waitFor(twoSeconds)
