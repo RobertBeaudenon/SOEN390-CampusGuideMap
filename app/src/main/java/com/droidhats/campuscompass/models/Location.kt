@@ -18,6 +18,7 @@ import kotlinx.android.parcel.Parcelize
 abstract class Location {
     abstract val name: String
     abstract fun getLocation(): LatLng
+    abstract fun getNextDirections() : List<String>
 }
 
 /**
@@ -30,6 +31,10 @@ class Campus(
 ) : Location() {
 
     override fun getLocation(): LatLng = coordinate
+    override fun getNextDirections() : List<String> {
+        return emptyList()
+    }
+
     fun getBuildings(): List<Building> = buildingsList
 }
 
@@ -56,6 +61,10 @@ class Building(
     }
 
     override fun getLocation(): LatLng = coordinate
+    override fun getNextDirections() : List<String> {
+        return emptyList()
+    }
+
     fun getAddress(): String = address
     fun getDepartments(): String = departments
     fun getServices(): String = services
@@ -117,4 +126,7 @@ class GooglePlace(
     var place : Place? = null
     var isCurrentLocation : Boolean = false
     override fun getLocation(): LatLng = coordinate
+    override fun getNextDirections() : List<String> {
+        return emptyList()
+    }
 }

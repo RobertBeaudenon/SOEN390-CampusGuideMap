@@ -68,13 +68,9 @@
         <action
             android:id="@+id/action_FloorFragment_to_map_fragment"
             app:destination="@id/map_fragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/indoor_search_fragment"
-        android:name="com.droidhats.campuscompass.views.IndoorSearchFragment"
-        android:label="indoorSearchFragment" >
         <action
-            android:id="@+id/action_FloorFragment_to_indoorSearchFragment"
-            app:destination="@id/map_fragment" />
+            android:id="@+id/action_floor_fragment_to_search_fragment"
+            app:destination="@id/search_fragment"
+            app:enterAnim="@android:anim/fade_in" />
     </fragment>
 </navigation>

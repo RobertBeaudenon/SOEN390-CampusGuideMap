@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
+import android.widget.ToggleButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -22,7 +22,7 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
-import kotlinx.android.synthetic.main.floor_fragment.*
+import kotlinx.android.synthetic.main.search_bar_layout.*
 import java.io.InputStream
 
 
@@ -76,7 +76,10 @@ class FloorFragment : Fragment() {
     }
 
     private fun initSearchBar() {
-        floorFragSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
+        var toggleButton = root.findViewById<ToggleButton>(R.id.toggleButton)
+        toggleButton.visibility = View.GONE
+
+        mapFragSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
 
             override fun onButtonClicked(buttonCode: Int) {
                 when(buttonCode) {
@@ -87,13 +90,12 @@ class FloorFragment : Fragment() {
             }
             override fun onSearchStateChanged(enabled: Boolean) {
                 if (enabled) {
-                    findNavController().navigate(R.id.indoor_search_fragment)
-                    floorFragSearchBar.closeSearch()
+                    findNavController().navigate(R.id.search_fragment)
+                    mapFragSearchBar.closeSearch()
                 }
             }
             override fun onSearchConfirmed(text: CharSequence?) {
             }
         })
     }
-
 }

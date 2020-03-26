@@ -15,8 +15,11 @@ data class IndoorLocation(
     @ColumnInfo(name = "location_type") val type: String,
     @ColumnInfo(name = "location_first") val latlat: Double,
     @ColumnInfo(name = "location_second") val lnglng: Double
-) :Location(){
+) :Location() {
 
     @TypeConverter
     override fun getLocation(): LatLng = LatLng(latlat, lnglng)
+    override fun getNextDirections() : List<String> {
+        return emptyList()
+    }
 }
