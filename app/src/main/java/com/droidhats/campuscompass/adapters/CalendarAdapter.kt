@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.views.CalendarFragment
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.CalendarEvent
-import kotlinx.android.synthetic.main.calendar_recycler_item.view.*
+import kotlinx.android.synthetic.main.calendar_recycler_item.view.event_location_item
+import kotlinx.android.synthetic.main.calendar_recycler_item.view.event_date_item
+import kotlinx.android.synthetic.main.calendar_recycler_item.view.event_title_item
 import java.text.SimpleDateFormat
 import java.util.Locale
 

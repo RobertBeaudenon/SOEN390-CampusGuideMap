@@ -121,7 +121,7 @@ class CalendarFragment : DialogFragment(), DialogInterface.OnDismissListener {
                 .setMultiChoiceItems(colorArray, selectedBool
                 ) { _, which, isChecked ->
                     selectedBool!![which] = isChecked
-                }.setPositiveButton(R.string.ok) { _, _ ->
+                }.setPositiveButton("OK") { _, _ ->
                     saveChecked(selectedBool!!)
                     targetFragment!!.onActivityResult(targetRequestCode, 1, null)
                 }
