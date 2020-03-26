@@ -98,11 +98,10 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
              "WHERE location_type ='classroom' " +
               "AND location_name like '%$qEsc%' " +
                "OR location_name like '%${qEsc.toUpperCase(Locale.ROOT)}%' " +
-                    "LIMIT 3"
+                    "LIMIT 5"
 
         val sqliteQuery = SimpleSQLiteQuery(queryString)
         indoorSearchSuggestions = indoorLocationRepository.getMatchedClassrooms(sqliteQuery)
-
         return indoorSearchSuggestions != null
     }
 
@@ -111,6 +110,19 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         val success = sendGooglePlacesQuery(query)
         sendSQLiteQuery(query)
         return success
+    }
+
+    /**
+    * Send indoor queries ASYNCHRONOUSLY
+     * @param String of queried indoor location
+     * @return boolean for success or failed query results
+     */
+    fun sendIndoorSearchQueries(query: String): Boolean {
+        return sendSQLiteQuery(query)
+    }
+
+    fun getIndoorSearchQueries() : LiveData<List<IndoorLocation>>? {
+        return indoorSearchSuggestions
     }
 
     fun getRouteTimes(origin : Location, destination : Location)  {

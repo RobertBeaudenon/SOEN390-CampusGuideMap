@@ -4,25 +4,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.appcompat.widget.SearchView
 import android.widget.TextView
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
-import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
-import com.droidhats.campuscompass.views.SearchFragment
-import com.droidhats.campuscompass.views.SearchFragment.Companion.isNavigationViewOpen
+import com.droidhats.campuscompass.views.IndoorSearchFragment
+import com.droidhats.campuscompass.views.IndoorSearchFragment.Companion.isNavigationViewOpen
 import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.setNavigationPoint
 import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.search_category
 import kotlinx.android.synthetic.main.search_suggestion_recycler_item.view.search_suggestion
 
-class SearchAdapter(
+class IndoorSearchAdapter(
     private val items: List<Location>,  //the search results
     private val listener: OnSearchResultClickListener?,
-    private val searchFragment: SearchFragment,
+    private val indoorSearchFragment: IndoorSearchFragment,
     private val root: View
-) : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<IndoorSearchAdapter.ViewHolder>() {
 
     private var onClickListener: View.OnClickListener
 
@@ -39,6 +38,7 @@ class SearchAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         val item = items[position]
         val infoMessage = root.findViewById<TextView>(R.id.search_info)
         if (items.isEmpty())
@@ -49,9 +49,7 @@ class SearchAdapter(
         with (holder){
             view.tag = item
             suggestion.text = item.name
-            if (item is GooglePlace)
-                category.text = item.category
-            else if (item is IndoorLocation) {
+            if (item is IndoorLocation) {
                 val indoorType = "Concordia University ${item.type}"
                 category.text = indoorType
             }
@@ -60,8 +58,8 @@ class SearchAdapter(
             val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
 
             setNavigation.setOnClickListener {
-                searchFragment.showNavigationView(item, false)
-                searchFragment.confirmSelection(destinationBar, item, false)
+                indoorSearchFragment.showNavigationView(item, false)
+                indoorSearchFragment.confirmSelection(destinationBar, item, false)
             }
 
             if (!isNavigationViewOpen) {
@@ -70,10 +68,10 @@ class SearchAdapter(
             else {
                 view.setOnClickListener {
                     if (mainBar.isActivated) {
-                        searchFragment.confirmSelection(mainBar, item, true)
+                        indoorSearchFragment.confirmSelection(mainBar, item, true)
                     }
                     if (destinationBar.isActivated) {
-                        searchFragment.confirmSelection(destinationBar, item, true)
+                        indoorSearchFragment.confirmSelection(destinationBar, item, true)
                     }
                 }
             }
@@ -91,5 +89,9 @@ class SearchAdapter(
 
     interface OnSearchResultClickListener {
         fun onSearchResultClickListener(item: Location?)
+    }
+
+    internal fun setResults(results : List<IndoorLocation>) {
+
     }
 }

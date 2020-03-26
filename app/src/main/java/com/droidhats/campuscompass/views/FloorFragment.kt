@@ -11,13 +11,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import com.DroidHats.ProcessMap
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
+import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
+import kotlinx.android.synthetic.main.floor_fragment.*
 import java.io.InputStream
 
 
@@ -38,7 +43,7 @@ class FloorFragment : Fragment() {
 
         var randomPathBtn: Button = root.findViewById(R.id.randomPathBtn)
 
-        randomPathBtn.setOnClickListener{it ->
+        randomPathBtn.setOnClickListener { it ->
             val inputStream: InputStream = requireContext().assets.open("hall8.svg")
             val file: String = inputStream.bufferedReader().use { it.readText() }
             val mapProcessor: ProcessMap = ProcessMap()
@@ -46,7 +51,6 @@ class FloorFragment : Fragment() {
             val svg: SVG = SVG.getFromString(mapProcessor.getSVGString())
             setImage(svg)
         }
-
         return root
     }
 
@@ -68,6 +72,28 @@ class FloorFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FloorViewModel::class.java)
+        initSearchBar()
+    }
+
+    private fun initSearchBar() {
+        floorFragSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
+
+            override fun onButtonClicked(buttonCode: Int) {
+                when(buttonCode) {
+                    //Open the Nav Bar
+                    MaterialSearchBar.BUTTON_NAVIGATION -> requireActivity().
+                        findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START)
+                }
+            }
+            override fun onSearchStateChanged(enabled: Boolean) {
+                if (enabled) {
+                    findNavController().navigate(R.id.indoor_search_fragment)
+                    floorFragSearchBar.closeSearch()
+                }
+            }
+            override fun onSearchConfirmed(text: CharSequence?) {
+            }
+        })
     }
 
 }
