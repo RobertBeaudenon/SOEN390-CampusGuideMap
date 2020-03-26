@@ -28,8 +28,8 @@ import org.junit.runner.RunWith
 class MarkerTest {
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
-    private val twoSeconds = 2000
-    private val fiveSeconds = 5000
+    private val twoSeconds: Long = 2000
+    private val fiveSeconds: Long = 5000
 
     @Rule
     @JvmField
@@ -57,7 +57,7 @@ class MarkerTest {
             Assert.assertEquals(navController.currentDestination?.id!!, R.id.map_fragment)
 
             //Waiting 5 seconds for splash screen to load
-            Thread.sleep(5000)
+            waitFor(fiveSeconds)
 
             //Checking if that action id did take you to map_fragment view
             Espresso.onView(ViewMatchers.withId(R.id.coordinate_layout))
@@ -79,10 +79,13 @@ class MarkerTest {
 
         //Retrieve bottom sheet once it is in the view
         val bottomSheet = device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet"))
-        bottomSheet.swipe(Direction.DOWN, 1.0f)
+        //Click on the map to dismiss bottom sheet for coverage
+        UiDevice.getInstance(getInstrumentation()).click(1200, 600)
 
         val lbMarker = device.findObject(UiSelector().descriptionContains("Pavillion J.W. McConnell Building. "))
         lbMarker.click()
+        //Expand bottom sheet fully for coverage
+        bottomSheet.swipe(Direction.UP, 1.0f)
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
         val vaMarker = device.findObject(UiSelector().descriptionContains("Visual Arts Building. "))
@@ -196,7 +199,10 @@ class MarkerTest {
         val scMarker = device.findObject(UiSelector().descriptionContains("Student Centre. "))
         scMarker.click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
+
+        //Zoom out until markers disappear for coverage
+        googleMap.pinchIn(80, 50)
     }
 
-    private fun waitFor(duration: Int) = Thread.sleep(duration.toLong())
+    private fun waitFor(duration: Long) = Thread.sleep(duration)
 }

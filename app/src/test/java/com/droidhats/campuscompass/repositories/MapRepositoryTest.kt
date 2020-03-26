@@ -60,7 +60,7 @@ class MapRepositoryTest {
     //Test whether the buildings from the json were correctly parsed.
     //Since the method traverses in a linear fashion, verifying the first and last building is sufficient.
     @Test
-    fun getBuildingsFromJSONTest() {
+    fun getBuildingsFromJSONTest_ValidParsing() {
         // Assert building variables were well assigned
         val sgwBuildings: List<Building> = instance.getCampuses()[0].getBuildings()
         val loyolaBuildings: List<Building> = instance.getCampuses()[1].getBuildings()
@@ -75,7 +75,7 @@ class MapRepositoryTest {
                     "Thursday\t7a.m.-11p.m.\n" +
                     "Friday\t7a.m.-11p.m.\n" +
                     "Saturday\t7a.m.-11p.m.\n" +
-                    "Sunday\t7a.m.-11p.m.\n", hBuilding.getOpenHours()
+                    "Sunday\t7a.m.-11p.m.", hBuilding.getOpenHours()
         )
         Assert.assertEquals(hBuilding.getLocation(), LatLng(45.497320, -73.579031))
         Assert.assertEquals(
@@ -92,14 +92,14 @@ class MapRepositoryTest {
         Assert.assertEquals(
             hBuilding.getDepartments(), "Geography, Planning and Environment\n" +
                     "Political Science, Sociology and Anthropology, Economics\n" +
-                    "School of Irish Studies\n", hBuilding.getDepartments()
+                    "School of Irish Studies", hBuilding.getDepartments()
         )
         Assert.assertEquals(
             hBuilding.getServices(), "Welcome Crew Office\n" +
                     "DB Clarke Theatre\n" +
                     "Dean of Students\n" +
                     "Aboriginal Student Resource Centre\n" +
-                    "Concordia Student Union\n", hBuilding.getServices()
+                    "Concordia Student Union", hBuilding.getServices()
         )
 
         val hBuildingPolygonOptionsOptions: PolygonOptions = hBuilding.getPolygonOptions()
@@ -132,7 +132,7 @@ class MapRepositoryTest {
                     "Thursday\t9a.m.-5p.m.\n" +
                     "Friday\t9a.m.-5p.m.\n" +
                     "Saturday\t9a.m.-5p.m.\n" +
-                    "Sunday\t9a.m.-5p.m.\n", ptbuilding.getOpenHours()
+                    "Sunday\t9a.m.-5p.m.", ptbuilding.getOpenHours()
         )
         Assert.assertEquals(ptbuilding.getLocation(), LatLng(45.459355, -73.638976))
         Assert.assertEquals(
@@ -146,10 +146,10 @@ class MapRepositoryTest {
             ptbuilding.getPlaceId()
         )
         Assert.assertEquals(ptbuilding.getCenterLocation(), LatLng(45.459324, -73.638960))
-        Assert.assertEquals(ptbuilding.getDepartments(), "None\n", ptbuilding.getDepartments())
+        Assert.assertEquals(ptbuilding.getDepartments(), "None", ptbuilding.getDepartments())
         Assert.assertEquals(
             ptbuilding.getServices(),
-            "Oscar Peterson Concert Hall\n",
+            "Oscar Peterson Concert Hall",
             ptbuilding.getServices()
         )
 
@@ -175,8 +175,6 @@ class MapRepositoryTest {
         Assert.assertEquals(ptMarkerOptions.anchorU, 0.5f)
         Assert.assertEquals(ptMarkerOptions.anchorV, 0.5f)
         Assert.assertEquals(ptMarkerOptions.title, "Oscar Peterson Concert Hall")
-
     }
-
 }
 

@@ -126,8 +126,8 @@ class MapRepository(applicationContext: Context) {
                     buildingCenterLocationArray[0].toString().toDouble(),
                     buildingCenterLocationArray[1].toString().toDouble()
                 )
-                val buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)!!
-                val buildingMarkersIcons: Int = this.getBuildingMarkersIcons(buildingName)!!
+                val buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)
+                val buildingMarkersIcons: Int = this.getBuildingMarkersIcons(buildingName)
 
                 coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
                 val openHoursArray = buildingsArray.getJSONObject(i).getJSONArray("open_hours")
@@ -140,7 +140,7 @@ class MapRepository(applicationContext: Context) {
                     val day: String = openHoursArray.getJSONArray(j)[0].toString()
                     val hours: String = openHoursArray.getJSONArray(j)[1].toString()
 
-                    if(j == openHoursArray.length()){
+                    if(j == openHoursArray.length() - 1){
                         hoursBuilder.append(day + "\t" + hours)
                     } else {
                         hoursBuilder.append(day + "\t" + hours + "\n")
@@ -176,7 +176,7 @@ class MapRepository(applicationContext: Context) {
 
         //Traverse each object in the array
         for(k in 0 until jsonArray.length()){
-            if(k == jsonArray.length()){
+            if(k == jsonArray.length() - 1){
                 builder.append(jsonArray[k].toString())
             }else{
                 builder.append(jsonArray[k].toString() + "\n")
@@ -200,7 +200,7 @@ class MapRepository(applicationContext: Context) {
      * Returns the building image from drawable resources
      * @param buildingName: Used to map the building name to the building image.
      */
-    private fun getBuildingImageResourceID(buildingName: String): Int? {
+    private fun getBuildingImageResourceID(buildingName: String): Int {
 
         // The id for the building image resource is of Int type
         // Return the building image resource id that corresponds to the building name
@@ -249,7 +249,7 @@ class MapRepository(applicationContext: Context) {
             "Oscar Peterson Concert Hall" -> R.drawable.building_pt
             "Learning Square" -> R.drawable.building_ls
             "Central Building" -> R.drawable.building_cc
-            else -> Log.v("Error loading images", "couldn't load image")
+            else -> Log.v("ImageError", "couldn't load image")
         }
     }
 
@@ -257,7 +257,7 @@ class MapRepository(applicationContext: Context) {
      * Returns the building marker icon from drawable resources
      * @param buildingName: Used to map the building name to the building marker icon.
      */
-    private fun getBuildingMarkersIcons(buildingName: String) : Int?{
+    private fun getBuildingMarkersIcons(buildingName: String) : Int{
 
         // The id for the building icon resource is of Int type
         // Return the building image resource id that corresponds to the building name
@@ -289,7 +289,7 @@ class MapRepository(applicationContext: Context) {
             "Jesuit Residence" -> R.mipmap.ic_building_jr
             "Physical Services Building" -> R.mipmap.ic_building_ps
             "Oscar Peterson Concert Hall" -> R.mipmap.ic_building_pt
-            else -> Log.v("Error loading marker", "couldn't load marker icons")
+            else -> Log.v("IconMarker", "didn't load marker icon for $buildingName")
         }
     }
 

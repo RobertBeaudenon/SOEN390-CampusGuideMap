@@ -67,9 +67,9 @@ class Map(
      * Draws the polygon for a single building on the map
      */
     private fun drawBuildingPolygon(building: Building){
-        googleMap.addPolygon(building.getPolygonOptions())?.tag = building.name
+        googleMap.addPolygon(building.getPolygonOptions()).tag = building.name
         val polygon = googleMap.addPolygon(building.getPolygonOptions())
-        building.setPolygon(polygon!!)
+        building.setPolygon(polygon)
     }
 
     /**
