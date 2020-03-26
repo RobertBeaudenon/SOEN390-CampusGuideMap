@@ -24,10 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.Location
-import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.*
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
@@ -141,7 +138,6 @@ class SearchFragment : Fragment()  {
                 Toast.makeText(context, "Set Your Route To Begin Navigation", Toast.LENGTH_LONG).show()
             }
             else {
-
                initiateNavigation()
             }
         }
@@ -151,12 +147,6 @@ class SearchFragment : Fragment()  {
     private fun initiateNavigation(){
         val origin = NavigationPoints[R.id.mainSearchBar]
         val destination = NavigationPoints[R.id.secondarySearchBar]
-        findNavController().navigateUp() // Navigate Back To MapFragment
-        Toast.makeText(context, "Starting Navigation\n" +
-                "From: ${origin?.name}\n" +
-                "To: ${destination?.name}\n" +
-                "By: $selectedTransportationMethod",
-            Toast.LENGTH_LONG).show()
 
         //Make sure BOTH coordinates are set before generating directions
         if(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0)){
@@ -172,6 +162,20 @@ class SearchFragment : Fragment()  {
                     selectedTransportationMethod)
             }
         } else {
+
+            //check if both origin and destination are indoor
+            if((origin is IndoorLocation) && (destination is IndoorLocation))  {
+                findNavController().navigate(R.id.floor_fragment)
+            } else {
+                findNavController().navigate(R.id.map_fragment)// Navigate Back To MapFragment
+            }
+
+            Toast.makeText(context, "Starting Navigation\n" +
+                    "From: ${origin?.name}\n" +
+                    "To: ${destination?.name}\n" +
+                    "By: $selectedTransportationMethod",
+                Toast.LENGTH_LONG).show()
+
             viewModel.navigationRepository.generateDirections(origin!!,
                 destination!!,
                 selectedTransportationMethod)
@@ -293,9 +297,9 @@ class SearchFragment : Fragment()  {
                 R.id.radio_transport_mode_bicycle -> {
                     selectedTransportationMethod = NavigationRoute.TransportationMethods.BICYCLE.string
                 }
-                 R.id.radio_transport_mode_shuttle -> {
+                R.id.radio_transport_mode_shuttle -> {
                      selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
-                 }
+                }
             }
         }
     }
