@@ -154,6 +154,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         mapModel = viewModel.getMapModel(googleMap, this, this, this, this.activity as MainActivity)
         map = mapModel!!.googleMap
 
+        //Add custom style to map
+        try {
+            val success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            context, R.raw.red_map_style));
+            if (!success) {
+                Log.e("Map Style", "Style parsing failed.");
+            }
+        } catch (e: android.content.res.Resources.NotFoundException) {
+            Log.e("Map Style", "Can't find style. Error: ", e);
+        }
+
         // Move camera to SGW
         // TODO when navigation path is being shown, the camera should be moved to current location
         moveTo(viewModel.getCampuses()[0].getLocation(), 16f)

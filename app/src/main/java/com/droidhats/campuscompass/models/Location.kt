@@ -53,6 +53,7 @@ class Building(
 
     companion object {
         private const val POLYGON_COLOR = 4289544510.toInt()
+        private const val STROKE_COLOR = 	4294948674.toInt()
         private const val MARKER_VISIBILITY_ZOOM_LEVEL = 16f
     }
 
@@ -81,6 +82,7 @@ class Building(
         val polygonOptions = PolygonOptions()
             .fillColor(POLYGON_COLOR)
             .strokeWidth(2F)
+            .strokeColor(STROKE_COLOR)
             .clickable(true)
         for (polygonCoordinate in polygonCoordinatesList) {
             polygonOptions.add(polygonCoordinate)
