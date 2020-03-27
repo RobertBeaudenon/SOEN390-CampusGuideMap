@@ -1,10 +1,12 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +25,8 @@ import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.InputStream
 
 
@@ -73,6 +77,16 @@ class FloorFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FloorViewModel::class.java)
         initSearchBar()
+
+        val startAndEnd = viewModel.getDirections()
+        if (startAndEnd != null) {
+            val inputStream: InputStream = requireContext().assets.open("hall8.svg")
+            val file: String = inputStream.bufferedReader().use { it.readText() }
+            val mapProcessor: ProcessMap = ProcessMap()
+            mapProcessor.readSVGFromString(file)
+            val svg: SVG = SVG.getFromString(mapProcessor.getSVGStringFromDirections(startAndEnd))
+            setImage(svg)
+        }
     }
 
     private fun initSearchBar() {

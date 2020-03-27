@@ -60,7 +60,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
             val floorNumber: Int = Character.getNumericValue(floorValue[0])
             for ((x, classRoom) in classes.withIndex()) {
                 val newClass = IndoorLocation(
-                    classRoom.getID().substring(4, 8).toInt() + x,
+                    classRoom.getID().substring(4, 8).toInt(),
                     convertIDToName(classRoom.getID(), building.getIndoorInfo().first, floorNumber),
                     floorNumber,
                     "classroom",

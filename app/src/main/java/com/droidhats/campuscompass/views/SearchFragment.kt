@@ -2,6 +2,7 @@ package com.droidhats.campuscompass.views
 
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Intent
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -22,6 +23,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.*
@@ -165,6 +167,7 @@ class SearchFragment : Fragment()  {
 
             //check if both origin and destination are indoor
             if((origin is IndoorLocation) && (destination is IndoorLocation))  {
+                viewModel.setIndoorDirections(Pair(origin.lID, destination.lID))
                 findNavController().navigate(R.id.floor_fragment)
             } else {
                 findNavController().navigate(R.id.map_fragment)// Navigate Back To MapFragment
