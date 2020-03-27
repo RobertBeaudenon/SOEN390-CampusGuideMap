@@ -9,49 +9,49 @@ import androidx.room.Query
  * This class allows us to query our Database
  */
 @Dao
-interface ShuttleBus_DAO {
+interface ShuttleBusDAO {
 
     /**
      * Insert the timing and the day of a scheduled loyola shuttle bus
-     * in the ShuttleBus_loyola_Entity table
+     * in the ShuttleBusloyolaEntity table
      * @param shuttleBus
      */
     @Insert
-    fun saveLoyolaShuttleTime(shuttleBus: ShuttleBus_Loyola_Entity)
+    fun saveLoyolaShuttleTime(shuttleBus: ShuttleBusLoyolaEntity)
 
     /**
      * Returns a list of the timing and the day of all scheduled loyola shuttle bus
-     * @return: List of shuttleBus_Loyola_Entity
+     * @return: List of shuttleBusLoyolaEntity
      */
-    @Query("select * from ShuttleBus_Loyola_Entity")
-    fun getLoyolaShuttleTime() : LiveData<List<ShuttleBus_Loyola_Entity>>
+    @Query("select * from ShuttleBusLoyolaEntity")
+    fun getLoyolaShuttleTime() : LiveData<List<ShuttleBusLoyolaEntity>>
 
     /**
      * Returns the number of rows in loyola shuttle bus table
      * @return: count
      */
-    @Query("select count(*) from ShuttleBus_Loyola_Entity")
+    @Query("select count(*) from ShuttleBusLoyolaEntity")
     fun getLoyolaShuttleTimeCount() : Int
 
     /**
      * Insert the timing and the day of a scheduled sgw shuttle bus
-     * in the ShuttleBus_SGW_Entity table
+     * in the ShuttleBusSGWEntity table
      * @param shuttleBus
      */
     @Insert
-    fun saveSGWShuttleTime(shuttleBus: ShuttleBus_SGW_Entity)
+    fun saveSGWShuttleTime(shuttleBus: ShuttleBusSGWEntity)
 
     /**
      * Returns a list of the timing and the day of all scheduled sgw shuttle bus
-     * @return: List of shuttleBus_SGW_Entity
+     * @return: List of shuttleBusSGWEntity
      */
-    @Query("select * from ShuttleBus_SGW_Entity")
-    fun getSGWShuttleTime(): LiveData<List<ShuttleBus_SGW_Entity>>
+    @Query("select * from ShuttleBusSGWEntity")
+    fun getSGWShuttleTime(): LiveData<List<ShuttleBusSGWEntity>>
 
     /**
      * Returns the number of rows in sgw shuttle bus table
      * @return: count
      */
-    @Query("select count(*) from ShuttleBus_SGW_Entity")
+    @Query("select count(*) from ShuttleBusSGWEntity")
     fun getSGWShuttleTimeCount() : Int
 }

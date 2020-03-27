@@ -4,21 +4,21 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.droidhats.campuscompass.repositories.NavigationRepository
-import com.droidhats.campuscompass.roomdb.ShuttleBus_Loyola_Entity
-import com.droidhats.campuscompass.roomdb.ShuttleBus_SGW_Entity
+import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
+import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
 
 /**
  * This class will provide loyola and sgw shuttle times to the fragment class
  * And will interact with the NavigationRepository to fetch the data
  * @param application
  */
-class NavigationViewModel: AndroidViewModel {
+class NavigationViewModel(application: Application) : AndroidViewModel(application) {
 
     private  var navigationRepository: NavigationRepository = NavigationRepository.getInstance(getApplication())
-    private  var loyolaShuttleTimes: LiveData<List<ShuttleBus_Loyola_Entity>>
-    private  var sgwShuttleTimes: LiveData<List<ShuttleBus_SGW_Entity>>
+    private  var loyolaShuttleTimes: LiveData<List<ShuttleBusLoyolaEntity>>
+    private  var sgwShuttleTimes: LiveData<List<ShuttleBusSGWEntity>>
 
-    constructor(application: Application) : super(application) {
+    init {
         loyolaShuttleTimes  =  navigationRepository.getLoyolaShuttleTime()
         sgwShuttleTimes = navigationRepository.getSGWShuttleTime()
     }
@@ -26,14 +26,14 @@ class NavigationViewModel: AndroidViewModel {
     /**
      * @return loyolaShuttleTimes
      */
-    fun getLoyolaShuttleTime(): LiveData<List<ShuttleBus_Loyola_Entity>> {
+    fun getLoyolaShuttleTime(): LiveData<List<ShuttleBusLoyolaEntity>> {
         return loyolaShuttleTimes
     }
 
     /**
      *@return sgwShuttleTimes
      */
-    fun getSGWShuttleTime(): LiveData<List<ShuttleBus_SGW_Entity>> {
+    fun getSGWShuttleTime(): LiveData<List<ShuttleBusSGWEntity>> {
         return sgwShuttleTimes
     }
 }

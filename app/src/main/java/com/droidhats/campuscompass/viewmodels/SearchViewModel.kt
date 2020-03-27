@@ -1,7 +1,6 @@
 package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
@@ -20,7 +19,8 @@ import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.*
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -83,7 +83,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         }.addOnFailureListener {
             if (it is ApiException) {
                 val apiException =  it
-                Log.e(ContentValues.TAG, "Place not found: " + apiException.statusCode)
+                Log.e(TAG, "Place not found: " + apiException.statusCode)
             }
         }
         return success

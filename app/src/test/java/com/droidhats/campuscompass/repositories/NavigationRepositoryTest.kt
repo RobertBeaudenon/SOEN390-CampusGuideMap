@@ -2,8 +2,8 @@ package com.droidhats.campuscompass.repositories
 
 import android.os.Build
 import androidx.lifecycle.LiveData
-import com.droidhats.campuscompass.roomdb.ShuttleBus_Loyola_Entity
-import com.droidhats.campuscompass.roomdb.ShuttleBus_SGW_Entity
+import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
+import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,11 +18,11 @@ class NavigationRepositoryTest {
 
     @Test
     fun testInit() {
-        val ShuttleBus_SGW_times: LiveData<List<ShuttleBus_SGW_Entity>> = navigationRepository.getSGWShuttleTime()
-        val ShuttleBus_loyola_times: LiveData<List<ShuttleBus_Loyola_Entity>> = navigationRepository.getLoyolaShuttleTime()
+        val shuttleBusSGWTimes: LiveData<List<ShuttleBusSGWEntity>> = navigationRepository.getSGWShuttleTime()
+        val shuttleBusLoyolaTimes: LiveData<List<ShuttleBusLoyolaEntity>> = navigationRepository.getLoyolaShuttleTime()
 
-        Assert.assertEquals(null, ShuttleBus_SGW_times.value)
-        Assert.assertEquals(null, ShuttleBus_loyola_times.value)
+        Assert.assertEquals(null, shuttleBusSGWTimes.value)
+        Assert.assertEquals(null, shuttleBusLoyolaTimes.value)
     }
 
 

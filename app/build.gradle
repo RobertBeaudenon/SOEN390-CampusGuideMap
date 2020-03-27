@@ -81,7 +81,7 @@ android {
         excludes = ["**/androidx/databinding**", "**/androidx.databinding.library.baseAdapters**"]
         ignoreProjects = []
         includeInstrumentationCoverageInMergedReport = false
-        includeNoLocationClasses = false
+        includeNoLocationClasses = true
     }
 
     testOptions {

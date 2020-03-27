@@ -229,12 +229,11 @@ class SearchFragment : Fragment()  {
             override fun onQueryTextChange(p0: String?): Boolean {
                resetQuery(searchText, searchView)
                resetRouteTimes()
-                if (!p0.isNullOrBlank()) {
-                   return viewModel.sendSearchQueries(p0)
-                }
-                else {
+                return if (!p0.isNullOrBlank()) {
+                    viewModel.sendSearchQueries(p0)
+                } else {
                     viewModel.searchSuggestions.value = emptyList()
-                    return false
+                    false
                 }
             }
         })
@@ -334,7 +333,7 @@ class SearchFragment : Fragment()  {
              val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
              val infoMessage = root.findViewById<TextView>(R.id.search_info)
              val searchPlate = mainBar.findViewById<View>(R.id.search_plate)
-             searchPlate.setBackgroundResource(R.color.colorPrimaryDark);
+             searchPlate.setBackgroundResource(R.color.colorPrimaryDark)
 
              mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
              destinationBar.visibility = View.VISIBLE

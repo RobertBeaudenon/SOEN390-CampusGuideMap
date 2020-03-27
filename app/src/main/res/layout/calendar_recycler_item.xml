@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/calendar_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -50,8 +51,9 @@
         android:src="@drawable/ic_directions_60dp"
         android:background="@android:color/white"
         android:layout_gravity="end|center_vertical"
-        android:contentDescription="Navigate"
-        android:paddingEnd="15dp" />
+        android:contentDescription="@string/navigate"
+        android:paddingEnd="15dp"
+        tools:ignore="RtlSymmetry" />
 
 
 </androidx.cardview.widget.CardView>

@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.viewmodels
 
-
 import android.os.Build
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.android.plugins.RxAndroidPlugins
