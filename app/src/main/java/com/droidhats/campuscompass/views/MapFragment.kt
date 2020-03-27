@@ -54,6 +54,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
@@ -158,12 +159,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         try {
             val success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
-                            context, R.raw.red_map_style));
+                            context, R.raw.map_style));
             if (!success) {
-                Log.e("Map Style", "Style parsing failed.");
+                Log.e("MapStyle", "Style parsing failed.");
             }
         } catch (e: android.content.res.Resources.NotFoundException) {
-            Log.e("Map Style", "Can't find style. Error: ", e);
+            Log.e("MapStyle", "Can't find style. Error: ", e);
         }
 
         // Move camera to SGW

@@ -29,9 +29,6 @@ import org.junit.runner.RunWith
 class DirectionsTest {
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
-    private val twoSeconds: Long = 2000
-    private val fiveSeconds: Long = 5000
-
     @Rule
     @JvmField
     var mGrantPermissionRule: GrantPermissionRule =
@@ -58,7 +55,7 @@ class DirectionsTest {
             Assert.assertEquals(navController.currentDestination?.id!!, R.id.map_fragment)
 
             //Waiting 5 seconds for splash screen to load
-            waitFor(fiveSeconds)
+            Thread.sleep(5000)
 
             //Checking if that action id did take you to map_fragment view
             onView(ViewMatchers.withId(R.id.coordinate_layout))
@@ -70,11 +67,10 @@ class DirectionsTest {
     fun testDirectionButton(){
         val device = UiDevice.getInstance(getInstrumentation())
 
-        //Allow downtown map to fully load
-        waitFor(twoSeconds)
+        Thread.sleep(2000) //Allow downtown map to fully load
 
-        val hMarker = device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. "))
-        hMarker.click()
+        //Click Hall building marker to trigger bottom sheet
+        device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. ")).click()
 
         //Retrieve bottom sheet once it is in the view
         val bottomSheet = device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet"))
@@ -82,10 +78,10 @@ class DirectionsTest {
         //Expand bottom sheet
         bottomSheet.swipe(Direction.UP, 1.0f)
 
-        val directionsButton = device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet_directions_button"))
-        directionsButton.click()
+        //Click directions button
+        device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet_directions_button")).click()
 
-        waitFor(twoSeconds) //allow NavigationFragment to load
+        Thread.sleep(2000) //allow NavigationFragment to load
 
         //Verify start navigation button is displayed & click it
         onView(ViewMatchers.withId(R.id.startNavigationButton))
@@ -103,6 +99,4 @@ class DirectionsTest {
         onView(ViewMatchers.withId(R.id.buttonCloseInstructions))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
-
-    private fun waitFor(duration: Long) = Thread.sleep(duration)
 }

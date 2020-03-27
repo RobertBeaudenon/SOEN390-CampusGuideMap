@@ -43,7 +43,7 @@ class MapViewModelTest {
     @Test
     fun findBuildingByPolygonTagTest_BuildingWithMarker(){
         //Extracting Hall building
-        var expectedBuilding = campuses[0].getBuildings()[0]
+        val expectedBuilding = campuses[0].getBuildings()[0]
 
         selectedBuilding = viewmodel.findBuildingByPolygonTag("Henry F. Hall Building")!!
         Assert.assertEquals(expectedBuilding, selectedBuilding)
@@ -52,7 +52,7 @@ class MapViewModelTest {
     @Test
     fun findBuildingByPolygonTagTest_NullMarker(){
         //Extracting RR Annex
-        var expectedBuilding = campuses[0].getBuildings()[11]
+        val expectedBuilding = campuses[0].getBuildings()[11]
 
         selectedBuilding = viewmodel.findBuildingByPolygonTag("RR Annex")!!
         Assert.assertEquals(expectedBuilding, selectedBuilding)

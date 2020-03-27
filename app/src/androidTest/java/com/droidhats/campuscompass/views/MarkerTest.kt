@@ -28,8 +28,6 @@ import org.junit.runner.RunWith
 class MarkerTest {
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
-    private val twoSeconds: Long = 2000
-    private val fiveSeconds: Long = 5000
 
     @Rule
     @JvmField
@@ -57,7 +55,7 @@ class MarkerTest {
             Assert.assertEquals(navController.currentDestination?.id!!, R.id.map_fragment)
 
             //Waiting 5 seconds for splash screen to load
-            waitFor(fiveSeconds)
+            Thread.sleep(5000)
 
             //Checking if that action id did take you to map_fragment view
             Espresso.onView(ViewMatchers.withId(R.id.coordinate_layout))
@@ -72,137 +70,109 @@ class MarkerTest {
         val googleMap = device.findObject(UiSelector().descriptionContains("Google Map"))
 
         //Allow downtown map to fully load
-        waitFor(twoSeconds)
+        Thread.sleep(2000)
 
-        val hMarker = device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. "))
-        hMarker.click()
+        device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. ")).click()
 
         //Retrieve bottom sheet once it is in the view
         val bottomSheet = device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet"))
         //Click on the map to dismiss bottom sheet for coverage
         UiDevice.getInstance(getInstrumentation()).click(1200, 600)
 
-        val lbMarker = device.findObject(UiSelector().descriptionContains("Pavillion J.W. McConnell Building. "))
-        lbMarker.click()
+        device.findObject(UiSelector().descriptionContains("Pavillion J.W. McConnell Building. ")).click()
         //Expand bottom sheet fully for coverage
         bottomSheet.swipe(Direction.UP, 1.0f)
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val vaMarker = device.findObject(UiSelector().descriptionContains("Visual Arts Building. "))
-        vaMarker.click()
+        device.findObject(UiSelector().descriptionContains("Visual Arts Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val gsMarker = device.findObject(UiSelector().descriptionContains("GS Building. "))
-        gsMarker.click()
+        device.findObject(UiSelector().descriptionContains("GS Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val lsMarker = device.findObject(UiSelector().descriptionContains("Learning Square. "))
-        lsMarker.click()
+        device.findObject(UiSelector().descriptionContains("Learning Square. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val evMarker = device.findObject(UiSelector().descriptionContains("EV Building. "))
-        evMarker.click()
+        device.findObject(UiSelector().descriptionContains("EV Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val jmMarker = device.findObject(UiSelector().descriptionContains("John Molson School of Business. "))
-        jmMarker.click()
+        device.findObject(UiSelector().descriptionContains("John Molson School of Business. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val fbMarker = device.findObject(UiSelector().descriptionContains("Faubourg Building. "))
-        fbMarker.click()
+        device.findObject(UiSelector().descriptionContains("Faubourg Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val gnMarker = device.findObject(UiSelector().descriptionContains("Grey Nuns Building. "))
-        gnMarker.click()
+        device.findObject(UiSelector().descriptionContains("Grey Nuns Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
         //Pinch closer to ensure click precision on FG, GM marker
         googleMap.pinchOut(20, 50)
 
-        val fgMarker = device.findObject(UiSelector().descriptionContains("Faubourg Saint-Catherine Building. "))
-        fgMarker.click()
+        device.findObject(UiSelector().descriptionContains("Faubourg Saint-Catherine Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val gmMarker = device.findObject(UiSelector().descriptionContains("Guy-De Maisonneuve Building. "))
-        gmMarker.clickTopLeft()
+        device.findObject(UiSelector().descriptionContains("Guy-De Maisonneuve Building. ")).clickTopLeft()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        waitFor(twoSeconds)
+        Thread.sleep(2000)
 
         // Switch to Loyola campus
         toggleButton.click()
 
-        waitFor(twoSeconds)
+        Thread.sleep(2000)
 
-        val jrMarker = device.findObject(UiSelector().descriptionContains("Jesuit Residence. "))
-        jrMarker.click()
+        device.findObject(UiSelector().descriptionContains("Jesuit Residence. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val spMarker = device.findObject(UiSelector().descriptionContains("Richard J. Renaud Science Complex. "))
-        spMarker.click()
+        device.findObject(UiSelector().descriptionContains("Richard J. Renaud Science Complex. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val cjMarker = device.findObject(UiSelector().descriptionContains("Communication Studies and Journalism Building. "))
-        cjMarker.click()
+        device.findObject(UiSelector().descriptionContains("Communication Studies and Journalism Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val pcMarker = device.findObject(UiSelector().descriptionContains("PERFORM Centre. "))
-        pcMarker.click()
+        device.findObject(UiSelector().descriptionContains("PERFORM Centre. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val doMarker = device.findObject(UiSelector().descriptionContains("Stinger Dome. "))
-        doMarker.click()
+        device.findObject(UiSelector().descriptionContains("Stinger Dome. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
         //Pinch closer to ensure click precision on the rest of these markers
         googleMap.pinchOut(20, 50)
 
-        val psMarker = device.findObject(UiSelector().descriptionContains("Physical Services Building. "))
-        psMarker.click()
+        device.findObject(UiSelector().descriptionContains("Physical Services Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val veMarker = device.findObject(UiSelector().descriptionContains("Vanier Extension."))
-        veMarker.click()
+        device.findObject(UiSelector().descriptionContains("Vanier Extension.")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val pyMarker = device.findObject(UiSelector().descriptionContains("Psychology Building. "))
-        pyMarker.click()
+        device.findObject(UiSelector().descriptionContains("Psychology Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val fcMarker = device.findObject(UiSelector().descriptionContains("F.C. Smith Building. "))
-        fcMarker.click()
+        device.findObject(UiSelector().descriptionContains("F.C. Smith Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val rfMarker = device.findObject(UiSelector().descriptionContains("Loyola Jesuit and Conference Centre. "))
-        rfMarker.click()
+        device.findObject(UiSelector().descriptionContains("Loyola Jesuit and Conference Centre. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val ccMarker = device.findObject(UiSelector().descriptionContains("Central Building. "))
-        ccMarker.click()
+        device.findObject(UiSelector().descriptionContains("Central Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val adMarker = device.findObject(UiSelector().descriptionContains("Administration Building. "))
-        adMarker.click()
+        device.findObject(UiSelector().descriptionContains("Administration Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val ptMarker = device.findObject(UiSelector().descriptionContains("Oscar Peterson Concert Hall. "))
-        ptMarker.click()
+        device.findObject(UiSelector().descriptionContains("Oscar Peterson Concert Hall. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        val vlMarker = device.findObject(UiSelector().descriptionContains("Vanier Library Building. "))
-        vlMarker.click()
+        device.findObject(UiSelector().descriptionContains("Vanier Library Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
         //Pinch closer to ensure click precision on SC marker
         googleMap.pinchOut(20, 50)
 
-        val scMarker = device.findObject(UiSelector().descriptionContains("Student Centre. "))
-        scMarker.click()
+        device.findObject(UiSelector().descriptionContains("Student Centre. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
         //Zoom out until markers disappear for coverage
         googleMap.pinchIn(80, 50)
     }
-
-    private fun waitFor(duration: Long) = Thread.sleep(duration)
 }
