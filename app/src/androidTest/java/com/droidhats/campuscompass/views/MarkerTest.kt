@@ -66,7 +66,6 @@ class MarkerTest {
     @Test
     fun testBuildingMarkers(){
         val device = UiDevice.getInstance(getInstrumentation())
-        val toggleButton = device.findObject(By.res("com.droidhats.campuscompass:id/toggleButton"))
         val googleMap = device.findObject(UiSelector().descriptionContains("Google Map"))
 
         //Allow downtown map to fully load
@@ -117,7 +116,7 @@ class MarkerTest {
         Thread.sleep(2000)
 
         // Switch to Loyola campus
-        toggleButton.click()
+        device.findObject(By.res("com.droidhats.campuscompass:id/toggleButton")).click()
 
         Thread.sleep(2000)
 
