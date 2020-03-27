@@ -101,10 +101,10 @@ class MapFragmentTest {
         //Checks if info text that prompts to enter the text in the text field is displayed
         onView(
             allOf(
-                withId(R.id.search_info), withText("Enter Street, Address, Concordia Classroom..."),
+                withId(R.id.search_info), withText("Enter Street, Address, Concordia Classroom…"),
                 isDisplayed()
             )
-        ).check(matches(withText("Enter Street, Address, Concordia Classroom...")))
+        ).check(matches(withText("Enter Street, Address, Concordia Classroom…")))
 
         //Checks if Autocomplete options for text "h" are displayed
         onView(
