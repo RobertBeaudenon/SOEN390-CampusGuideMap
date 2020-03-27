@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/splash_fragment">
+    app:startDestination="@id/splash_fragment"
+    tools:ignore="UnusedNavigation">
 
     <fragment
         android:id="@+id/splash_fragment"

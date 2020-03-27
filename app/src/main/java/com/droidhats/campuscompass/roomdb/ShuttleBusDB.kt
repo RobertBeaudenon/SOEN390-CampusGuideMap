@@ -7,13 +7,12 @@ import androidx.room.RoomDatabase
 
 /**
  * This class will create our Database instance for the Shuttle Bus times
- * @param context
  */
-@Database(entities = [ShuttleBus_Loyola_Entity::class,ShuttleBus_SGW_Entity::class],version = 3, exportSchema = false)
+@Database(entities = [ShuttleBusLoyolaEntity::class,ShuttleBusSGWEntity::class],version = 3, exportSchema = false)
 abstract class ShuttleBusDB : RoomDatabase() {
 
    //When we invoke this function it will call the DAO class
-    abstract fun shuttleBusDAO(): ShuttleBus_DAO
+    abstract fun shuttleBusDAO(): ShuttleBusDAO
 
 
     companion object {

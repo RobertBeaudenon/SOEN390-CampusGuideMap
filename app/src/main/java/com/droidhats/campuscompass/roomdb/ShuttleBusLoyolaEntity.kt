@@ -6,13 +6,13 @@ import androidx.room.PrimaryKey
 import org.jetbrains.annotations.NotNull
 
 /**
- * This class will create the ShuttleBus_Loyola_Entity table
+ * This class will create the ShuttleBusLoyolaEntity table
  * @param ID
- * @param SHUTTLE_DAY
- * @param SHUTTLE_TIME
+ * @param shuttle_day
+ * @param shuttle_time
  */
-@Entity()
-data class ShuttleBus_Loyola_Entity (
+@Entity
+data class ShuttleBusLoyolaEntity (
 
     @PrimaryKey
     @NotNull
@@ -26,4 +26,4 @@ data class ShuttleBus_Loyola_Entity (
     @NotNull
     @ColumnInfo(name ="SHUTTLE_TIME")
     var shuttle_time: String= ""
-){}
+)

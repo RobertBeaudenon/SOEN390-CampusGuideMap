@@ -7,14 +7,14 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/buttonCloseInstructions"
-            android:layout_width="150px"
-            android:layout_height="150px"
-            android:text="X"
-            android:layout_marginLeft="10dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:text="@string/x_button"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             />
 
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Hello\nWorld"
+            android:text=""
             android:layout_marginTop="80dp"
             />
     </RelativeLayout>
