@@ -24,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.junit.Assert.assertEquals
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -254,8 +255,113 @@ class MapFragmentTest {
             )
         ).check(matches(isDisplayed()))
 
+        //Checking if driving option is displayed
+        onView(withId(R.id.radio_transport_mode_driving)).check(matches(isDisplayed()))
+
+        //Checking when the driving option is clicked, it's indeed selected
+        onView(withId(R.id.radio_transport_mode_driving)).perform(click()).check(matches(isChecked()))
+
+        //Checking if transit option is displayed
+        onView(withId(R.id.radio_transport_mode_transit)).check(matches(isDisplayed()))
+
+        //Checking when the transit option is clicked, it's indeed selected
+        onView(withId(R.id.radio_transport_mode_transit)).perform(click()).check(matches(isChecked()))
+
+        //Checking if walking option is displayed
+        onView(withId(R.id.radio_transport_mode_walking)).check(matches(isDisplayed()))
+
+        //Checking when the walking option is clicked, it's indeed selected
+        onView(withId(R.id.radio_transport_mode_walking)).perform(click()).check(matches(isChecked()))
+
+        //Checking if bicycle option is displayed
+        onView(withId(R.id.radio_transport_mode_bicycle)).check(matches(isDisplayed()))
+
+        //Checking when the bicycle option is clicked, it's indeed selected
+        onView(withId(R.id.radio_transport_mode_bicycle)).perform(click()).check(matches(isChecked()))
+
+        //Checking if shuttle option is displayed
+        onView(withId(R.id.radio_transport_mode_shuttle)).check(matches(isDisplayed()))
+
+        //Checking when the shuttle option is clicked, it's indeed selected
+        onView(withId(R.id.radio_transport_mode_shuttle)).perform(click()).check(matches(isChecked()))
     }
 
+    @Test
+    fun test_PlaceInfoCard() {
+
+        //function that searches for restaurant Ganadara
+        fun searchOutdoorLocation() {
+
+            // check if search bar exists and clicks on it
+            onView(withId(R.id.mapFragSearchBar)).check(matches(isDisplayed())).perform(click())
+
+            //Checking if action id indeed took you to the correct fragment
+            onView(withId(R.id.search_fragment)).check(matches(isDisplayed()))
+
+            //search for restaurant Ganadara
+            onView(
+                allOf(
+                    withId(R.id.search_src_text), isDisplayed()
+                )
+            ).perform(ViewActions.typeText("ganadara"), ViewActions.closeSoftKeyboard())
+
+            //allow suggestions to load
+            Thread.sleep(2000)
+
+            //click on the Ganadara restaurant suggestion from list
+            onView(allOf(withId(R.id.search_suggestion), withText("Ganadara"))).perform(click())
+        }
+
+        searchOutdoorLocation()
+
+        //allow map to readjust view
+        Thread.sleep(1500)
+
+        //check that place info card is displayed
+        onView(withId(R.id.place_card)).check(matches(isDisplayed()))
+
+        //check that location name is displayed
+        onView(withId(R.id.place_card_name)).check(matches(isDisplayed()))
+
+        //check that location address is displayed
+        onView(withId(R.id.place_card_category)).check(matches(isDisplayed()))
+
+        //check that favorites button is displayed and click it
+        onView(withId(R.id.place_card_favorites_button)).check(matches(isDisplayed())).perform(click())
+
+        //check that close button is displayed
+        onView(withId(R.id.place_card_close_button)).check(matches(isDisplayed()))
+
+        //check that directions button is displayed
+        onView(withId(R.id.place_card_directions_button)).check(matches(isDisplayed()))
+
+        //click on close button
+        onView(withId(R.id.place_card_close_button)).perform(click())
+
+        //allow place info card to close
+        Thread.sleep(1000)
+
+        //check if place info card really closed
+        onView(withId(R.id.place_card)).check(matches(not(isDisplayed())))
+
+        //repeat search for restaurant Ganadara in order to test navigation from the place info card
+        searchOutdoorLocation()
+
+        //allow map to readjust view
+        Thread.sleep(1500)
+
+        //click on directions button
+        onView(withId(R.id.place_card_directions_button)).perform(click())
+
+        //allow search page to load
+        //Thread.sleep(1500)
+
+        //check if we are taken to search page
+        onView(withId(R.id.search_fragment)).check(matches(isDisplayed()))
+
+        //check if location name is set as the destination
+        onView(allOf(withId(R.id.search_src_text), withText("Ganadara"))).check(matches(isDisplayed()))
+    }
 
     @Test
     fun test_SwitchToggle() {
