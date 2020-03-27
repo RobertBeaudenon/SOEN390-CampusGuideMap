@@ -329,11 +329,17 @@ class MapFragmentTest {
         //check that favorites button is displayed and click it
         onView(withId(R.id.place_card_favorites_button)).check(matches(isDisplayed())).perform(click())
 
+        //Ensuring the text of the favorites button is Save
+        onView(withId(R.id.place_card_favorites_button)).check(matches(withText("Save")))
+
         //check that close button is displayed
         onView(withId(R.id.place_card_close_button)).check(matches(isDisplayed()))
 
         //check that directions button is displayed
         onView(withId(R.id.place_card_directions_button)).check(matches(isDisplayed()))
+
+        //Ensuring the text of the directions button is Directions
+        onView(withId(R.id.place_card_directions_button)).check(matches(withText("Directions")))
 
         //click on close button
         onView(withId(R.id.place_card_close_button)).perform(click())
