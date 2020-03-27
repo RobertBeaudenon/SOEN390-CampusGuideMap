@@ -1,9 +1,10 @@
 apply plugin: "com.android.application"
-apply plugin: "jacoco"
+apply plugin: "com.vanniktech.android.junit.jacoco"
 apply plugin: "kotlin-android"
 apply plugin: "kotlin-android-extensions"
 apply plugin: "kotlin-kapt"
 apply plugin: "org.jetbrains.dokka"
+apply plugin: "org.sonarqube"
 
 android {
     compileSdkVersion 29
@@ -17,8 +18,8 @@ android {
         }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             buildConfigField "String", "ApiKey", API_KEY
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             resValue "string", "ApiKey", API_KEY
             testCoverageEnabled false
         }
@@ -37,29 +38,31 @@ android {
         applicationId "com.droidhats.campuscompass"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 2
-        versionName '2.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionCode 2
+        versionName "2.0"
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation":
-                                     "$projectDir/schemas".toString()]
+                arguments = ["room.schemaLocation":"$projectDir/schemas".toString()]
             }
         }
     }
-
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res', 'src/main/res/mipmap/ic_buildings'
+            }
+        }
+    }
     dokka {
         outputFormat = "javadoc"
         outputDirectory = "$buildDir/dokka"
+
         configuration {
-            // Use to include or exclude non public members.
             includeNonPublic = true
-            // Do not output deprecated members. Applies globally, can be overridden by packageOptions
-            skipDeprecated = false
-            // Emit warnings about not documented members. Applies globally, also can be overridden by packageOptions
             reportUndocumented = true
-            // Do not create index pages for empty packages
+            skipDeprecated = false
             skipEmptyPackages = true
         }
     }
@@ -73,86 +76,36 @@ android {
         androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 
-    testOptions {
-        animationsDisabled true
-        unitTests {
-            includeAndroidResources = true
-            all {
-                jacoco {
-                    includeNoLocationClasses = true
-                }
-            }
-        }
+    junitJacoco {
+        jacocoVersion = "0.8.2"
+        excludes = ["**/androidx/databinding**", "**/androidx.databinding.library.baseAdapters**"]
+        ignoreProjects = []
+        includeInstrumentationCoverageInMergedReport = false
+        includeNoLocationClasses = true
     }
 
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
-
-def buildDir = '/Users/nicholasnagy/StudioProjects/SOEN390-CampusGuideMap/app/build/'
-
-//task jacocoUnitTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
-//    def coverageSourceDirs = ["src/main/java"]
-//    def fileFilter = ['**/R.class','**/R$*.class','**/*$ViewInjector*.*','**/*$ViewBinder*.*','**/BuildConfig.*','**/Manifest*.*']
-//    def javaClasses = fileTree(dir: "$buildDir/intermediates/classes/debug",excludes: fileFilter)
-//    def kotlinClasses = fileTree(dir: "$buildDir/tmp/kotlin-classes/debug",excludes: fileFilter)
-//    classDirectories = files([javaClasses], [kotlinClasses])
-//    additionalSourceDirs = files(coverageSourceDirs)
-//    sourceDirectories = files(coverageSourceDirs)
-//    executionData = fileTree(dir: "$buildDir", includes: ["jacoco/testDebugUnitTest.exec","output/code-coverage/connected/*.ec"])
-//    reports {
-//        xml.enabled = true
-//        html.enabled = true
-//    }
-//}
 
 dependencies {
-    androidTestCompile "com.android.support.test:rules:0.4"
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation "androidx.test.ext:junit:1.1.1"
+    androidTestImplementation "androidx.navigation:navigation-testing:2.3.0-alpha04"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.2.0"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:2.2.0"
+    androidTestImplementation "com.android.support.test:rules:1.0.2"
     debugImplementation "androidx.fragment:fragment-testing:1.2.3"
-    implementation "androidx.appcompat:appcompat:1.1.0"
-    implementation "androidx.core:core-ktx:1.3.0-alpha02"
-    implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.0-alpha04"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha04"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha04"
+    implementation "androidx.room:room-rxjava2:2.2.5"
     implementation "com.github.mancj:MaterialSearchBar:0.8.5"
-    implementation "com.google.android.gms:play-services-gcm:17.0.0"
-    implementation "com.google.android.gms:play-services-location:17.0.0"
-    implementation "com.google.android.gms:play-services-maps:17.0.0"
     implementation "com.google.android.libraries.places:places:2.2.0"
-    implementation "com.google.maps.android:android-maps-utils:0.6.2"
+    implementation "com.google.maps.android:android-maps-utils:1.0.2"
     implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
-    implementation "io.reactivex.rxjava3:rxjava:3.0.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    kapt "androidx.room:room-compiler:2.2.5"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
-    testImplementation "junit:junit:4.12"
-
-    // Testing Navigation
-    androidTestImplementation "androidx.navigation:navigation-testing:2.3.0-alpha03"
-    // Dynamic Feature Module Support
-    implementation "androidx.navigation:navigation-dynamic-features-fragment:2.3.0-alpha03"
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha03"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha03"
-    testImplementation "com.google.truth:truth:1.0.1"
-    testImplementation "org.robolectric:robolectric:4.3"
-
-    //dependancies for using room for SQlite
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0"
-    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation "androidx.room:room-guava:2.2.4"
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation "androidx.room:room-ktx:2.2.4"
-    implementation "androidx.room:room-runtime:2.2.4"
-    // optional - RxJava support for Room
-    implementation "androidx.room:room-rxjava2:2.2.4"
-    // For Kotlin use kapt instead of annotationProcessor
-    kapt "androidx.room:room-compiler:2.2.4"
-    // Test helpers
-    testImplementation "androidx.room:room-testing:2.2.4"
-}
-
-jacoco {
-    toolVersion = "0.8.5"
+    testImplementation "org.robolectric:robolectric:4.3.1"
 }

@@ -19,4 +19,4 @@ Markram Adaime | makchamp
 Neeham Khalid | Neeham
 Nicholas Nagy | NicholasNagy
 Robert Beaudenon | RobertBeaudenon
-Zohal Mir | Zohalmir
+Zohal Mir | zohalmir

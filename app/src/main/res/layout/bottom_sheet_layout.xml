@@ -2,10 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:clickable="true"
-    android:focusable="auto"
+    android:focusable="true"
     app:behavior_peekHeight="0dp"
     app:behavior_fitToContents = "false"
     app:layout_insetEdge="bottom"
@@ -34,7 +34,8 @@
                     android:id="@+id/building_image"
                     android:layout_width="match_parent"
                     android:layout_height="190dp"
-                    app:srcCompat="@drawable/building_ljacc" />
+                    app:srcCompat="@drawable/building_ljacc"
+                    android:contentDescription="@string/contentDescription_BuildingImage" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -45,7 +46,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
-            android:text="Building"
+            android:text="@string/building"
             android:textColor="#000000"
             android:textSize="30sp" />
 
@@ -54,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="Address"
+            android:text="@string/address"
             android:textSize="20sp"
             android:textColor="#000000" />
 
@@ -63,7 +64,8 @@
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/bottom_sheet_separator" />
+            app:srcCompat="@drawable/bottom_sheet_separator"
+            android:contentDescription="@string/contentDescription_separator" />
 
         <!-- this needs to be deleted after -->
 
@@ -84,16 +86,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="Open hours: "
+                    android:gravity="start"
+                    android:text="@string/open_hours"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/bottom_sheet_open_hours"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="Hours here"
+                    android:gravity="start"
+                    android:text="@string/hours_here"
                     android:textSize="18sp" />
 
             </TableRow>
@@ -107,16 +109,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="Services:"
+                    android:gravity="start"
+                    android:text="@string/services"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/bottom_sheet_services"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="Services here"
+                    android:gravity="start"
+                    android:text="@string/services_here"
                     android:textSize="18sp" />
 
             </TableRow>
@@ -130,16 +132,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="Departments:"
+                    android:gravity="start"
+                    android:text="@string/departments"
                     android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/bottom_sheet_departments"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
-                    android:text="Departments here"
+                    android:gravity="start"
+                    android:text="@string/departments_here"
                     android:textSize="18sp" />
 
             </TableRow>
@@ -156,45 +158,8 @@
             android:background="@drawable/calendarbutton"
             android:drawableStart="@android:drawable/ic_dialog_map"
             android:padding="10dp"
-            android:text="Directions"
+            android:text="@string/directions"
             android:textColor="#FFFFFF" />
 
-        <RadioGroup
-            android:id="@+id/radioTransportGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#dbeceb"
-            android:checkedButton="@id/drivingId">
-
-            <RadioButton
-                android:id="@+id/drivingId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Driving" />
-
-            <RadioButton
-                android:id="@+id/transitId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Transit" />
-
-            <RadioButton
-                android:id="@+id/walkingId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Walking" />
-
-            <RadioButton
-                android:id="@+id/bicyclingId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bicycle" />
-
-            <RadioButton
-                android:id="@+id/shuttleId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Shuttle" />
-        </RadioGroup>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
