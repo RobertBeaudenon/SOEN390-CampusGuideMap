@@ -262,33 +262,33 @@ class MapRepository(applicationContext: Context) {
         // The id for the building icon resource is of Int type
         // Return the building image resource id that corresponds to the building name
         return when (buildingName) {
-            "Henry F. Hall Building" -> R.mipmap.ic_building_h
-            "EV Building" -> R.mipmap.ic_building_ev
-            "John Molson School of Business" -> R.mipmap.ic_building_jm
-            "Faubourg Saint-Catherine Building" -> R.mipmap.ic_building_fg
-            "Guy-De Maisonneuve Building" -> R.mipmap.ic_building_gm
-            "Faubourg Building" -> R.mipmap.ic_building_fb
-            "Visual Arts Building" -> R.mipmap.ic_building_va
-            "Pavillion J.W. McConnell Building" -> R.mipmap.ic_building_lb
-            "Grey Nuns Building" -> R.mipmap.ic_building_gn
-            "Samuel Bronfman Building" -> R.mipmap.ic_building_sb
-            "GS Building" -> R.mipmap.ic_building_gs
-            "Learning Square" ->  R.mipmap.ic_building_ls
-            "Psychology Building" -> R.mipmap.ic_building_py
-            "Richard J. Renaud Science Complex" -> R.mipmap.ic_building_sp
-            "Central Building" -> R.mipmap.ic_building_cc
-            "Communication Studies and Journalism Building" -> R.mipmap.ic_building_cj
-            "Administration Building" -> R.mipmap.ic_building_ad
-            "Loyola Jesuit and Conference Centre" -> R.mipmap.ic_building_rf
-            "Vanier Library Building" -> R.mipmap.ic_building_vl
-            "Vanier Extension" -> R.mipmap.ic_building_ve
-            "Student Centre" -> R.mipmap.ic_building_sc
-            "F.C. Smith Building" ->R.mipmap.ic_building_fc
-            "Stinger Dome" -> R.mipmap.ic_building_do
-            "PERFORM Centre" -> R.mipmap.ic_building_pc
-            "Jesuit Residence" -> R.mipmap.ic_building_jr
-            "Physical Services Building" -> R.mipmap.ic_building_ps
-            "Oscar Peterson Concert Hall" -> R.mipmap.ic_building_pt
+            "Henry F. Hall Building" -> R.drawable.ic_building_h
+            "EV Building" -> R.drawable.ic_building_ev
+            "John Molson School of Business" -> R.drawable.ic_building_jm
+            "Faubourg Saint-Catherine Building" -> R.drawable.ic_building_fg
+            "Guy-De Maisonneuve Building" -> R.drawable.ic_building_gm
+            "Faubourg Building" -> R.drawable.ic_building_fb
+            "Visual Arts Building" -> R.drawable.ic_building_va
+            "Pavillion J.W. McConnell Building" -> R.drawable.ic_building_lb
+            "Grey Nuns Building" -> R.drawable.ic_building_gn
+            "Samuel Bronfman Building" -> R.drawable.ic_building_sb
+            "GS Building" -> R.drawable.ic_building_gs
+            "Learning Square" ->  R.drawable.ic_building_ls
+            "Psychology Building" -> R.drawable.ic_building_py
+            "Richard J. Renaud Science Complex" -> R.drawable.ic_building_sp
+            "Central Building" -> R.drawable.ic_building_cc
+            "Communication Studies and Journalism Building" -> R.drawable.ic_building_cj
+            "Administration Building" -> R.drawable.ic_building_ad
+            "Loyola Jesuit and Conference Centre" -> R.drawable.ic_building_rf
+            "Vanier Library Building" -> R.drawable.ic_building_vl
+            "Vanier Extension" -> R.drawable.ic_building_ve
+            "Student Centre" -> R.drawable.ic_building_sc
+            "F.C. Smith Building" ->R.drawable.ic_building_fc
+            "Stinger Dome" -> R.drawable.ic_building_do
+            "PERFORM Centre" -> R.drawable.ic_building_pc
+            "Jesuit Residence" -> R.drawable.ic_building_jr
+            "Physical Services Building" -> R.drawable.ic_building_ps
+            "Oscar Peterson Concert Hall" -> R.drawable.ic_building_pt
             else -> Log.v("IconMarker", "didn't load marker icon for $buildingName")
         }
     }
