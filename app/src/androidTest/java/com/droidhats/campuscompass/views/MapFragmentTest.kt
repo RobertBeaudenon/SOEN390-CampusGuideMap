@@ -1,14 +1,20 @@
 package com.droidhats.campuscompass.views
 
-import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.withHint
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withChild
+import androidx.test.espresso.matcher.ViewMatchers.withContentDescription
+import androidx.test.espresso.matcher.ViewMatchers.hasSibling
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -17,10 +23,7 @@ import com.droidhats.campuscompass.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.junit.Assert.assertEquals
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.*
-import org.hamcrest.TypeSafeMatcher
+import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -68,58 +71,52 @@ class MapFragmentTest {
     @Test
     fun test_SearchBar() {
         //Checks if the search bar with text "search" exists
-        val searchTextView = onView(
+        onView(
             allOf(
                 withId(R.id.mt_placeholder), withText("Search"), isDisplayed()
             )
-        )
-        searchTextView.check(matches(withText("Search")))
+        ).check(matches(withText("Search")))
 
         //Checks if magnifying glass button is displayed
-        val magnifyingGlassView = onView(
+        onView(
             allOf(
                 withId(R.id.mt_search), isDisplayed()
             )
-        )
-        magnifyingGlassView.check(matches(isDisplayed()))
+        ).check(matches(isDisplayed()))
 
         //Checks if Search bar can be clicked
-        val containerSearchBar = onView(
+        onView(
             allOf(
                 withId(R.id.mapFragSearchBar), isDisplayed()
             )
-        )
-        containerSearchBar.perform(click())
+        ).perform(click())
 
         //Checks if text "Search" is displayed even after search bar was clicked
-        val searchText = onView(
+        onView(
             allOf(
                 withId(R.id.search_src_text), withHint("Search"), isDisplayed()
             )
-        )
-        searchText.check(matches(withHint("Search")))
+        ).check(matches(withHint("Search")))
 
         //Checks if info text that prompts to enter the text in the text field is displayed
-        val infoTextView = onView(
+        onView(
             allOf(
                 withId(R.id.search_info), withText("Enter Street, Address, Concordia Classroom..."),
                 isDisplayed()
             )
-        )
-        infoTextView.check(matches(withText("Enter Street, Address, Concordia Classroom...")))
+        ).check(matches(withText("Enter Street, Address, Concordia Classroom...")))
 
         //Checks if Autocomplete options for text "h" are displayed
-        val searchAutoComplete = onView(
+        onView(
             allOf(
                 withId(R.id.search_src_text), isDisplayed()
             )
-        )
-        searchAutoComplete.perform(ViewActions.typeText("h"), ViewActions.closeSoftKeyboard())
+        ).perform(ViewActions.typeText("h"), ViewActions.closeSoftKeyboard())
 
         Thread.sleep(2000)
 
         //Checks if room suggestion H-400 is displayed and performs a click on the search card
-        val searchCardView = onView(
+        onView(
             allOf(
                 withId(R.id.search_suggestions_card_view),
                 withChild(
@@ -135,12 +132,10 @@ class MapFragmentTest {
                 ),
                 isDisplayed()
             )
-        )
-
-        searchCardView.perform(click())
+        ).perform(click())
 
         //Performs click on the Set Navigation Button
-        val setNavImageButton = onView(
+        onView(
             allOf(
                 withId(R.id.setNavigationPoint),
                 withContentDescription("SetNavigation"),
@@ -157,66 +152,58 @@ class MapFragmentTest {
                 ),
                 isDisplayed()
             )
-        )
-
-        setNavImageButton.perform(click())
+        ).perform(click())
 
         //Checks if back button is displayed
-        val backImageButton = onView(
+        onView(
             allOf(
                 withId(R.id.backFromNavigationButton), withContentDescription("Back"),
                 isDisplayed()
             )
-        )
-        backImageButton.check(matches(isDisplayed()))
+        ).check(matches(isDisplayed()))
 
         //Checks if The "From" field displays text "From"
-        val fromText = onView(
+        onView(
             allOf(
                 withId(R.id.search_src_text), withHint("From"),
                 isDisplayed()
             )
-        )
-        fromText.check(matches(withHint("From")))
+        ).check(matches(withHint("From")))
 
         //Checks that if a Clear button is displayed next to the search field
-        val clearButtonImageView = onView(
+        onView(
             allOf(
                 withId(R.id.search_close_btn), withContentDescription("Clear query"),
                 isDisplayed()
             )
-        )
-        clearButtonImageView.check(matches(isDisplayed()))
+        ).check(matches(isDisplayed()))
 
         //Checks if Navigation button is displayed
-        val navigateImageButton = onView(
+        onView(
             allOf(
                 withId(R.id.startNavigationButton), withContentDescription("Navigate"),
                 isDisplayed()
             )
-        )
-        navigateImageButton.check(matches(isDisplayed()))
+        ).check(matches(isDisplayed()))
 
         //Checks if current location button is displayed
-        val currentLocationButton = onView(
+        onView(
             allOf(
                 withId(R.id.myCurrentLocationFAB),
                 isDisplayed()
             )
-        )
-        currentLocationButton.perform(click())
+        ).perform(click())
 
         //Checks if "from" field is replaced by test "Your Location"
-        val currentLocationTextField = onView(
+        onView(
             allOf(
                 withId(R.id.search_src_text), withText("Your Location"),
                 isDisplayed()
             )
-        )
-        currentLocationTextField.check(matches(withText("Your Location")))
+        ).check(matches(withText("Your Location")))
 
         //Checks if Clear button for secondary (To) searchbar is displayed
-        val clearButton1ImageView = onView(
+        onView(
             allOf(
                 withId(R.id.secondarySearchBar),
                 withChild(
@@ -239,11 +226,10 @@ class MapFragmentTest {
                 ),
                 isDisplayed()
             )
-        )
-        clearButton1ImageView.check(matches(isDisplayed()))
+        ).check(matches(isDisplayed()))
 
         //Checks if Clear button for main (from) searchbar is displayed
-        val clearButton2ImageView = onView(
+        onView(
             allOf(
                 withId(R.id.mainSearchBar),
                 withChild(
@@ -266,8 +252,7 @@ class MapFragmentTest {
                 ),
                 isDisplayed()
             )
-        )
-        clearButton2ImageView.check(matches(isDisplayed()))
+        ).check(matches(isDisplayed()))
 
     }
 
