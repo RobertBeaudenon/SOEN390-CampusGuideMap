@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
@@ -84,6 +85,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private val observerList = mutableListOf<ModifiedObserver?>()
     private val currentNavigationPath = arrayListOf<Polyline>()
     private var locationUpdateState = false
+    //val args: MapFragmentArgs by navArgs()
 
     companion object {
         private const val REQUEST_CHECK_SETTINGS = 2
@@ -136,6 +138,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initSearchBar()
         handleCampusSwitch()
         observeNavigation()
+
+        //val getItem = args.argItem
+
     }
 
     /**
@@ -504,7 +509,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         if (item is GooglePlace) {
-            findNavController().navigate(R.id.map_fragment)
+            findNavController().navigateUp()
             focusLocation(item)
         } else if (item is IndoorLocation) {
             findNavController().navigate(R.id.floor_fragment)

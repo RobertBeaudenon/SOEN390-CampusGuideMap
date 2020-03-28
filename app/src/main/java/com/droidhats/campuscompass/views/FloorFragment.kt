@@ -109,10 +109,11 @@ class FloorFragment : Fragment(), SearchAdapter.OnSearchResultClickListener {
     }
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
-        if (item is GooglePlace) {
-            findNavController().navigate(R.id.map_fragment)
-        } else if (item is IndoorLocation) {
-            findNavController().navigate(R.id.floor_fragment)
+        if (item is IndoorLocation) {
+            findNavController().navigateUp()
+        } else if (item is GooglePlace) {
+           //val action = FloorFragmentDirections.floorToMap(item)
+           findNavController().navigate(R.id.map_fragment)
         }
     }
 }

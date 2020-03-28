@@ -36,6 +36,13 @@
             android:id="@+id/action_map_fragment_to_search_fragment"
             app:destination="@id/search_fragment"
             app:enterAnim="@android:anim/fade_in" />
+
+        <!--
+        <argument
+            android:name="argItem"
+            app:argType="com.droidhats.campuscompass.models.Location" />
+
+            -->
     </fragment>
 
     <fragment
@@ -67,7 +74,7 @@
         android:name="com.droidhats.campuscompass.views.FloorFragment"
         android:label="floorFragment" >
         <action
-            android:id="@+id/action_FloorFragment_to_map_fragment"
+            android:id="@+id/action_floor_fragment_to_map_fragment"
             app:destination="@id/map_fragment" />
         <action
             android:id="@+id/action_floor_fragment_to_search_fragment"
