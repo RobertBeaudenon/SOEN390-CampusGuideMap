@@ -18,7 +18,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
@@ -494,10 +493,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    override fun onCalendarEventClick(item: CalendarEvent?) {
-        findNavController().navigateUp()
-        Toast.makeText(context, "Start Navigation for ${item!!.title}", Toast.LENGTH_LONG).show()
-    }
+    override fun onCalendarEventClick(item: CalendarEvent?) {}
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         if (item is GooglePlace) {
