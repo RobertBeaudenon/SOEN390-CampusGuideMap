@@ -189,6 +189,8 @@ class SearchFragment : Fragment()  {
             viewModel.navigationRepository.generateDirections(origin!!,
                 destination!!,
                 selectedTransportationMethod)
+
+            isNavigationViewOpen = false
         }
     }
 

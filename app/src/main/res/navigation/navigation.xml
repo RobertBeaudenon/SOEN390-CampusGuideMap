@@ -36,13 +36,6 @@
             android:id="@+id/action_map_fragment_to_search_fragment"
             app:destination="@id/search_fragment"
             app:enterAnim="@android:anim/fade_in" />
-
-        <!--
-        <argument
-            android:name="argItem"
-            app:argType="com.droidhats.campuscompass.models.Location" />
-
-            -->
     </fragment>
 
     <fragment

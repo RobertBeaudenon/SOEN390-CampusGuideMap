@@ -84,7 +84,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private val observerList = mutableListOf<ModifiedObserver?>()
     private val currentNavigationPath = arrayListOf<Polyline>()
     private var locationUpdateState = false
-    //val args: MapFragmentArgs by navArgs()
 
     companion object {
         private const val REQUEST_CHECK_SETTINGS = 2
@@ -137,9 +136,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initSearchBar()
         handleCampusSwitch()
         observeNavigation()
-
-        //val getItem = args.argItem
-
     }
 
     /**
