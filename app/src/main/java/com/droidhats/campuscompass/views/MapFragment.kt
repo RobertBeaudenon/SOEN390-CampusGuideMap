@@ -276,6 +276,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
+        dismissBottomSheet()
     }
 
     // 3 Override onResume() to restart the location update request.
@@ -459,7 +460,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val indoorMapsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_floor_map_button)
         indoorMapsButton.setOnClickListener {
 
-            findNavController().navigate(R.id.action_map_fragment_to_floorFragment)
+            findNavController().navigate(R.id.floor_fragment)
         }
     }
 
@@ -503,7 +504,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         if (item is GooglePlace) {
-            findNavController().navigateUp()
+            findNavController().popBackStack(R.id.map_fragment, false)
             focusLocation(item)
         }
     }

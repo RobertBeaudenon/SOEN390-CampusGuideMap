@@ -178,7 +178,7 @@ class SearchFragment : Fragment()  {
                 viewModel.setIndoorDirections(Pair(origin.lID, destination.lID))
                 findNavController().navigate(R.id.floor_fragment)
             } else {
-                findNavController().navigate(R.id.map_fragment)// Navigate Back To MapFragment
+                findNavController().popBackStack(R.id.map_fragment, false)
             }
 
             Toast.makeText(context, "Starting Navigation\n" +
