@@ -60,7 +60,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
             val floorNumber: Int = Character.getNumericValue(floorValue[0])
             for ((x, classRoom) in classes.withIndex()) {
                 val newClass = IndoorLocation(
-                    classRoom.getID().substring(4, classRoom.getID().length).toFloat(),
+                    classRoom.getID(),
                     convertIDToName(classRoom.getID(), building.getIndoorInfo().first, floorNumber),
                     floorNumber,
                     "classroom",
@@ -83,28 +83,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
      * @return returns the string of the generated room name
      */
     fun convertIDToName(id: String, buildingName: String, floorNumber: Int): String {
-        if (Character.getNumericValue(id[5]) == floorNumber) {
-            return buildingName + "-" + id.substring(5, id.length)
-        }
-
-        if (buildingNumberMap[buildingName] == null) {
-            buildingNumberMap[buildingName] = mutableMapOf()
-        }
-
-        if (buildingNumberMap[buildingName]?.get(floorNumber) == null) {
-            buildingNumberMap[buildingName]?.set(floorNumber, 0)
-        }
-
-        buildingNumberMap[buildingName]?.set(floorNumber,
-            buildingNumberMap[buildingName]?.get(floorNumber)?.plus(2)!!
-        )
-
-        var baseName: String = buildingName + "-" + floorNumber.toString()
-
-        if (buildingNumberMap[buildingName]?.get(floorNumber)!! < 10) {
-            return baseName + "0" + buildingNumberMap[buildingName]?.get(floorNumber)!!
-        }
-        return baseName + buildingNumberMap[buildingName]?.get(floorNumber)!!
+        return buildingName + "-" + floorNumber.toString() + id.substring(6, id.length)
     }
 }
 
