@@ -2,22 +2,22 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "02587852c3b9908e750faf9c70c959f8",
+    "identityHash": "8c35d4a20c428b90151ed3d11b4488f1",
     "entities": [
       {
         "tableName": "IndoorLocation",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`location_name` TEXT NOT NULL, `lID` REAL NOT NULL, `floor_num` INTEGER NOT NULL, `location_type` TEXT NOT NULL, `location_first` REAL NOT NULL, `location_second` REAL NOT NULL, PRIMARY KEY(`location_name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lID` TEXT NOT NULL, `location_name` TEXT NOT NULL, `floor_num` INTEGER NOT NULL, `location_type` TEXT NOT NULL, `location_first` REAL NOT NULL, `location_second` REAL NOT NULL, PRIMARY KEY(`location_name`))",
         "fields": [
           {
-            "fieldPath": "name",
-            "columnName": "location_name",
+            "fieldPath": "lID",
+            "columnName": "lID",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "lID",
-            "columnName": "lID",
-            "affinity": "REAL",
+            "fieldPath": "name",
+            "columnName": "location_name",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -58,7 +58,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '02587852c3b9908e750faf9c70c959f8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c35d4a20c428b90151ed3d11b4488f1')"
     ]
   }
 }

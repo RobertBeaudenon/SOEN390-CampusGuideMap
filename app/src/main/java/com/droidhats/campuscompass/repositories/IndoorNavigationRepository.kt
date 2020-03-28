@@ -16,13 +16,13 @@ class IndoorNavigationRepository private constructor() {
                         }
     }
 
-    private var startAndEnd: MutableLiveData<Pair<Float, Float>?> = MutableLiveData(null)
+    private var startAndEnd: MutableLiveData<Pair<String, String>?> = MutableLiveData(null)
 
-    fun setStartAndEnd(startAndEnd: Pair<Float, Float>) {
+    fun setStartAndEnd(startAndEnd: Pair<String, String>) {
         this.startAndEnd.value = startAndEnd
     }
 
-    fun getStartAndEnd(): Pair<Float, Float>? {
+    fun getStartAndEnd(): Pair<String, String>? {
         val startAndEnd = this.startAndEnd.value
         this.startAndEnd.value = null
         return startAndEnd
