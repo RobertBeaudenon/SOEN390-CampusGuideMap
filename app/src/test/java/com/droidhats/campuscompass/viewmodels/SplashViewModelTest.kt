@@ -8,6 +8,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.junit.ClassRule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(JUnit4::class)
@@ -32,7 +33,7 @@ class SplashViewModelTest {
 
     @Before
     fun setUp() {
-        //splashViewModel = SplashViewModel()
+        splashViewModel = SplashViewModel(RuntimeEnvironment.application)
     }
 
     // Checks the status of the initializations to make sure they return true

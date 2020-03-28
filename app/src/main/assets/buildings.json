@@ -414,6 +414,7 @@
 			"center_location": [0,0],
             "floor_maps": [],
             "location": [45.4966306,-73.5812891],
+            "initial": "QA",
             "coordinates": [
                 [45.496725, -73.579164],
                 [45.496650, -73.579011],
@@ -442,6 +443,7 @@
 			"center_location": [0,0],
             "location": [45.4966982,-73.579819],
             "floor_maps": [],
+      "initial": "TA",
             "coordinates": [
                 [45.496668, -73.579342],
                 [45.496631, -73.579264],
@@ -470,6 +472,7 @@
 			"center_location": [0,0],
             "location": [45.4967479,-73.5798796],
             "floor_maps": [],
+      "initial": "RRA",
             "coordinates": [
                 [45.496613, -73.579400],
                 [45.496650, -73.579473],
@@ -498,6 +501,7 @@
 			"center_location": [0,0],
             "location": [45.4968124,-73.5799381],
             "floor_maps": [],
+      "initial": "RA",
             "coordinates": [
                 [45.496807, -73.579321],
                 [45.496712, -73.579414],
@@ -526,6 +530,7 @@
 			"center_location": [0,0],
             "location": [45.4968566,-73.5800161],
             "floor_maps": [],
+      "initial": "FAA",
             "coordinates": [
                 [45.496835, -73.579394],
                 [45.496735, -73.579496],
@@ -554,6 +559,7 @@
 			"center_location": [0,0],
             "location": [45.4970535,-73.57948],
             "floor_maps": [],
+      "initial": "LDB",
             "coordinates": [
                 [45.496860, -73.577163],
                 [45.496822, -73.577091],
@@ -582,6 +588,7 @@
 			"center_location": [0,0],
             "location": [45.4966955,-73.5799352],
             "floor_maps": [],
+      "initial": "XA",
             "coordinates": [
                 [45.496911, -73.579577],
                 [45.496818, -73.579670],
@@ -610,6 +617,7 @@
 			"center_location": [0,0],
             "location": [45.4969687,-73.5802513],
             "floor_maps": [],
+      "initial": "ZA",
             "coordinates": [
                 [45.496987, -73.579742],
                 [45.496910, -73.579815],
@@ -641,6 +649,7 @@
 			"center_location": [0,0],
             "location": [45.4970919,-73.5820971],
             "floor_maps": [],
+      "initial": "VA",
             "coordinates": [
                 [45.497090, -73.579905],
                 [45.497052, -73.579832],
@@ -670,6 +679,7 @@
 			"center_location": [0,0],
             "location": [45.4974075,-73.5803987],
             "floor_maps": [],
+      "initial": "SA",
             "coordinates": [
                 [45.497493, -73.579807],
                 [45.497457, -73.579743],
@@ -698,6 +708,7 @@
 			"center_location": [0,0],
             "location": [45.4974564,-73.5804732],
             "floor_maps": [],
+      "initial": "CIA",
             "coordinates": [
                 [45.497590, -73.579835],
                 [45.497546, -73.579745],
@@ -726,6 +737,7 @@
 			"center_location": [0,0],
             "location": [45.497944,-73.580047],
             "floor_maps": [],
+      "initial": "MUA",
             "coordinates": [
                 [45.497959, -73.579534],
                 [45.497923, -73.579456],
@@ -1098,7 +1110,6 @@
             ]
         }, {
             "name": "Central Building",
-            "initial": "CB",
             "initial": "CC",
             "address": "7141 Rue Sherbrooke O, Montréal, QC H4B 2B5",
 			"place_id": "ChIJVbqNGy4XyUwRQ0VXctl9oRk",
