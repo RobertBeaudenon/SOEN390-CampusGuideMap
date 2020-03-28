@@ -98,21 +98,19 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
 
     /**
      * Searches and returns the building object with the corresponding marker title.
-     * @return If there is no match, it will return a null building object
+     * @return If there is no match, it will return a null building object. This is handled by the
+     * method calling this method
      */
     fun findBuildingByMarkerTitle(marker: Marker?): Building?{
         var selectedBuilding: Building? = null
 
         //Iterate through all buildings in both campuses until the marker matches the building name
         for (building in this.buildings) {
-            if (marker != null) {
-                if (building.name == marker.title) {
+            if (marker != null && building.name == marker.title) {
                     selectedBuilding = building
-                }
             }
         }
         return selectedBuilding
     }
-
 }
 

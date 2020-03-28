@@ -67,9 +67,9 @@ class Map(
      * Draws the polygon for a single building on the map
      */
     private fun drawBuildingPolygon(building: Building){
-        googleMap.addPolygon(building.getPolygonOptions())?.tag = building.name
+        googleMap.addPolygon(building.getPolygonOptions()).tag = building.name
         val polygon = googleMap.addPolygon(building.getPolygonOptions())
-        building.setPolygon(polygon!!)
+        building.setPolygon(polygon)
     }
 
     /**
@@ -79,7 +79,7 @@ class Map(
         if(building.hasCenterLocation()) {
             val marker: Marker = googleMap.addMarker(building.getMarkerOptions())
             building.setMarker(marker)
-            // Set the maker to become the new bitmap rather than the conventional map pin
+            // Set the marker to become the new bitmap rather than the conventional map pin
             building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(building.getMarkerResId()))
         }
     }

@@ -36,6 +36,12 @@ class MapFragmentTest {
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
+    @Rule
+    @JvmField
+    var mGrantPermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(
+            "android.permission.ACCESS_FINE_LOCATION"
+        )
     private lateinit var navController: TestNavHostController
     @Rule
     @JvmField
