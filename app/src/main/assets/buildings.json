@@ -1,7 +1,10 @@
 {
-    "SGW_buildings": [{
+  "SGW_Campus_Location": [45.495784, -73.577197],
+  "Loyola_Campus_Location": [45.458220, -73.639702],
+  "SGW_buildings": [{
             "name": "Henry F. Hall Building",
             "address": "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8",
+			"place_id": "ChIJtd6Zh2oayUwRAu_CnRIfoBw",
 			"center_location": [45.497320, -73.579031],
             "location": [45.497320, -73.579031],
             "coordinates": [
@@ -33,9 +36,10 @@
             ]
         }, {
             "name": "EV Building",
+			"address": "1515 Saint-Catherine St W, Montreal, Quebec H3G 2W1",
+			"place_id": "ChIJV45txj4byUwR_lSF--cnY2M",
 			"center_location": [45.495473, -73.577949],
             "location": [45.495469, -73.577632],
-            "address": "1515 Saint-Catherine St W, Montreal, Quebec H3G 2W1",
             "coordinates": [
                 [45.495594, -73.578761],
                 [45.495175, -73.577855],
@@ -77,6 +81,7 @@
         }, {
             "name": "John Molson School of Business",
             "address": "1450 Guy St, Montreal, Quebec H3H 0A1",
+			"place_id": "ChIJ139JrWsayUwRbNrrU4yfp04",
 			"center_location": [45.495244, -73.578945],
             "location": [45.495496, -73.579162],
             "coordinates": [
@@ -118,6 +123,7 @@
         }, {
             "name": "Faubourg Saint-Catherine Building",
             "address": "1616 Saint-Catherine St W, Montreal, QC H3H 1L7",
+			"place_id": "ChIJD2VMMCAbyUwRgL5L5FyavCQ",
 			"center_location": [45.494231, -73.578363],
             "location": [45.494231, -73.578363],
             "coordinates": [
@@ -145,6 +151,7 @@
         }, {
             "name": "Guy-De Maisonneuve Building",
             "address": "1435 Guy St, Montreal, Quebec H3H 2L5",
+			"place_id": "ChIJKw8YUWoayUwRcBXZvsJ8Zww",
 			"center_location": [45.495856, -73.578809],
             "location": [45.495924, -73.578884],
             "coordinates": [
@@ -190,6 +197,7 @@
         }, {
             "name": "Faubourg Building",
             "address": "1250 Guy St, Montreal, Quebec H3H 2L3",
+			"place_id": "ChIJK9Ax6msayUwRi8WlnK9BK18",
 			"center_location": [45.494683, -73.577635],
             "location": [45.494855, -73.577820],
             "coordinates": [
@@ -223,6 +231,7 @@
         }, {
             "name": "Visual Arts Building",
             "address": "1395 Boulevard René-Lévesque O, Montreal, QC H3G 2M5",
+			"place_id": "ChIJrQ3XtmkayUwRDZKXDmp2WmQ",
 			"center_location": [45.495696, -73.573973],
             "location": [45.495671, -73.573622],
             "coordinates": [
@@ -255,6 +264,7 @@
         }, {
             "name": "Pavillion J.W. McConnell Building",
             "address": "1400 Maisonneuve Blvd W, Montreal, Quebec H3G 1M8",
+			"place_id": "ChIJz2SwbmoayUwR5_D4CXsr5eM",
 			"center_location": [45.496802, -73.577935],
             "location": [45.496907, -73.578216],
             "coordinates": [
@@ -298,7 +308,7 @@
         },{
             "name": "Grey Nuns Building",
             "address": "1190 Guy St, Montreal, Quebec H3H 2L4",
-            "initial":"GN",
+			"place_id": "ChIJ_aAMaWkayUwRl5tahnXtNt8",
 			"center_location": [45.493488, -73.576723],
             "location": [45.492919, -73.577276],
             "coordinates": [
@@ -381,8 +391,8 @@
             ]
         },{
             "name": "Q Annex",
-            "initial": "Q",
             "address": "2010 Mackay St, Montreal, Quebec H3G 2J1",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4966306,-73.5812891],
             "coordinates": [
@@ -408,8 +418,8 @@
             ]
         },{
             "name": "T Annex",
-            "initial": "T",
             "address": "2030 Mackay St, Montreal, Quebec H3G 2J1",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4966982,-73.579819],
             "coordinates": [
@@ -435,8 +445,8 @@
             ]
         },{
             "name": "RR Annex",
-            "initial": "RR",
             "address": "2040 Mackay St, Montreal, Quebec H3G 2J1",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4967479,-73.5798796],
             "coordinates": [
@@ -462,8 +472,8 @@
             ]
         },{
             "name": "R Annex",
-            "initial": "R",
             "address": "2050 Mackay St, Montreal, Quebec H3G 2J1",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4968124,-73.5799381],
             "coordinates": [
@@ -489,8 +499,8 @@
             ]
         },{
             "name": "FA Annex",
-            "initial": "FA",
             "address": "2060 Mackay St, Montreal, Quebec H3G 2J1",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4968566,-73.5800161],
             "coordinates": [
@@ -516,8 +526,8 @@
             ]
         },{
             "name": "LD Building",
-            "initial": "LD",
             "address": "1424 Bishop St, Montréal, Québec H3G 2E6",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4970535,-73.57948],
             "coordinates": [
@@ -543,8 +553,8 @@
             ]
         },{
             "name": "X Annex",
-            "initial": "X",
             "address": "2080 Mackay St, Montreal, Quebec H3G 2J1",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4966955,-73.5799352],
             "coordinates": [
@@ -570,8 +580,8 @@
             ]
         },{
             "name": "Z Annex",
-            "initial": "Z",
             "address": "2090 Mackay St, Montreal, Quebec H3G 2J1",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4969687,-73.5802513],
             "coordinates": [
@@ -600,8 +610,8 @@
             ]
         },{
             "name": "V Annex",
-            "initial": "V",
             "address": "2110 Mackay St, Montreal, Quebec H3G 2J1",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4970919,-73.5820971],
             "coordinates": [
@@ -628,8 +638,8 @@
             ]
         },{
             "name": "S Annex",
-            "initial": "S",
             "address": "2145 Mackay St, Montreal, Quebec H3G 1M8",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4974075,-73.5803987],
             "coordinates": [
@@ -655,8 +665,8 @@
             ]
         },{
             "name": "CI Annex",
-            "initial": "CI",
             "address": "2149 Mackay St, Montreal, QC H3G 2J2",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4974564,-73.5804732],
             "coordinates": [
@@ -682,8 +692,8 @@
             ]
         },{
             "name": "MU Annex",
-            "initial": "MU",
             "address": "2170 Bishop St, Montreal, QC H3G 2E9",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.497944,-73.580047],
             "coordinates": [
@@ -710,6 +720,7 @@
         },{
             "name": "B Annex",
             "address": "2160 Bishop St, Montreal, QC H3G 2E9",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4979309,-73.5799922],
             "coordinates": [
@@ -736,6 +747,7 @@
         },{
             "name": "D Annex",
             "address": "2140 Bishop St, Montreal, QC H3G 2E9",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4977458,-73.5794691],
             "coordinates": [
@@ -762,6 +774,7 @@
         },{
             "name": "MI Annex",
             "address": "2130 Bishop St, Montreal, QC H3G 2E9",
+			"place_id": "None",
 			"center_location": [0,0],
             "location": [45.4977939,-73.5798062],
             "coordinates": [
@@ -794,6 +807,7 @@
         },{
         "name": "Samuel Bronfman Building",
         "address": "1590 Docteur Penfield, Montreal, QC",
+		"place_id": "None",
 		"center_location": [45.496584, -73.586079],
         "location": [45.496597, -73.586112],
         "coordinates": [
@@ -832,6 +846,7 @@
     },{
         "name": "GS Building",
         "address": "1538 Sherbrooke St W, Montreal, QC H3H 2L9",
+		"place_id": "None",
         "center_location": [45.496572, -73.581139],
 		"location": [45.496729, -73.581239],
         "coordinates": [
@@ -863,6 +878,7 @@
     },{
         "name": "Grey Nuns Annex",
         "address": "1211 Rue Saint Mathieu, Montréal, QC H3H 2S2",
+		"place_id": "None",
 		"center_location": [0,0],
         "location": [45.4941589,-73.5789745],
         "coordinates": [
@@ -893,6 +909,7 @@
     },{
         "name": "CL Annex",
         "address": "1665 Saint-Catherine St W, Montreal, QC H3H 1L9",
+		"place_id": "None",
 		"center_location": [0,0],
         "location": [45.494313, -73.578934],
         "coordinates": [
@@ -919,6 +936,7 @@
     },{
         "name": "Learning Square",
         "address": "1535 Boulevard de Maisonneuve O, Montréal, QC H3G 1M9",
+		"place_id": "ChIJSY-aXl0byUwR3cZFidz1-mQ",
 		"center_location": [45.496279, -73.579482],
         "location": [45.4962049,-73.5795302],
         "coordinates": [
@@ -948,6 +966,7 @@
     "LOY_buildings": [{
             "name": "Psychology Building",
             "address": "Refectory, Montreal, Quebec H4B 2Z3",
+			"place_id": "ChIJq6q62jEXyUwRlcMFKw8XMbk",
 			"center_location": [45.458997, -73.640475],
             "location": [45.458997, -73.640475],
             "coordinates": [
@@ -978,6 +997,7 @@
         }, {
             "name": "Richard J. Renaud Science Complex",
             "address": "3475 Rue West Broadway Montreal, QC H4B 2A7",
+			"place_id": "ChIJp_rxOS4XyUwRR0dJdyOlMlY",
             "center_location": [45.457826, -73.641522],
 			"location": [45.457972, -73.641366],
             "coordinates": [
@@ -1028,7 +1048,9 @@
             ]
         }, {
             "name": "Central Building",
+            "initial": "CC",
             "address": "7141 Rue Sherbrooke O, Montréal, QC H4B 2B5",
+			"place_id": "ChIJVbqNGy4XyUwRQ0VXctl9oRk",
 			"center_location": [45.458302, -73.640313],
             "location": [45.458251, -73.640353],
             "coordinates": [
@@ -1064,6 +1086,7 @@
         }, {
             "name": "Communication Studies and Journalism Building",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "ChIJ-99KEi4XyUwREpUsJWrRWWE",
 			"center_location": [45.457361, -73.639928],
             "location": [45.457448, -73.640104],
             "coordinates": [
@@ -1112,6 +1135,7 @@
         }, {
             "name": "Administration Building",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "ChIJCZXZ_f8XyUwR_R7pQajm3Xg",
 			"center_location": [45.458094, -73.639797],
             "location": [45.458072, -73.639740],
             "coordinates": [
@@ -1158,6 +1182,7 @@
         }, {
             "name": "Loyola Jesuit and Conference Centre",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "ChIJ5-iCkyQXyUwRsbQ9j4Ylcyw",
 			"center_location": [45.458560, -73.641017],
             "location": [45.458528, -73.640930],
             "coordinates": [
@@ -1189,6 +1214,7 @@
         }, {
             "name": "Vanier Library Building",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "ChIJDbfcNjIXyUwRcocn3RuPPiY",
 			"center_location": [45.459015, -73.638561],
             "location": [45.458831, -73.638801],
             "coordinates": [
@@ -1240,6 +1266,7 @@
         }, {
             "name": "Vanier Extension",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "None",
 			"center_location": [45.458740, -73.638587],
             "location":[45.458673, -73.638513],
             "coordinates": [
@@ -1267,7 +1294,9 @@
             ]
         }, {
             "name": "Student Centre",
+            "initial": "SC",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "None",
 			"center_location": [45.459119, -73.639220],
             "location": [45.459088, -73.639238],
             "coordinates": [
@@ -1304,7 +1333,9 @@
             ]
         }, {
             "name": "F.C. Smith Building",
+            "initial": "FC",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "None",
 			"center_location": [45.458593, -73.639293],
             "location": [45.458583, -73.639372],
             "coordinates": [
@@ -1388,7 +1419,9 @@
             ]
         }, {
             "name": "PERFORM Centre",
+            "initial": "PC",
             "address": "7200 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "None",
 			"center_location": [45.456934, -73.637146],
             "location": [45.456960, -73.636988],
             "coordinates": [
@@ -1410,11 +1443,12 @@
                 "None"
             ],
             "services": [
-                "PEFORM centre"
+                "PERFORM Centre"
             ]
         }, {
             "name": "Stinger Dome",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "ChIJ21EFhy0XyUwREYJNMiBWO_8",
 			"center_location": [45.457718, -73.636200], 
             "location": [45.457718, -73.636200],
             "coordinates": [
@@ -1441,6 +1475,7 @@
         }, {
             "name": "Jesuit Residence",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "ChIJJWZV3C8XyUwRiYTaf_fG94U",
 			"center_location": [45.458523, -73.643239],
             "location": [45.458613, -73.643201],
             "coordinates": [
@@ -1480,7 +1515,9 @@
             ]
         }, {
             "name": "Physical Services Building",
+            "initial": "PS",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 2B9",
+			"place_id": "ChIJhwdpvzEXyUwReUM8wFnsnb8",
 			"center_location": [45.459641, -73.639742],
             "location": [45.4594836,-73.6393499],
             "coordinates": [
@@ -1518,7 +1555,9 @@
             ]
         },{
             "name": "Oscar Peterson Concert Hall",
+            "initial": "PT",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+			"place_id": "ChIJL7mz8TEXyUwRu9P6P2NMZYU",
 			"center_location": [45.459324, -73.638960],
             "location": [45.459355, -73.638976],
             "coordinates": [
@@ -1532,13 +1571,13 @@
                 [45.4592203, -73.6389273]
             ],
             "open_hours": [
-                ["Monday", "7a.m.-11p.m."],
-                ["Tuesday", "7a.m.-11p.m."],
-                ["Wednesday", "7a.m.-11p.m."],
-                ["Thursday", "7a.m.-11p.m."],
-                ["Friday", "7a.m.-11p.m."],
-                ["Saturday", "7a.m.-11p.m."],
-                ["Sunday", "7a.m.-11p.m."]
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
             ],
             "departments": [
                 "None"

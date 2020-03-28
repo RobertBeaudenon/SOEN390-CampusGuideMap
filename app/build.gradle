@@ -81,7 +81,7 @@ android {
         excludes = ["**/androidx/databinding**", "**/androidx.databinding.library.baseAdapters**"]
         ignoreProjects = []
         includeInstrumentationCoverageInMergedReport = false
-        includeNoLocationClasses = false
+        includeNoLocationClasses = true
     }
 
     testOptions {
@@ -108,4 +108,13 @@ dependencies {
     kapt "androidx.room:room-compiler:2.2.5"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "org.robolectric:robolectric:4.3.1"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "SOEN390-CampusGuideMap"
+        property "sonar.coverage.jacoco.xmlReportPaths", "./build/reports/jacoco/debug/jacoco.xml"
+        property "sonar.projectKey", "org.sonarqube:CampusGuideMap"
+        property 'sonar.exclusions', "**/src/main/res/**"
+    }
 }

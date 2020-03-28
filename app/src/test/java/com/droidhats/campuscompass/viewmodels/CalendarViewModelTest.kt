@@ -18,13 +18,13 @@ class CalendarViewModelTest {
 
     private val calendarViewModel: CalendarViewModel = CalendarViewModel(RuntimeEnvironment.application)
     private var userCalendars = mutableMapOf<String, Calendar>()
-    val colorArray =  CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP.keys.toTypedArray()
+    private val colorArray =  CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP.keys.toTypedArray()
 
 
     @Before // Creating calendars with events
     fun initCalendars() {
         var id = 0
-        var dummy = "dummy"
+        val dummy = "dummy"
 
         for(colorInt in CalendarViewModel.GOOGLE_CALENDAR_COLOR_MAP) {
 

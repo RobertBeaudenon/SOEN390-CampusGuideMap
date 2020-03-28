@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.SearchFragment">
@@ -26,7 +27,7 @@
                 android:src="@drawable/ic_chevron_left_black_42dp"
                 android:visibility="gone"
                 android:background="?selectableItemBackgroundBorderless"
-                android:contentDescription="Back"
+                android:contentDescription="@string/contentDescription_BackButton"
               />
 
             <androidx.appcompat.widget.SearchView
@@ -67,7 +68,7 @@
             android:visibility="gone"
             android:background="?selectableItemBackground"
             android:layout_gravity="end|center_vertical"
-            android:contentDescription="Navigate" />
+            android:contentDescription="@string/contentDescription_Navigate" />
 
     </androidx.cardview.widget.CardView>
 
@@ -91,7 +92,7 @@
             android:gravity="center"
             android:button="@null"
             android:drawableTop="@drawable/radio_car"
-            android:text = "-"
+            android:text = "@string/dash"
             android:textColor="@color/white"/>
 
         <RadioButton
@@ -102,7 +103,7 @@
             android:button="@null"
             android:drawableTop="@drawable/radio_transit"
             android:gravity="center"
-            android:text = "-"
+            android:text = "@string/dash"
             android:textColor="@color/white"/>
 
         <RadioButton
@@ -113,7 +114,7 @@
             android:gravity="center"
             android:button="@null"
             android:drawableTop="@drawable/radio_walking"
-            android:text = "-"
+            android:text = "@string/dash"
             android:textColor="@color/white"/>
 
         <RadioButton
@@ -124,7 +125,7 @@
             android:gravity="center"
             android:button="@null"
             android:drawableTop="@drawable/radio_bicycle"
-            android:text = "-"
+            android:text = "@string/dash"
             android:textColor="@color/white"/>
 
         <RadioButton
@@ -135,7 +136,7 @@
             android:gravity="center"
             android:button="@null"
             android:drawableTop="@drawable/radio_shuttle"
-            android:text = "-"
+            android:text = "@string/dash"
             android:textColor="@color/white" />
 
     </RadioGroup>
@@ -177,7 +178,7 @@
         android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter Street, Address, Concordia Classroom..."
+        android:text="@string/searchInfo"
         android:visibility="visible"
         android:textAlignment="center"
         android:textSize="15sp"

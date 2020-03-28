@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.Map
@@ -12,68 +13,73 @@ import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.Polygon
-import java.io.InputStream
-
 
 /**
  * A ViewModel for the map.
  * Receives data from the MapRepository and Sends initialized map and other information to the MapFragment .
  *
  * @constructor Reads data from the map repository.
- *
  * @param application: The android view model interface requires that the (not null) main application be passed.
  */
 class  MapViewModel(application: Application) : AndroidViewModel(application) {
 
     private val context = getApplication<Application>().applicationContext
-    private var campuses: List<Campus>? = null
-    internal var navigationRepository: NavigationRepository
+    private val mapRepository: MapRepository
+    internal val navigationRepository: NavigationRepository
+    private var campuses: List<Campus>
+    private var buildings: List<Building>
 
-    // The activity is required to access the assets to open our json file where the info
-    // is stored
     init {
-        val inputStream: InputStream = context.assets.open("buildings.json")
-        val json: String = inputStream.bufferedReader().use { it.readText() }
-        campuses = MapRepository.getInstance(context).getCampuses()
+        mapRepository = MapRepository.getInstance(context)
         navigationRepository = NavigationRepository.getInstance(getApplication())
+        campuses = mapRepository.getCampuses()
+        buildings = mapRepository.getBuildings()
     }
 
     /**
      * Returns a list of campus objects (SJW and Loyola).
      */
-    fun getCampuses(): List<Campus> = campuses!!
+    fun getCampuses(): List<Campus> = campuses
 
     /**
-     * Uses the Map Model to initialize the map, and then it draws the polygons and some markers of the campus buildings.
-     * Returns an initialized GoogleMap object.
+     * Returns a list of all buildings in both campuses
      */
-    fun getMap(googleMap: GoogleMap,
+    fun getBuildings(): List<Building> = buildings
+
+    /**
+     * Initializes a map model object that contains an initialized google map.
+     * Returns an initialized Map (map model) object.
+     * @param mapFragmentOnMarkerClickListener: a listener for marker clicks that will be attached to the map.
+     * @param mapFragmentOnPolygonClickListener: a listener for polygon clicks that will be attached to the map.
+     * @param mapFragmentOnCameraIdleListener: a listener for when the camera is idle in the map.
+     * @param activity: Used to check the location permission from the main activity.
+     */
+    fun getMapModel(googleMap: GoogleMap,
                mapFragmentOnMarkerClickListener: GoogleMap.OnMarkerClickListener,
                mapFragmentOnPolygonClickListener: GoogleMap.OnPolygonClickListener,
                mapFragmentOnCameraIdleListener: GoogleMap.OnCameraIdleListener,
                activity: FragmentActivity
-    ): GoogleMap
+    ): Map
     {
-        //Get initialized map from Map Model.
-        var initializedGoogleMap: GoogleMap = Map(googleMap, mapFragmentOnMarkerClickListener, mapFragmentOnPolygonClickListener, mapFragmentOnCameraIdleListener, activity).getMap()
+        // Get initialized map model from Map Model using singleton.
+        val mapModel: Map = Map.getInstance(
+            googleMap, buildings
+        )
 
-        //Highlight the buildings in both SGW and Loyola Campuses
-        for (campus in this.campuses!!) {
-            for (building in campus.getBuildings()) {
-                initializedGoogleMap.addPolygon(building.getPolygonOptions()).tag = building.name
-                var polygon: Polygon = initializedGoogleMap.addPolygon(building.getPolygonOptions())
-
-                // Place marker on buildings that have center locations specified in buildings.json
-                if(building.hasCenterLocation()){
-                    var marker: Marker = initializedGoogleMap.addMarker(building.getMarkerOptions())
-                    building.setMarker(marker)
-                }
-                building.setPolygon(polygon)
-            }
+        if ((activity as MainActivity).checkLocationPermission()) {
+            // Enables the my-location layer which draws a light blue dot on the user’s location.
+            // It also adds a button to the map that, when tapped, centers the map on the user’s location.
+            mapModel.googleMap.isMyLocationEnabled = true
         }
-        return googleMap
+
+        mapModel.googleMap.setOnPolygonClickListener(mapFragmentOnPolygonClickListener)
+        mapModel.googleMap.setOnCameraIdleListener(mapFragmentOnCameraIdleListener)
+        mapModel.googleMap.setOnMarkerClickListener(mapFragmentOnMarkerClickListener)
+
+        return mapModel
     }
+
+    fun getNavigationRoute() : MutableLiveData<NavigationRoute> = navigationRepository.getNavigationRoute()
 
     /**
      * Searches and returns the building object that matches the polygon tag from the mapFragment
@@ -83,33 +89,25 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         var selectedBuilding : Building? = null
 
         //Iterate through all buildings in both campuses until the polygon tag matches the building Name
-        for (campus in this.campuses!!) {
-            for (building in campus.getBuildings()) {
-                if (polygonTag == building.name)
-                    selectedBuilding = building
-            }
+        for (building in this.buildings) {
+            if (polygonTag == building.name)
+                selectedBuilding = building
         }
         return selectedBuilding
     }
 
-
-    fun getNavigationRoute() : MutableLiveData<NavigationRoute> = navigationRepository.getNavigationRoute()
-
     /**
      * Searches and returns the building object with the corresponding marker title.
-     * @return If there is no match, it will return a null building object
+     * @return If there is no match, it will return a null building object. This is handled by the
+     * method calling this method
      */
     fun findBuildingByMarkerTitle(marker: Marker?): Building?{
         var selectedBuilding: Building? = null
 
         //Iterate through all buildings in both campuses until the marker matches the building name
-        for (campus in this.campuses!!) {
-            for (building in campus.getBuildings()) {
-                if (marker != null) {
-                    if (building.name == marker.title) {
-                        selectedBuilding = building
-                    }
-                }
+        for (building in this.buildings) {
+            if (marker != null && building.name == marker.title) {
+                    selectedBuilding = building
             }
         }
         return selectedBuilding

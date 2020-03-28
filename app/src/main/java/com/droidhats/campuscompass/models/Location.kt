@@ -10,11 +10,9 @@ import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.libraries.places.api.model.Place
 import kotlinx.android.parcel.Parcelize
 
-/*
-* Model for location classes
-* Data relating to locations should be stored in this file
-* */
-
+/**
+* An abstract class for other location model classes
+*/
 abstract class Location {
     abstract val name: String
     abstract val coordinate: LatLng
@@ -33,7 +31,9 @@ class Campus(
     fun getBuildings(): List<Building> = buildingsList
 }
 
-// Model for building class, data relating to buildings should be stored here
+/**
+ * Model for building class, data relating to buildings should be stored here
+ */
 @Parcelize
 class Building(
     override val coordinate: LatLng,
@@ -41,26 +41,32 @@ class Building(
 	private val centerLocation: LatLng,
     private val polygonCoordinatesList: List<LatLng>,
     private val address: String,
+    private val placeId: String,
     private val openHours: String,
     private val departments: String,
-    private val services: String
+    private val services: String,
+    private val imageResId: Int,
+    private val markerResId: Int
 ) : Location(), Parcelable, Observer {
-  
     private lateinit var polygon: Polygon
     private lateinit var marker: Marker
 
     companion object {
         private const val POLYGON_COLOR = 4289544510.toInt()
+        private const val STROKE_COLOR = 	4294948674.toInt()
         private const val MARKER_VISIBILITY_ZOOM_LEVEL = 16f
     }
 
     fun getLocation(): LatLng = coordinate
     fun getAddress(): String = address
+    fun getPlaceId(): String = placeId
+    fun getCenterLocation(): LatLng = centerLocation
     fun getDepartments(): String = departments
     fun getServices(): String = services
     fun getOpenHours(): String = openHours
-    fun getCenterLocation(): LatLng = centerLocation
     fun getPolygon(): Polygon = polygon
+    fun getImageResId(): Int = imageResId
+    fun getMarkerResId(): Int = markerResId
     fun getMarker(): Marker = marker
 
     fun setPolygon(polygon: Polygon){
@@ -73,9 +79,10 @@ class Building(
     }
 
     fun getPolygonOptions(): PolygonOptions {
-        var polygonOptions = PolygonOptions()
+        val polygonOptions = PolygonOptions()
             .fillColor(POLYGON_COLOR)
             .strokeWidth(2F)
+            .strokeColor(STROKE_COLOR)
             .clickable(true)
         for (polygonCoordinate in polygonCoordinatesList) {
             polygonOptions.add(polygonCoordinate)
