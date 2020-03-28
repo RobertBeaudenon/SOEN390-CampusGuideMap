@@ -59,6 +59,9 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
             val floorValue: String = floorMap.split(building.getIndoorInfo().first)[1].split(".svg")[0]
             val floorNumber: Int = Character.getNumericValue(floorValue[0])
             for ((x, classRoom) in classes.withIndex()) {
+                if (classRoom.getID()[5] != floorValue[0]) {
+                    continue
+                }
                 val newClass = IndoorLocation(
                     classRoom.getID(),
                     convertIDToName(classRoom.getID(), building.getIndoorInfo().first, floorNumber),
