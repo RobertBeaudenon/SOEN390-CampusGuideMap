@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.text.Selection
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -50,7 +49,7 @@ class SearchFragment : Fragment()  {
         var isNavigationViewOpen = false
         // The Navigation Start and End points. Each search bar must contain a valid location to initiate navigation
         var NavigationPoints = mutableMapOf<Int, Location?>(R.id.mainSearchBar to null,
-                                                            R.id.secondarySearchBar to null)
+            R.id.secondarySearchBar to null)
         fun areRouteParametersSet() : Boolean {
             return (NavigationPoints[R.id.mainSearchBar] != null && NavigationPoints[R.id.secondarySearchBar] != null)
         }
@@ -79,7 +78,6 @@ class SearchFragment : Fragment()  {
             isNavigationViewOpen = false
             requireFragmentManager().beginTransaction().detach(this).attach(this).commit()
         }
-
         retrieveArguments()
     }
 
@@ -102,7 +100,7 @@ class SearchFragment : Fragment()  {
 
         val destinationEventLocation = arguments?.getString("destEventLocation")
         if (destinationEventLocation != null) {
-        val calendarLocation = GooglePlace("",destinationEventLocation, "", LatLng(0.0,0.0) )
+            val calendarLocation = GooglePlace("",destinationEventLocation, "", LatLng(0.0,0.0) )
 
             showNavigationView(calendarLocation, true)
             arguments?.clear()
@@ -112,11 +110,11 @@ class SearchFragment : Fragment()  {
     private fun observeSearchSuggestions() {
         viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googlePredictions ->
             viewModel.searchSuggestions.value = googlePredictions
-          if (viewModel.indoorSearchSuggestions !=null)
-            viewModel.indoorSearchSuggestions?.observe(viewLifecycleOwner , Observer {indoorResults ->
-                //Prepending indoor results to the google places results
-                viewModel.searchSuggestions.value = indoorResults + googlePredictions
-            })
+            if (viewModel.indoorSearchSuggestions !=null)
+                viewModel.indoorSearchSuggestions?.observe(viewLifecycleOwner , Observer {indoorResults ->
+                    //Prepending indoor results to the google places results
+                    viewModel.searchSuggestions.value = indoorResults + googlePredictions
+                })
         })
         //On change to the above results, the recycler view will be updated here
         viewModel.searchSuggestions.observe(viewLifecycleOwner, Observer {
@@ -148,8 +146,7 @@ class SearchFragment : Fragment()  {
                 Toast.makeText(context, "Set Your Route To Begin Navigation", Toast.LENGTH_LONG).show()
             }
             else {
-
-               initiateNavigation()
+                initiateNavigation()
             }
         }
         initCurrentLocationHandler(mainSearchBar, secondarySearchBar)
@@ -189,7 +186,7 @@ class SearchFragment : Fragment()  {
         val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
         myLocationFAB.setOnClickListener{
             if (mainSearchView.isActivated){
-               setCurrentLocation(mainSearchView)
+                setCurrentLocation(mainSearchView)
             }
             if (secondarySearchView.isActivated) {
                 setCurrentLocation(secondarySearchView)
@@ -198,7 +195,7 @@ class SearchFragment : Fragment()  {
     }
 
     private fun setCurrentLocation(searchView: SearchView) {
-       val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
         fusedLocationClient.lastLocation.addOnSuccessListener{
             if (it != null) {
                 val coordinates = LatLng(it.latitude, it.longitude)
@@ -234,21 +231,21 @@ class SearchFragment : Fragment()  {
                 return false
             }
             override fun onQueryTextChange(p0: String?): Boolean {
-               resetQuery(searchText, searchView)
-               resetRouteTimes()
-                return if (!p0.isNullOrBlank()) {
-                    viewModel.sendSearchQueries(p0)
-                } else {
+                resetQuery(searchText, searchView)
+                resetRouteTimes()
+                if (!p0.isNullOrBlank() && searchView.isActivated) {
+                    return viewModel.sendSearchQueries(p0)
+                }
+                else if (p0.isNullOrBlank()){
                     viewModel.searchSuggestions.value = emptyList()
-                    false
                 }
                 return false
             }
         })
-       searchView.setOnQueryTextFocusChangeListener { _, isFocused ->
+        searchView.setOnQueryTextFocusChangeListener { _, isFocused ->
             searchView.isActivated = isFocused
-          if(searchView.isActivated)
-           viewModel.sendSearchQueries(searchView.query.toString())
+            if(searchView.isActivated)
+                viewModel.sendSearchQueries(searchView.query.toString())
         }
     }
 
@@ -300,9 +297,9 @@ class SearchFragment : Fragment()  {
                 R.id.radio_transport_mode_bicycle -> {
                     selectedTransportationMethod = NavigationRoute.TransportationMethods.BICYCLE.string
                 }
-                 R.id.radio_transport_mode_shuttle -> {
-                     selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
-                 }
+                R.id.radio_transport_mode_shuttle -> {
+                    selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
+                }
             }
         }
     }
@@ -332,32 +329,32 @@ class SearchFragment : Fragment()  {
     }
 
     fun showNavigationView(destinationPlace : Location, startFromCurrentLocation : Boolean ){
-            isNavigationViewOpen = true
-             val startNavButton = root.findViewById<ImageButton>(R.id.startNavigationButton)
-             val backButton = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
-             val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
-             val mainBar = root.findViewById<SearchView>(R.id.mainSearchBar)
-             val destinationBar = root.findViewById<SearchView>(R.id.secondarySearchBar)
-             val destSearchText = destinationBar.findViewById(R.id.search_src_text) as EditText
-             val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
-             val infoMessage = root.findViewById<TextView>(R.id.search_info)
-             val searchPlate = mainBar.findViewById<View>(R.id.search_plate)
-             searchPlate.setBackgroundResource(R.color.colorPrimaryDark)
+        isNavigationViewOpen = true
+        val startNavButton = root.findViewById<ImageButton>(R.id.startNavigationButton)
+        val backButton = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
+        val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
+        val mainBar = root.findViewById<SearchView>(R.id.mainSearchBar)
+        val destinationBar = root.findViewById<SearchView>(R.id.secondarySearchBar)
+        val destSearchText = destinationBar.findViewById(R.id.search_src_text) as EditText
+        val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
+        val infoMessage = root.findViewById<TextView>(R.id.search_info)
+        val searchPlate = mainBar.findViewById<View>(R.id.search_plate)
+        searchPlate.setBackgroundResource(R.color.colorPrimaryDark);
 
-             mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
-             destinationBar.visibility = View.VISIBLE
-             startNavButton.visibility = View.VISIBLE
-             backButton.visibility = View.VISIBLE
-             radioTransportationGroup.visibility = View.VISIBLE
-             infoMessage.visibility = View.INVISIBLE
-             myLocationFAB.show()
-             mainBar.queryHint = "From"
+        mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
+        destinationBar.visibility = View.VISIBLE
+        startNavButton.visibility = View.VISIBLE
+        backButton.visibility = View.VISIBLE
+        radioTransportationGroup.visibility = View.VISIBLE
+        infoMessage.visibility = View.INVISIBLE
+        myLocationFAB.show()
+        mainBar.queryHint = "From"
 
-             if (NavigationPoints[mainBar.id] == null)
-                 mainBar.setQuery("", true)
+        if (NavigationPoints[mainBar.id] == null)
+            mainBar.setQuery("", true)
 
-             if (startFromCurrentLocation)
-                 setCurrentLocation(mainBar)
+        if (startFromCurrentLocation)
+            setCurrentLocation(mainBar)
 
         destinationBar.setQuery(destinationPlace.name, true)
         destSearchText.setSelection(destinationPlace.name.length) //Sets the cursor position

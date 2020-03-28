@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.views.CalendarFragment
 import com.droidhats.campuscompass.R
@@ -17,8 +15,6 @@ import com.droidhats.campuscompass.models.CalendarEvent
 import kotlinx.android.synthetic.main.calendar_recycler_item.view.event_location_item
 import kotlinx.android.synthetic.main.calendar_recycler_item.view.event_date_item
 import kotlinx.android.synthetic.main.calendar_recycler_item.view.event_title_item
-import kotlinx.android.synthetic.main.calendar_recycler_item.navigateFromEvent
-import kotlinx.android.synthetic.main.calendar_recycler_item.view.*
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -34,7 +30,6 @@ class CalendarAdapter(
              val item = view.tag as CalendarEvent
             // Notify the activity/fragment that an item has been clicked
              listener?.onCalendarEventClick(item)
-
         }
     }
 
@@ -59,7 +54,6 @@ class CalendarAdapter(
 
         holder.cardView.setCardBackgroundColor(item.color!!.toInt())
 
-
         with(holder.view) {
             tag = item
             holder.navButton.setOnClickListener{
@@ -68,7 +62,6 @@ class CalendarAdapter(
                 findNavController().popBackStack()
                 findNavController().navigate(R.id.search_fragment, bundle)
             }
-
         }
     }
 
