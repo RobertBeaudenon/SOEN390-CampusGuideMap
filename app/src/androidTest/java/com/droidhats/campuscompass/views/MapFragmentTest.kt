@@ -43,12 +43,6 @@ class MapFragmentTest {
             "android.permission.ACCESS_FINE_LOCATION"
         )
     private lateinit var navController: TestNavHostController
-    @Rule
-    @JvmField
-    var mGrantPermissionRule =
-        GrantPermissionRule.grant(
-            "android.permission.ACCESS_FINE_LOCATION"
-        )
 
     @Before
     fun setUp() {
