@@ -379,6 +379,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    //Todo: Remove this whole part in the end.
     //Handle the clicking of the instructions button. Should probably move from here later
     private fun showInstructions(instructions : ArrayList<String>) {
         buttonInstructions.visibility = View.VISIBLE
