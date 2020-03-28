@@ -42,6 +42,7 @@ class MapFragmentTest {
         GrantPermissionRule.grant(
             "android.permission.ACCESS_FINE_LOCATION"
         )
+
     private lateinit var navController: TestNavHostController
 
     @Before
@@ -116,6 +117,14 @@ class MapFragmentTest {
 
         Thread.sleep(2000)
 
+        //Checks that if a Clear button is displayed next to the search field
+        onView(
+            allOf(
+                withId(R.id.search_close_btn), withContentDescription("Clear query"),
+                isDisplayed()
+            )
+        ).check(matches(isDisplayed()))
+
         //Checks if room suggestion H-400 is displayed and performs a click on the search card
         onView(
             allOf(
@@ -171,14 +180,6 @@ class MapFragmentTest {
             )
         ).check(matches(withHint("From")))
 
-        //Checks that if a Clear button is displayed next to the search field
-        onView(
-            allOf(
-                withId(R.id.search_close_btn), withContentDescription("Clear query"),
-                isDisplayed()
-            )
-        ).check(matches(isDisplayed()))
-
         //Checks if Navigation button is displayed
         onView(
             allOf(
@@ -198,10 +199,10 @@ class MapFragmentTest {
         //Checks if "from" field is replaced by test "Your Location"
         onView(
             allOf(
-                withId(R.id.search_src_text), withText("Your Location"),
+                withId(R.id.search_src_text), withText("Your Current Location"), withHint("To"),
                 isDisplayed()
             )
-        ).check(matches(withText("Your Location")))
+        ).check(matches(withText("Your Current Location")))
 
         //Checks if Clear button for secondary (To) searchbar is displayed
         onView(

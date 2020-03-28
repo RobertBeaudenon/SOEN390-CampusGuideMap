@@ -60,7 +60,7 @@ class SearchAdapter(
             val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
 
             setNavigation.setOnClickListener {
-                searchFragment.showNavigationView(item, false)
+                searchFragment.showNavigationView(item, true)
                 searchFragment.confirmSelection(destinationBar, item, false)
             }
 
