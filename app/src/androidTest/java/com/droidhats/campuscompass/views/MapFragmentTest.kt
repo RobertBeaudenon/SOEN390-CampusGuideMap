@@ -43,12 +43,6 @@ class MapFragmentTest {
             "android.permission.ACCESS_FINE_LOCATION"
         )
     private lateinit var navController: TestNavHostController
-    @Rule
-    @JvmField
-    var mGrantPermissionRule =
-        GrantPermissionRule.grant(
-            "android.permission.ACCESS_FINE_LOCATION"
-        )
 
     @Before
     fun setUp() {
@@ -73,8 +67,6 @@ class MapFragmentTest {
             onView(withId(R.id.coordinate_layout)).check(matches(isDisplayed()))
         }
     }
-
-
     @Test
     fun test_SearchBar() {
         //Checks if the search bar with text "search" exists
