@@ -48,17 +48,6 @@ class FloorFragment : Fragment(), SearchAdapter.OnSearchResultClickListener {
         val inputStream: InputStream = requireContext().assets.open("hall8.svg")
         val svg: SVG = SVG.getFromInputStream(inputStream)
         setImage(svg)
-
-        var randomPathBtn: Button = root.findViewById(R.id.randomPathBtn)
-
-        randomPathBtn.setOnClickListener { it ->
-            val inputStream: InputStream = requireContext().assets.open("hall8.svg")
-            val file: String = inputStream.bufferedReader().use { it.readText() }
-            val mapProcessor: ProcessMap = ProcessMap()
-            mapProcessor.readSVGFromString(file)
-            val svg: SVG = SVG.getFromString(mapProcessor.getSVGString())
-            setImage(svg)
-        }
         return root
     }
 

@@ -13,7 +13,10 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.NavigationRoute
-import com.droidhats.campuscompass.roomdb.*
+import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
+import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
+import com.droidhats.campuscompass.roomdb.ShuttleBusDAO
+import com.droidhats.campuscompass.roomdb.ShuttleBusDB
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -32,9 +35,9 @@ import kotlin.coroutines.suspendCoroutine
  */
 class NavigationRepository(private val application: Application) {
 
-    private var shuttleBusDAO: ShuttleBus_DAO
-    private var loyolaShuttleTimes: LiveData<List<ShuttleBus_Loyola_Entity>>
-    private var sgwShuttleTimes: LiveData<List<ShuttleBus_SGW_Entity>>
+    private var shuttleBusDAO: ShuttleBusDAO
+    private var loyolaShuttleTimes: LiveData<List<ShuttleBusLoyolaEntity>>
+    private var sgwShuttleTimes: LiveData<List<ShuttleBusSGWEntity>>
     private var navigationRoute = MutableLiveData<NavigationRoute>()
     var routeTimes = MutableLiveData<MutableMap<String, String>>()
 
@@ -62,14 +65,14 @@ class NavigationRepository(private val application: Application) {
     /**
      * @return loyolaShuttleTimes
      */
-    fun getLoyolaShuttleTime(): LiveData<List<ShuttleBus_Loyola_Entity>> {
+    fun getLoyolaShuttleTime(): LiveData<List<ShuttleBusLoyolaEntity>> {
         return loyolaShuttleTimes
     }
 
     /**
      * @return sgwShuttleTimes
      */
-    fun getSGWShuttleTime(): LiveData<List<ShuttleBus_SGW_Entity>> {
+    fun getSGWShuttleTime(): LiveData<List<ShuttleBusSGWEntity>> {
         return sgwShuttleTimes
     }
 
@@ -200,7 +203,7 @@ class NavigationRepository(private val application: Application) {
                             }
                             path.add(PolyUtil.decode(points))
                         }catch (e : org.json.JSONException){
-                            Log.e("JSONException" , e.message)
+                            Log.e("JSONException" , e.message.toString())
                         }
                     }
                     val navigation = NavigationRoute(origin, destination, mode, path, instructions)

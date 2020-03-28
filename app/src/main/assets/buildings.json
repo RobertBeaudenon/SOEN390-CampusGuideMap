@@ -1,5 +1,7 @@
 {
-    "SGW_buildings": [{
+  "SGW_Campus_Location": [45.495637, -73.578235],
+  "Loyola_Campus_Location": [45.458159, -73.640450],
+  "SGW_buildings": [{
             "name": "Henry F. Hall Building",
             "address": "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8",
 			"center_location": [45.497320, -73.579031],
@@ -1078,6 +1080,7 @@
         }, {
             "name": "Central Building",
             "initial": "CB",
+            "initial": "CC",
             "address": "7141 Rue Sherbrooke O, Montréal, QC H4B 2B5",
 			"center_location": [45.458302, -73.640313],
             "location": [45.458251, -73.640353],
@@ -1367,7 +1370,7 @@
             ]
         }, {
             "name": "F.C. Smith Building",
-            "initial": "FCSB",
+            "initial": "FC",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
 			"center_location": [45.458593, -73.639293],
             "location": [45.458583, -73.639372],
@@ -1477,7 +1480,7 @@
                 "None"
             ],
             "services": [
-                "PEFORM centre"
+                "PERFORM Centre"
             ]
         }, {
             "name": "Stinger Dome",
@@ -1551,7 +1554,7 @@
             ]
         }, {
             "name": "Physical Services Building",
-            "initial": "PSB",
+            "initial": "PS",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 2B9",
 			"center_location": [45.459641, -73.639742],
             "location": [45.4594836,-73.6393499],
@@ -1591,7 +1594,7 @@
             ]
         },{
             "name": "Oscar Peterson Concert Hall",
-            "initial": "OSPCH",
+            "initial": "PT",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
 			"center_location": [45.459324, -73.638960],
             "location": [45.459355, -73.638976],
@@ -1607,13 +1610,13 @@
                 [45.4592203, -73.6389273]
             ],
             "open_hours": [
-                ["Monday", "7a.m.-11p.m."],
-                ["Tuesday", "7a.m.-11p.m."],
-                ["Wednesday", "7a.m.-11p.m."],
-                ["Thursday", "7a.m.-11p.m."],
-                ["Friday", "7a.m.-11p.m."],
-                ["Saturday", "7a.m.-11p.m."],
-                ["Sunday", "7a.m.-11p.m."]
+                ["Monday", "9a.m.-5p.m."],
+                ["Tuesday", "9a.m.-5p.m."],
+                ["Wednesday", "9a.m.-5p.m."],
+                ["Thursday", "9a.m.-5p.m."],
+                ["Friday", "9a.m.-5p.m."],
+                ["Saturday", "9a.m.-5p.m."],
+                ["Sunday", "9a.m.-5p.m."]
             ],
             "departments": [
                 "None"

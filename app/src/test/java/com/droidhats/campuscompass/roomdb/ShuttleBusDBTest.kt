@@ -13,21 +13,21 @@ import org.junit.Before
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
 class ShuttleBusDBTest {
 
-    private val shuttlebusDB: ShuttleBusDB= ShuttleBusDB.getInstance(RuntimeEnvironment.application)
-    private lateinit var shuttleBusDAO: ShuttleBus_DAO
-    private lateinit var shuttleBus_Loyola_Entity:ShuttleBus_Loyola_Entity
-    private lateinit var shuttleBus_SGW_Entity:ShuttleBus_SGW_Entity
+    private val shuttlebusDB: ShuttleBusDB = ShuttleBusDB.getInstance(RuntimeEnvironment.application)
+    private lateinit var shuttleBusDAO: ShuttleBusDAO
+    private lateinit var shuttleBusLoyolaEntity:ShuttleBusLoyolaEntity
+    private lateinit var shuttleBusSGWEntity:ShuttleBusSGWEntity
 
     @Before
-    fun setup(){
+    fun setup() {
 
-        shuttleBus_Loyola_Entity = ShuttleBus_Loyola_Entity(999)
-        shuttleBus_Loyola_Entity.shuttle_day= "F"
-        shuttleBus_Loyola_Entity.shuttle_time= "11:30"
+        shuttleBusLoyolaEntity = ShuttleBusLoyolaEntity(999)
+        shuttleBusLoyolaEntity.shuttle_day = "F"
+        shuttleBusLoyolaEntity.shuttle_time = "11:30"
 
-        shuttleBus_SGW_Entity = ShuttleBus_SGW_Entity(998)
-        shuttleBus_SGW_Entity.shuttle_day= "MTWT"
-        shuttleBus_SGW_Entity.shuttle_time= "13:30"
+        shuttleBusSGWEntity = ShuttleBusSGWEntity(998)
+        shuttleBusSGWEntity.shuttle_day = "MTWT"
+        shuttleBusSGWEntity.shuttle_time = "13:30"
     }
 
     @Test
@@ -41,17 +41,17 @@ class ShuttleBusDBTest {
     }
 
     @Test
-    fun insertTimings(){
-        val testDB: ShuttleBusDB= ShuttleBusDB.getInstance(RuntimeEnvironment.application)
+    fun insertTimings() {
+        val testDB: ShuttleBusDB = ShuttleBusDB.getInstance(RuntimeEnvironment.application)
 
-        shuttleBusDAO = testDB!!.shuttleBusDAO()
-        shuttleBusDAO.saveLoyolaShuttleTime(shuttleBus_Loyola_Entity)
-        shuttleBusDAO.saveSGWShuttleTime(shuttleBus_SGW_Entity)
+        shuttleBusDAO = testDB.shuttleBusDAO()
+        shuttleBusDAO.saveLoyolaShuttleTime(shuttleBusLoyolaEntity)
+        shuttleBusDAO.saveSGWShuttleTime(shuttleBusSGWEntity)
 
-        var sgw_count = 66
-        var loyola_count = 65
+        val sgwCount = 1
+        val loyolaCount = 1
 
-        Assert.assertEquals(sgw_count, shuttleBusDAO.getSGWShuttleTimeCount())
-        Assert.assertEquals(loyola_count, shuttleBusDAO.getLoyolaShuttleTimeCount())
+        Assert.assertEquals(sgwCount, shuttleBusDAO.getSGWShuttleTimeCount())
+        Assert.assertEquals(loyolaCount, shuttleBusDAO.getLoyolaShuttleTimeCount())
     }
 }
