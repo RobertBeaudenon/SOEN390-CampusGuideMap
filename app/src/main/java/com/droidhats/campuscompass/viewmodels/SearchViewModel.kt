@@ -130,7 +130,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
        }
     }
 
-    fun setIndoorDirections(startAndEnd: Pair<Int, Int>) {
+    fun setIndoorDirections(startAndEnd: Pair<Float, Float>) {
         IndoorNavigationRepository.getInstance().setStartAndEnd(startAndEnd)
     }
 }

@@ -8,7 +8,7 @@ class FloorViewModel : ViewModel() {
     // TODO: Implement the ViewModel
     val indoorLocationRepository: IndoorNavigationRepository = IndoorNavigationRepository.getInstance()
 
-    fun getDirections(): Pair<Int, Int>? {
+    fun getDirections(): Pair<Float, Float>? {
         return indoorLocationRepository.getStartAndEnd()
     }
 }
