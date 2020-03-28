@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import java.io.InputStream
 
 
-class FloorFragment : Fragment(), SearchAdapter.OnSearchResultClickListener {
+class FloorFragment : Fragment() {
 
     private lateinit var viewModel: FloorViewModel
     private lateinit var root: View
@@ -70,7 +70,6 @@ class FloorFragment : Fragment(), SearchAdapter.OnSearchResultClickListener {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FloorViewModel::class.java)
 
-        SearchFragment.onSearchResultClickListener = this
         initSearchBar()
 
         val startAndEnd = viewModel.getDirections()
@@ -106,14 +105,5 @@ class FloorFragment : Fragment(), SearchAdapter.OnSearchResultClickListener {
             override fun onSearchConfirmed(text: CharSequence?) {
             }
         })
-    }
-
-    override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
-        if (item is IndoorLocation) {
-            findNavController().navigateUp()
-        } else if (item is GooglePlace) {
-           //val action = FloorFragmentDirections.floorToMap(item)
-           findNavController().navigate(R.id.map_fragment)
-        }
     }
 }
