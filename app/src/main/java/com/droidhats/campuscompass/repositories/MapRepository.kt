@@ -108,6 +108,7 @@ class MapRepository(applicationContext: Context) {
             // Traverse each building in the array
             for(i in 0 until buildingsArray.length()) {
                 val buildingName : String = buildingsArray.getJSONObject(i).get("name").toString()
+                val buildingPlaceId: String = buildingsArray.getJSONObject(i).get("place_id").toString()
                 val buildingAddress : String = buildingsArray.getJSONObject(i).get("address").toString()
                 val buildingLocationArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("location")
@@ -125,8 +126,8 @@ class MapRepository(applicationContext: Context) {
                     buildingCenterLocationArray[0].toString().toDouble(),
                     buildingCenterLocationArray[1].toString().toDouble()
                 )
-                val buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)!!
-                val buildingMarkersIcons: Int = this.getBuildingMarkersIcons(buildingName)!!
+                val buildingImageResourceID: Int = this.getBuildingImageResourceID(buildingName)
+                val buildingMarkersIcons: Int = this.getBuildingMarkersIcons(buildingName)
 
                 coordinatesArray = buildingsArray.getJSONObject(i).getJSONArray("coordinates")
                 val openHoursArray = buildingsArray.getJSONObject(i).getJSONArray("open_hours")
@@ -139,7 +140,7 @@ class MapRepository(applicationContext: Context) {
                     val day: String = openHoursArray.getJSONArray(j)[0].toString()
                     val hours: String = openHoursArray.getJSONArray(j)[1].toString()
 
-                    if(j == openHoursArray.length()){
+                    if(j == openHoursArray.length() - 1){
                         hoursBuilder.append(day + "\t" + hours)
                     } else {
                         hoursBuilder.append(day + "\t" + hours + "\n")
@@ -156,7 +157,7 @@ class MapRepository(applicationContext: Context) {
                 }
 
                 buildingsList.add(Building(buildingLocation, buildingName, buildingCenterLocation,
-                     polygonCoordinatesList, buildingAddress, hoursBuilder.toString(),
+                     polygonCoordinatesList, buildingAddress, buildingPlaceId, hoursBuilder.toString(),
                     getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray),
                     buildingImageResourceID, buildingMarkersIcons))
             }
@@ -175,7 +176,7 @@ class MapRepository(applicationContext: Context) {
 
         //Traverse each object in the array
         for(k in 0 until jsonArray.length()){
-            if(k == jsonArray.length()){
+            if(k == jsonArray.length() - 1){
                 builder.append(jsonArray[k].toString())
             }else{
                 builder.append(jsonArray[k].toString() + "\n")
@@ -199,7 +200,7 @@ class MapRepository(applicationContext: Context) {
      * Returns the building image from drawable resources
      * @param buildingName: Used to map the building name to the building image.
      */
-    private fun getBuildingImageResourceID(buildingName: String): Int? {
+    private fun getBuildingImageResourceID(buildingName: String): Int {
 
         // The id for the building image resource is of Int type
         // Return the building image resource id that corresponds to the building name
@@ -239,16 +240,16 @@ class MapRepository(applicationContext: Context) {
             "Loyola Jesuit and Conference Centre" -> R.drawable.building_ljacc
             "Vanier Library Building" -> R.drawable.building_vl
             "Vanier Extension" -> R.drawable.building_ve
-            "Student Center" -> R.drawable.building_sc
-            "F.C. Smith. Building" -> R.drawable.building_fc
+            "Student Centre" -> R.drawable.building_sc
+            "F.C. Smith Building" -> R.drawable.building_fc
             "Stinger Dome" -> R.drawable.building_do
-            "PERFORM centre" -> R.drawable.building_pc
+            "PERFORM Centre" -> R.drawable.building_pc
             "Jesuit Residence" -> R.drawable.building_jr
             "Physical Services Building" -> R.drawable.building_ps
             "Oscar Peterson Concert Hall" -> R.drawable.building_pt
             "Learning Square" -> R.drawable.building_ls
             "Central Building" -> R.drawable.building_cc
-            else -> Log.v("Error loading images", "couldn't load image")
+            else -> Log.v("ImageError", "couldn't load image")
         }
     }
 
@@ -256,39 +257,39 @@ class MapRepository(applicationContext: Context) {
      * Returns the building marker icon from drawable resources
      * @param buildingName: Used to map the building name to the building marker icon.
      */
-    private fun getBuildingMarkersIcons(buildingName: String) : Int?{
+    private fun getBuildingMarkersIcons(buildingName: String) : Int{
 
         // The id for the building icon resource is of Int type
         // Return the building image resource id that corresponds to the building name
         return when (buildingName) {
-            "Henry F. Hall Building" -> R.mipmap.ic_building_h
-            "EV Building" -> R.mipmap.ic_building_ev
-            "John Molson School of Business" -> R.mipmap.ic_building_jm
-            "Faubourg Saint-Catherine Building" -> R.mipmap.ic_building_fg
-            "Guy-De Maisonneuve Building" -> R.mipmap.ic_building_gm
-            "Faubourg Building" -> R.mipmap.ic_building_fb
-            "Visual Arts Building" -> R.mipmap.ic_building_va
-            "Pavillion J.W. McConnell Building" -> R.mipmap.ic_building_lb
-            "Grey Nuns Building" -> R.mipmap.ic_building_gn
-            "Samuel Bronfman Building" -> R.mipmap.ic_building_sb
-            "GS Building" -> R.mipmap.ic_building_gs
-            "Learning Square" ->  R.mipmap.ic_building_ls
-            "Psychology Building" -> R.mipmap.ic_building_py
-            "Richard J. Renaud Science Complex" -> R.mipmap.ic_building_sp
-            "Central Building" -> R.mipmap.ic_building_cc
-            "Communication Studies and Journalism Building" -> R.mipmap.ic_building_cj
-            "Administration Building" -> R.mipmap.ic_building_ad
-            "Loyola Jesuit and Conference Centre" -> R.mipmap.ic_building_rf
-            "Vanier Library Building" -> R.mipmap.ic_building_vl
-            "Vanier Extension" -> R.mipmap.ic_building_ve
-            "Student Centre" -> R.mipmap.ic_building_sc
-            "F.C. Smith Building" ->R.mipmap.ic_building_fc
-            "Stinger Dome" -> R.mipmap.ic_building_do
-            "PERFORM Centre" -> R.mipmap.ic_building_pc
-            "Jesuit Residence" -> R.mipmap.ic_building_jr
-            "Physical Services Building" -> R.mipmap.ic_building_ps
-            "Oscar Peterson Concert Hall" -> R.mipmap.ic_building_pt
-            else -> Log.v("Error loading marker", "couldn't load marker icons")
+            "Henry F. Hall Building" -> R.drawable.ic_building_h
+            "EV Building" -> R.drawable.ic_building_ev
+            "John Molson School of Business" -> R.drawable.ic_building_jm
+            "Faubourg Saint-Catherine Building" -> R.drawable.ic_building_fg
+            "Guy-De Maisonneuve Building" -> R.drawable.ic_building_gm
+            "Faubourg Building" -> R.drawable.ic_building_fb
+            "Visual Arts Building" -> R.drawable.ic_building_va
+            "Pavillion J.W. McConnell Building" -> R.drawable.ic_building_lb
+            "Grey Nuns Building" -> R.drawable.ic_building_gn
+            "Samuel Bronfman Building" -> R.drawable.ic_building_sb
+            "GS Building" -> R.drawable.ic_building_gs
+            "Learning Square" ->  R.drawable.ic_building_ls
+            "Psychology Building" -> R.drawable.ic_building_py
+            "Richard J. Renaud Science Complex" -> R.drawable.ic_building_sp
+            "Central Building" -> R.drawable.ic_building_cc
+            "Communication Studies and Journalism Building" -> R.drawable.ic_building_cj
+            "Administration Building" -> R.drawable.ic_building_ad
+            "Loyola Jesuit and Conference Centre" -> R.drawable.ic_building_rf
+            "Vanier Library Building" -> R.drawable.ic_building_vl
+            "Vanier Extension" -> R.drawable.ic_building_ve
+            "Student Centre" -> R.drawable.ic_building_sc
+            "F.C. Smith Building" ->R.drawable.ic_building_fc
+            "Stinger Dome" -> R.drawable.ic_building_do
+            "PERFORM Centre" -> R.drawable.ic_building_pc
+            "Jesuit Residence" -> R.drawable.ic_building_jr
+            "Physical Services Building" -> R.drawable.ic_building_ps
+            "Oscar Peterson Concert Hall" -> R.drawable.ic_building_pt
+            else -> Log.v("IconMarker", "didn't load marker icon for $buildingName")
         }
     }
 

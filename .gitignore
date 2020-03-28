@@ -82,6 +82,7 @@ app/.project
 app/.settings/
 app/build/
 app/proguard-rules.pro
+.scannerwork/
 
 # Google API
 app/src/debug/res/values/google_maps_api.xml

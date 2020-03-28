@@ -19,52 +19,18 @@ import java.io.InputStream
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
 class MapRepositoryTest {
-
-    private val json: String = "    \"SGW_buildings\": [{\n" +
-            "            \"name\": \"Henry F. Hall Building\",\n" +
-            "            \"address\": \"1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8\",\n" +
-            "\t\t\t\"center_location\": [45.497320, -73.579031],\n" +
-            "            \"location\": [45.497320, -73.579031],\n" +
-            "            \"coordinates\": [\n" +
-            "                [45.497164, -73.579544],\n" +
-            "                [45.497710, -73.579034],\n" +
-            "                [45.497373, -73.578338],\n" +
-            "                [45.496828, -73.578850]\n" +
-            "            ],\n" +
-            "            \"open_hours\": [\n" +
-            "                [\"Monday\", \"7a.m.-11p.m.\"],\n" +
-            "                [\"Tuesday\", \"7a.m.-11p.m.\"],\n" +
-            "                [\"Wednesday\", \"7a.m.-11p.m.\"],\n" +
-            "                [\"Thursday\", \"7a.m.-11p.m.\"],\n" +
-            "                [\"Friday\", \"7a.m.-11p.m.\"],\n" +
-            "                [\"Saturday\", \"7a.m.-11p.m.\"],\n" +
-            "                [\"Sunday\", \"7a.m.-11p.m.\"]\n" +
-            "            ],\n" +
-            "            \"departments\": [\n" +
-            "                \"Geography, Planning and Environment\",\n" +
-            "                \"Political Science, Sociology and Anthropology, Economics\",\n" +
-            "                \"School of Irish Studies\"\n" +
-            "            ],\n" +
-            "            \"services\": [\n" +
-            "                \"Welcome Crew Office\",\n" +
-            "                \"DB Clarke Theatre\",\n" +
-            "                \"Dean of Students\",\n" +
-            "                \"Aboriginal Student Resource Centre\",\n" +
-            "                \"Concordia Student Union\"\n" +
-            "            ]\n" +
-            "        }"
-
     // App context is needed to create the repository and read the external file
-    private val context : Context = RuntimeEnvironment.application.applicationContext
+    private val context: Context = RuntimeEnvironment.application.applicationContext
 
     @Test
-    fun externalFileExistenceTest(){
+    fun externalFileExistenceTest() {
         var inputStream: InputStream? = null
 
         // Try to open the file
         try {
             inputStream = context.assets.open("buildings.json")
-        } catch (e: IOException){}
+        } catch (e: IOException) {
+        }
 
         // Assert if input stream is null to check if the file exists
         Assert.assertNotNull("buildings.json file does not exist", inputStream)
@@ -74,7 +40,7 @@ class MapRepositoryTest {
     private var instance: MapRepository = MapRepository.getInstance(context)
 
     @Test
-    fun getCampusesTest(){
+    fun getCampusesTest() {
         //Assert campuses are returned as a list
         val campuses: List<Campus> = instance.getCampuses()
         Assert.assertNotNull(campuses)
@@ -86,52 +52,129 @@ class MapRepositoryTest {
         // Assert campus variables are well assigned
         val campuses: List<Campus> = instance.getCampuses()
         Assert.assertEquals(campuses[0].name, "SGW")
-        Assert.assertEquals(campuses[0].getLocation(), LatLng(45.495637, -73.578235))
+        Assert.assertEquals(campuses[0].getLocation(), LatLng(45.495784, -73.577197))
+        Assert.assertEquals(campuses[1].name, "Loyola")
+        Assert.assertEquals(campuses[1].getLocation(), LatLng(45.458220, -73.639702))
     }
 
+    //Test whether the buildings from the json were correctly parsed.
+    //Since the method traverses in a linear fashion, verifying the first and last building is sufficient.
     @Test
-    fun getBuildingsFromJSONTest() {
+    fun getBuildingsFromJSONTest_ValidParsing() {
         // Assert building variables were well assigned
-        val buildings: List<Building> = instance.getCampuses()[0].getBuildings()
-        val hBuilding: Building = buildings[0]
+        val sgwBuildings: List<Building> = instance.getCampuses()[0].getBuildings()
+        val loyolaBuildings: List<Building> = instance.getCampuses()[1].getBuildings()
+
+        //Verify first building: Hall
+        val hBuilding: Building = sgwBuildings[0]
         Assert.assertEquals(hBuilding.name, "Henry F. Hall Building", hBuilding.name)
-        Assert.assertEquals(hBuilding.getOpenHours(), "Monday\t7a.m.-11p.m.\n" +
-                "Tuesday\t7a.m.-11p.m.\n" +
-                "Wednesday\t7a.m.-11p.m.\n" +
-                "Thursday\t7a.m.-11p.m.\n" +
-                "Friday\t7a.m.-11p.m.\n" +
-                "Saturday\t7a.m.-11p.m.\n" +
-                "Sunday\t7a.m.-11p.m.\n", hBuilding.getOpenHours())
+        Assert.assertEquals(
+            hBuilding.getOpenHours(), "Monday\t7a.m.-11p.m.\n" +
+                    "Tuesday\t7a.m.-11p.m.\n" +
+                    "Wednesday\t7a.m.-11p.m.\n" +
+                    "Thursday\t7a.m.-11p.m.\n" +
+                    "Friday\t7a.m.-11p.m.\n" +
+                    "Saturday\t7a.m.-11p.m.\n" +
+                    "Sunday\t7a.m.-11p.m.", hBuilding.getOpenHours()
+        )
         Assert.assertEquals(hBuilding.getLocation(), LatLng(45.497320, -73.579031))
-        Assert.assertEquals(hBuilding.getAddress(), "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8", hBuilding.getAddress())
-        Assert.assertEquals(hBuilding.getDepartments(), "Geography, Planning and Environment\n" +
-                "Political Science, Sociology and Anthropology, Economics\n" +
-                "School of Irish Studies\n", hBuilding.getDepartments())
-        Assert.assertEquals(hBuilding.getServices(), "Welcome Crew Office\n" +
-                "DB Clarke Theatre\n" +
-                "Dean of Students\n" +
-                "Aboriginal Student Resource Centre\n" +
-                "Concordia Student Union\n", hBuilding.getServices())
+        Assert.assertEquals(
+            hBuilding.getAddress(),
+            "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8",
+            hBuilding.getAddress()
+        )
+        Assert.assertEquals(
+            hBuilding.getPlaceId(),
+            "ChIJtd6Zh2oayUwRAu_CnRIfoBw",
+            hBuilding.getPlaceId()
+        )
+        Assert.assertEquals(hBuilding.getCenterLocation(), LatLng(45.497320, -73.579031))
+        Assert.assertEquals(
+            hBuilding.getDepartments(), "Geography, Planning and Environment\n" +
+                    "Political Science, Sociology and Anthropology, Economics\n" +
+                    "School of Irish Studies", hBuilding.getDepartments()
+        )
+        Assert.assertEquals(
+            hBuilding.getServices(), "Welcome Crew Office\n" +
+                    "DB Clarke Theatre\n" +
+                    "Dean of Students\n" +
+                    "Aboriginal Student Resource Centre\n" +
+                    "Concordia Student Union", hBuilding.getServices()
+        )
 
-        val buildingPolygonOptionsOptions: PolygonOptions = hBuilding.getPolygonOptions()
-        Assert.assertEquals(buildingPolygonOptionsOptions.fillColor, 4289544510.toInt())
-        Assert.assertEquals(buildingPolygonOptionsOptions.strokeWidth, 2F)
-        Assert.assertTrue(buildingPolygonOptionsOptions.isClickable)
+        val hBuildingPolygonOptionsOptions: PolygonOptions = hBuilding.getPolygonOptions()
+        Assert.assertEquals(hBuildingPolygonOptionsOptions.fillColor, 4289544510.toInt())
+        Assert.assertEquals(hBuildingPolygonOptionsOptions.strokeWidth, 2F)
+        Assert.assertTrue(hBuildingPolygonOptionsOptions.isClickable)
 
-        val coordinates: List<LatLng> = listOf(
+        val hPolygonCoordinates: List<LatLng> = listOf(
             LatLng(45.497164, -73.579544),
             LatLng(45.497710, -73.579034),
             LatLng(45.497373, -73.578338),
             LatLng(45.496828, -73.578850)
         )
-        Assert.assertEquals(buildingPolygonOptionsOptions.points, coordinates)
+        Assert.assertEquals(hBuildingPolygonOptionsOptions.points, hPolygonCoordinates)
 
-        val markerOptions: MarkerOptions = hBuilding.getMarkerOptions()
-        Assert.assertEquals(markerOptions.position, LatLng(45.497320, -73.579031))
-        Assert.assertEquals(markerOptions.anchorU, 0.5f)
-        Assert.assertEquals(markerOptions.anchorV, 0.5f)
-        Assert.assertEquals(markerOptions.title, "Henry F. Hall Building")
+        val hMarkerOptions: MarkerOptions = hBuilding.getMarkerOptions()
+        Assert.assertEquals(hMarkerOptions.position, LatLng(45.497320, -73.579031))
+        Assert.assertEquals(hMarkerOptions.anchorU, 0.5f)
+        Assert.assertEquals(hMarkerOptions.anchorV, 0.5f)
+        Assert.assertEquals(hMarkerOptions.title, "Henry F. Hall Building")
+
+        //Verify last building: Oscar Peterson Concert Hall
+        val ptbuilding: Building = loyolaBuildings[14]
+
+        Assert.assertEquals(ptbuilding.name, "Oscar Peterson Concert Hall", ptbuilding.name)
+        Assert.assertEquals(
+            ptbuilding.getOpenHours(), "Monday\t9a.m.-5p.m.\n" +
+                    "Tuesday\t9a.m.-5p.m.\n" +
+                    "Wednesday\t9a.m.-5p.m.\n" +
+                    "Thursday\t9a.m.-5p.m.\n" +
+                    "Friday\t9a.m.-5p.m.\n" +
+                    "Saturday\t9a.m.-5p.m.\n" +
+                    "Sunday\t9a.m.-5p.m.", ptbuilding.getOpenHours()
+        )
+        Assert.assertEquals(ptbuilding.getLocation(), LatLng(45.459355, -73.638976))
+        Assert.assertEquals(
+            ptbuilding.getAddress(),
+            "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
+            ptbuilding.getAddress()
+        )
+        Assert.assertEquals(
+            ptbuilding.getPlaceId(),
+            "ChIJL7mz8TEXyUwRu9P6P2NMZYU",
+            ptbuilding.getPlaceId()
+        )
+        Assert.assertEquals(ptbuilding.getCenterLocation(), LatLng(45.459324, -73.638960))
+        Assert.assertEquals(ptbuilding.getDepartments(), "None", ptbuilding.getDepartments())
+        Assert.assertEquals(
+            ptbuilding.getServices(),
+            "Oscar Peterson Concert Hall",
+            ptbuilding.getServices()
+        )
+
+        val ptBuildingPolygonOptionsOptions: PolygonOptions = ptbuilding.getPolygonOptions()
+        Assert.assertEquals(ptBuildingPolygonOptionsOptions.fillColor, 4289544510.toInt())
+        Assert.assertEquals(ptBuildingPolygonOptionsOptions.strokeWidth, 2F)
+        Assert.assertTrue(ptBuildingPolygonOptionsOptions.isClickable)
+
+        val ptPolygonCoordinates: List<LatLng> = listOf(
+            LatLng(45.4593165, -73.6391771),
+            LatLng(45.4593344, -73.6392204),
+            LatLng(45.4593508, -73.6392086),
+            LatLng(45.4593598, -73.6392308),
+            LatLng(45.4594813, -73.6391359),
+            LatLng(45.4593010, -73.6386709),
+            LatLng(45.4591622, -73.6387798),
+            LatLng(45.4592203, -73.6389273)
+        )
+        Assert.assertEquals(ptBuildingPolygonOptionsOptions.points, ptPolygonCoordinates)
+
+        val ptMarkerOptions: MarkerOptions = ptbuilding.getMarkerOptions()
+        Assert.assertEquals(ptMarkerOptions.position, LatLng(45.459324, -73.638960))
+        Assert.assertEquals(ptMarkerOptions.anchorU, 0.5f)
+        Assert.assertEquals(ptMarkerOptions.anchorV, 0.5f)
+        Assert.assertEquals(ptMarkerOptions.title, "Oscar Peterson Concert Hall")
     }
-
 }
 
