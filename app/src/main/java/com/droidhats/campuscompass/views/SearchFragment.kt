@@ -45,10 +45,7 @@ class SearchFragment : Fragment()  {
     private lateinit var root: View
     private var columnCount = 1
     private lateinit var selectedTransportationMethod : String
-
-    /**
-     *
-     */
+    
     companion object{
         var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
         var isNavigationViewOpen = false
@@ -86,9 +83,6 @@ class SearchFragment : Fragment()  {
         retrieveArguments()
     }
 
-    /**
-     *
-     */
     private fun retrieveArguments(){
         val destinationPlace = arguments?.getParcelable<Place>("destPlace")
         if (destinationPlace != null) {
@@ -107,9 +101,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    /**
-     *
-     */
     private fun observeSearchSuggestions() {
         viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googlePredictions ->
           if (viewModel.indoorSearchSuggestions !=null)
@@ -125,18 +116,12 @@ class SearchFragment : Fragment()  {
         })
     }
 
-    /**
-     *
-     */
     private fun observeRouteTimes() {
         viewModel.navigationRepository.routeTimes.observe(viewLifecycleOwner, Observer {
             showRouteTimes(it)
         })
     }
 
-    /**
-     *
-     */
     private fun initSearch() {
         val mainSearchBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
         mainSearchBar.isIconified = false
@@ -160,9 +145,6 @@ class SearchFragment : Fragment()  {
         initCurrentLocationHandler(mainSearchBar, secondarySearchBar)
     }
 
-    /**
-     *
-     */
     private fun initiateNavigation(){
         val origin = NavigationPoints[R.id.mainSearchBar]
         val destination = NavigationPoints[R.id.secondarySearchBar]
@@ -201,9 +183,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    /**
-     *
-     */
     private fun initCurrentLocationHandler(mainSearchView: SearchView, secondarySearchView : SearchView){
         val myLocationFAB = root.findViewById<FloatingActionButton>(R.id.myCurrentLocationFAB)
         myLocationFAB.setOnClickListener{
@@ -216,9 +195,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    /**
-     *
-     */
     private fun setCurrentLocation(searchView: SearchView) {
        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
         fusedLocationClient.lastLocation.addOnSuccessListener{
@@ -248,9 +224,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    /**
-     *
-     */
     private fun initQueryTextListener(searchView: SearchView) {
         val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
         searchText.textSize = 14f
@@ -276,9 +249,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    /**
-     *
-     */
     private fun updateRecyclerView() {
         val fragment= this
         with(recyclerView) {
@@ -291,9 +261,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    /**
-     *
-     */
     private fun resetQuery(queryText : EditText, searchView: SearchView){
         NavigationPoints[searchView.id] = null
         toggleNavigationButtonColor(Color.WHITE)
@@ -303,9 +270,6 @@ class SearchFragment : Fragment()  {
             queryText.setTextColor(Color.BLACK)
     }
 
-    /**
-     *
-     */
     private fun resetRouteTimes(){
         if (isNavigationViewOpen) {
             val defaultTextView = mutableMapOf<String, String>()
@@ -315,9 +279,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    /**
-     *
-     */
     private fun initTransportationRadioGroup(){
         selectedTransportationMethod = NavigationRoute.TransportationMethods.DRIVING.string
         val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
@@ -343,9 +304,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    /**
-     *
-     */
     private fun showRouteTimes(routeTimes : MutableMap<String, String>){
         val drivingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_driving)
         val transitRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_transit)
@@ -365,17 +323,11 @@ class SearchFragment : Fragment()  {
         reset()
     }
 
-    /**
-     *
-     */
     private fun reset(){
         isNavigationViewOpen = false
         NavigationPoints = mutableMapOf(R.id.mainSearchBar to null, R.id.secondarySearchBar to null)
     }
 
-    /**
-     *
-     */
     fun showNavigationView(destinationPlace : Location, startFromCurrentLocation : Boolean){
             isNavigationViewOpen = true
              val startNavButton = root.findViewById<ImageButton>(R.id.startNavigationButton)
@@ -407,9 +359,6 @@ class SearchFragment : Fragment()  {
               confirmSelection(destinationBar, destinationPlace, false)
     }
 
-    /**
-     *
-     */
     internal fun confirmSelection(searchView: SearchView, location: Location, submit: Boolean) {
         val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
         val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
@@ -428,9 +377,6 @@ class SearchFragment : Fragment()  {
         }
     }
 
-    /**
-     *
-     */
     private fun toggleNavigationButtonColor(color : Int){
         val startNavButton = root.findViewById<ImageButton>(R.id.startNavigationButton)
         startNavButton.setColorFilter(color)
