@@ -114,19 +114,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         return success
     }
 
-    /**
-    * Send indoor queries ASYNCHRONOUSLY
-     * @param String of queried indoor location
-     * @return boolean for success or failed query results
-     */
-    fun sendIndoorSearchQueries(query: String): Boolean {
-        return sendSQLiteQuery(query)
-    }
-
-    fun getIndoorSearchQueries() : LiveData<List<IndoorLocation>>? {
-        return indoorSearchSuggestions
-    }
-
     fun getRouteTimes(origin : Location, destination : Location)  {
         val handler = CoroutineExceptionHandler{_, throwable ->
             Log.e(TAG, throwable.message!!)

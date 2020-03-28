@@ -45,7 +45,7 @@ class SearchFragment : Fragment()  {
     private lateinit var root: View
     private var columnCount = 1
     private lateinit var selectedTransportationMethod : String
-
+    
     companion object{
         var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
         var isNavigationViewOpen = false
@@ -172,7 +172,6 @@ class SearchFragment : Fragment()  {
                     selectedTransportationMethod)
             }
         } else {
-
             //check if both origin and destination are indoor
             if((origin is IndoorLocation) && (destination is IndoorLocation))  {
                 viewModel.setIndoorDirections(Pair(origin.lID, destination.lID))

@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -21,6 +22,9 @@ import androidx.navigation.fragment.findNavController
 import com.DroidHats.ProcessMap
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.adapters.SearchAdapter
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
@@ -30,7 +34,7 @@ import kotlinx.coroutines.launch
 import java.io.InputStream
 
 
-class FloorFragment : Fragment() {
+class FloorFragment : Fragment(), SearchAdapter.OnSearchResultClickListener {
 
     private lateinit var viewModel: FloorViewModel
     private lateinit var root: View
@@ -65,6 +69,8 @@ class FloorFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FloorViewModel::class.java)
+
+        SearchFragment.onSearchResultClickListener = this
         initSearchBar()
 
         val startAndEnd = viewModel.getDirections()
@@ -100,5 +106,14 @@ class FloorFragment : Fragment() {
             override fun onSearchConfirmed(text: CharSequence?) {
             }
         })
+    }
+
+    override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
+        if (item is IndoorLocation) {
+            findNavController().navigateUp()
+        } else if (item is GooglePlace) {
+           //val action = FloorFragmentDirections.floorToMap(item)
+           findNavController().navigate(R.id.map_fragment)
+        }
     }
 }

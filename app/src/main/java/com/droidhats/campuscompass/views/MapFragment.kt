@@ -26,14 +26,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.CalendarEvent
-import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.*
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -86,6 +84,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private val observerList = mutableListOf<ModifiedObserver?>()
     private val currentNavigationPath = arrayListOf<Polyline>()
     private var locationUpdateState = false
+    //val args: MapFragmentArgs by navArgs()
 
     companion object {
         private const val REQUEST_CHECK_SETTINGS = 2
@@ -138,6 +137,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initSearchBar()
         handleCampusSwitch()
         observeNavigation()
+
+        //val getItem = args.argItem
+
     }
 
     /**
@@ -506,6 +508,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (item is GooglePlace) {
             findNavController().popBackStack(R.id.map_fragment, false)
             focusLocation(item)
+        } else if (item is IndoorLocation) {
+            findNavController().navigate(R.id.floor_fragment)
         }
     }
 
