@@ -2,7 +2,6 @@ package com.droidhats.campuscompass.views
 
 import android.app.Activity
 import android.content.ContentValues
-import android.content.Intent
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -23,7 +22,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.droidhats.campuscompass.MainActivity
+import com.DroidHats.ProcessMap
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.*
@@ -36,6 +35,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.InputStream
 
 class SearchFragment : Fragment()  {
 
@@ -385,10 +385,33 @@ class SearchFragment : Fragment()  {
         NavigationPoints[searchView.id] = location
 
         if (areRouteParametersSet()) {
-            viewModel.getRouteTimes(
-                NavigationPoints[mainBar.id]!!,
-                NavigationPoints[destinationBar.id]!!
-            )
+            if (NavigationPoints[mainBar.id]!! is IndoorLocation &&
+                    NavigationPoints[destinationBar.id]!! is IndoorLocation) {
+                val processMap = ProcessMap()
+                val inputStream: InputStream = requireContext().assets.open("hall8.svg")
+                val file: String = inputStream.bufferedReader().use { it.readText() }
+                processMap.readSVGFromString(file)
+                val distance = processMap.getTimeInSeconds(
+                        (NavigationPoints[mainBar.id]!! as IndoorLocation).lID,
+                        (NavigationPoints[destinationBar.id]!! as IndoorLocation).lID
+                )
+                val walkingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_walking)
+                walkingRadioButton.text =  distance.toString() + "s"
+                walkingRadioButton.isChecked = true
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.INVISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.INVISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.INVISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.INVISIBLE
+            } else {
+                viewModel.getRouteTimes(
+                        NavigationPoints[mainBar.id]!!,
+                        NavigationPoints[destinationBar.id]!!
+                )
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.VISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.VISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.VISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.VISIBLE
+            }
             toggleNavigationButtonColor(Color.GREEN)
         }
     }
