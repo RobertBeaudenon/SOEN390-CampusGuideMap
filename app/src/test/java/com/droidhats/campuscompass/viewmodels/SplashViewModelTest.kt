@@ -32,7 +32,7 @@ class SplashViewModelTest {
 
     @Before
     fun setUp() {
-        splashViewModel = SplashViewModel()
+        //splashViewModel = SplashViewModel()
     }
 
     // Checks the status of the initializations to make sure they return true

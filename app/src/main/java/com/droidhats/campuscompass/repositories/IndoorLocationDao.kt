@@ -18,7 +18,7 @@ interface IndoorLocationDao {
      * Returns ALL the rows in the IndoorLocation Table
      */
     @Query("SELECT * FROM IndoorLocation")
-    fun getAll(): LiveData<List<IndoorLocation>>
+    fun getAll(): List<IndoorLocation>
 
     @Query("SELECT * FROM IndoorLocation LIMIT 1")
     fun getOne(): LiveData<IndoorLocation>

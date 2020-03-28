@@ -25,7 +25,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
         private var buildingNumberMap: MutableMap<String, MutableMap<Int, Int>> = mutableMapOf()
     }
 
-    fun getIndoorLocations() : LiveData<List<IndoorLocation>> = indoorLocationDao.getAll()
+    fun getIndoorLocations() : List<IndoorLocation> = indoorLocationDao.getAll()
     fun getClassrooms() : LiveData<List<IndoorLocation>> = indoorLocationDao.getAllClassrooms()
     fun getMatchedClassrooms(query : SimpleSQLiteQuery) : LiveData<List<IndoorLocation>>
             = indoorLocationDao.getMatchedClassrooms(query)
@@ -60,13 +60,14 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
             val floorNumber: Int = Character.getNumericValue(floorValue[0])
             for ((x, classRoom) in classes.withIndex()) {
                 val newClass = IndoorLocation(
-                    classRoom.getID().substring(4, 8).toInt(),
+                    classRoom.getID().substring(4, classRoom.getID().length).toFloat(),
                     convertIDToName(classRoom.getID(), building.getIndoorInfo().first, floorNumber),
                     floorNumber,
                     "classroom",
                     building.coordinate.latitude,
                     building.coordinate.longitude
                 )
+                println(newClass)
                 indoorLocationDao.insertIndoorLocation(newClass)
             }
         }
@@ -83,7 +84,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
      */
     fun convertIDToName(id: String, buildingName: String, floorNumber: Int): String {
         if (Character.getNumericValue(id[5]) == floorNumber) {
-            return buildingName + "-" + id.substring(5, 8)
+            return buildingName + "-" + id.substring(5, id.length)
         }
 
         if (buildingNumberMap[buildingName] == null) {
