@@ -51,6 +51,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
@@ -151,6 +152,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         mapModel = viewModel.getMapModel(googleMap, this, this, this, this.activity as MainActivity)
         map = mapModel!!.googleMap
 
+        //Add custom style to map
+        try {
+            val success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            context, R.raw.map_style));
+            if (!success) {
+                Log.e("MapStyle", "Style parsing failed.");
+            }
+        } catch (e: android.content.res.Resources.NotFoundException) {
+            Log.e("MapStyle", "Can't find style. Error: ", e);
+        }
+
         // Move camera to SGW
         // TODO when navigation path is being shown, the camera should be moved to current location
         moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
@@ -168,6 +181,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         for (building in viewModel.getBuildings()) {
             if (!observerList.contains(building) && building.hasCenterLocation()) {
                 attach(building)
+            }
+        }
+    }
+
+    private fun detachBuildingObservers(){
+        // Detach all observer buildings with initial markers
+        for (building in viewModel.getBuildings()) {
+            if (observerList.contains(building) && building.hasCenterLocation()) {
+                detach(building)
             }
         }
     }
@@ -264,6 +286,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onDestroy() {
         super.onDestroy()
+        detachBuildingObservers()
         mapModel?.killInstance()
     }
 
@@ -344,11 +367,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Setting Toggle button listener
         toggleButton.setOnCheckedChangeListener { _, onSwitch ->
             if (onSwitch) {
-                campusView = LatLng(45.495637, -73.578235)
-                moveTo(campusView, 17.5f)
+                campusView = LatLng(45.458220, -73.639702)
+                moveTo(campusView, 16f)
             } else {
-                campusView = LatLng(45.458159, -73.640450)
-                moveTo(campusView, 17.5f)
+                campusView = LatLng(45.495784, -73.577197)
+                moveTo(campusView, 16f)
             }
             dismissBottomSheet()
         }

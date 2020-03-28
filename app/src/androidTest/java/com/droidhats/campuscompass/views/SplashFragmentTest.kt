@@ -26,8 +26,12 @@ class SplashFragmentTest {
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(
         MainActivity::class.java)
 
-    @Rule @JvmField
-    var grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    @Rule
+    @JvmField
+    var mGrantPermissionRule: GrantPermissionRule =
+        GrantPermissionRule.grant(
+            "android.permission.ACCESS_FINE_LOCATION"
+        )
 
     private lateinit var navController: TestNavHostController
 

@@ -83,440 +83,501 @@
        id="g3987"
        transform="matrix(1.4703124,0,0,1.4703124,-39.192937,-241.91877)"
        style="stroke:#000000;stroke-width:2.55047846;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none">
+
+      <!--corridor path -->
       <rect
          y="220.21933"
          x="33.57143"
          height="625.71429"
          width="682.14288"
          id="rect3007"
-         style="fill:#f7d6d6;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+          style="fill:#f7d6d6;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+     <!--Rooms -->
       <rect
          y="220.21933"
          x="33.57143"
          height="69.821426"
          width="95.178574"
-         id="rect3781"
+         id="rect3867"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="68" y="260" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 867 </text>
       <rect
          y="220.21933"
          x="128.75"
          height="92.142853"
          width="60.714279"
-         id="rect3783"
+         id="rect3801"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="145" y="260" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 801 </text>
       <rect
          y="220.21933"
          x="189.46428"
          height="92.142853"
          width="66.785721"
-         id="rect3785"   
-         style="fill:#FFFFFF;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+         id="rect3803"
+         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="210" y="260" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 803 </text>
       <rect
          y="220.21933"
          x="256.25"
          height="37.321423"
          width="55.714287"
-         id="rect3787"
+         id="rect3805.30"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="260" y="245" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 805.30 </text>
       <rect
-         y="257.54074"
-         x="269.46429"
-         height="27.142853"
-         width="42.499992"
-         id="rect3789"
-         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+          y="257.54074"
+          x="269.46429"
+          height="27.142853"
+          width="42.499992"
+          id="rect3805.20"
+          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="275" y="275" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 805.20 </text>
       <rect
          y="284.68359"
          x="269.46429"
          height="27.678572"
          width="42.499992"
-         id="rect3791"
+         id="rect3805.10"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="275" y="300" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 805.10 </text>
       <rect
          ry="0"
          y="220.21933"
          x="311.96429"
          height="92.142838"
          width="63.92857"
-         id="rect3797"
+         id="rect3807"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="330" y="260" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 807 </text>
       <rect
          y="220.21933"
          x="431.78571"
          height="92.142853"
          width="66.428574"
-         id="rect3803"
+         id="rect3811"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="450" y="260" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 811 </text>
       <rect
          y="220.21933"
          x="498.21429"
          height="92.142853"
          width="55.714294"
-         id="rect3805"
+         id="rect3813"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="510" y="260" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 813 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path3809"
+         id="path3815"
          d="m 621.42857,220.21933 0,71.42857 -18.92857,0 0,20.71428 -48.57141,0 0,-92.14285 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="570" y="260" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 815 </text>
       <rect
          y="220.21933"
          x="621.42859"
          height="91.785706"
          width="94.285744"
-         id="rect3811"
+         id="rect3817"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="655" y="270" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 817 </text>
       <rect
          y="312.00504"
          x="621.42859"
          height="66.071434"
          width="94.285721"
-         id="rect3813"
+         id="rect3819"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="655" y="350" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 819 </text>
       <rect
          y="378.07648"
          x="621.42859"
          height="57.499996"
          width="94.285721"
-         id="rect3815"
+         id="rect3821"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="655" y="415" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 821 </text>
       <rect
          y="435.57648"
          x="621.42859"
          height="66.071426"
          width="94.285721"
-         id="rect3817"
+         id="rect3823"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="655" y="475" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 823 </text>
       <rect
          y="501.64789"
          x="621.42859"
          height="57.499992"
          width="94.285721"
-         id="rect3819"
+         id="rect3825"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="655" y="530" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 825 </text>
       <rect
          y="559.14789"
          x="621.42859"
          height="65.000015"
          width="94.285721"
-         id="rect3821"
+         id="rect3827"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="655" y="595" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 827 </text>
       <rect
          y="624.14789"
          x="621.42859"
          height="63.214279"
          width="94.285721"
-         id="rect3823"
+         id="rect3829"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="655" y="660" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 829 </text>
       <rect
          y="748.43359"
          x="621.07141"
          height="97.500015"
          width="94.642883"
-         id="rect3825"
+         id="rect3831"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="655" y="795" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 831 </text>
       <rect
          y="748.43359"
          x="559.28571"
          height="97.500031"
          width="61.785694"
-         id="rect3827"
+         id="rect3833"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="580" y="795" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 833 </text>
       <rect
          y="748.43359"
          x="496.42856"
          height="97.500031"
          width="62.857132"
-         id="rect3829"
+         id="rect3835"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="515" y="795" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 835 </text>
       <rect
          y="748.43359"
          x="433.21429"
          height="97.500031"
          width="63.214272"
-         id="rect3831"
+         id="rect3837"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="460" y="795" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 837 </text>
       <rect
          y="748.07648"
          x="315.71429"
          height="97.857155"
          width="59.285713"
-         id="rect3833"
+         id="rect3841"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="335" y="795" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 841 </text>
       <rect
          y="748.07648"
          x="248.57143"
          height="97.857147"
          width="67.142868"
-         id="rect3835"
+         id="rect3843"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="270" y="795" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 843 </text>
       <rect
          y="748.07648"
          x="192.14285"
          height="97.857147"
          width="56.42857"
-         id="rect3837"
+         id="rect3845"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="210" y="795" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 845 </text>
       <rect
          y="748.07648"
          x="124.64286"
          height="97.857147"
          width="67.499992"
-         id="rect3839"
+         id="rect3847"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="150" y="795" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 847 </text>
       <rect
          y="748.07648"
          x="33.57143"
          height="97.857147"
          width="91.071426"
-         id="rect3841"
+         id="rect3849"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="70" y="795" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 849 </text>
       <rect
          y="716.29077"
          x="33.57143"
          height="31.785723"
          width="50.35714"
-         id="rect3843"
+         id="rect3851.03"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="40" y="735" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 851.03 </text>
       <rect
          y="684.50507"
          x="33.57143"
          height="31.785732"
          width="64.285713"
-         id="rect3845"
+         id="rect3851.02"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="40" y="705" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 851.02 </text>
       <rect
          y="684.50507"
          x="97.857147"
          height="40.357117"
          width="31.071428"
-         id="rect3847"
+         id="rect3851.01"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="98" y="705" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 851.01 </text>
       <rect
          y="622.36218"
          x="33.57143"
          height="62.142883"
          width="95.357147"
-         id="rect3849"
+         id="rect3853"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="70" y="660" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 853 </text>
       <rect
          y="559.50507"
          x="33.57143"
          height="62.857143"
          width="95.357147"
-         id="rect3851"
+         id="rect3855"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="70" y="595" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 855 </text>
       <rect
          y="499.50504"
          x="33.57143"
          height="60.000027"
          width="95.357147"
-         id="rect3853"
+         id="rect3857"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="70" y="535" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 857 </text>
       <rect
          y="437.00504"
          x="33.57143"
          height="62.499996"
          width="95.357147"
-         id="rect3855"
+         id="rect3859"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="70" y="475" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 859 </text>
       <rect
          y="375.57648"
          x="33.57143"
          height="61.42857"
          width="95.357147"
-         id="rect3857"
+         id="rect3861"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="70" y="410" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 861 </text>
       <rect
          y="290.04077"
          x="33.57143"
          height="24.10714"
          width="77.85714"
-         id="rect3859"
+         id="rect3865"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path3861"
-         d="m 128.92858,375.57648 0,-47.14287 -17.50001,0 0,-14.2857 -77.85714,0 0,61.42857 z"
-         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="70" y="308" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 865 </text>
       <path
          inkscape:connector-curvature="0"
          id="path3863"
+         d="m 128.92858,375.57648 0,-47.14287 -17.50001,0 0,-14.2857 -77.85714,0 0,61.42857 z"
+         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="70" y="350" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 863 </text>
+      <path
+         inkscape:connector-curvature="0"
+         id="path3899.51"
          d="m 640.71429,748.43359 0,-17.49998 -18.57143,0 -0.71427,-43.57144 94.28572,0 -2e-5,61.07142 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="655" y="720" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 899.51 </text>
       <rect
          y="349.86218"
          x="165.71428"
          height="90.35714"
          width="62.142857"
-         id="rect3865"
+         id="rect3898"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="180" y="400" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 898 </text>
       <rect
          y="349.86218"
          x="227.85713"
          height="61.785713"
          width="111.42858"
-         id="rect3873"
+         id="rect3802"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="240" y="380" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 802 </text>
       <rect
          y="349.86218"
          x="280.35715"
          height="34.285713"
          width="34.285713"
-         id="rect3875"
+         id="rect3802.01"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <rect
          y="411.64789"
          x="227.85713"
          height="28.571426"
          width="21.785721"
-         id="rect3877"
+         id="rect3899.20"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <rect
          y="411.64789"
          x="249.64285"
          height="23.571428"
          width="22.500006"
-         id="rect3881"
+         id="elevatorroom1"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <rect
          y="411.64789"
          x="272.14285"
          height="23.571421"
          width="20"
-         id="rect3883"
+         id="elevatorroom2"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <rect
          y="411.64789"
          x="339.28571"
          height="27.5"
          width="36.428574"
-         id="rect3885"
+         id="rect3806.03"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="343" y="430" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 806.03 </text>
       <rect
          y="387.00504"
          x="339.28571"
          height="24.642849"
          width="36.428566"
-         id="rect3887"
+         id="rect3806.02"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="343" y="403" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 806.02 </text>
       <rect
          y="360.57648"
          x="339.28571"
          height="26.428568"
          width="36.428558"
-         id="rect3889"
+         id="rect306.01"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="343" y="377" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 806.01 </text>
       <rect
          y="411.64789"
          x="292.14285"
          height="27.499992"
          width="47.142853"
-         id="rect3891"
+         id="rect3892"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="305" y="430" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 892 </text>
       <rect
          y="474.14789"
          x="313.92856"
          height="195.71428"
          width="25"
-         id="rect3895"
+         id="rect3840"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="315" y="550" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 840 </text>
       <rect
          y="639.86218"
          x="338.92856"
          height="29.999985"
          width="37.857155"
-         id="rect3897"
+         id="rect3838.1"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="340" y="665" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 838.1 </text>
       <rect
          y="474.14789"
          x="250.71428"
          height="88.214294"
          width="63.214272"
-         id="rect3899"
+         id="rect3862"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="270" y="520" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 862 </text>
       <rect
          y="474.14789"
          x="216.78572"
          height="57.142864"
          width="33.928566"
-         id="rect3901"
+         id="rect3862.04"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="220" y="500" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 862.04 </text>
       <rect
          y="531.29077"
          x="216.78572"
          height="31.07143"
          width="33.928558"
-         id="rect3903"
+         id="rect3862.06"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="220" y="550" font-family="Arial" font-size="10" fill="black" stroke-width="0" > 862.06 </text>
       <rect
          y="503.43362"
          x="171.78572"
          height="27.857143"
          width="34.285713"
-         id="rect3908"
+         id="rect3862.03"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="174" y="518" font-family="Arial" font-size="10" fill="black" stroke-width="0" > 862.03 </text>
       <rect
          y="474.14789"
          x="171.78572"
          height="29.285812"
          width="34.28574"
-         id="rect3913"
+         id="rect362.01"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="174" y="492" font-family="Arial" font-size="10" fill="black" stroke-width="0" > 862.01 </text>
       <path
          sodipodi:nodetypes="ccccccc"
          inkscape:connector-curvature="0"
-         id="path3917"
+         id="path3862.05"
          d="m 216.78572,562.54076 0,-19.46429 -10.35715,0 -0.35714,-11.7857 -34.28571,0 0,31.24999 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="174" y="550" font-family="Arial" font-size="10" fill="black" stroke-width="0" > 862.05 </text>
       <rect
          y="643.07648"
          x="215.71428"
          height="65.714287"
          width="36.07143"
-         id="rect3919"
+         id="rect3875"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="220" y="656" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 875 </text>
       <rect
          y="643.07642"
          x="171.78572"
          height="65.714371"
          width="43.928551"
-         id="rect3923"
+         id="deadroom1"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="180" y="690" font-family="Arial" font-size="35" fill="black" stroke-width="0"  > X </text>
       <path
          sodipodi:nodetypes="ccccccc"
          inkscape:connector-curvature="0"
-         id="path3925"
+         id="path3854"
          d="m 171.78572,562.54076 0,57.67856 52.85714,0 0,-7.14285 26.24999,0 0,-50.71429 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="200" y="595" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 854 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path3927"
+         id="path3842"
          d="m 250.89285,562.36218 0,69.64286 17.67858,0 0,10.53571 45.35713,0 -1e-5,-80.17857 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="270" y="595" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 842 </text>
       <rect
          y="620.2193"
          x="171.78572"
          height="22.857094"
          width="52.85717"
-         id="rect3931"
+         id="rect3852"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="185" y="635" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 852 </text>
       <rect
          y="684.41412"
          x="251.78571"
          height="24.376646"
          width="41.663605"
-         id="rect3933"
+         id="rect3881"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="260" y="700" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 881 </text>
       <path
          sodipodi:nodetypes="ccccccc"
          inkscape:connector-curvature="0"
-         id="path3935"
+         id="path3838"
          d="m 313.92856,669.86217 0,26.1687 38.36214,0 0,12.12183 24.74874,0 -0.25373,-38.29053 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="338" y="690" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 838 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path3937"
+         id="deadroom2"
          d="m 293.44931,684.41412 0,-41.87337 -24.87788,0 0,16.87209 -16.78572,0 0,25.00128 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <rect
@@ -524,22 +585,24 @@
          x="431.84021"
          height="89.398499"
          width="64.649765"
-         id="rect3941"
+         id="rect3810"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="450" y="400" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 810 </text>
       <rect
          y="350.30615"
          x="443.57144"
          height="12.770314"
          width="11.785714"
-         id="rect3943"
+         id="rect3810.01"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <rect
          y="350.30615"
          x="496.48999"
          height="89.398483"
          width="36.01004"
-         id="rect3945"
+         id="rect3890"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="500" y="400" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 890 </text>
       <rect
          y="350.30615"
          x="532.5"
@@ -547,54 +610,63 @@
          width="48.035873"
          id="rect3947"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="545" y="400" font-family="Arial" font-size="35" fill="black" stroke-width="0"  > X </text>
       <rect
          y="420.39789"
          x="532.5"
          height="19.306747"
          width="48.035843"
-         id="rect3949"
+         id="rect3886"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="540" y="435" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 886 </text>
       <rect
          y="478.43362"
          x="541.07141"
          height="40.714287"
          width="39.107143"
-         id="rect3951"
+         id="rect3820.01"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="545" y="500" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 820.01 </text>
+      <text x="545" y="511" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 820.03 </text>
       <path
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          d="m 595.75,376.21875 0,173.53125 179.34375,0 0,-56.71875 -18.75,0 0,-59.875 18.75,0 0,-56.9375 -179.34375,0 z"
          transform="matrix(0.68012757,0,0,0.68012757,26.656197,183.82552)"
-         id="rect4731"
+         id="rect3820"
          inkscape:connector-curvature="0" />
+      <text x="480" y="505" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 820 </text>
       <rect
          y="557.7193"
          x="498.21429"
          height="85.714287"
          width="83.571426"
-         id="rect3955"
+         id="rect39822"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="525" y="605" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 822 </text>
       <rect
          y="643.43359"
          x="498.21429"
          height="65.178596"
          width="36.428562"
-         id="rect3957"
+         id="rect3885"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="505" y="655" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 885 </text>
       <rect
          y="643.43359"
          x="534.64288"
          height="65.178604"
          width="47.142864"
-         id="rect3959"
+         id="deadroom3"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="545" y="690" font-family="Arial" font-size="35" fill="black" stroke-width="0"  > X </text>
       <rect
          y="643.43359"
          x="470"
          height="65.178596"
          width="28.214294"
-         id="rect3961"
+         id="rect3832.02"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="470" y="680" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 832.02 </text>
       <path
          sodipodi:nodetypes="cc"
          inkscape:connector-curvature="0"
@@ -606,22 +678,25 @@
          x="431.84021"
          height="43.184021"
          width="25.00128"
-         id="rect3965"
+         id="rect3932.01"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="433" y="660" font-family="Arial" font-size="8" fill="black" stroke-width="0"  > 832.01 </text>
       <rect
          y="665.72632"
          x="431.84021"
          height="21.993006"
          width="25.00128"
-         id="rect3969"
+         id="rect3832.03"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-      <rect
-         y="687.7193"
-         x="431.84021"
-         height="20.892859"
-         width="25.00128"
-         id="rect3971"
-         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="433" y="680" font-family="Arial" font-size="8" fill="black" stroke-width="0"  > 832.03 </text>
+    <rect
+          y="687.7193"
+          x="431.84021"
+          height="20.892859"
+          width="25.00128"
+          id="rect3832.05"
+          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="433" y="700" font-family="Arial" font-size="8" fill="black" stroke-width="0"  > 832.05 </text>
       <path
          inkscape:connector-curvature="0"
          id="path3973"
@@ -652,14 +727,16 @@
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          d="m 291.09375,631.125 0,27.84375 0,16.28125 38.59375,0 1.3125,0 0,24 24.6875,0 0,-40.28125 -26,0 0,-27.84375 -38.59375,0 z"
          transform="matrix(0.68012757,0,0,0.68012757,26.656197,183.82552)"
-         id="rect4717"
+         id="deadroom4"
          inkscape:connector-curvature="0" />
+      <text x="230" y="640" font-family="Arial" font-size="20" fill="black" stroke-width="0"  > X </text>
       <path
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          d="m 595.75,549.75 0,95.3125 36.75,0 0,30.71875 60.84375,0 0,-30.71875 0,-95.3125 -97.59375,0 z"
          transform="matrix(0.68012757,0,0,0.68012757,26.656197,183.82552)"
-         id="rect4726"
+         id="rect3832.06"
          inkscape:connector-curvature="0" />
+      <text x="440" y="600" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 832.06 </text>
 
      <!-- Displaying icons on the map -->
 

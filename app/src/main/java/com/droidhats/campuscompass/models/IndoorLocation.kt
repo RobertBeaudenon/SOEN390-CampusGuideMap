@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.LatLng
 
 @Entity(tableName = "IndoorLocation")
 data class IndoorLocation(
-        @ColumnInfo(name = "lID") val lID: Float,
+        @ColumnInfo(name = "lID") val lID: String,
         @PrimaryKey
         @ColumnInfo(name = "location_name") override val name: String,
         @ColumnInfo(name = "floor_num") val floorNum: Int,
