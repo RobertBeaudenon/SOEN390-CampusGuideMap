@@ -5,13 +5,13 @@ import org.junit.Test
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 import org.junit.ClassRule
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
-@RunWith(JUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
 class SplashViewModelTest {
 
