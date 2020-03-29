@@ -3,12 +3,14 @@ package com.droidhats.campuscompass.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
 import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
 
 class ShuttleViewModel(application: Application) : AndroidViewModel(application) {
-    private  var navigationRepository: NavigationRepository = NavigationRepository.getInstance(getApplication())
+    internal var navigationRepository: NavigationRepository = NavigationRepository.getInstance(getApplication())
+    internal var mapRepository: MapRepository = MapRepository.getInstance(getApplication())
     private  var loyolaShuttleTimes: LiveData<List<ShuttleBusLoyolaEntity>>
     private  var sgwShuttleTimes: LiveData<List<ShuttleBusSGWEntity>>
 

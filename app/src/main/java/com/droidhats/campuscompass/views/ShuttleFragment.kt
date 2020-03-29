@@ -9,17 +9,16 @@ import android.view.ViewGroup
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.viewmodels.ShuttleViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.shuttle_campus_tab.*
-import kotlinx.android.synthetic.main.shuttle_fragment.*
 
 class ShuttleFragment : Fragment() {
 
@@ -69,7 +68,6 @@ class CampusTabFragment : Fragment() {
     private lateinit var viewModel: ShuttleViewModel
     private lateinit var root: View
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -83,23 +81,22 @@ class CampusTabFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(ShuttleViewModel::class.java)
 
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-        if (getInt(ARG_OBJECT) == 0)
-          observeSGWShuttle()
-          else
-            observeLOYShuttle()
+            if (getInt(ARG_OBJECT) == 0)
+                observeSGWShuttle()
+            else
+                observeLOYShuttle()
         }
     }
 
-
-    private fun observeSGWShuttle(){
-        viewModel.getSGWShuttleTime().observe(viewLifecycleOwner , Observer { sgwShuttleTimes ->
-           val table = root.findViewById<TableLayout>(R.id.shuttleTimesTable)
+    private fun observeSGWShuttle() {
+        viewModel.getSGWShuttleTime().observe(viewLifecycleOwner, Observer { sgwShuttleTimes ->
+            val table = root.findViewById<TableLayout>(R.id.shuttleTimesTable)
             for (dataRow in sgwShuttleTimes) {
                 val tableRow = TableRow(root.context)
                 val dayText = TextView(root.context)
-              /*  var layoutParams = TableRow.LayoutParams(
-                    TableRow.LayoutParams.WRAP_CONTENT,
-                    TableRow.LayoutParams.WRAP_CONTENT)*/
+                /*  var layoutParams = TableRow.LayoutParams(
+                      TableRow.LayoutParams.WRAP_CONTENT,
+                      TableRow.LayoutParams.WRAP_CONTENT)*/
                 dayText.text = dataRow.shuttle_day
 
                 val timeText = TextView(root.context)
@@ -110,10 +107,15 @@ class CampusTabFragment : Fragment() {
                 table.addView(tableRow)
             }
         })
+        navigate(
+            viewModel.mapRepository.getCampuses()[0],
+            viewModel.mapRepository.getCampuses()[1]
+        )
+
     }
 
-    private fun observeLOYShuttle(){
-        viewModel.getLoyolaShuttleTime().observe(viewLifecycleOwner , Observer {loyShuttleTimes ->
+    private fun observeLOYShuttle() {
+        viewModel.getLoyolaShuttleTime().observe(viewLifecycleOwner, Observer { loyShuttleTimes ->
             val table = root.findViewById<TableLayout>(R.id.shuttleTimesTable)
             for (dataRow in loyShuttleTimes) {
                 val tableRow = TableRow(root.context)
@@ -127,6 +129,17 @@ class CampusTabFragment : Fragment() {
                 table.addView(tableRow)
             }
         })
+        navigate(
+            viewModel.mapRepository.getCampuses()[1],
+            viewModel.mapRepository.getCampuses()[0]
+        )
+    }
+
+    private fun navigate(origin: Campus, dest: Campus) {
+        navigateWithShuttle.setOnClickListener {
+            findNavController().navigateUp()
+            viewModel.navigationRepository.generateDirections(origin, dest, "shuttle")
+        }
     }
 }
 
