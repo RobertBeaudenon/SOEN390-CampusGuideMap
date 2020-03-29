@@ -1,4 +1,7 @@
 package com.droidhats.mapprocessor
+
+
+import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -10,12 +13,15 @@ abstract class MapElement(){
     abstract fun getWidth(): Pair<Double, Double>
     abstract fun getHeight(): Pair<Double, Double>
     abstract fun getCenter(): Pair<Double, Double>
+    abstract fun getID(): String
 }
 
 class Rect (val id: String, val x: Double, val y: Double, val height: Double, val width: Double, val style: String) : MapElement() {
     override fun toString(): String {
         return "<rect id=\"$id\" x=\"$x\" y=\"$y\" height=\"$height\" width=\"$width\" style=\"$style\" />"
     }
+
+    override fun getID() = id
 
     override fun isWithin(x: Double, y: Double): Boolean {
         return (x > this.x - 5 && x < this.x + width + 5 && y > this.y - 5 && y < this.y + this.height + 5)
@@ -90,6 +96,8 @@ class Path(val id: String, val d: String, val transform: String, val style: Stri
         }
     }
 
+    override fun getID() = id
+
     fun transformVertices() {
         var matrixString = transform.substring(7, transform.length-1).split(',')
         for (elmt in matrixString) {
@@ -154,6 +162,8 @@ class Circle(val cx: Double, val cy: Double, val r: Double) : MapElement() {
     override fun toString(): String {
         return "<circle cx=\"$cx\" cy=\"$cy\" r=\"$r\" />"
     }
+
+    override fun getID() = Random().nextInt().toString()
 
     companion object {
         fun getPoint(x: Double, y: Double): Circle {

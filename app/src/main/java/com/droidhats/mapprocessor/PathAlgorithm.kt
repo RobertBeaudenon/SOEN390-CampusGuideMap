@@ -1,9 +1,14 @@
 package com.droidhats.mapprocessor
 
-
 fun Dijkstra(start: MapElement, end: MapElement, pathElements: MutableList<Node>): String {
     val startPoint: Node = findNearestPoint(start, pathElements)
     val endPoint: Node = findNearestPoint(end, pathElements)
+
+    if (startPoint.circle.equals(endPoint.circle)) {
+        var string: String = endPoint.circle.toString() + Circle(end.getCenter().first, end.getCenter().second, 5.0)
+        string += Path.createPath(endPoint.circle.getCenter(), end.getCenter())
+        return string
+    }
 
     var visited: MutableList<Node> = mutableListOf()
     startPoint.value = 0.0

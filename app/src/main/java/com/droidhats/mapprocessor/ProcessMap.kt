@@ -9,6 +9,7 @@ class ProcessMap {
     private var classes: MutableList<MapElement> = mutableListOf()
     private var firstElement: MapElement? = null
     private var finalPath: MutableList<Circle> = mutableListOf()
+    private lateinit var stringArray: List<String>
 
     fun readSVG(svgFile: String) {
         var element: String = ""
@@ -51,6 +52,52 @@ class ProcessMap {
             }
         }
     }
+
+    fun readSVGFromString(svgFile: String) {
+        var element: String = ""
+        var inRect: Boolean = false
+        var inPath: Boolean = false
+        var firstElement: Boolean = true
+
+        stringArray = svgFile.split("\n")
+
+        stringArray.forEach {
+            if (it.contains("<rect")) {
+                inRect = true
+            }
+            if (inRect) element += it
+
+            if (it.contains("/>") && inRect) {
+                if (firstElement) {
+                    this.firstElement = createRect(element)
+                    firstElement = false
+                } else {
+                    classes.add(createRect(element))
+                }
+                inRect = false
+                element = ""
+            }
+
+            if (it.contains("<path")) {
+                inPath = true
+            }
+            if (inPath) element += it
+
+            if (it.contains("/>") && inPath) {
+                val path: Path = createPath(element)
+                if (firstElement) {
+                    this.firstElement = path
+                    firstElement = false
+                } else if (path.isClosed) {
+                    classes.add(path)
+                }
+                inPath = false
+                element = ""
+            }
+        }
+    }
+
+    fun getClasses() = classes
 
     private fun createRect(it: String): Rect {
         val id = extractAttr("id", it)
@@ -114,6 +161,19 @@ class ProcessMap {
         }
     }
 
+    fun getSVGString(): String {
+        var string: StringBuilder = StringBuilder()
+        var wrote: Boolean = false
+        stringArray.forEach { it ->
+            if (it.contains("</g>") && !wrote) {
+                string.append(randomPath() + "\n")
+                wrote = true
+            }
+            string.append(it + "\n")
+        }
+        return string.toString()
+    }
+
     fun identifyClassCenters(): String {
         var string: String = ""
         classes.forEach {
@@ -145,7 +205,7 @@ class ProcessMap {
         val end: Int = (Math.random() * classes.size).toInt()
         println("Start: $start")
         println("End: $end")
-        return Dijkstra(classes[33], classes[26], createPaths(list))
+        return Dijkstra(classes[start], classes[end], createPaths(list))
     }
 
     fun generatePointsAcrossMap(): MutableList<Circle> {
