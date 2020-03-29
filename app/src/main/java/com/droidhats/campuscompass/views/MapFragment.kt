@@ -114,7 +114,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
-
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
@@ -183,6 +182,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         for (building in viewModel.getBuildings()) {
             if (!observerList.contains(building) && building.hasCenterLocation()) {
                 attach(building)
+            }
+        }
+    }
+
+    private fun detachBuildingObservers(){
+        // Detach all observer buildings with initial markers
+        for (building in viewModel.getBuildings()) {
+            if (observerList.contains(building) && building.hasCenterLocation()) {
+                detach(building)
             }
         }
     }
@@ -275,6 +283,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (!locationUpdateState) {
             startLocationUpdates()
         }
+    }
+
+    override fun onDestroy(){
+        super.onDestroy()
+        detachBuildingObservers()
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener

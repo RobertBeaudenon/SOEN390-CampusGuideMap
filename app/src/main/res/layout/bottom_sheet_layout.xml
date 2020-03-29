@@ -69,6 +69,19 @@
 
         <!-- this needs to be deleted after -->
 
+        <Button
+            android:id="@+id/bottom_sheet_directions_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="125dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="125dp"
+            android:background="@drawable/calendarbutton"
+            android:drawableStart="@android:drawable/ic_dialog_map"
+            android:padding="10dp"
+            android:text="@string/directions"
+            android:textColor="#FFFFFF" />
+
         <TableLayout
             android:id="@+id/bottom_sheet_info_table"
             android:layout_width="match_parent"
@@ -147,19 +160,6 @@
             </TableRow>
 
         </TableLayout>
-
-        <Button
-            android:id="@+id/bottom_sheet_directions_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="125dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="125dp"
-            android:background="@drawable/calendarbutton"
-            android:drawableStart="@android:drawable/ic_dialog_map"
-            android:padding="10dp"
-            android:text="@string/directions"
-            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
