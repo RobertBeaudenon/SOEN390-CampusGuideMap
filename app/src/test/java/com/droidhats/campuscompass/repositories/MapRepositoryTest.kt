@@ -52,9 +52,9 @@ class MapRepositoryTest {
         // Assert campus variables are well assigned
         val campuses: List<Campus> = instance.getCampuses()
         Assert.assertEquals(campuses[0].name, "SGW")
-        Assert.assertEquals(campuses[0].getLocation(), LatLng(45.4953428, -73.5777811))
+        Assert.assertEquals(campuses[0].getLocation(), LatLng(45.495784, -73.577197))
         Assert.assertEquals(campuses[1].name, "Loyola")
-        Assert.assertEquals(campuses[1].getLocation(), LatLng(45.4579765, -73.6391898))
+        Assert.assertEquals(campuses[1].getLocation(), LatLng(45.458220, -73.639702))
     }
 
     //Test whether the buildings from the json were correctly parsed.
