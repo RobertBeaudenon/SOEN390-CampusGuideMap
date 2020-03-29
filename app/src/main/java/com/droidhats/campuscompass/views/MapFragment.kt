@@ -494,15 +494,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-                if(newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    mapFragSearchBar.visibility = View.INVISIBLE
-                    toggleButton.visibility =  View.INVISIBLE
-                    buttonResumeNavigation.visibility = View.INVISIBLE
-                }
-                else{
-                    mapFragSearchBar.visibility = View.VISIBLE
-                    toggleButton.visibility =  View.VISIBLE
-                }
            }
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
