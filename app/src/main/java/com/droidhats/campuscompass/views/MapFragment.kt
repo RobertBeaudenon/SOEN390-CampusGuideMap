@@ -219,13 +219,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
         val buttonResumeNavigation : Button = requireActivity().findViewById(R.id.buttonResumeNavigation)
         buttonResumeNavigation.setOnClickListener{
-            toggleInstructionsView(true)
             dismissBottomSheet()
+            toggleInstructionsView(true)
         }
-        //TODO: NOT SURE IF WE EVEN NEED THIS WHOLE PORTION! MIGHT NEED TO COMPLETELY DELETE IT WILL CHECK SOON
+
         if(currentNavigationRoute != null) {
-            buttonResumeNavigation.visibility = View.VISIBLE
-            //showInstructions(currentNavigationRoute!!.instructions)  <-- Why do we even need this? It just keeps on this method n time where n is the number of times you click on directions
+            showInstructions(currentNavigationRoute!!.instructions)
             toggleInstructionsView(false)
         }
     }
