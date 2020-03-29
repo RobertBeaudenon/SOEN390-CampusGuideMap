@@ -1,6 +1,5 @@
 package com.droidhats.mapprocessor
 
-
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -81,6 +80,14 @@ class Path(val id: String, val d: String, val transform: String, val style: Stri
             xMax = -1.0
             yMin = -1.0
             yMax = -1.0
+        }
+    }
+
+    companion object {
+        fun createPath(pointA: Pair<Double, Double>, pointB: Pair<Double, Double>): Path {
+            val diffX: Double = pointB.first - pointA.first
+            val diffY: Double = pointB.second - pointA.second
+            return Path("", "m " + pointA.first + "," + pointA.second + " $diffX,$diffY", "", "", false)
         }
     }
 

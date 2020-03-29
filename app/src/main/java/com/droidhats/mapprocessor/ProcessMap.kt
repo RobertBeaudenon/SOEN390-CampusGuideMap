@@ -107,7 +107,7 @@ class ProcessMap {
     }
 
     fun writeSVG() {
-        val writeFile = File("writeFile7.svg")
+        val writeFile = File("writeFile8.svg")
         var wrote: Boolean = false
         File("Hall-8.svg").forEachLine { it ->
             if (it.contains("</g>") && !wrote) {
@@ -278,7 +278,55 @@ class ProcessMap {
             string += circle
         }
 
+        string += createPaths(pathPoints)
         return string
+    }
+
+    fun createPaths(pathPoints: MutableList<Circle>): String {
+        var string: String = ""
+        var paths: MutableList<Path> = mutableListOf()
+
+        for (pointA in pathPoints) {
+            for (pointB in pathPoints) {
+                if (checkPath(pointA, pointB)) {
+                    paths.add(Path.createPath(Pair(pointA.cx, pointA.cy), Pair(pointB.cx, pointB.cy)))
+                }
+            }
+        }
+
+        for (path in paths) {
+            string += path
+        }
+        return string
+    }
+
+    fun checkPath(pointA: Circle, pointB: Circle): Boolean {
+        // making line equation y = mx + b
+        val m: Double = (pointA.cy - pointB.cy)/(pointA.cx - pointB.cx)
+        val b: Double = pointA.cy - (m*pointA.cx)
+
+        if (abs(pointA.cx - pointB.cx) > abs (pointA.cy - pointB.cy)) {
+
+            val x: Double = if (pointA.cx < pointB.cx) pointA.cx else pointB.cx
+            for (step in 15 until abs(pointB.cx - pointA.cx).toInt() step 30) {
+                val newX: Double = x + step
+                if (!inPath(newX, (m*newX) + b)) {
+                    return false
+                }
+            }
+        } else {
+
+            val y: Double = if (pointA.cy < pointB.cy) pointA.cy else pointB.cy
+            for (step in 15 until abs(pointB.cy - pointA.cy).toInt() step 30) {
+                val newY: Double = y + step
+                if (!inPath((newY-b)/m, newY)) {
+                    return false
+                }
+            }
+        }
+
+        return true
+
     }
 
     fun notInRange(pathPoints: MutableList<Circle>, x: Double, y: Double, averageDistance: Double):Boolean {
