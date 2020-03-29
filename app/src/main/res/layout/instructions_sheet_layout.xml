@@ -21,8 +21,8 @@
             android:id="@+id/buttonCloseInstructions"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:backgroundTint="@color/white"
             android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/white"
             android:src="@drawable/ic_close_black_24dp"
             android:text="@string/x_button" />
 
@@ -40,9 +40,9 @@
                 android:layout_toStartOf="@+id/nextArrow"
                 android:layout_toEndOf="@+id/prevArrow"
                 android:gravity="center"
+                android:text=""
                 android:textAppearance="?attr/textAppearanceListItem"
-                android:textSize="15dp"
-                android:text="" />
+                android:textSize="15sp" />
 
             <ImageView
                 android:id="@+id/prevArrow"
@@ -51,8 +51,8 @@
                 android:layout_alignParentStart="true"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/previous_button"
-                android:maxWidth="50dp"
-                android:maxHeight="50dp"
+                android:maxWidth="60dp"
+                android:maxHeight="60dp"
                 android:rotation="180"
                 android:src="@drawable/arrow_button"
                 android:tint="@color/colorPrimaryDark" />
@@ -64,10 +64,22 @@
                 android:layout_alignParentEnd="true"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/next_button"
-                android:maxWidth="50dp"
-                android:maxHeight="50dp"
+                android:maxWidth="60dp"
+                android:maxHeight="60dp"
                 android:src="@drawable/arrow_button"
                 android:tint="@color/colorPrimaryDark" />
+
+            <Button
+                android:id="@+id/closeButton"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:adjustViewBounds="true"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:text="@string/done"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:visibility="invisible" />
 
         </RelativeLayout>
 

@@ -158,11 +158,6 @@ class SearchFragment : Fragment()  {
         val destination = NavigationPoints[R.id.secondarySearchBar]
         findNavController().navigateUp() // Navigate Back To MapFragment
         secondarySearchBar.clearFocus()
-        Toast.makeText(context, "Starting Navigation\n" +
-                "From: ${origin?.name}\n" +
-                "To: ${destination?.name}\n" +
-                "By: $selectedTransportationMethod",
-            Toast.LENGTH_LONG).show()
 
         //Make sure BOTH coordinates are set before generating directions
         if(origin?.coordinate == LatLng(0.0, 0.0) || destination?.coordinate == LatLng(0.0, 0.0)){

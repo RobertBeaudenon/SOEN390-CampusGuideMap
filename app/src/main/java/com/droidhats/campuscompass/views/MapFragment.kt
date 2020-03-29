@@ -211,7 +211,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         })
     }
 
-    private fun setNavigationButtons(){
+    private fun setNavigationButtons() {
         val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
         buttonCloseInstructions.setOnClickListener{
             toggleInstructionsView(false)
@@ -219,12 +219,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val buttonResumeNavigation : Button = requireActivity().findViewById(R.id.buttonResumeNavigation)
         buttonResumeNavigation.setOnClickListener{
             toggleInstructionsView(true)
-            //Move to current location
-            fusedLocationClient.lastLocation.addOnSuccessListener {
-                if (it != null) {
-                    moveTo(LatLng(it.latitude, it.longitude), 19.0f)
-                }
-            }
         }
         if(currentNavigationRoute != null) {
             buttonResumeNavigation.visibility = View.VISIBLE
@@ -412,17 +406,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
             if (tracker == instructions.size-1) {
                 nextArrow.visibility = View.INVISIBLE
+                closeButton.visibility = View.VISIBLE
             }
         }
         prevArrow.setOnClickListener {
             tracker--
             nextArrow.visibility = View.VISIBLE
+            closeButton.visibility = View.INVISIBLE
             if(tracker < instructions.size) {
                 arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
             }
             if (tracker == 0) {
                 prevArrow.visibility = View.INVISIBLE
             }
+        }
+
+        val doneInstructions : Button = requireActivity().findViewById(R.id.closeButton)
+        doneInstructions.setOnClickListener {
+            toggleInstructionsView(false)
+            buttonResumeNavigation.visibility = View.INVISIBLE
+            clearNavigationPath()
+            instructions.clear()
         }
 
     }
@@ -450,7 +454,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun clearNavigationPath(){
+    private fun clearNavigationPath() {
         for ( polyline in currentNavigationPath){
             polyline.remove()
         }
@@ -496,7 +500,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     mapFragSearchBar.visibility = View.VISIBLE
                     toggleButton.visibility =  View.VISIBLE
                     if(currentNavigationRoute !=null)
-                        buttonResumeNavigation.visibility = View.VISIBLE
+                        buttonResumeNavigation.visibility = View.INVISIBLE
                 }
            }
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
