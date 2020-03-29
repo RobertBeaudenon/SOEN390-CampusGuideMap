@@ -66,7 +66,7 @@ class DirectionsTest {
 
     @Test
     fun testDirectionButton() {
-        val device = UiDevice.getInstance(getInstrumentation())
+   val device = UiDevice.getInstance(getInstrumentation())
 
         Thread.sleep(2000) //Allow downtown map to fully load
 
@@ -79,8 +79,9 @@ class DirectionsTest {
         //Expand bottom sheet
         bottomSheet.swipe(Direction.UP, 1.0f)
 
-//TODO: Fix this in the upcoming PR since the button has been moved
+        //TODO: Fix this as this is no longer in existence (It has been removed).
 /*
+
 
 //Click directions button
 device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet_directions_button")).click()
@@ -90,9 +91,6 @@ Thread.sleep(2000) //allow NavigationFragment to load
 //Verify start navigation button is displayed & click it
 onView(ViewMatchers.withId(R.id.startNavigationButton))
     .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-*/
-//TODO: Fix this as this is no longer in existence (It has been removed).
-/*
 
 //Verify Instructions button is displayed & click it
 onView(ViewMatchers.withId(R.id.buttonInstructions))
@@ -100,10 +98,11 @@ onView(ViewMatchers.withId(R.id.buttonInstructions))
 
 onView(ViewMatchers.withId(R.id.instructionsStepsID))
     .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-*/
+
 
 //Verify close instructions buttons is displayed & click it
         onView(ViewMatchers.withId(R.id.buttonCloseInstructions))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            */
     }
 }
