@@ -160,7 +160,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         // Move camera to SGW
         // TODO when navigation path is being shown, the camera should be moved to current location
-        moveTo(viewModel.getCampuses()[0].getLocation(), 16.5f)
+        moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
 
         map!!.setOnMapClickListener {
             //Dismiss the bottom sheet when clicking anywhere on the map
@@ -363,10 +363,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         toggleButton.setOnCheckedChangeListener { _, onSwitch ->
             if (onSwitch) {
                 campusView = LatLng(45.4579765, -73.6391898)
-                moveTo(campusView, 16.75f)
+                moveTo(campusView, 16f)
             } else {
                 campusView = LatLng(45.4954782, -73.5774163)
-                moveTo(campusView, 16.5f)
+                moveTo(campusView, 16f)
             }
             dismissBottomSheet()
         }
