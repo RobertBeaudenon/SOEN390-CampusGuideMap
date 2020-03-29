@@ -499,7 +499,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             findNavController().popBackStack(R.id.map_fragment, false)
             focusLocation(item)
         } else if (item is IndoorLocation) {
-            findNavController().navigate(R.id.floor_fragment)
+            val bundle: Bundle = Bundle()
+            bundle.putString("id", (item as IndoorLocation).lID)
+            findNavController().navigate(R.id.floor_fragment, bundle)
         }
     }
 

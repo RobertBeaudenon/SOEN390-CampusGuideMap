@@ -52,7 +52,7 @@ abstract class MapElement(){
 /**
  * This class represents the rect element of the svg file
  */
-class Rect (val id: String, val x: Double, val y: Double, val height: Double, val width: Double, val style: String) : MapElement() {
+class Rect (val id: String, val x: Double, val y: Double, val height: Double, val width: Double, var style: String) : MapElement() {
     override fun toString(): String {
         return "<rect id=\"$id\" x=\"$x\" y=\"$y\" height=\"$height\" width=\"$width\" style=\"$style\" />"
     }
@@ -81,7 +81,7 @@ class Rect (val id: String, val x: Double, val y: Double, val height: Double, va
  * This class represents the path element of the svg file. Since these elements have vertices, we need to
  * iterate through to points to find the max and minimum x and y coordinates
  */
-class Path(val id: String, val d: String, var transform: String, val style: String, val isClosed: Boolean) : MapElement() {
+class Path(val id: String, val d: String, var transform: String, var style: String, val isClosed: Boolean) : MapElement() {
 
     var xMin: Double
     var xMax: Double

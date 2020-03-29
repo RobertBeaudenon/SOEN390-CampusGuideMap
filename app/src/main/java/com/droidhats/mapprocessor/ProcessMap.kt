@@ -10,21 +10,37 @@ import kotlin.math.sqrt
  * components to generate a path on the map
  */
 class ProcessMap {
+    // list of classrooms
     private var classes: MutableList<MapElement> = mutableListOf()
     fun getClasses() = classes
 
+    // list of indoor transportation modes
     private val indoorTransportations: MutableList<SVG> = mutableListOf()
     fun getIndoorTransportationMethods(): List<SVG> = indoorTransportations
 
+    // first element in the map (holds all the other elements within its dimensions
     internal var firstElement: MapElement? = null
     private lateinit var stringArray: List<String>
 
     /**
-     * This method takes as input an svg file in the form of a string and digests the elements.
-     * It assumes that the svg file in the form of a string is properly formatted with new line characters.
-     * @param svgFile svg file as a string
+     * Template method for reading the svg file that provides the ability to react upon finding
+     * any of the map elements.
+     * It assumes that the svg file in the form of a string is properly formatted with new line
+     * characters.
+     *
+     * @param svgFile the string of the svg file to read
+     * @param onEachLine lambda function to execute for each line
+     * @param onRectElement lambda function to execute on each rect element
+     * @param onPathElement lambda function execute on each path element
+     * @param onSvgElement lambda function to execute on each svg element
      */
-    fun readSVGFromString(svgFile: String) {
+    private fun readSVG(
+            svgFile: String,
+            onEachLine: (String) -> Unit,
+            onRectElement: (String) -> Unit,
+            onPathElement: (String) -> Unit,
+            onSvgElement: (String) -> Unit
+    ) {
         var element: StringBuilder = StringBuilder()
         var inRect: Boolean = false
         var inPath: Boolean = false
@@ -34,14 +50,16 @@ class ProcessMap {
         stringArray = svgFile.split("\n")
 
         for (it in stringArray) {
+            onEachLine(it)
 
             if (it.contains("<svg") && !firstElement) {
                 inSVG = true
-                indoorTransportations.add(createSVG(it))
+                onSvgElement(it)
             }
 
             if (it.contains("</svg>")) {
                 inSVG = false
+                element = StringBuilder()
                 continue
             }
 
@@ -60,7 +78,7 @@ class ProcessMap {
                     this.firstElement = createRect(element.toString())
                     firstElement = false
                 } else {
-                    classes.add(createRect(element.toString()))
+                    onRectElement(element.toString())
                 }
                 inRect = false
                 element = StringBuilder()
@@ -72,17 +90,71 @@ class ProcessMap {
             if (inPath) element.append(it)
 
             if (it.contains("/>") && inPath) {
-                val path: Path = createPath(element.toString())
                 if (firstElement) {
-                    this.firstElement = path
+                    this.firstElement = createPath(element.toString())
                     firstElement = false
-                } else if (path.isClosed) {
-                    classes.add(path)
+                } else {
+                    onPathElement(element.toString())
                 }
                 inPath = false
                 element = StringBuilder()
             }
         }
+    }
+
+    /**
+     * This method takes as input an svg file in the form of a string and digests the elements into
+     * classes and points of interest.
+     * @param svgFile svg file as a string
+     */
+    fun readSVGFromString(svgFile: String) {
+        readSVG(svgFile,
+                fun (str: String) {},
+                fun(rect: String) { classes.add(createRect(rect)) },
+                fun(path: String) {
+                    val mapElement = createPath(path)
+                    if (mapElement.isClosed) classes.add(mapElement)
+                },
+                fun(svg: String) { indoorTransportations.add(createSVG(svg)) }
+        )
+    }
+
+    /**
+     * This method takes as input the svg file string and searches for an element with a matching
+     * id. Once found, it will add another element right on top with a different colour to
+     * higlight it
+     * @param svg String of the svg file
+     * @param id String of the id to look for
+     * @return String of the svg file with a highlighted building
+     */
+    fun highlightBuilding(svg: String, id: String): String {
+        val highlightedSVG: StringBuilder = StringBuilder()
+        val highlightedColor: String = "#bca878"
+
+        readSVG(svg,
+                fun (line) {highlightedSVG.append(line)},
+                fun (rect) {
+                    val rectangle = createRect(rect)
+                    if (rectangle.getID().equals(id)) {
+                        rectangle.style = "fill:$highlightedColor;fill-opacity:1;stroke:#000000;" +
+                                "stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;" +
+                                "stroke-dasharray:none"
+                        highlightedSVG.append(rectangle.toString())
+                    }
+                },
+                fun (path) {
+                    val thePath = createPath(path)
+                    if (thePath.getID().equals(id)) {
+                        thePath.style = "fill:$highlightedColor;fill-opacity:1;stroke:#000000;" +
+                                "stroke-width:1.36025514;stroke-linecap:butt;" +
+                                "stroke-linejoin:miter;stroke-miterlimit:4;" +
+                                "stroke-opacity:1;stroke-dasharray:none"
+                        highlightedSVG.append(thePath.toString())
+                    }
+                },
+                fun(svg) {}
+                )
+        return highlightedSVG.toString()
     }
 
     /**

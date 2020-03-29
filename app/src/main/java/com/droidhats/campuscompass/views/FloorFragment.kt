@@ -46,8 +46,20 @@ class FloorFragment : Fragment() {
         root = inflater.inflate(R.layout.floor_fragment, container, false)
 
         val inputStream: InputStream = requireContext().assets.open("hall8.svg")
-        val svg: SVG = SVG.getFromInputStream(inputStream)
-        setImage(svg)
+
+        val buildingToHighlight: String? = arguments?.getString("id")
+
+        if (buildingToHighlight == null) {
+            val svg: SVG = SVG.getFromInputStream(inputStream)
+            setImage(svg)
+        } else {
+            val mapProcessor: ProcessMap = ProcessMap()
+            val file = inputStream.bufferedReader().use { it.readText() }
+            val highlightedSVG = mapProcessor.highlightBuilding(file, buildingToHighlight)
+            val svg: SVG = SVG.getFromString(highlightedSVG)
+            setImage(svg)
+        }
+
         return root
     }
 
