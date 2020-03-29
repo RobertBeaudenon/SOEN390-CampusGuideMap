@@ -381,14 +381,14 @@ class MapFragmentTest {
         Thread.sleep(2000)
 
         //Ensuring the text of the toggle just clicked is indeed SWG
-        onView(withId(R.id.toggleButton)).check(matches(withText("SGW")))
+        onView(withId(R.id.toggleButton)).check(matches(withText("LOY")))
 
         //Checking when the toggle is clicked again, it's indeed not checked
         onView(withId(R.id.toggleButton)).perform(click()).check(matches(isNotChecked()))
         Thread.sleep(2000)
 
         //Ensuring the text of the toggle just clicked is indeed LOY
-        onView(withId(R.id.toggleButton)).check(matches(withText("LOY")))
+        onView(withId(R.id.toggleButton)).check(matches(withText("SGW")))
     }
 
     @Test
