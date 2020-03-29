@@ -104,9 +104,6 @@ class MarkerTest {
         device.findObject(UiSelector().descriptionContains("Grey Nuns Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        //Pinch closer to ensure click precision on FG, GM marker
-        googleMap.pinchOut(20, 50)
-
         device.findObject(UiSelector().descriptionContains("Faubourg Saint-Catherine Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
@@ -135,9 +132,6 @@ class MarkerTest {
         device.findObject(UiSelector().descriptionContains("Stinger Dome. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        //Pinch closer to ensure click precision on the rest of these markers
-        googleMap.pinchOut(20, 50)
-
         device.findObject(UiSelector().descriptionContains("Physical Services Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
@@ -165,13 +159,7 @@ class MarkerTest {
         device.findObject(UiSelector().descriptionContains("Vanier Library Building. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
 
-        //Pinch closer to ensure click precision on SC marker
-        googleMap.pinchOut(20, 50)
-
         device.findObject(UiSelector().descriptionContains("Student Centre. ")).click()
         bottomSheet.swipe(Direction.DOWN, 1.0f)
-
-        //Zoom out until markers disappear for coverage
-        googleMap.pinchIn(80, 50)
     }
 }
