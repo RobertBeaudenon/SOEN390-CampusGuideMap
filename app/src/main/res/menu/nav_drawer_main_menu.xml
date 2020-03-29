@@ -21,5 +21,9 @@
             android:id="@+id/nav_explore"
             android:icon="@drawable/icon_explore"
             android:title="@string/Explore_Feature_Name" />
+        <item
+            android:id="@+id/nav_shuttle"
+            android:icon="@drawable/radio_shuttle_off"
+            android:title="@string/Shuttle_Feature_Name" />
     </group>
 </menu>
