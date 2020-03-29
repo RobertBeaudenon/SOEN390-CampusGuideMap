@@ -24,9 +24,6 @@ fun Dijkstra(start: MapElement, end: MapElement, pathElements: MutableList<Node>
         SubDijkstra(point, endPoint, visited)
     }
 
-    println(endPoint.shortestPath.size)
-    println(startPoint.shortestPath.size)
-
     if(endPoint.shortestPath.size == 0) {
         var x: Int = 0
         while (x < pathElements.size) {
@@ -76,15 +73,13 @@ fun pathToString(nodeList: List<Circle>): String {
     var x: Int = 0
     while (x < nodeList.size - 1) {
         val path = Path.createPath(nodeList[x].getCenter(), nodeList[x + 1].getCenter())
-        println(nodeList[x].getCenter())
-        println(nodeList[x+1].getCenter())
         string.append(path)
         x++
     }
     return string.toString()
 }
 
-fun copyList(list: MutableList<Circle>): MutableList<Circle> {
+fun copyList(list: List<Circle>): MutableList<Circle> {
     var mutList: MutableList<Circle> = mutableListOf()
     for (node in list) {
         mutList.add(node)
@@ -120,7 +115,7 @@ fun getDistance(nodeA: Node, nodeB: Node): Double {
     return getDistance(nodeA.circle.getCenter(), nodeB.circle.getCenter())
 }
 
-class Node(val circle: Circle, val neighbors: MutableList<Node>) {
+class Node(val circle: Circle, var neighbors: MutableList<Node>) {
     var value: Double = -1.0
     var shortestPath: MutableList<Circle> = mutableListOf()
     var visitedBy: MutableList<Node> = mutableListOf()
