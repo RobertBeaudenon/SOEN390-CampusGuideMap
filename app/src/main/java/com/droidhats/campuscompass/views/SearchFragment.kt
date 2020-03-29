@@ -22,11 +22,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.DroidHats.ProcessMap
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.*
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
+import com.droidhats.mapprocessor.ProcessMap
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place

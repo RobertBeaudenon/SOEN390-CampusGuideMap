@@ -3,7 +3,7 @@ package com.droidhats.campuscompass.repositories
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.DroidHats.ProcessMap
+import com.droidhats.mapprocessor.ProcessMap
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import org.json.JSONObject

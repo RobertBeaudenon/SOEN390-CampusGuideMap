@@ -1,12 +1,19 @@
 package com.droidhats.mapprocessor
 
+import android.os.Build
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 import java.io.File
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [Build.VERSION_CODES.O_MR1])
 class TestProcessMap {
 
     private lateinit var map: ProcessMap
@@ -14,7 +21,7 @@ class TestProcessMap {
     @Before
     fun BeforeStuff() {
         map = ProcessMap()
-        val file = File("test-file.svg")
+        val file = RuntimeEnvironment.application.applicationContext.assets.open("test-file.svg")
         val svg: String = file.bufferedReader().use { it.readText() }
         map.readSVGFromString(svg)
     }
@@ -247,7 +254,7 @@ class TestProcessMap {
     @Test
     fun TestGetTimeInSeconds() {
         val processMap: ProcessMap = ProcessMap()
-        val file = File("Hall-8.svg")
+        val file = RuntimeEnvironment.application.applicationContext.assets.open("test-file.svg")
         val string = file.bufferedReader().use { it.readText() }
         processMap.readSVGFromString(string)
 

@@ -19,7 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import com.DroidHats.ProcessMap
+import com.droidhats.mapprocessor.ProcessMap
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
