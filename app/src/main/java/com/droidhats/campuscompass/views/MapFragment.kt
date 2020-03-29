@@ -429,6 +429,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         doneInstructions.setOnClickListener {
             toggleInstructionsView(false)
             buttonResumeNavigation.visibility = View.INVISIBLE
+            currentNavigationRoute = null
             clearNavigationPath()
         }
 
