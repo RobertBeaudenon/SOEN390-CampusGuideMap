@@ -170,7 +170,7 @@ class Path(val id: String, val d: String, var transform: String, var style: Stri
     }
 
     override fun toString(): String {
-        return "<path id=\"$id\" d=\"$d\" style=\"$style\"/>"
+        return "<path id=\"$id\" d=\"$d\" style=\"$style\" transform=\"$transform\"/>"
     }
 
     override fun isWithin(x: Double, y: Double): Boolean {

@@ -310,7 +310,7 @@ class SearchFragment : Fragment()  {
                     selectedTransportationMethod = NavigationRoute.TransportationMethods.BICYCLE.string
                 }
                 R.id.radio_transport_mode_shuttle -> {
-                     selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
+                    selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
                 }
             }
         }
