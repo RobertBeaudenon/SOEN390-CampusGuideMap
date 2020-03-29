@@ -89,21 +89,6 @@ class TestSVGClasses {
         Assert.assertEquals(testGetPoint.r, 5.0, 0.1)
 
         Assert.assertFalse(testCircle.isWithin(0.0, 0.0))
-        Assert.assertTrue(testCircle.isWithin(0.0, 20.0, 25.0))
-        Assert.assertTrue(testCircle.isWithin(20.0, 0.0, 25.0))
-        Assert.assertFalse(testCircle.isWithin(20.0, 5.0, 25.0))
-        Assert.assertFalse(testCircle.isWithin(25.0, 5.0, 25.0))
-
-        val pointList: List<Pair<Double, Double>> = listOf(Pair(5.0, 0.0), Pair(2.5, 2.5), Pair(0.0, 5.0),
-                Pair(-2.5, 2.5), Pair(-5.0, 0.0), Pair(-2.5, -2.5), Pair(0.0, -5.0), Pair(2.5, -2.5))
-
-        for (point in pointList) {
-            Assert.assertTrue(testCircle.isWithinRange(point.first, point.second, 5.1))
-        }
-
-        for (point in pointList) {
-            Assert.assertFalse(testCircle.isWithinRange(point.first+10.0, point.second+10.0, 5.1))
-        }
 
         Assert.assertEquals(testCircle.getWidth(), Pair(0.0, 0.0))
         Assert.assertEquals(testCircle.getHeight(), Pair(0.0, 0.0))

@@ -13,7 +13,6 @@ class TestPathAlgorithm {
         Assert.assertEquals(testNode.shortestPath, mutableListOf<Circle>())
         Assert.assertEquals(testNode.visitedBy, mutableListOf<Node>())
 
-        Assert.assertEquals(testNode.drawAllPaths(), Path.createPath(testNode.circle.getCenter(), neighborNode.circle.getCenter()).toString())
         Assert.assertTrue(testNode.circle.equals(Circle(0.0, 0.0, 5.0)))
     }
 

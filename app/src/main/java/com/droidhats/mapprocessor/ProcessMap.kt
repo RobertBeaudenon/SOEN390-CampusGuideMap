@@ -1,90 +1,78 @@
 package com.droidhats.mapprocessor
 
-import java.io.File
 import kotlin.math.abs
-import kotlin.math.sqrt
 import kotlin.math.pow
+import kotlin.math.sqrt
 
+
+/**
+ * Class ProcessMap is where all the parsing of the svg formatted map, and interacts with the other
+ * components to generate a path on the map
+ */
 class ProcessMap {
     private var classes: MutableList<MapElement> = mutableListOf()
+    fun getClasses() = classes
+
+    private val indoorTransportations: MutableList<SVG> = mutableListOf()
+    fun getIndoorTransportationMethods(): List<SVG> = indoorTransportations
+
     internal var firstElement: MapElement? = null
-    //    private var finalPath: MutableList<Circle> = mutableListOf()
     private lateinit var stringArray: List<String>
 
-//    fun readSVG(svgFile: String) {
-//        var element: String = ""
-//        var inRect: Boolean = false
-//        var inPath: Boolean = false
-//        var firstElement: Boolean = true
-//
-//        File(svgFile).forEachLine {
-//            if (it.contains("<rect")) {
-//                inRect = true
-//            }
-//            if (inRect) element += it
-//
-//            if (it.contains("/>") && inRect) {
-//                if (firstElement) {
-//                    this.firstElement = createRect(element)
-//                    firstElement = false
-//                } else {
-//                    classes.add(createRect(element))
-//                }
-//                inRect = false
-//                element = ""
-//            }
-//
-//            if (it.contains("<path")) {
-//                inPath = true
-//            }
-//            if (inPath) element += it
-//
-//            if (it.contains("/>") && inPath) {
-//                val path: Path = createPath(element)
-//                if (firstElement) {
-//                    this.firstElement = path
-//                    firstElement = false
-//                } else if (path.isClosed) {
-//                    classes.add(path)
-//                }
-//                inPath = false
-//                element = ""
-//            }
-//        }
-//    }
-
+    /**
+     * This method takes as input an svg file in the form of a string and digests the elements.
+     * It assumes that the svg file in the form of a string is properly formatted with new line characters.
+     * @param svgFile svg file as a string
+     */
     fun readSVGFromString(svgFile: String) {
-        var element: String = ""
+        var element: StringBuilder = StringBuilder()
         var inRect: Boolean = false
         var inPath: Boolean = false
+        var inSVG: Boolean = false
         var firstElement: Boolean = true
 
         stringArray = svgFile.split("\n")
 
-        stringArray.forEach {
+        for (it in stringArray) {
+
+            if (it.contains("<svg") && !firstElement) {
+                inSVG = true
+                indoorTransportations.add(createSVG(it))
+            }
+
+            if (it.contains("</svg>")) {
+                inSVG = false
+                continue
+            }
+
+            if (inSVG) {
+                element.append(it)
+                continue
+            }
+
             if (it.contains("<rect")) {
                 inRect = true
             }
-            if (inRect) element += it
+            if (inRect) element.append(it)
 
             if (it.contains("/>") && inRect) {
                 if (firstElement) {
-                    this.firstElement = createRect(element)
+                    this.firstElement = createRect(element.toString())
                     firstElement = false
                 } else {
-                    classes.add(createRect(element))
+                    classes.add(createRect(element.toString()))
                 }
                 inRect = false
-                element = ""
+                element = StringBuilder()
             }
 
             if (it.contains("<path")) {
                 inPath = true
             }
-            if (inPath) element += it
+            if (inPath) element.append(it)
 
             if (it.contains("/>") && inPath) {
-                val path: Path = createPath(element)
+                val path: Path = createPath(element.toString())
                 if (firstElement) {
                     this.firstElement = path
                     firstElement = false
@@ -92,32 +80,63 @@ class ProcessMap {
                     classes.add(path)
                 }
                 inPath = false
-                element = ""
+                element = StringBuilder()
             }
         }
     }
 
-    fun getClasses() = classes
+    /**
+     * This method takes the element declaration as a string and converts it into an SVG object
+     * @param elmnt String of the element
+     * @return SVG object
+     */
+    internal fun createSVG(elmnt: String): SVG {
+        val id = extractAttr("id", elmnt)
+        var type: String = ""
+        when (id.substring(0, 6)) {
+            "stairs" -> type = "stairs"
+            "escala" -> type = "escalators"
+            "elevat" -> type = "elevators"
+        }
+        val x = extractAttr("x", elmnt)
+        val y = extractAttr("y", elmnt)
+        return SVG(id, type, x.toDouble(), y.toDouble())
+    }
 
-    internal fun createRect(it: String): Rect {
-        val id = extractAttr("id", it)
-        val x = extractAttr("x", it).toDouble()
-        val y = extractAttr("y", it).toDouble()
-        val height = extractAttr("height", it).toDouble()
-        val width = extractAttr("width", it).toDouble()
-        val style = extractAttr("style", it)
+    /**
+     * This method takes as input the element and converts it into a Rect object
+     * @param elmnt the svg element as a string
+     * @return Rect object
+     */
+    internal fun createRect(elmnt: String): Rect {
+        val id = extractAttr("id", elmnt)
+        val x = extractAttr("x", elmnt).toDouble()
+        val y = extractAttr("y", elmnt).toDouble()
+        val height = extractAttr("height", elmnt).toDouble()
+        val width = extractAttr("width", elmnt).toDouble()
+        val style = extractAttr("style", elmnt)
         return Rect(id, x, y, height, width, style)
     }
 
-    internal fun createPath(it: String): Path {
-        val id = extractAttr("id", it)
-        val d = extractAttr("d", it)
-        val style = extractAttr("style", it)
+    /**
+     * This method takes as input the element and converts it into a Path object
+     * @param elmnt the svg element as a string
+     * @return Path object
+     */
+    internal fun createPath(elmnt: String): Path {
+        val id = extractAttr("id", elmnt)
+        val d = extractAttr("d", elmnt)
+        val style = extractAttr("style", elmnt)
         val isClosed = d[d.length - 1] == 'z'
-        val transform: String = extractAttr("transform", it)
+        val transform: String = extractAttr("transform", elmnt)
         return Path(id, d, transform, style, isClosed)
     }
 
+    /**
+     * This method extracts the attribute from a line of an SVG element
+     * @param attribute to extract
+     * @param line of the element
+     */
     internal fun extractAttr(attribute: String, line: String): String {
         val string: String = " $attribute="
         if (!line.contains(string)) return ""
@@ -149,53 +168,69 @@ class ProcessMap {
         return value
     }
 
-//    fun writeSVG(pathName: String) {
-//        val writeFile = File(pathName)
-//        var wrote: Boolean = false
-//        File("Hall-8.svg").forEachLine { it ->
-//            if (it.contains("</g>") && !wrote) {
-//                writeFile.appendText(randomPath() + "\n")
-//                wrote = true
-//            }
-//            writeFile.appendText(it + "\n")
-//        }
-//    }
+    /**
+     * Return the time in seconds between two classrooms, using their ids as strings
+     * @param start the starting id
+     * @param end the ending id
+     * @return the time required to travel between one classroom and the other
+     */
+    fun getTimeInSeconds(start: String, end: String): Int {
+        val startAndEndClasses = getStartAndEndClasses(Pair(start, end))
+        if (startAndEndClasses.first == null || startAndEndClasses.second == null) return 0
+        val startClass: MapElement = classes[startAndEndClasses.first!!]
+        val endClass: MapElement = classes[startAndEndClasses.second!!]
 
-//    fun getSVGString(): String {
-//        var wrote: Boolean = false
-//        var string: StringBuilder = StringBuilder()
-//       stringArray.forEach { it ->
-//            if (it.contains("</g>") && !wrote) {
-//                string.append(randomPath() + "\n")
-//                wrote = true
-//            }
-//            string.append(it + "\n")
-//        }
-//        return string.toString()
-//    }
+        val topLeft = Pair(firstElement!!.getWidth().first, firstElement!!.getHeight().first)
+        val bottomRight = Pair(firstElement!!.getWidth().second, firstElement!!.getHeight().second)
+        val maxDistance = getDistance(topLeft, bottomRight)
+        val scale = 150/maxDistance // seconds/unit distance
+        return (getDistance(startClass.getCenter(), endClass.getCenter()) * scale).toInt()
+    }
 
-    fun getSVGStringFromDirections(startAndEnd: Pair<Int, Int>): String {
+    /**
+     * Method used to get the index of classes given their ids
+     * @param startAndEnd a pair with the start being the first element and the second being the last element
+     * @return pair of start and end indices for the classes
+     */
+    fun getStartAndEndClasses(startAndEnd: Pair<String, String>): Pair<Int?, Int?> {
         var startInt: Int? = null
         var endInt: Int? = null
         var x = 0
         for (aClass in classes) {
-            if (aClass.getID().contains(startAndEnd.first.toString())) {
+            var start = startAndEnd.first
+            if (start[start.length - 1] == '0' && start[start.length - 2] == '.') {
+                start = start.substring(0, start.length - 1)
+            }
+            if (aClass.getID().equals(startAndEnd.first)) {
                 startInt = x
             }
 
-            if(aClass.getID().contains(startAndEnd.second.toString())) {
+            if(aClass.getID().equals(startAndEnd.second)) {
                 endInt = x
             }
             x++
         }
+        return Pair(startInt, endInt)
+    }
+
+    /**
+     * Method for getting an SVG file as a string after it has processed a file. Takes 2 ids (for the start and end)
+     * class rooms to display directions on it
+     * @param startAndEnd pair of start and end ids
+     * @return svg file as a string
+     */
+    fun getSVGStringFromDirections(startAndEnd: Pair<String, String>): String {
+        val startAndEndClasses = getStartAndEndClasses(startAndEnd)
+        val startInt: Int? = startAndEndClasses.first
+        val endInt: Int? = startAndEndClasses.second
 
         if (startInt == null || endInt == null) {
             return ""
         }
 
-        var list: MutableList<Circle> = generatePointsAcrossMap()
+        val list: MutableList<Circle> = generatePointsAcrossMap()
 
-        var string: StringBuilder = StringBuilder()
+        val string: StringBuilder = StringBuilder()
         var wrote: Boolean = false
         stringArray.forEach { it ->
             if (it.contains("</g>") && !wrote) {
@@ -207,42 +242,13 @@ class ProcessMap {
         return string.toString()
     }
 
-//    fun identifyClassCenters(): String {
-//        var string: String = ""
-//        classes.forEach {
-//            val center: Pair<Double, Double> = it.getCenter()
-//            string += Circle(center.first, center.second, 5.0)
-//        }
-//        return string
-//    }
-
-//    fun pathPointsToString(pathPoints: MutableList<Circle>): String {
-//        var string: StringBuilder = StringBuilder()
-//
-//        for (circle in pathPoints) {
-//            string.append(circle)
-//        }
-//        var nodes = createPaths(pathPoints)
-//        for (path in nodes) {
-//            string.append(path.drawAllPaths())
-//        }
-//
-//        return string.toString()
-//    }
-
-//    fun randomPath(): String {
-//        //var list: MutableList<Circle> = generatePoints()
-//        var list: MutableList<Circle> = generatePointsAcrossMap()
-//
-//        val start: Int = (Math.random() * classes.size).toInt()
-//        val end: Int = (Math.random() * classes.size).toInt()
-//        println("Start: $start")
-//        println("End: $end")
-//        return Dijkstra(classes[start], classes[end], createPaths(list))
-//    }
-
+    /**
+     * This method will attempt to create points in a grid and add points to the pathPoints list if the point is
+     * not within any other classroom
+     * @return list of points that are in path
+     */
     internal fun generatePointsAcrossMap(): MutableList<Circle> {
-        var pathPoints: MutableList<Circle> = mutableListOf()
+        val pathPoints: MutableList<Circle> = mutableListOf()
 
         // scatter points in missing spots, using average distance as a scale for step size
         for (x in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step 20) {
@@ -255,91 +261,16 @@ class ProcessMap {
         return pathPoints
     }
 
-//    fun generatePoints(): MutableList<Circle> {
-//
-//        var pathPoints: MutableList<Circle> = mutableListOf()
-//
-//        // average distance is used for scaling the distance between points in the next step
-//        var averageDistance: Double = 0.0
-//        var totalPoints: Int = 0
-//        findNearestPointToClasses() { closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>> ->
-//            pathPoints.add(Circle((closestPoint.first.first + closestPoint.second.first)/2,
-//                    (closestPoint.first.second + closestPoint.second.second)/2, 5.0))
-//            averageDistance += getDistance(closestPoint.first, closestPoint.second)
-//            totalPoints++
-//        }
-//        averageDistance /= totalPoints
-//
-//        // scatter points in missing spots, using average distance as a scale for step size
-//        for (i in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step (averageDistance/4).toInt()) {
-//            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step (averageDistance/4).toInt()) {
-//                if (inPath(i.toDouble(), y.toDouble()) && notInRange(pathPoints, i.toDouble(), y.toDouble(), averageDistance)) {
-//                    pathPoints.add(Circle(i.toDouble(), y.toDouble(), 5.0))
-//                }
-//            }
-//        }
-//
-//        var x: Int = 0
-//        var y: Int = 0
-//        var pathPointsSize: Int = pathPoints.size
-//
-//        // clean up points that are too close and too many together
-//        while (x < pathPointsSize) {
-//            var circle1: Circle = pathPoints[x]
-//            y = 0
-//            while (y < pathPointsSize) {
-//                var circle: Circle = pathPoints[y]
-//                if (circle1.isWithinRange(circle.cx, circle.cy, 20.0) && circle1.cx != circle.cx && circle.cy != circle1.cy) {
-//                    if (x > y) x = y
-//                    pathPoints.removeAt(y)
-//                    pathPointsSize--
-//                }
-//                y++
-//            }
-//            x++
-//        }
-//
-//        return pathPoints
-//    }
-
-//    fun findNearestPointToClasses(doForClosestPoint: (Pair<Pair<Double, Double>, Pair<Double, Double>>) -> Unit) {
-//
-//        val stepSize: Double = 2.0
-//        classes.forEach{ it ->
-//            val center = it.getCenter()
-//            var closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
-//
-//            // draw a line in 8 directions (top, left, up, down, top-left, top-right, bottom-left, bottom-right)
-//            // and get the nearest point and furthest point of the path, if it traverses the path
-//            var nearestPoints: MutableList<Pair<Pair<Double, Double>, Pair<Double, Double>>?> = mutableListOf()
-//            nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, true, false))
-//            nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, true, true))
-//            nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, false, true))
-//            nearestPoints.add(getNearestPathPoint(center, stepSize, -stepSize, true, true))
-//            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize, true, false))
-//            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize,true, true))
-//            nearestPoints.add(getNearestPathPoint(center, -stepSize, stepSize,true, true))
-//            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize,false, true))
-//
-//            // find the closests point our of all the nearest points
-//            for (point in nearestPoints) {
-//                if (point != null) {
-//                    if (closestPoint == null || getDistance(closestPoint.first, center) > getDistance(point.first, center)) {
-//                        closestPoint = point
-//                    }
-//                }
-//            }
-//
-//            // if a closest point was found do stuff
-//            if(closestPoint != null) {
-//                doForClosestPoint(closestPoint)
-//            }
-//        }
-//    }
-
+    /**
+     * This method takes as input the points in a path and creates paths between them in a Node data structure.
+     * It creates these paths in between nodes first by checking to make sure that this path won't go through any
+     * classes
+     * @param pathPoints list of points in a path
+     * @return list of Node elements linked together to form a graph
+     */
     internal fun createPaths(pathPoints: MutableList<Circle>): MutableList<Node> {
-        var nodeList: MutableList<Node> = mutableListOf()
-        var finalList: MutableList<Node> = mutableListOf()
+        val nodeList: MutableList<Node> = mutableListOf()
+        val finalList: MutableList<Node> = mutableListOf()
 
         for(point in pathPoints) {
             nodeList.add(Node(point, mutableListOf()))
@@ -361,6 +292,12 @@ class ProcessMap {
         return finalList
     }
 
+    /**
+     * The check path method will do the check to make sure that a path doesn't cross any classrooms
+     * @param pointA the first point
+     * @param pointB the second point
+     * @return returns whether the path is good (true, doesn't cross anything) or not
+     */
     internal fun checkPath(pointA: Circle, pointB: Circle): Boolean {
         // making line equation y = mx + b
         val m: Double = (pointA.cy - pointB.cy)/(pointA.cx - pointB.cx)
@@ -397,50 +334,12 @@ class ProcessMap {
         return true
     }
 
-//    fun notInRange(pathPoints: MutableList<Circle>, x: Double, y: Double, averageDistance: Double):Boolean {
-//        for (circle in pathPoints) {
-//            if (circle.isWithin(x, y, averageDistance)) return false
-//        }
-//        return true
-//    }
-//
-//    fun getNearestPathPoint(center: Pair<Double, Double>,
-//                            stepSizeX: Double,
-//                            stepSizeY: Double,
-//                            applyX: Boolean,
-//                            applyY: Boolean
-//    ): Pair<Pair<Double, Double>, Pair<Double, Double>>? {
-//        var navPointX = center.first
-//        var navPointY = center.second
-//        var closestPoint: Pair<Double, Double>? = null
-//        var points: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
-//        var pathFound: Boolean = false
-//
-//        while(isWithinBounds(navPointX, navPointY)) {
-//            //take step in direction
-//            if (applyX) navPointX += stepSizeX
-//            if (applyY) navPointY += stepSizeY
-//
-//            // if it's in the path return the point as it is the first
-//            if (inPath(navPointX, navPointY) && !pathFound) {
-//                closestPoint = Pair(navPointX, navPointY)
-//                pathFound = true
-//                continue
-//            }
-//
-//            if (!inPath(navPointX, navPointY) && pathFound) {
-//                if (applyX) navPointX -= stepSizeX
-//                if (applyY) navPointY -= stepSizeY
-//                points = Pair(closestPoint!!, Pair(navPointX, navPointY))
-//                break
-//            }
-//        }
-//
-//        if (closestPoint == null || isWithinBounds(closestPoint.first, closestPoint.second))
-//            return points
-//        return null
-//    }
-
+    /**
+     * This method iterates over all the classes and returns whether a point is within any of them
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @return return whether the point is in the path (true) or within a classroom (false)
+     */
     internal fun inPath(x: Double, y: Double): Boolean {
         classes.forEach{ it ->
             if (it.isWithin(x, y)) return false
@@ -448,12 +347,24 @@ class ProcessMap {
         return true
     }
 
+    /**
+     * This method checks whether the point is within the map
+     * @param x the x coordinate
+     * @param y the y coordinate
+     * @return whether the point is within the map
+     */
     internal fun isWithinBounds(x: Double, y: Double): Boolean {
         if (firstElement!!.isWithin(x, y)) return true
         return false
     }
 }
 
+/**
+ * This method gets the distance between 2 pairs of coordinates
+ * @param x first coordinate
+ * @param y second coordinate
+ * @return distance
+ */
 internal fun getDistance(x: Pair<Double, Double>, y: Pair<Double, Double>): Double {
     return sqrt(abs(x.first - y.first).pow(2.0) + abs(x.second - y.second).pow(2.0))
 }
