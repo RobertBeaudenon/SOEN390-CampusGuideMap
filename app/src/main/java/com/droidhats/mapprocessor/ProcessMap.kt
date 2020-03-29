@@ -1,16 +1,16 @@
 package com.droidhats.mapprocessor
-
 import java.io.File
 
 class ProcessMap {
-    //    private lateinit var hello: File
-    private var rectangles: MutableList<String> = mutableListOf()
-    private var paths: MutableList<String> = mutableListOf()
+    private var rectangles: MutableList<Rect> = mutableListOf()
+    private var paths: MutableList<Path> = mutableListOf()
+    private var firstElement: MapElement? = null
 
     fun readSVG() {
         var element: String = ""
         var inRect: Boolean = false
         var inPath: Boolean = false
+        var firstElement: Boolean = true
 
         File("Hall-8.svg").forEachLine {
             if (it.contains("<rect")) {
@@ -19,8 +19,13 @@ class ProcessMap {
             if (inRect) element += it
 
             if (it.contains("/>") && inRect) {
+                if (firstElement) {
+                    this.firstElement = createRect(it)
+                    firstElement = false
+                } else {
+                    rectangles.add(createRect(it))
+                }
                 inRect = false
-                rectangles.add(element)
                 element = ""
             }
 
@@ -30,21 +35,35 @@ class ProcessMap {
             if (inPath) element += it
 
             if (it.contains("/>") && inPath) {
+                if (firstElement) {
+                    this.firstElement = createPath(it)
+                    firstElement = false
+                } else {
+                    paths.add(createPath(it))
+                }
                 inPath = false
-                paths.add(element)
                 element = ""
             }
         }
 
-        rectangles.forEach{ it ->
-            println(it)
-            println(extractAttr("id", it))
-        }
+    }
 
-        paths.forEach{ it ->
-            println(it)
-        }
+    fun createRect(it: String): Rect {
+        val id = extractAttr("id", it)!!
+        val x = extractAttr("x", it)!!.toDouble()
+        val y = extractAttr("y", it)!!.toDouble()
+        val height = extractAttr("height", it)!!.toDouble()
+        val width = extractAttr("width", it)!!.toDouble()
+        val style = extractAttr("style", it)!!
+        return Rect(id, x, y, height, width, style)
+    }
 
+    fun createPath(it: String): Path {
+        val id = extractAttr("id", it)!!
+        val d = extractAttr("d", it)!!
+        val style = extractAttr("style", it)!!
+        val isClosed = d.contains("z")
+        return Path(id, d, style, isClosed)
     }
 
     fun extractAttr(attribute: String, line: String): String? {
