@@ -127,19 +127,19 @@ class ProcessMap {
      * @param id String of the id to look for
      * @return String of the svg file with a highlighted building
      */
-    fun highlightBuilding(svg: String, id: String): String {
+    fun highlightClassroom(svg: String, id: String): String {
         val highlightedSVG: StringBuilder = StringBuilder()
         val highlightedColor: String = "#bca878"
 
         readSVG(svg,
-                fun (line) {highlightedSVG.append(line)},
+                fun (line) {highlightedSVG.append(line).append("\n")},
                 fun (rect) {
                     val rectangle = createRect(rect)
                     if (rectangle.getID().equals(id)) {
                         rectangle.style = "fill:$highlightedColor;fill-opacity:1;stroke:#000000;" +
                                 "stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;" +
                                 "stroke-dasharray:none"
-                        highlightedSVG.append(rectangle.toString())
+                        highlightedSVG.append(rectangle.toString()).append("\n")
                     }
                 },
                 fun (path) {
@@ -149,7 +149,7 @@ class ProcessMap {
                                 "stroke-width:1.36025514;stroke-linecap:butt;" +
                                 "stroke-linejoin:miter;stroke-miterlimit:4;" +
                                 "stroke-opacity:1;stroke-dasharray:none"
-                        highlightedSVG.append(thePath.toString())
+                        highlightedSVG.append(thePath.toString()).append("\n")
                     }
                 },
                 fun(svg) {}

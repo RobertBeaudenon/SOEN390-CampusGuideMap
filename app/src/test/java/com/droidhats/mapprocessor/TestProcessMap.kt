@@ -8,7 +8,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
-import java.io.File
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -276,5 +275,25 @@ class TestProcessMap {
                 Assert.assertTrue(processMap.getTimeInSeconds(classRoomA.getID(), classRoomB.getID()) < 150)
             }
         }
+    }
+
+    @Test
+    fun TestHighlightClassRoom() {
+        val processMap: ProcessMap = ProcessMap()
+        val file = RuntimeEnvironment.application.applicationContext.assets.open("test-file.svg")
+        val string = file.bufferedReader().use { it.readText() }
+
+        val withHighlightedBuilding = processMap.highlightClassroom(string, "rect3803")
+        processMap.readSVGFromString(withHighlightedBuilding)
+
+        val testClass: MutableList<MapElement> = mutableListOf()
+        for (classRoom in processMap.getClasses()) {
+            if (classRoom.getID().equals("rect3803")) {
+                testClass.add(classRoom)
+            }
+        }
+        Assert.assertEquals(testClass.size, 2)
+        Assert.assertTrue((testClass[0] as Rect).style.contains("#da3636"))
+        Assert.assertTrue((testClass[1] as Rect).style.contains("#bca878"))
     }
 }

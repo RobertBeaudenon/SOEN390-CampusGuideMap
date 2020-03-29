@@ -1,18 +1,14 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -22,15 +18,10 @@ import androidx.navigation.fragment.findNavController
 import com.droidhats.mapprocessor.ProcessMap
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.R
-import com.droidhats.campuscompass.adapters.SearchAdapter
-import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.InputStream
 
 
@@ -55,7 +46,7 @@ class FloorFragment : Fragment() {
         } else {
             val mapProcessor: ProcessMap = ProcessMap()
             val file = inputStream.bufferedReader().use { it.readText() }
-            val highlightedSVG = mapProcessor.highlightBuilding(file, buildingToHighlight)
+            val highlightedSVG = mapProcessor.highlightClassroom(file, buildingToHighlight)
             val svg: SVG = SVG.getFromString(highlightedSVG)
             setImage(svg)
         }
