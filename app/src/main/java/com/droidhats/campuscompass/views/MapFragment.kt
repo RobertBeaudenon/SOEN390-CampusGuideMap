@@ -209,6 +209,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }, 100)
             }
         })
+        tracker = 0
     }
 
     private fun setNavigationButtons() {
@@ -219,10 +220,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val buttonResumeNavigation : Button = requireActivity().findViewById(R.id.buttonResumeNavigation)
         buttonResumeNavigation.setOnClickListener{
             toggleInstructionsView(true)
+            dismissBottomSheet()
         }
+        //TODO: NOT SURE IF WE EVEN NEED THIS WHOLE PORTION! MIGHT NEED TO COMPLETELY DELETE IT WILL CHECK SOON
         if(currentNavigationRoute != null) {
             buttonResumeNavigation.visibility = View.VISIBLE
-            showInstructions(currentNavigationRoute!!.instructions)
+            //showInstructions(currentNavigationRoute!!.instructions)  <-- Why do we even need this? It just keeps on this method n time where n is the number of times you click on directions
             toggleInstructionsView(false)
         }
     }
@@ -326,7 +329,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return false
     }
 
-    private fun handleBuildingClick(building: Building){
+    private fun handleBuildingClick(building: Building) {
         expandBottomSheet()
         updateAdditionalInfoBottomSheet(building.getPolygon())
 
@@ -394,6 +397,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun showInstructions(instructions : ArrayList<String>) {
+        println("HERE IS THE ARRAY!!" + instructions)
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
         prevArrow.visibility = View.INVISIBLE
@@ -426,7 +430,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             toggleInstructionsView(false)
             buttonResumeNavigation.visibility = View.INVISIBLE
             clearNavigationPath()
-            instructions.clear()
         }
 
     }
@@ -491,7 +494,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-                if(newState == BottomSheetBehavior.STATE_EXPANDED){
+                if(newState == BottomSheetBehavior.STATE_EXPANDED) {
                     mapFragSearchBar.visibility = View.INVISIBLE
                     toggleButton.visibility =  View.INVISIBLE
                     buttonResumeNavigation.visibility = View.INVISIBLE
@@ -500,7 +503,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     mapFragSearchBar.visibility = View.VISIBLE
                     toggleButton.visibility =  View.VISIBLE
                     if(currentNavigationRoute !=null)
-                        buttonResumeNavigation.visibility = View.INVISIBLE
+                        buttonResumeNavigation.visibility = View.VISIBLE
                 }
            }
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
