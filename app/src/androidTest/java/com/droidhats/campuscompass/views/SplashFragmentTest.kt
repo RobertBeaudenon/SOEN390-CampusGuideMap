@@ -70,12 +70,6 @@ class SplashFragmentTest {
         //tests if the side menu is visible
         onView(withId(R.id.nav_menu)).check(doesNotExist())
 
-        //tests if there is navigation to the map_fragment
-        navController.navigate(R.id.action_splashFragment_to_mapsActivity)
-        assertEquals(navController.currentDestination?.id,
-            R.id.map_fragment
-        )
-
         //tests if the back button will navigate away from splash_fragment
         navController.navigateUp()
         assertNotSame(navController.currentDestination?.id,
@@ -84,5 +78,12 @@ class SplashFragmentTest {
 
         //test that the backstack is empty
         assert(navController.backStack.isEmpty())
+
+        //tests if there is navigation to the map_fragment
+        navController.navigate(R.id.action_splashFragment_to_mapsActivity)
+
+        assertEquals(navController.currentDestination?.id,
+            R.id.map_fragment
+        )
     }
 }

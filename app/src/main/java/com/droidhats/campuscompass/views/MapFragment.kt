@@ -31,10 +31,11 @@ import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.CalendarEvent
-import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.IndoorLocation
+import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -48,12 +49,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
@@ -293,6 +295,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
+        dismissBottomSheet()
     }
 
     // 3 Override onResume() to restart the location update request.
@@ -396,7 +399,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun showInstructions(instructions : ArrayList<String>) {
-        println("HERE IS THE ARRAY!!" + instructions)
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
         prevArrow.visibility = View.INVISIBLE
@@ -501,6 +503,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * root.findViewById<NestedScrollView>(R.id.bottom_sheet).height).toInt())
             }
         })
+
+        val indoorMapsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_floor_map_button)
+        indoorMapsButton.setOnClickListener {
+
+            findNavController().navigate(R.id.floor_fragment)
+        }
     }
 
     private fun dismissBottomSheet() {
@@ -545,7 +553,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         var isCampusBuilding = false
         if (item is GooglePlace) {
-            findNavController().navigateUp()
+ 			findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch(Dispatchers.Main) {
                 for (building in viewModel.getBuildings())
                     if (building.getPlaceId() == item.placeID) { //Check if location is a concordia building
@@ -553,7 +561,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         handleBuildingClick(building)
                     }
               focusLocation(item, isCampusBuilding)
-            }
+            }        
+        } else if (item is IndoorLocation) {
+            val bundle: Bundle = Bundle()
+            bundle.putString("id", (item as IndoorLocation).lID)
+            findNavController().navigate(R.id.floor_fragment, bundle)
         }
     }
 
