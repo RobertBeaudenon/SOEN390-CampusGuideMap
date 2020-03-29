@@ -108,6 +108,8 @@ dependencies {
     implementation "com.google.android.libraries.places:places:2.2.0"
     implementation "com.google.maps.android:android-maps-utils:1.0.2"
     implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
+    implementation "com.google.android.material:material:1.1.0-alpha07"
     kapt "androidx.room:room-compiler:2.2.5"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "org.robolectric:robolectric:4.3.1"
