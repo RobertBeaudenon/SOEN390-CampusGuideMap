@@ -502,8 +502,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 else{
                     mapFragSearchBar.visibility = View.VISIBLE
                     toggleButton.visibility =  View.VISIBLE
-//                    if(currentNavigationRoute !=null)
-//                        buttonResumeNavigation.visibility = View.VISIBLE
                 }
            }
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
