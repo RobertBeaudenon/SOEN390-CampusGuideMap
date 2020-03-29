@@ -80,7 +80,7 @@ class TestPathAlgorithm {
         val currentPoint2: Node = Node(Circle(0.0, 5.0, 5.0), mutableListOf(middlePoint, endPoint2))
         SubDijkstra(currentPoint2, endPoint, mutableListOf())
 
-        val string: String = "<path id=\"\" d=\"m 0.0,5.0 5.0,-0.5\" style=\"\"/>"
+        val string: String = "<path id=\"\" d=\"m 0.0,5.0 5.0,-0.5\" style=\"\" transform=\"\"/>"
         Assert.assertEquals(pathToString(endPoint.shortestPath), string)
     }
 
@@ -95,17 +95,19 @@ class TestPathAlgorithm {
         val start: MapElement = Circle(0.0, 5.0, 5.0)
         var end: MapElement = Circle(0.0, 5.0, 5.0)
         Assert.assertEquals(Dijkstra(start, end, pathElements), "<circle cx=\"0.0\" cy=\"5.0\" r=\"5.0\" />" +
-                "<circle cx=\"0.0\" cy=\"5.0\" r=\"5.0\" /><path id=\"\" d=\"m 0.0,5.0 0.0,0.0\" style=\"\"/>")
+                "<circle cx=\"0.0\" cy=\"5.0\" r=\"5.0\" /><path id=\"\" d=\"m 0.0,5.0 0.0,0.0\" style=\"\" transform=\"\"/>")
 
         end = Circle(5.0, 5.0, 5.0)
-        Assert.assertEquals(Dijkstra(start, end, pathElements), "<path id=\"\" d=\"m 0.0,5.0 5.0,-0.5\" " +
-                "style=\"\"/><path id=\"\" d=\"m 5.0,4.5 0.0,0.5\" style=\"\"/>" +
+        Assert.assertEquals(Dijkstra(start, end, pathElements),
+                "<path id=\"\" d=\"m 0.0,5.0 5.0,-0.5\" style=\"\" transform=\"\"/>" +
+                        "<path id=\"\" d=\"m 5.0,4.5 0.0,0.5\" style=\"\" transform=\"\"/>" +
                 "<circle cx=\"0.0\" cy=\"5.0\" r=\"5.0\" /><circle cx=\"5.0\" cy=\"5.0\" r=\"5.0\" />")
 
         end = Circle(20.0, 20.0, 5.0)
         pathElements.add(Node(end, mutableListOf()))
         Assert.assertEquals(Dijkstra(start, end, pathElements), "<circle cx=\"5.0\" cy=\"4.5\" r=\"5.0\" />" +
-                "<circle cx=\"20.0\" cy=\"20.0\" r=\"5.0\" /><path id=\"\" d=\"m 5.0,4.5 15.0,15.5\" style=\"\"/>")
+                "<circle cx=\"20.0\" cy=\"20.0\" r=\"5.0\" />" +
+                "<path id=\"\" d=\"m 5.0,4.5 15.0,15.5\" style=\"\" transform=\"\"/>")
     }
 
 }

@@ -57,7 +57,9 @@ class TestSVGClasses {
         Assert.assertEquals(testPath.vertices[2], Pair(42.0, 82.0))
         Assert.assertEquals(testPath.vertices[3], Pair(42.0, 42.0))
 
-        Assert.assertEquals(testPath.toString(), "<path id=\"id\" d=\"m 0,0 20,0 0,20 -20,0 Z\" style=\"style\"/>")
+        Assert.assertEquals(testPath.toString(),
+                "<path id=\"id\" d=\"m 0,0 20,0 0,20 -20,0 Z\" style=\"style\" " +
+                        "transform=\"sevenc2.0,2.0,2.0,2.0,2.0,2.0\"/>")
 
         Assert.assertTrue(testPath.isWithin(-4.0, -4.0))
         Assert.assertTrue(testPath.isWithin(24.0, 24.0))
