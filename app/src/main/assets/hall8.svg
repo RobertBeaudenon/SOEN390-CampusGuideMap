@@ -389,9 +389,9 @@
          x="165.71428"
          height="90.35714"
          width="62.142857"
-         id="rect3898"
+         id="deadroom1"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-      <text x="180" y="400" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 898 </text>
+      <text x="185" y="410" font-family="Arial" font-size="35" fill="black" stroke-width="0"  > X </text>
       <rect
          y="349.86218"
          x="227.85713"
@@ -412,7 +412,7 @@
          x="227.85713"
          height="28.571426"
          width="21.785721"
-         id="rect3899.20"
+         id="rect3898"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <rect
          y="411.64789"
@@ -536,7 +536,7 @@
          x="171.78572"
          height="65.714371"
          width="43.928551"
-         id="deadroom1"
+         id="deadroom2"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <text x="180" y="690" font-family="Arial" font-size="35" fill="black" stroke-width="0"  > X </text>
       <path
@@ -577,9 +577,10 @@
       <text x="338" y="690" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 838 </text>
       <path
          inkscape:connector-curvature="0"
-         id="deadroom2"
+         id="deadroom3"
          d="m 293.44931,684.41412 0,-41.87337 -24.87788,0 0,16.87209 -16.78572,0 0,25.00128 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="260" y="680" font-family="Arial" font-size="35" fill="black" stroke-width="0"  > X </text>
       <rect
          y="350.30615"
          x="431.84021"
@@ -608,7 +609,7 @@
          x="532.5"
          height="70.091736"
          width="48.035873"
-         id="rect3947"
+         id="deadroom4"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <text x="545" y="400" font-family="Arial" font-size="35" fill="black" stroke-width="0"  > X </text>
       <rect
@@ -656,7 +657,7 @@
          x="534.64288"
          height="65.178604"
          width="47.142864"
-         id="deadroom3"
+         id="deadroom5"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <text x="545" y="690" font-family="Arial" font-size="35" fill="black" stroke-width="0"  > X </text>
       <rect
@@ -709,27 +710,27 @@
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          inkscape:connector-curvature="0"
-         id="path3981"
+         id="line1_820"
          d="M 541.07141,519.14791 518.20826,557.7193"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
-         inkscape:connector-curvature="0"
-         id="path3983"
-         d="M 541.07141,478.43362 517.70318,439.70464"
-         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+          inkscape:connector-curvature="0"
+          id="line2_820"
+          d="M 541.07141,478.43362 517.70318,439.70464"
+          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          sodipodi:nodetypes="cc"
          inkscape:connector-curvature="0"
-         id="path3985"
+         id="escalatorline"
          d="m 375.71428,473.4336 0,127.89547"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          d="m 291.09375,631.125 0,27.84375 0,16.28125 38.59375,0 1.3125,0 0,24 24.6875,0 0,-40.28125 -26,0 0,-27.84375 -38.59375,0 z"
          transform="matrix(0.68012757,0,0,0.68012757,26.656197,183.82552)"
-         id="deadroom4"
+         id="rect3877"
          inkscape:connector-curvature="0" />
-      <text x="230" y="640" font-family="Arial" font-size="20" fill="black" stroke-width="0"  > X </text>
+      <text x="226" y="640" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 877 </text>
       <path
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          d="m 595.75,549.75 0,95.3125 36.75,0 0,30.71875 60.84375,0 0,-30.71875 0,-95.3125 -97.59375,0 z"

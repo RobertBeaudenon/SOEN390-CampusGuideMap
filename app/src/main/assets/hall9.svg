@@ -80,8 +80,8 @@
      inkscape:label="Floor 9"
      style="display:inline">
     <g
-       id="g4587"
-       transform="matrix(-0.99582912,0,0,-0.99239778,1021.6871,1021.4805)">
+       id="g4587">
+      <!-- corridor path -->
       <rect
          y="48.342255"
          x="8.5922146"
@@ -89,83 +89,95 @@
          width="1007.1639"
          id="rect3365"
          style="display:inline;fill:#f7d6d6;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <!-- rooms -->
       <rect
          y="325.98459"
          x="8.5922146"
          height="48.992397"
          width="60.09816"
-         id="rect4137"
+         id="rect4927.1"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="10" y="358" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 927.1 </text>
       <rect
          y="374.97699"
          x="8.5922146"
          height="45.456867"
          width="60.09816"
-         id="rect4139"
+         id="rect4927.3"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="10" y="403" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 927.3 </text>
       <rect
          y="420.43387"
          x="8.5922146"
          height="115.66246"
          width="83.836746"
-         id="rect4141"
+         id="rect4925.2"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="20" y="480" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 925.2 </text>
       <rect
          y="459.32474"
          x="92.428963"
          height="56.063465"
          width="58.083767"
-         id="rect4145"
+         id="rect4925.1"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="98" y="495" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 925.1 </text>
       <rect
          y="420.43387"
          x="92.428963"
          height="38.890869"
          width="58.083771"
-         id="rect4147"
+         id="rect4925.3"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="98" y="445" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 925.3 </text>
       <rect
          y="536.09631"
          x="8.5922146"
          height="112.632"
          width="141.41544"
-         id="rect4149"
+         id="rect4923"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="60" y="600" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 923 </text>
       <rect
          y="648.72833"
          x="8.5922146"
          height="92.42897"
          width="141.41544"
-         id="rect4151"
+         id="rect4921"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="60" y="700" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 921 </text>
       <rect
          y="741.15729"
          x="8.5922146"
          height="92.42894"
          width="141.41544"
-         id="rect4153"
+         id="rect4919"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="60" y="800" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 919 </text>
       <rect
          y="833.58624"
          x="8.5922146"
          height="141.79906"
          width="141.41544"
-         id="rect4155"
+         id="rect4917"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="60" y="910" font-family="Arial" font-size="20" fill="black" stroke-width="0"> 917 </text>
       <rect
          y="833.58624"
          x="237.38585"
          height="141.79904"
          width="95.964493"
-         id="rect4157"
+         id="rect4913"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="270" y="910" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 913 </text>
       <rect
          y="833.58624"
          x="333.35034"
          height="141.79904"
          width="89.903572"
-         id="rect4159"
+         id="rect4911"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="360" y="910" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 911 </text>
       <rect
          y="833.58624"
          x="423.25391"
@@ -173,146 +185,151 @@
          width="91.418808"
          id="rect4161"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="450" y="910" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 909 </text>
       <rect
          y="826.01007"
          x="514.67273"
          height="149.37518"
-         width="89.398506"
-         id="rect4163"
+         width="179"
+         id="rect4907"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="580" y="910" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 907 </text>
       <rect
          y="826.01007"
-         x="514.67273"
-         height="53.033039"
-         width="64.144676"
-         id="rect4165"
-         style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         y="826.01007"
-         x="604.07123"
+         x="694.07123"
          height="149.37521"
-         width="180.31221"
-         id="rect4167"
+         width="181"
+         id="rect4903"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         y="833.58624"
-         x="784.38342"
-         height="34.850262"
-         width="66.165009"
-         id="rect4169"
-         style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="750" y="910" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 903 </text>
       <rect
          y="740.14716"
          x="875.29718"
          height="235.23814"
          width="140.45891"
-         id="rect4171"
+         id="rect4967"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="930" y="860" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 967 </text>
       <rect
          y="646.70801"
          x="875.29718"
          height="93.439133"
          width="140.45891"
-         id="rect4173"
+         id="rect4965"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="930" y="700" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 965 </text>
       <rect
          y="488.11407"
          x="955.09924"
          height="46.467018"
          width="60.656864"
-         id="rect4177"
+         id="rect4961.1"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="960" y="515" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.1 </text>
       <rect
          y="398.71558"
          x="955.09924"
          height="89.398499"
          width="60.656853"
-         id="rect4179"
+         id="rect4961.3"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="960" y="450" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.3 </text>
       <rect
          y="351.74347"
          x="955.09924"
          height="46.972095"
          width="60.656853"
-         id="rect4181"
+         id="rect4961.7"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="960" y="385" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.7 </text>
       <rect
          y="306.79169"
          x="955.09924"
          height="44.951775"
          width="60.656853"
-         id="rect4183"
+         id="rect4961.9"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="960" y="340" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.9 </text>
       <rect
          y="259.81961"
          x="955.09924"
          height="46.972088"
          width="60.656853"
-         id="rect4185"
+         id="rect4961.11"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="955" y="290" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.11 </text>
       <rect
          y="215.87796"
          x="960.65509"
          height="43.941647"
          width="55.101025"
-         id="rect4191"
+         id="rect4961.13"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="960" y="250" font-family="Arial" font-size="17" fill="black" stroke-width="0" > 961.13 </text>
       <rect
          y="170.4211"
          x="960.65509"
          height="45.45686"
          width="55.101006"
-         id="rect4193"
+         id="rect4961.15"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="960" y="200" font-family="Arial" font-size="17" fill="black" stroke-width="0" > 961.15 </text>
       <rect
          y="123.95408"
          x="960.65509"
          height="46.467014"
          width="55.101006"
-         id="rect4195"
+         id="rect4961.17"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="960" y="155" font-family="Arial" font-size="17" fill="black" stroke-width="0" > 961.17</text>
       <rect
          y="48.342255"
          x="921.25909"
          height="61.469692"
          width="46.467018"
-         id="rect4197"
+         id="rect4961.21"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="923" y="80" font-family="Arial" font-size="14" fill="black" stroke-width="0" > 961.21 </text>
       <rect
          y="48.342255"
          x="873.78192"
          height="61.469692"
          width="47.477142"
-         id="rect4199"
+         id="rect4961.23"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="876" y="80" font-family="Arial" font-size="14" fill="black" stroke-width="0" > 961.23 </text>
       <rect
          y="48.342255"
          x="829.33527"
          height="61.469692"
          width="44.446682"
-         id="rect4201"
+         id="rect4961.25"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="830" y="80" font-family="Arial" font-size="14" fill="black" stroke-width="0" > 961.25 </text>
       <rect
          y="48.342255"
          x="784.88855"
          height="61.469692"
          width="44.446739"
-         id="rect4203"
+         id="rect4961.27"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="786" y="80" font-family="Arial" font-size="14" fill="black" stroke-width="0" > 961.27 </text>
       <rect
          y="48.342255"
          x="740.44183"
          height="61.469692"
          width="44.446735"
-         id="rect4205"
+         id="rect4961.29"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="741" y="80" font-family="Arial" font-size="14" fill="black" stroke-width="0" > 961.29 </text>
       <rect
          y="48.342255"
          x="694.98492"
          height="61.469692"
          width="45.456882"
-         id="rect4207"
+         id="rect4961.31"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="697" y="80" font-family="Arial" font-size="14" fill="black" stroke-width="0" > 961.31 </text>
       <rect
          y="135.06577"
          x="821.25403"
@@ -320,55 +337,63 @@
          width="110.6117"
          id="rect4209"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="850" y="170" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.26 </text>
       <rect
          y="191.12923"
          x="821.25403"
          height="94.449234"
          width="110.61185"
-         id="rect4220"
+         id="rect4961.14"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="850" y="245" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.14 </text>
       <rect
          y="285.57846"
          x="876.30731"
          height="21.718307"
          width="55.55854"
-         id="rect4222"
+         id="rect4961.12"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="880" y="300" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 961.12 </text>
       <rect
          y="307.29675"
          x="876.30731"
          height="43.436577"
          width="55.558575"
-         id="rect4224"
+         id="rect4961.12"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="880" y="335" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 961.10 </text>
       <rect
          y="196.68506"
          x="635.89105"
          height="51.012703"
          width="185.36301"
-         id="rect4226"
+         id="rect4945"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="720" y="230" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 945 </text>
       <rect
          y="247.69775"
          x="750.03827"
          height="96.974655"
          width="71.215767"
-         id="rect4228"
+         id="deadroom1"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="775" y="310" font-family="Arial" font-size="35" fill="black" stroke-width="0" > X </text>
       <rect
          y="247.69775"
          x="696.50018"
          height="96.974648"
          width="53.53809"
-         id="rect4230"
+         id="rect4975"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="705" y="270" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 975 </text>
       <rect
          y="247.69775"
          x="635.89105"
          height="36.870575"
          width="60.609131"
-         id="rect4234"
+         id="rect4981"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="650" y="270" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 981 </text>
       <rect
          y="284.56833"
          x="635.89105"
@@ -376,112 +401,122 @@
          width="60.609131"
          id="rect4236"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="650" y="315" font-family="Arial" font-size="30" fill="black" stroke-width="0" > X </text>
       <rect
          y="321.94397"
          x="670.23621"
          height="22.72842"
          width="26.263969"
-         id="rect4238"
+         id="rect4977"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="670" y="340" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 977 </text>
       <rect
          y="135.06577"
          x="782.36316"
          height="61.619293"
          width="38.890881"
-         id="rect4240"
+         id="rect4961.28"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="781" y="170" font-family="Arial" font-size="13" fill="black" stroke-width="0" > 961.28 </text>
       <rect
          y="135.06577"
          x="740.44183"
          height="61.619293"
          width="41.921345"
-         id="rect4242"
+         id="rect4961.30"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="742" y="170" font-family="Arial" font-size="13" fill="black" stroke-width="0" > 961.30 </text>
       <path
          sodipodi:nodetypes="cccccc"
          inkscape:connector-curvature="0"
-         id="rect4246"
+         id="rect4943"
          d="m 652.05349,135.06577 88.38834,0 0,61.61929 -104.55078,0 0,-30.80965 z"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="670" y="175" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 943 </text>
       <path
          inkscape:connector-curvature="0"
-         id="rect4249"
+         id="rect4961.33"
          d="m 651.5625,48.34375 0,46.3125 10.09375,0 0,15.15625 33.34375,0 0,-61.46875 -43.4375,0 z"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="651" y="80" font-family="Arial" font-size="14" fill="black" stroke-width="0" > 961.33 </text>
       <path
          sodipodi:nodetypes="ccccccc"
          inkscape:connector-curvature="0"
-         id="rect4254"
+         id="rect4929"
          d="m 8.59375,48.34375 0,191.28125 179.28125,0 0,-72.24889 16.6875,-15.65736 0,-103.375 z"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="80" y="150" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 929 </text>
       <path
          sodipodi:nodetypes="cccccc"
          inkscape:connector-curvature="0"
-         id="rect4259"
+         id="rect4931"
          d="m 149.50258,155.77388 29.28774,0 9.58976,11.12833 -0.50508,51.50113 -38.37242,0 z"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+      <text x="152" y="190" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 931 </text>
       <path
          sodipodi:nodetypes="cccccc"
          inkscape:connector-curvature="0"
-         id="rect4262"
+         id="rect4933.1"
          d="m 229.16484,209.35725 30.70594,0.13989 37.04748,16.83307 0.42899,35.68903 -68.18241,0 z"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          transform="matrix(0.91212863,-0.40990409,0.40990409,0.91212863,0,0)" />
+      <text x="310" y="120" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 933.1 </text>
       <path
          sodipodi:nodetypes="cccccc"
          inkscape:connector-curvature="0"
-         id="rect4315"
+         id="rect4933.11"
          d="m 229.16484,262.01923 122.79081,0 -17.20051,38.33804 -10.50265,-4.81584 -95.08765,-0.19025 z"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
          transform="matrix(0.91212863,-0.40990409,0.40990409,0.91212863,0,0)" />
+      <text x="340" y="150" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 933.11 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path4324"
+         id="path4933.2"
          d="m 335.87572,48.342255 0,36.277525 27.7256,0.114475 15.02037,32.377135 49.80989,-22.384209 0,-46.384926 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="360" y="80" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 933.2 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path4326"
+         id="path4929.25"
          d="m 428.45742,136.74696 96.8219,0 13.63706,-29.46039 0,-58.944315 -110.4848,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="450" y="120" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 929.25 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path4328"
+         id="path4941"
          d="m 661.65625,109.8125 -24.24999,0 -29.29443,64.64921 -82.83251,-37.71475 13.63706,-29.46039 0,-58.944315 112.64612,0.0015 0,46.3125 10.09375,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="570" y="120" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 941 </text>
       <path
          inkscape:connector-curvature="0"
          id="path4330"
          d="m 204.5625,151.71875 17.68163,17.68163 105.12499,0 -32.52492,-72.375244 28.06511,-12.458892 12.96641,0.05354 0,-36.277525 -131.31322,0.0015 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="240" y="120" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 933 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path4332"
+         id="path4937"
          d="m 330.09347,175.46266 25.9853,51.52698 51.51778,61.11423 124.75384,0 52.02286,-60.10408 23.73858,-53.53808 -82.83251,-37.71475 -96.8219,-0.002 -11.5538,-0.0855 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="450" y="220" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 937 </text>
       <path
          sodipodi:nodetypes="ccccc"
          inkscape:connector-curvature="0"
-         id="path4334"
+         id="path4937.1"
          d="m 419.71838,288.10387 0,48.48732 c 32.82996,12.62691 69.65311,10.02829 100.51018,0 l 0,-48.48732 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         y="288.10388"
-         x="520.22858"
-         height="45.456863"
-         width="53.538086"
-         id="rect4336"
-         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="450" y="320" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 937.1 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path4338"
+         id="path4937.3"
          d="m 545.50627,272.90436 15.63347,15.19952 41.41625,0 0,-17.1726 -32.0548,-26.90454 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          inkscape:connector-curvature="0"
-         id="path4340"
+         id="path4983"
          d="m 602.55599,270.93128 5.47973,0 0,-56.217 -17.77173,0 -5.89074,13.28551 -13.87206,16.02695 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="555" y="280" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 983 </text>
       <path
          inkscape:connector-curvature="0"
          id="path4342"
@@ -499,61 +534,70 @@
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          inkscape:connector-curvature="0"
-         id="path4348"
+         id="path4928"
          d="m 208.92857,195.07143 0,53.21428 50.35714,0 0,-59.28571 -44.64285,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="215" y="220" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 928 </text>
       <rect
          y="189"
          x="259.28571"
          height="59.28569"
          width="45.000103"
-         id="rect4350"
+         id="rect4932"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="265" y="220" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 932 </text>
       <rect
          y="248.28569"
          x="281.42856"
          height="96.428596"
          width="52.5"
-         id="rect4355"
+         id="rect4985"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="290" y="280" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 985 </text>
       <rect
          y="248.28571"
          x="208.92857"
          height="96.428574"
          width="72.499985"
-         id="rect4357"
+         id="deadroom3"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="235" y="310" font-family="Arial" font-size="35" fill="black" stroke-width="0" > X </text>
       <path
          inkscape:connector-curvature="0"
-         id="path4359"
+         id="path4932.1"
          d="m 304.28581,189 0,59.28569 29.64275,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="307" y="245" font-family="Arial" font-size="12" fill="black" stroke-width="0" > 932.1 </text>
       <path
          inkscape:connector-curvature="0"
-         id="rect4361"
+         id="rect4927.4"
          d="m 90,330.4375 0,66.78125 -21.3125,0 0,23.21875 119.53125,0 0,-90 -98.21875,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="120" y="380" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 927.4 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path4366"
+         id="path4927"
          d="m 187.875,239.625 0,73.30357 -16.80357,0 0,17.50893 -81.07143,0 0,66.78125 -21.309626,0 0,-71.23416 -60.0981594,0 0.00154,-86.35959 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="90" y="300" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 927 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path4368"
+         id="path4915"
          d="m 237.38585,833.58624 -59.88585,0 0,30.7709 -27.49235,0 0,111.02814 87.3782,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="180" y="910" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 915 </text>
       <path
          inkscape:connector-curvature="0"
-         id="rect4370"
+         id="rect4920"
          d="m 248,468.40625 0,59.09375 19.1875,0 0,59.09375 -19.1875,0 0,57.59375 179.8125,0 0,-175.78125 -179.8125,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="330" y="560" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 920 </text>
       <rect
          y="527.51001"
          x="209.60666"
          height="59.093925"
          width="57.578693"
-         id="rect4372"
+         id="rect4920"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          inkscape:connector-curvature="0"
@@ -567,171 +611,195 @@
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          inkscape:connector-curvature="0"
-         id="rect4381"
+         id="rect4980"
          d="m 241.9375,413.375 0,55.03125 185.875,0 0,307.09375 48.46875,0 0,-307.09375 0,-55.03125 -234.34375,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="350" y="450" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 980 </text>
       <rect
          y="644.1875"
          x="330.31989"
          height="131.3125"
          width="97.492615"
-         id="rect4386"
+         id="rect4920"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="370" y="700" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 920 </text>
       <rect
          y="644.1875"
          x="278.29703"
          height="131.3125"
          width="52.022858"
-         id="rect4388"
+         id="rect4990"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="290" y="700" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 990 </text>
       <rect
          y="644.1875"
          x="209.10158"
          height="29.794643"
          width="69.19545"
-         id="rect4390"
+         id="rect4986"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="230" y="670" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 986 </text>
       <rect
          y="673.98212"
          x="209.10158"
          height="101.51785"
          width="69.19545"
-         id="rect4392"
+         id="deadroom4"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="230" y="740" font-family="Arial" font-size="35" fill="black" stroke-width="0" > X </text>
       <rect
          y="372.21429"
          x="875.71429"
          height="26.428572"
          width="57.142857"
-         id="rect4396"
+         id="rect4961.97"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="880" y="390" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 961.97 </text>
       <rect
          y="398.64285"
          x="875.71429"
          height="45.71431"
          width="57.14291"
-         id="rect4402"
+         id="rect4961.6"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="880" y="430" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.6 </text>
       <rect
          y="444.35718"
          x="875.71429"
          height="44.285732"
          width="57.142891"
-         id="rect4404"
+         id="rect4961.4"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="880" y="480" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.4 </text>
       <rect
          y="488.64291"
          x="875.71429"
          height="45.950836"
          width="57.142838"
-         id="rect4406"
+         id="rect4961.2"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="880" y="520" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.2 </text>
       <path
          inkscape:connector-curvature="0"
-         id="rect4408"
+         id="rect4963"
          d="m 832.84375,534.59375 0,52.96875 26.8125,0 0,59.15625 156.09375,0 0,-112.125 -156.09375,0 -26.8125,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="920" y="600" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 963 </text>
       <path
          inkscape:connector-curvature="0"
-         id="rect4415"
+         id="rect4961.8"
          d="m 821.25,285.59375 0,40.1875 17.6875,0 0,18.90625 37.375,0 0,-59.09375 -55.0625,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="825" y="310" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 961.8 </text>
       <rect
          y="372.21429"
          x="718.21429"
          height="92.142845"
          width="157.50002"
-         id="rect4420"
+         id="rect4968"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="780" y="420" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 968 </text>
       <rect
          y="464.35715"
          x="786.42859"
          height="52.14286"
          width="89.285721"
-         id="rect4422"
+         id="rect4964.3"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="810" y="500" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 964.3 </text>
       <rect
          y="516.5"
          x="832.84375"
          height="18.093742"
          width="42.870544"
-         id="rect4424"
+         id="rect4963.85"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <rect
          y="516.5"
          x="786.42859"
          height="42.857136"
          width="46.415161"
-         id="rect4426"
+         id="rect4964.2"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="790" y="540" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 964.2 </text>
       <rect
          y="559.35712"
          x="779.28571"
          height="43.928577"
          width="53.558033"
-         id="rect4428"
+         id="rect4964.1"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="782" y="590" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 964.1 </text>
       <rect
          y="372.21429"
          x="606.59662"
          height="92.142845"
          width="111.61768"
-         id="rect4430"
+         id="rect4966"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="650" y="420" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 966 </text>
       <rect
          y="372.21429"
          x="557.09912"
          height="46.199253"
          width="49.49749"
-         id="rect4432"
+         id="rect4966.1"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="560" y="400" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 966.1 </text>
       <rect
          y="418.41354"
          x="557.09912"
          height="45.943592"
          width="49.497498"
-         id="rect4436"
+         id="rect4966.2"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="560" y="445" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 960.2 </text>
       <rect
          y="464.35715"
          x="567.70575"
          height="52.04121"
          width="38.890888"
-         id="rect4438"
+         id="rect4962.1"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="569" y="495" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 962.1 </text>
       <rect
          y="516.39838"
          x="567.70575"
          height="86.873123"
          width="38.890865"
-         id="rect4440"
+         id="rect4960"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="573" y="560" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 960 </text>
       <rect
          y="464.35715"
          x="606.59662"
          height="138.91437"
          width="85.35788"
-         id="rect4442"
+         id="rect4962"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="630" y="530" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 962 </text>
       <path
          inkscape:connector-curvature="0"
-         id="path4448"
+         id="path4964"
          d="m 691.9545,603.27151 87.33121,0 0,-43.91439 7.14288,0 0,-94.99997 -94.47409,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="720" y="530" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 964 </text>
       <rect
          y="644.18262"
          x="730.34027"
          height="136.87567"
          width="93.43911"
-         id="rect4450"
+         id="deadroom5"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="800" y="730" font-family="Arial" font-size="25" fill="black" stroke-width="0" > X </text>
       <rect
          y="644.18262"
          x="730.34027"
          height="96.469597"
          width="54.043182"
-         id="rect4452"
+         id="rect4998"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="740" y="730" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 998 </text>
       <rect
          y="644.18262"
          x="695.49005"
@@ -751,48 +819,53 @@
          x="566.19049"
          height="38.385822"
          width="68.690369"
-         id="rect4462"
+         id="rect4992"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="580" y="670" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 992 </text>
       <rect
          y="644.18262"
          x="511.64227"
-         height="108.08635"
+         height="60"
          width="54.548225"
-         id="rect4464"
+         id="rect4914"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="520" y="680" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 914 </text>
+      <rect
+          y="704.95"
+          x="511.64227"
+          height="47"
+          width="54.548225"
+          id="rect4908"
+          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="520" y="735" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 908 </text>
       <path
          inkscape:connector-curvature="0"
-         id="rect4466"
+         id="rect4902"
          d="m 566.1875,696.21875 0,56.0625 13.625,0 20.21875,0 0,28.78125 130.3125,0 0,-84.84375 -164.15625,0 z"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text x="670" y="725" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 902 </text>
       <rect
          y="728.5304"
          x="600.03064"
          height="52.527916"
          width="54.548237"
-         id="rect4468"
+         id="rect4902.1"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <rect
          y="752.26898"
          x="511.64227"
          height="28.793533"
          width="68.170227"
-         id="rect4473"
+         id="rect4906"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.00000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect4696"
-         width="90.534554"
-         height="106.13573"
-         x="150.04068"
-         y="53.510307"
-         transform="matrix(-1.0041883,0,0,-1.0076605,1025.9663,1029.3055)" />
-      <path
+      <text x="520" y="775" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 906 </text>
+     <path
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.00000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 10.15625,898.46875 0,75.03125 47.84375,0 0,-61 7.03125,0 0,-14.03125 -7.03125,0 -47.84375,0 z"
          transform="matrix(-1.0041883,0,0,-1.0076605,1025.9663,1029.3055)"
-         id="rect4698"
+         id="rect4961.19"
          inkscape:connector-curvature="0" />
+      <text x="973" y="80" font-family="Arial" font-size="14" fill="black" stroke-width="0" > 961.19 </text>
       <path
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.00000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="m 462.88781,735.56685 15.56826,15.08397 13.10101,-15.08396 z"
@@ -803,8 +876,26 @@
       <!-- Displaying icons on the map -->
 
       <!-- Displaying stairs icon on the map -->
-      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs1" x="325" y="360">
-        <g transform='rotate(180)'>
+      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs1" x="290" y="290">
+        <g>
+
+          <path
+            d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
+            fill="#666666"
+            stroke-width="0"/>
+        <path
+            d="M17.5 31.9412C24.4036 31.9412 30 25.6863 30 17.9706C30 10.2549 24.4036 4 17.5 4C10.5964 4 5 10.2549 5 17.9706C5 25.6863 10.5964 31.9412 17.5 31.9412Z"
+            fill="#F7D6D6"
+            stroke-width="0"/>
+        <path
+            d="M26.2188 10.3047H21.6094C21.1779 10.3047 20.8282 10.6544 20.8282 11.0859V14.9141H17C16.5686 14.9141 16.2188 15.2638 16.2188 15.6953V19.5234H12.3907C11.9592 19.5234 11.6094 19.8732 11.6094 20.3047V24.1328H7.78125C7.34977 24.1328 7 24.4826 7 24.9141C7 25.3455 7.34977 25.6953 7.78125 25.6953H12.3907C12.5978 25.6953 12.7966 25.613 12.9431 25.4665C13.0896 25.32 13.1719 25.1212 13.1719 24.9141L13.1719 21.0859H17C17.2072 21.0859 17.406 21.0036 17.5525 20.8571C17.699 20.7106 17.7813 20.5119 17.7813 20.3047L17.7812 16.4766H21.6094C21.8166 16.4766 22.0153 16.3943 22.1618 16.2477C22.3083 16.1012 22.3906 15.9025 22.3906 15.6953V11.8672H26.2188C26.6502 11.8672 27 11.5174 27 11.0859C27 10.6544 26.6502 10.3047 26.2188 10.3047Z"
+            fill="#DA3636"
+            stroke-width="0"/>
+        </g>
+      </svg>
+
+      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs2" x="708" y="290">
+        <g>
         <path
             d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
             fill="#666666"
@@ -820,8 +911,8 @@
         </g>
       </svg>
 
-      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs2" x="740" y="360">
-        <g transform='rotate(180)'>
+      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs3" x="740" y="645">
+        <g>
         <path
             d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
             fill="#666666"
@@ -837,25 +928,8 @@
         </g>
       </svg>
 
-      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs3" x="775" y="700">
-        <g transform='rotate(180)'>
-        <path
-            d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
-            fill="#666666"
-            stroke-width="0"/>
-        <path
-            d="M17.5 31.9412C24.4036 31.9412 30 25.6863 30 17.9706C30 10.2549 24.4036 4 17.5 4C10.5964 4 5 10.2549 5 17.9706C5 25.6863 10.5964 31.9412 17.5 31.9412Z"
-            fill="#F7D6D6"
-            stroke-width="0"/>
-        <path
-            d="M26.2188 10.3047H21.6094C21.1779 10.3047 20.8282 10.6544 20.8282 11.0859V14.9141H17C16.5686 14.9141 16.2188 15.2638 16.2188 15.6953V19.5234H12.3907C11.9592 19.5234 11.6094 19.8732 11.6094 20.3047V24.1328H7.78125C7.34977 24.1328 7 24.4826 7 24.9141C7 25.3455 7.34977 25.6953 7.78125 25.6953H12.3907C12.5978 25.6953 12.7966 25.613 12.9431 25.4665C13.0896 25.32 13.1719 25.1212 13.1719 24.9141L13.1719 21.0859H17C17.2072 21.0859 17.406 21.0036 17.5525 20.8571C17.699 20.7106 17.7813 20.5119 17.7813 20.3047L17.7812 16.4766H21.6094C21.8166 16.4766 22.0153 16.3943 22.1618 16.2477C22.3083 16.1012 22.3906 15.9025 22.3906 15.6953V11.8672H26.2188C26.6502 11.8672 27 11.5174 27 11.0859C27 10.6544 26.6502 10.3047 26.2188 10.3047Z"
-            fill="#DA3636"
-            stroke-width="0"/>
-        </g>
-      </svg>
-
-      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs4" x="320" y="790">
-        <g transform='rotate(180)'>
+      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs4" x="288" y="720">
+        <g>
         <path
             d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
             fill="#666666"
@@ -872,8 +946,8 @@
       </svg>
 
       <!-- Displaying elevator icon on the map -->
-      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="elevator1" x="680" y="710">
-        <g transform='rotate(180)'>
+      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="elevator1" x="650" y="625">
+        <g>
         <path
             d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
             fill="#666666"
@@ -898,8 +972,8 @@
       </svg>
 
       <!-- Displaying washroom icon on the map -->
-      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="restroom_w1" x="645" y="798">
-        <g transform='rotate(180)'>
+      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="restroom_w1" x="610" y="720">
+        <g>
         <path
             d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
             fill="#08648B"
@@ -919,8 +993,8 @@
         </g>
       </svg>
 
-      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="restroom_m1" x="400" y="790">
-        <g transform='rotate(180)'>
+      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="restroom_m1" x="365" y="720">
+        <g>
         <path
             d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
             fill="#08648B"
@@ -941,8 +1015,8 @@
       </svg>
 
       <!-- Displaying escalator icon on the map -->
-      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="escalator_down1" x="560" y="620">
-        <g transform='rotate(180)'>
+      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="escalator_down1" x="530" y="550">
+        <g>
         <path
             d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
             fill="#666666"
@@ -974,8 +1048,8 @@
         </g>
       </svg>
 
-      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="escalator_up1" x="550" y="440"  >
-        <g transform='rotate(180)'>
+      <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="escalator_up1" x="520" y="400"  >
+        <g>
         <path
             d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
             fill="#666666"
