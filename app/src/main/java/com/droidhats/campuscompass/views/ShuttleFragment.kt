@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TableLayout
+import android.widget.TableRow
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -66,13 +67,16 @@ private const val ARG_OBJECT = "object"
 class CampusTabFragment : Fragment() {
 
     private lateinit var viewModel: ShuttleViewModel
+    private lateinit var root: View
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.shuttle_campus_tab, container, false)
+        root = inflater.inflate(R.layout.shuttle_campus_tab, container, false)
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,24 +92,41 @@ class CampusTabFragment : Fragment() {
 
 
     private fun observeSGWShuttle(){
-        viewModel.getSGWShuttleTime().observe(viewLifecycleOwner , Observer {
-            var times = ""
-            for (i in it)
-                times += i
+        viewModel.getSGWShuttleTime().observe(viewLifecycleOwner , Observer { sgwShuttleTimes ->
+           val table = root.findViewById<TableLayout>(R.id.shuttleTimesTable)
+            for (dataRow in sgwShuttleTimes) {
+                val tableRow = TableRow(root.context)
+                val dayText = TextView(root.context)
+              /*  var layoutParams = TableRow.LayoutParams(
+                    TableRow.LayoutParams.WRAP_CONTENT,
+                    TableRow.LayoutParams.WRAP_CONTENT)*/
+                dayText.text = dataRow.shuttle_day
 
-            sgwPlaceholderTimes.text = times
+                val timeText = TextView(root.context)
+                timeText.text = dataRow.shuttle_time
+
+                tableRow.addView(dayText)
+                tableRow.addView(timeText)
+                table.addView(tableRow)
+            }
         })
     }
 
     private fun observeLOYShuttle(){
-        viewModel.getLoyolaShuttleTime().observe(viewLifecycleOwner , Observer {
-            var times = ""
-            for (i in it)
-                times += i
+        viewModel.getLoyolaShuttleTime().observe(viewLifecycleOwner , Observer {loyShuttleTimes ->
+            val table = root.findViewById<TableLayout>(R.id.shuttleTimesTable)
+            for (dataRow in loyShuttleTimes) {
+                val tableRow = TableRow(root.context)
+                val dayText = TextView(root.context)
+                dayText.text = dataRow.shuttle_day
 
-            loyolaPlaceholderTimes.text = times
+                val timeText = TextView(root.context)
+                timeText.text = dataRow.shuttle_time
+                tableRow.addView(dayText)
+                tableRow.addView(timeText)
+                table.addView(tableRow)
+            }
         })
     }
-
 }
 
