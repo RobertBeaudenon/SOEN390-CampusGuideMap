@@ -1,6 +1,5 @@
 package com.droidhats.mapprocessor
 
-
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.pow
@@ -41,7 +40,7 @@ class Rect (val id: String, val x: Double, val y: Double, val height: Double, va
 
 }
 
-class Path(val id: String, val d: String, val transform: String, val style: String, val isClosed: Boolean) : MapElement() {
+class Path(val id: String, val d: String, var transform: String, val style: String, val isClosed: Boolean) : MapElement() {
 
     var xMin: Double
     var xMax: Double
@@ -51,24 +50,24 @@ class Path(val id: String, val d: String, val transform: String, val style: Stri
     var matrix: MutableList<Double> = mutableListOf()
 
     init {
-        if (d[0] == 'm' && isClosed) {
-            var anArray = d.substring(2, d.length-2).split(" ")
-            println(d)
+        if (d.isNotEmpty() && d[0] == 'm' && isClosed) {
+            // Parsing path
+            val anArray = d.substring(2, d.length - 2).split(" ")
             var prevVertex = Pair<Double, Double>(0.0, 0.0)
-            anArray.forEach{ it ->
-                println(it)
-                var element = it.split(",")
-                println(element)
-                var vert = Pair<Double, Double>(element[0].toDouble() + prevVertex.first, element[1].toDouble() + prevVertex.second)
+            anArray.forEach { it ->
+                val element = it.split(",")
+                val vert = Pair<Double, Double>(element[0].toDouble() + prevVertex.first, element[1].toDouble() + prevVertex.second)
                 vertices.add(Pair<Double, Double>(element[0].toDouble() + prevVertex.first, element[1].toDouble() + prevVertex.second))
                 prevVertex = vert
             }
 
+            // transforms (moves) the vertices if there
             if (transform.contains("matrix(")) {
                 transformVertices()
             }
 
-            var initialVertex = vertices[0]
+            // finding the minimum and maximum values
+            val initialVertex = vertices[0]
             xMax = initialVertex.first
             xMin = xMax
             yMax = initialVertex.second
@@ -113,14 +112,6 @@ class Path(val id: String, val d: String, val transform: String, val style: Stri
         val first = matrix[0]*coordinate.first + matrix[2]*coordinate.second + matrix[4]
         val second = matrix[1]*coordinate.first + matrix[3]*coordinate.second + matrix[5]
         return Pair(first, second)
-    }
-
-    fun getVertices(): String {
-        var string: String = ""
-        for (vertex in vertices) {
-            string += Circle(vertex.first, vertex.second, 5.0)
-        }
-        return string
     }
 
     override fun toString(): String {
@@ -185,18 +176,6 @@ class Circle(val cx: Double, val cy: Double, val r: Double) : MapElement() {
         val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
 
         return distance < range
-    }
-
-    fun isWithinX(x: Double, y: Double, range: Double): Boolean {
-        //val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
-
-        return (cy.roundToInt() == y.roundToInt() && abs(cx - x) < range)//distance < range
-    }
-
-    fun isWithinY(x: Double, y: Double, range: Double): Boolean {
-        //val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
-
-        return (cx.roundToInt() == x.roundToInt() && abs(y - cy) < range)//distance < range
     }
 
     override fun getWidth(): Pair<Double, Double> {
