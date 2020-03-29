@@ -1,5 +1,4 @@
 package com.droidhats.mapprocessor
-
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -200,6 +199,10 @@ class Circle(val cx: Double, val cy: Double, val r: Double) : MapElement() {
 
     override fun getCenter(): Pair<Double, Double> {
         return Pair<Double, Double>(cx, cy)
+    }
+
+    fun equals(circle: Circle): Boolean {
+        return cx == circle.cx && cy == circle.cy
     }
 
 }
