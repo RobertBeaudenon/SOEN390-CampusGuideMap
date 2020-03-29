@@ -152,7 +152,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         // Get the map from the viewModel.
         mapModel = viewModel.getMapModel(googleMap, this, this, this, this.activity as MainActivity)
-        map = mapModel!!.googleMap
+        map = mapModel?.googleMap
 
         //Add custom style to map
         try {

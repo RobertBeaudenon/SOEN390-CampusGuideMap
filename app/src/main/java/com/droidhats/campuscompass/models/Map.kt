@@ -18,19 +18,15 @@ class Map(
     var googleMap: GoogleMap,
     private var buildings: List<Building>
 ) {
-
     companion object {
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
-        var listOfDrawnBuildings = mutableListOf<Building>()
     }
-
     /**
      * Initializes the map, and attaches listeners to it.
      */
     init {
         googleMap.clear()
-        listOfDrawnBuildings.clear()
 
         //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
         googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
@@ -66,8 +62,7 @@ class Map(
      */
     private fun setBuildingMarker() {
         for (building in buildings) {
-            if (building.hasCenterLocation() && !listOfDrawnBuildings.contains(building)){
-                listOfDrawnBuildings.add(building)
+            if (building.hasCenterLocation()){
                 val marker: Marker = googleMap.addMarker(building.getMarkerOptions())
                 building.setMarker(marker)
                 // Set the marker to become the new bitmap rather than the conventional map pin
