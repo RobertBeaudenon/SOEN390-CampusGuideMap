@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/instructionLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,7 +8,7 @@
     android:layout_margin="6dp"
     android:background="@android:color/transparent"
     android:paddingTop="200dp"
-    android:visibility="visible"
+    android:visibility="gone"
     app:cardElevation="4dp"
     app:contentPadding="8dp">
 
@@ -23,6 +22,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:backgroundTint="@color/white"
+            android:layout_alignParentEnd="true"
             android:src="@drawable/ic_close_black_24dp"
             android:text="@string/x_button" />
 

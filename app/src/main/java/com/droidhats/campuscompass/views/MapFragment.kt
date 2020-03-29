@@ -10,11 +10,13 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -55,8 +57,6 @@ import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
-import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -65,7 +65,8 @@ import kotlin.collections.ArrayList
 import kotlin.collections.List
 import kotlin.collections.MutableList
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
+import kotlinx.android.synthetic.main.instructions_sheet_layout.*
+import kotlinx.android.synthetic.main.search_bar_layout.*
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -90,9 +91,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
-        var stepInsts = ""
+        private var tracker = 0
         private var currentNavigationRoute : NavigationRoute? = null
-        var myArrayHolder = ArrayList<String>()
     }
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
@@ -112,7 +112,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -137,6 +136,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initSearchBar()
         handleCampusSwitch()
         observeNavigation()
+        setNavigationButtons()
     }
 
     /**
@@ -148,7 +148,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      * @param googleMap a necessary google map object on which we add markers and attach listeners.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-
         // Get the map from the viewModel.
         mapModel = viewModel.getMapModel(googleMap, this, this, this, this.activity as MainActivity)
         map = mapModel!!.googleMap
@@ -209,6 +208,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }, 100)
             }
         })
+    }
+
+    private fun setNavigationButtons(){
+        val buttonCloseInstructions = requireActivity().findViewById<ImageButton>(R.id.buttonCloseInstructions)
+        buttonCloseInstructions.setOnClickListener{
+            toggleInstructionsView(false)
+        }
+        val buttonResumeNavigation = requireActivity().findViewById<Button>(R.id.buttonResumeNavigation)
+        buttonResumeNavigation.setOnClickListener{
+            toggleInstructionsView(true)
+            //Move to current location
+            fusedLocationClient.lastLocation.addOnSuccessListener {
+                if (it != null) {
+                    moveTo(LatLng(it.latitude, it.longitude), 19.0f)
+                }
+            }
+        }
+        if(currentNavigationRoute != null) {
+            buttonResumeNavigation.visibility = View.VISIBLE
+            showInstructions(currentNavigationRoute!!.instructions)
+            toggleInstructionsView(false)
+        }
     }
 
     private fun createLocationRequest() {
@@ -321,7 +342,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bundle.putParcelable("destBuilding", building)
             findNavController().navigate(R.id.search_fragment, bundle)
         }
-
     }
 
     //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
@@ -378,22 +398,54 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    //Handle the clicking of the instructions button. Should probably move from here later
     private fun showInstructions(instructions : ArrayList<String>) {
-        buttonInstructions.visibility = View.VISIBLE
-        //instruction button listener
-        buttonInstructions.setOnClickListener {
-            myArrayHolder = instructions.clone() as ArrayList<String>
-            instructions.clear() // Array is cleared
-            findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
+        toggleInstructionsView(true)
+        arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
+        prevArrow.visibility = View.INVISIBLE
+
+        nextArrow.setOnClickListener {
+            tracker++
+            prevArrow.visibility = View.VISIBLE
+            if(tracker < instructions.size) {
+                arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
+            }
+            if (tracker == instructions.size-1) {
+                nextArrow.visibility = View.INVISIBLE
+            }
+        }
+        prevArrow.setOnClickListener {
+            tracker--
+            nextArrow.visibility = View.VISIBLE
+            if(tracker < instructions.size) {
+                arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
+            }
+            if (tracker == 0) {
+                prevArrow.visibility = View.INVISIBLE
+            }
+        }
+
+    }
+
+    private fun toggleInstructionsView(isVisible: Boolean){
+        val instructionsView : CardView = requireActivity().findViewById(R.id.instructionLayout)
+        if(isVisible){
+            instructionsView.visibility = View.VISIBLE
+            buttonResumeNavigation.visibility = View.INVISIBLE
+            map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, instructionsView.height+20)
+        }
+        else{
+            instructionsView.visibility = View.INVISIBLE
+            map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
+            if(currentNavigationRoute != null)
+                buttonResumeNavigation.visibility = View.VISIBLE
         }
     }
 
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
         clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
-         val path= map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
-            currentNavigationPath.add(path)
+         val polyline= map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+            currentNavigationPath.add(polyline)
         }
     }
 
@@ -437,13 +489,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 if(newState == BottomSheetBehavior.STATE_EXPANDED){
                     mapFragSearchBar.visibility = View.INVISIBLE
                     toggleButton.visibility =  View.INVISIBLE
+                    buttonResumeNavigation.visibility = View.INVISIBLE
                 }
                 else{
                     mapFragSearchBar.visibility = View.VISIBLE
                     toggleButton.visibility =  View.VISIBLE
+                    if(currentNavigationRoute !=null)
+                        buttonResumeNavigation.visibility = View.VISIBLE
                 }
            }
-
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
@@ -460,6 +514,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun expandBottomSheet() {
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             togglePlaceCard(false)
+            toggleInstructionsView(false)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
     }
@@ -542,11 +597,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val placeCard : CardView = requireActivity().findViewById(R.id.place_card)
         if(isVisible){
             placeCard.visibility = View.VISIBLE
-            map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, placeCard.height+75)
+            map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, placeCard.height+75)
         }
         else{
             placeCard.visibility = View.INVISIBLE
-            map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
+            map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
         }
     }
 

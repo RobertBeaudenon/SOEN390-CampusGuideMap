@@ -14,19 +14,9 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_weight="1"/>
 
-    <Button
-        android:id="@+id/buttonInstructions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="165dp"
-        android:text="@string/instructions"
-        android:background="#791b0f"
-        android:textColor="#FFF"
-        android:textAllCaps="false"
-        android:visibility="invisible" />
-
     <include layout="@layout/bottom_sheet_layout"/>
     <include layout="@layout/search_bar_layout"/>
     <include layout="@layout/place_info_card"/>
+    <include layout="@layout/instructions_sheet_layout"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

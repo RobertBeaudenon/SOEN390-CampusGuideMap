@@ -30,6 +30,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -156,6 +157,7 @@ class SearchFragment : Fragment()  {
         val origin = NavigationPoints[R.id.mainSearchBar]
         val destination = NavigationPoints[R.id.secondarySearchBar]
         findNavController().navigateUp() // Navigate Back To MapFragment
+        secondarySearchBar.clearFocus()
         Toast.makeText(context, "Starting Navigation\n" +
                 "From: ${origin?.name}\n" +
                 "To: ${destination?.name}\n" +
