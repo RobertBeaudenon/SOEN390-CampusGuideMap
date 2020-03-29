@@ -15,7 +15,6 @@ import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.UiDevice
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
-import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

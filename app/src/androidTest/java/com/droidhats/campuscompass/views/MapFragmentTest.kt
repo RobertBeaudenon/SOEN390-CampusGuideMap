@@ -68,6 +68,7 @@ class MapFragmentTest {
             onView(withId(R.id.coordinate_layout)).check(matches(isDisplayed()))
         }
     }
+
     @Test
     fun test_SearchBar() {
         //Checks if the search bar with text "search" exists
