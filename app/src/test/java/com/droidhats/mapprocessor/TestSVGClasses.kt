@@ -65,8 +65,8 @@ class TestSVGClasses {
         Assert.assertFalse(testPath.isWithin(15.0, 30.0))
         Assert.assertFalse(testPath.isWithin(30.0, 30.0))
 
-        Assert.assertEquals(testPath.getWidth(), Pair(0.0, 0.0))
-        Assert.assertEquals(testPath.getHeight(), Pair(0.0, 0.0))
+        Assert.assertEquals(testPath.getWidth(), Pair(20.0, 0.0))
+        Assert.assertEquals(testPath.getHeight(), Pair(20.0, 0.0))
 
         val createdPath = Path.createPath(Pair(0.0, 0.0), Pair(20.0, 20.0))
         Assert.assertEquals(createdPath.id, "")

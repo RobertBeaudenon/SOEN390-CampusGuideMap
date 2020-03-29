@@ -131,11 +131,11 @@ class Path(val id: String, val d: String, var transform: String, val style: Stri
     }
 
     override fun getWidth(): Pair<Double, Double> {
-        return Pair<Double,Double> (0.0,0.0)
+        return Pair<Double,Double> (xMax, xMin)
     }
 
     override fun getHeight(): Pair<Double, Double> {
-        return Pair<Double,Double> (0.0,0.0)
+        return Pair<Double,Double> (yMax,yMin)
     }
 
     override fun getCenter(): Pair<Double, Double> {
