@@ -165,7 +165,7 @@ class SearchFragment : Fragment()  {
 		secondarySearchBar.clearFocus()
 
         //Make sure BOTH coordinates are set before generating directions
-        if(origin?.coordinate == LatLng(0.0, 0.0) || destination?.coordinate == LatLng(0.0, 0.0)){
+        if(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0)){
             val handler = CoroutineExceptionHandler{_, throwable ->
                 Log.e(ContentValues.TAG, throwable.message!!)
             }

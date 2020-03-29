@@ -134,7 +134,7 @@ class NavigationRepository(private val application: Application) {
 
     fun generateDirections(origin: Location, destination: Location, mode: String) {
         val instructions = arrayListOf<String>()
-        if (origin.coordinate == LatLng(0.0, 0.0) || destination.coordinate == LatLng(0.0, 0.0))
+        if (origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(0.0, 0.0))
             return
         val directionsRequest = object : StringRequest(
             Method.GET,
@@ -228,8 +228,8 @@ class NavigationRepository(private val application: Application) {
         transportationMethod: String
     ): String {
         return "https://maps.googleapis.com/maps/api/directions/json?" +
-                "origin=" + origin.coordinate.latitude.toString() + "," + origin.coordinate.longitude.toString() +
-                "&destination=" + destination.coordinate.latitude.toString() + "," + destination.coordinate.longitude.toString() +
+                "origin=" + origin.getLocation().latitude.toString() + "," + origin.getLocation().longitude.toString() +
+                "&destination=" + destination.getLocation().latitude.toString() + "," + destination.getLocation().longitude.toString() +
                 "&mode=" + transportationMethod +
                 "&key=" + application.applicationContext.getString(R.string.ApiKey)
     }
