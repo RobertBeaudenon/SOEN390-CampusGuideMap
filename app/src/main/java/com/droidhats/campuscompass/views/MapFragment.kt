@@ -45,13 +45,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
@@ -166,7 +160,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         // Move camera to SGW
         // TODO when navigation path is being shown, the camera should be moved to current location
-        moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
+        moveTo(viewModel.getCampuses()[0].getLocation(), 16.5f)
 
         map!!.setOnMapClickListener {
             //Dismiss the bottom sheet when clicking anywhere on the map
@@ -368,11 +362,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Setting Toggle button listener
         toggleButton.setOnCheckedChangeListener { _, onSwitch ->
             if (onSwitch) {
-                campusView = LatLng(45.458220, -73.639702)
-                moveTo(campusView, 16f)
+                campusView = LatLng(45.4579765, -73.6391898)
+                moveTo(campusView, 16.75f)
             } else {
-                campusView = LatLng(45.495784, -73.577197)
-                moveTo(campusView, 16f)
+                campusView = LatLng(45.4954782, -73.5774163)
+                moveTo(campusView, 16.5f)
             }
             dismissBottomSheet()
         }
@@ -521,7 +515,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun moveTo(coordinates: LatLng, zoomLevel: Float){
-        map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoomLevel))
+        val cameraPosition = CameraPosition.builder()
+            .target(coordinates)
+            .zoom(zoomLevel)
+            .bearing(-50f)
+            .build()
+
+        map!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
     private fun populatePlaceInfoCard(location: GooglePlace){
