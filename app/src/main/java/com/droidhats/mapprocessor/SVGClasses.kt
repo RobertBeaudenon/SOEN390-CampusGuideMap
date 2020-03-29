@@ -1,7 +1,9 @@
 package com.droidhats.mapprocessor
 
+
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 abstract class MapElement(){
@@ -35,13 +37,14 @@ class Rect (val id: String, val x: Double, val y: Double, val height: Double, va
 
 }
 
-class Path(val id: String, val d: String, val style: String, val isClosed: Boolean) : MapElement() {
+class Path(val id: String, val d: String, val transform: String, val style: String, val isClosed: Boolean) : MapElement() {
 
     var xMin: Double
     var xMax: Double
     var yMin: Double
     var yMax: Double
     var vertices: MutableList<Pair<Double, Double>> = mutableListOf()
+    var matrix: MutableList<Double> = mutableListOf()
 
     init {
         if (d[0] == 'm' && isClosed) {
@@ -55,6 +58,10 @@ class Path(val id: String, val d: String, val style: String, val isClosed: Boole
                 var vert = Pair<Double, Double>(element[0].toDouble() + prevVertex.first, element[1].toDouble() + prevVertex.second)
                 vertices.add(Pair<Double, Double>(element[0].toDouble() + prevVertex.first, element[1].toDouble() + prevVertex.second))
                 prevVertex = vert
+            }
+
+            if (transform.contains("matrix(")) {
+                transformVertices()
             }
 
             var initialVertex = vertices[0]
@@ -77,6 +84,31 @@ class Path(val id: String, val d: String, val style: String, val isClosed: Boole
         }
     }
 
+    fun transformVertices() {
+        var matrixString = transform.substring(7, transform.length-1).split(',')
+        for (elmt in matrixString) {
+            matrix.add(elmt.toDouble())
+        }
+
+        for (vertex in 0 until vertices.size) {
+            vertices[vertex] = transform(vertices[vertex])
+        }
+    }
+
+    fun transform(coordinate: Pair<Double, Double>):  Pair<Double, Double> {
+        val first = matrix[0]*coordinate.first + matrix[2]*coordinate.second + matrix[4]
+        val second = matrix[1]*coordinate.first + matrix[3]*coordinate.second + matrix[5]
+        return Pair(first, second)
+    }
+
+    fun getVertices(): String {
+        var string: String = ""
+        for (vertex in vertices) {
+            string += Circle(vertex.first, vertex.second, 5.0)
+        }
+        return string
+    }
+
     override fun toString(): String {
         return "<path id=\"$id\" d=\"$d\" style=\"$style\"/>"
     }
@@ -87,7 +119,7 @@ class Path(val id: String, val d: String, val style: String, val isClosed: Boole
             return false
         }
 
-        if (x < xMin + 5 || x > xMax - 5 || y < yMin + 5 || y > yMax - 5) {
+        if (x > xMin - 5 && x < xMax + 5 && y > yMin - 5 && y < yMax + 5) {
             return true
         }
         return false
@@ -128,9 +160,29 @@ class Circle(val cx: Double, val cy: Double, val r: Double) : MapElement() {
     }
 
     fun isWithin(x: Double, y: Double, range: Double): Boolean {
+        //val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
+
+        return (cx.roundToInt() == x.roundToInt() && abs(y - cy) < range) || (cy.roundToInt() == y.roundToInt() && abs(cx - x) < range)//distance < range
+    }
+
+    fun isWithinRange(x: Double, y: Double, range: Double): Boolean {
         val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
+
         return distance < range
     }
+
+    fun isWithinX(x: Double, y: Double, range: Double): Boolean {
+        //val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
+
+        return (cy.roundToInt() == y.roundToInt() && abs(cx - x) < range)//distance < range
+    }
+
+    fun isWithinY(x: Double, y: Double, range: Double): Boolean {
+        //val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
+
+        return (cx.roundToInt() == x.roundToInt() && abs(y - cy) < range)//distance < range
+    }
+
     override fun getWidth(): Pair<Double, Double> {
         return Pair<Double,Double> (0.0,0.0)
     }
