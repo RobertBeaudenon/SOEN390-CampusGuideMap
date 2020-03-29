@@ -170,7 +170,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         // Move camera to SGW
         // TODO when navigation path is being shown, the camera should be moved to current location
-        moveTo(viewModel.getCampuses()[0].getLocation(), 16.3f)
+        moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
 
         map!!.setOnMapClickListener {
             //Dismiss the bottom sheet when clicking anywhere on the map
@@ -372,11 +372,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Setting Toggle button listener
         toggleButton.setOnCheckedChangeListener { _, onSwitch ->
             if (onSwitch) {
-                campusView = LatLng(45.4579765, -73.6391898)
-                moveTo(campusView, 16.3f)
+                campusView = LatLng(45.458220, -73.639702)
+                moveTo(campusView, 16f)
             } else {
-                campusView = LatLng(45.4954782, -73.5774163)
-                moveTo(campusView, 16.3f)
+                campusView = LatLng(45.495784, -73.577197)
+                moveTo(campusView, 16f)
             }
             dismissBottomSheet()
         }
@@ -527,13 +527,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun moveTo(coordinates: LatLng, zoomLevel: Float){
-        val cameraPosition = CameraPosition.builder()
-            .target(coordinates)
-            .zoom(zoomLevel)
-            .bearing(-50f)
-            .build()
-
-        map!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
+        map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoomLevel))
     }
 
     private fun populatePlaceInfoCard(location: GooglePlace){
