@@ -67,6 +67,7 @@ import kotlin.collections.MutableList
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.instructions_sheet_layout.*
 import kotlinx.android.synthetic.main.search_bar_layout.*
+import kotlinx.coroutines.Dispatchers
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -211,11 +212,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun setNavigationButtons(){
-        val buttonCloseInstructions = requireActivity().findViewById<ImageButton>(R.id.buttonCloseInstructions)
+        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
         buttonCloseInstructions.setOnClickListener{
             toggleInstructionsView(false)
         }
-        val buttonResumeNavigation = requireActivity().findViewById<Button>(R.id.buttonResumeNavigation)
+        val buttonResumeNavigation : Button = requireActivity().findViewById(R.id.buttonResumeNavigation)
         buttonResumeNavigation.setOnClickListener{
             toggleInstructionsView(true)
             //Move to current location
@@ -546,18 +547,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onCalendarEventClick(item: CalendarEvent?) {}
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
+        var isCampusBuilding = false
         if (item is GooglePlace) {
             findNavController().navigateUp()
-            focusLocation(item)
+            GlobalScope.launch(Dispatchers.Main) {
+                for (building in viewModel.getBuildings())
+                    if (building.getPlaceId() == item.placeID) { //Check if location is a concordia building
+                        isCampusBuilding = true
+                        handleBuildingClick(building)
+                    }
+              focusLocation(item, isCampusBuilding)
+            }
         }
     }
 
-    private fun focusLocation(location: GooglePlace){
+    private fun focusLocation(location: GooglePlace, isCampusBuilding : Boolean){
        GlobalScope.launch {
            viewModel.navigationRepository.fetchPlace(location)
        }.invokeOnCompletion {
            requireActivity().runOnUiThread{
                moveTo(location.coordinate, 17.0f)
+               if (!isCampusBuilding)
                populatePlaceInfoCard(location)
            }
        }
