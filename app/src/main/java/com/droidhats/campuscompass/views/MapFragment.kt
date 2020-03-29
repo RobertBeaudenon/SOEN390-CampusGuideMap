@@ -187,15 +187,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun detachBuildingObservers(){
-        // Detach all observer buildings with initial markers
-        for (building in viewModel.getBuildings()) {
-            if (observerList.contains(building) && building.hasCenterLocation()) {
-                detach(building)
-            }
-        }
-    }
-
     private fun observeNavigation() {
         viewModel.getNavigationRoute().observe(viewLifecycleOwner, Observer {
             // The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
@@ -284,12 +275,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (!locationUpdateState) {
             startLocationUpdates()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        detachBuildingObservers()
-        mapModel?.killInstance()
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener

@@ -22,26 +22,16 @@ class Map(
     companion object {
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
-
-        // Singleton instantiation
-        private var instance: Map? = null
-
-        fun getInstance(googleMap: GoogleMap,
-                        buildings: List<Building>
-        ) =
-            instance
-                ?: synchronized(this) {
-                    instance
-                        ?: Map(googleMap,
-                            buildings
-                        ).also { instance = it }
-                }
+        var listOfDrawnBuildings = mutableListOf<Building>()
     }
 
     /**
      * Initializes the map, and attaches listeners to it.
      */
     init {
+        googleMap.clear()
+        listOfDrawnBuildings.clear()
+
         //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
         googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
@@ -58,9 +48,8 @@ class Map(
         // Draw the buildings polygons and markers
         for (building in buildings) {
             drawBuildingPolygon(building)
-            setBuildingMarker(building)
         }
-
+        setBuildingMarker()
     }
 
     /**
@@ -75,16 +64,16 @@ class Map(
     /**
      * Draws the marker for a single building on the map
      */
-    private fun setBuildingMarker(building: Building) {
-        if(building.hasCenterLocation()) {
-            val marker: Marker = googleMap.addMarker(building.getMarkerOptions())
-            building.setMarker(marker)
-            // Set the marker to become the new bitmap rather than the conventional map pin
-            building.getMarker().setIcon(BitmapDescriptorFactory.fromResource(building.getMarkerResId()))
+    private fun setBuildingMarker() {
+        for (building in buildings) {
+            if (building.hasCenterLocation() && !listOfDrawnBuildings.contains(building)){
+                listOfDrawnBuildings.add(building)
+                val marker: Marker = googleMap.addMarker(building.getMarkerOptions())
+                building.setMarker(marker)
+                // Set the marker to become the new bitmap rather than the conventional map pin
+                building.getMarker()
+                    .setIcon(BitmapDescriptorFactory.fromResource(building.getMarkerResId()))
+            }
         }
-    }
-
-    fun killInstance(){
-        instance = null
     }
 }
