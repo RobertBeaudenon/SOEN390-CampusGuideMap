@@ -8,13 +8,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.droidhats.campuscompass.IndoorLocationDatabase
+import com.droidhats.campuscompass.roomdb.IndoorLocationDatabase
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.repositories.IndoorLocationRepository
+import com.droidhats.campuscompass.repositories.IndoorNavigationRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
@@ -99,11 +100,10 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
              "WHERE location_type ='classroom' " +
               "AND location_name like '%$qEsc%' " +
                "OR location_name like '%${qEsc.toUpperCase(Locale.ROOT)}%' " +
-                    "LIMIT 3"
+                    "LIMIT 5"
 
         val sqliteQuery = SimpleSQLiteQuery(queryString)
         indoorSearchSuggestions = indoorLocationRepository.getMatchedClassrooms(sqliteQuery)
-
         return indoorSearchSuggestions != null
     }
 
@@ -129,5 +129,9 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
            if (destination is Building)
                navigationRepository.fetchRouteTimes(origin, destination)
        }
+    }
+
+    fun setIndoorDirections(startAndEnd: Pair<String, String>) {
+        IndoorNavigationRepository.getInstance().setStartAndEnd(startAndEnd)
     }
 }

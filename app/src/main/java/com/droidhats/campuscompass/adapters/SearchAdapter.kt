@@ -92,5 +92,4 @@ class SearchAdapter(
     interface OnSearchResultClickListener {
         fun onSearchResultClickListener(item: Location?)
     }
-
 }
