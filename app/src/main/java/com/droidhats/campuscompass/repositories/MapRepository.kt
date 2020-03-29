@@ -28,7 +28,20 @@ class MapRepository(applicationContext: Context) {
     fun getCampuses(): List<Campus> = campuses
 
     /**
+     * Iterate over buildings
+     * @param apply Lambda function for doing stuff in the for loop
+     */
+    fun forEachBuilding(apply: (building: Building) -> Unit) {
+        for (campus in campuses) {
+            for (building in campus.getBuildings()) {
+                apply(building)
+            }
+        }
+    }
+
+    /**
      * Returns a list of all buildings.
+     * @return list of buildings
      */
     fun getBuildings(): List<Building> = buildings
 
@@ -118,6 +131,15 @@ class MapRepository(applicationContext: Context) {
                     .getJSONArray("departments")
                 val servicesArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("services")
+
+                val initial: String = buildingsArray.getJSONObject(i).get("initial").toString()
+                val floorMapArray: JSONArray = buildingsArray.getJSONObject(i)
+                    .getJSONArray("floor_maps")
+                var floorMaps: MutableList<String> = mutableListOf()
+                for (x in 0 until floorMapArray.length()) {
+                    floorMaps.add(floorMapArray.getString(x))
+                }
+
                 val buildingLocation = LatLng(
                     buildingLocationArray[0].toString().toDouble(),
                     buildingLocationArray[1].toString().toDouble()
@@ -159,6 +181,7 @@ class MapRepository(applicationContext: Context) {
                 buildingsList.add(Building(buildingLocation, buildingName, buildingCenterLocation,
                      polygonCoordinatesList, buildingAddress, buildingPlaceId, hoursBuilder.toString(),
                     getInfoFromTraversal(departmentsArray), getInfoFromTraversal(servicesArray),
+                    Pair(initial, floorMaps),
                     buildingImageResourceID, buildingMarkersIcons))
             }
         } catch(e: JSONException) {

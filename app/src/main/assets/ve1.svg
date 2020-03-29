@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1024"
+   height="1024"
+   viewBox="0 0 1024 1024"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="VE-1.svg"
+   inkscape:export-filename="G:\SOEN 390 Floorplans\VL-2.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="49.655533"
+     inkscape:cy="536.38253"
+     inkscape:document-units="px"
+     inkscape:current-layer="g4664"
+     showgrid="false"
+     inkscape:snap-page="false"
+     units="px"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-bbox="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1014"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:snap-nodes="true"
+     inkscape:snap-others="false" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     style="display:inline"
+     inkscape:label="VE1 vec copy"
+     id="g4664"
+     inkscape:groupmode="layer">
+    <path
+       id="path4672"
+       d="m 790.17773,42.214844 0,94.642576 -97.21289,0 0,32.04883 0,25.75781 14.64649,0 0,6.0625 33.83984,0 0,-31.82031 48.72656,0 0,1.00977 33.60157,0 0,-47.34375 6.5664,0 0,-80.357426 -6.5664,0 -33.60157,0 z"
+       style="fill:#f7d6d6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:connector-curvature="0" />
+    <rect
+       y="168.90587"
+       x="707.61188"
+       height="31.819807"
+       width="33.840092"
+       id="rect4666"
+       style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4668"
+       d="m 790.17773,42.214844 0,127.701176 33.60157,0 0,-47.34375 6.5664,0 0,-80.357426 -6.5664,0 -33.60157,0 z"
+       style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       y="168.90587"
+       x="692.96466"
+       height="25.758892"
+       width="14.647231"
+       id="rect4670"
+       style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+
+    <!-- Displaying stair icon on the map -->
+    <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs1" x="708" y="140">
+      <path
+          d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
+          fill="#666666"
+          stroke-width="0"/>
+      <path
+          d="M17.5 31.9412C24.4036 31.9412 30 25.6863 30 17.9706C30 10.2549 24.4036 4 17.5 4C10.5964 4 5 10.2549 5 17.9706C5 25.6863 10.5964 31.9412 17.5 31.9412Z"
+          fill="#F7D6D6"
+          stroke-width="0"/>
+      <path
+          d="M26.2188 10.3047H21.6094C21.1779 10.3047 20.8282 10.6544 20.8282 11.0859V14.9141H17C16.5686 14.9141 16.2188 15.2638 16.2188 15.6953V19.5234H12.3907C11.9592 19.5234 11.6094 19.8732 11.6094 20.3047V24.1328H7.78125C7.34977 24.1328 7 24.4826 7 24.9141C7 25.3455 7.34977 25.6953 7.78125 25.6953H12.3907C12.5978 25.6953 12.7966 25.613 12.9431 25.4665C13.0896 25.32 13.1719 25.1212 13.1719 24.9141L13.1719 21.0859H17C17.2072 21.0859 17.406 21.0036 17.5525 20.8571C17.699 20.7106 17.7813 20.5119 17.7813 20.3047L17.7812 16.4766H21.6094C21.8166 16.4766 22.0153 16.3943 22.1618 16.2477C22.3083 16.1012 22.3906 15.9025 22.3906 15.6953V11.8672H26.2188C26.6502 11.8672 27 11.5174 27 11.0859C27 10.6544 26.6502 10.3047 26.2188 10.3047Z"
+          fill="#DA3636"
+          stroke-width="0"/>
+    </svg>
+  </g>
+</svg>

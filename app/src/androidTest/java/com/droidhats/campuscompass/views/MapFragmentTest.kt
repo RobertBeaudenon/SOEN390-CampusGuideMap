@@ -2,6 +2,7 @@ package com.droidhats.campuscompass.views
 
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.Espresso.onView
@@ -134,7 +135,7 @@ class MapFragmentTest {
                         withChild(
                             allOf(
                                 withId(R.id.search_suggestion),
-                                withText("H-400")
+                                withText("hall-803")
                             )
                         )
                     )
@@ -143,6 +144,7 @@ class MapFragmentTest {
             )
         ).perform(click())
 
+        Espresso.pressBack()
         //Performs click on the Set Navigation Button
         onView(
             allOf(
@@ -154,7 +156,7 @@ class MapFragmentTest {
                         withChild(
                             allOf(
                                 withId(R.id.search_suggestion),
-                                withText("H-400")
+                                withText("hall-803")
                             )
                         )
                     )
@@ -380,14 +382,14 @@ class MapFragmentTest {
         Thread.sleep(2000)
 
         //Ensuring the text of the toggle just clicked is indeed SWG
-        onView(withId(R.id.toggleButton)).check(matches(withText("SGW")))
+        onView(withId(R.id.toggleButton)).check(matches(withText("LOY")))
 
         //Checking when the toggle is clicked again, it's indeed not checked
         onView(withId(R.id.toggleButton)).perform(click()).check(matches(isNotChecked()))
         Thread.sleep(2000)
 
         //Ensuring the text of the toggle just clicked is indeed LOY
-        onView(withId(R.id.toggleButton)).check(matches(withText("LOY")))
+        onView(withId(R.id.toggleButton)).check(matches(withText("SGW")))
     }
 
     @Test
