@@ -91,9 +91,11 @@ class DirectionsTest {
        onView(ViewMatchers.withId(R.id.buttonInstructions))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
 
-        //Verify instructions are displayed
+        //TODO: Fix this as this is no longer in existence (It has been removed).
+        /*
         onView(ViewMatchers.withId(R.id.instructionsStepsID))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+*/
 
         //Verify close instructions buttons is displayed & click it
         onView(ViewMatchers.withId(R.id.buttonCloseInstructions))

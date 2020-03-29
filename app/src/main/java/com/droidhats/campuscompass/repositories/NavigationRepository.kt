@@ -162,44 +162,17 @@ class NavigationRepository(private val application: Application) {
 
                         try {
                             if (mode == "transit" || mode == "walking") {
-                                instructions.add(
-                                    stepsArray.getJSONObject(i).getString("html_instructions") + "<br>Distance: " + stepsArray.getJSONObject(
-                                        i
-                                    ).getJSONObject("distance").getString("text") + "<br>Duration: " + stepsArray.getJSONObject(
-                                        i
-                                    ).getJSONObject("duration").getString("text") + "<br>"
-                                )
+                                instructions.add(stepsArray.getJSONObject(i).getString("html_instructions") + "<br><br>Distance: " + stepsArray.getJSONObject(i).getJSONObject("distance").getString("text") + "<br><br>Duration: " + stepsArray.getJSONObject(i).getJSONObject("duration").getString("text"))
                                 if (stepsArray.getJSONObject(i).has("steps")) {
-                                    instructions.add("Instructions:<br>")
                                     for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
-                                        instructions.add(
-                                            stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
-                                                j
-                                            ).getString("html_instructions") + "<br>"
-                                        )
+                                        instructions.add(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j).getString("html_instructions"))
                                     }
-                                    instructions.add("<br>")
                                 }
                                 if (stepsArray.getJSONObject(i).has("transit_details")) {
-                                    instructions.add("Information:<br>")
-                                    instructions.add(
-                                        "Departure Stop: " + stepsArray.getJSONObject(i).getJSONObject(
-                                            "transit_details"
-                                        ).getJSONObject("departure_stop").getString("name") + "<br>"
-                                    )
-                                    instructions.add(
-                                        "Arrival Stop: " + stepsArray.getJSONObject(i).getJSONObject(
-                                            "transit_details"
-                                        ).getJSONObject("arrival_stop").getString("name") + "<br>"
-                                    )
-                                    instructions.add(
-                                        "Total Number of Stop: " + stepsArray.getJSONObject(
-                                            i
-                                        ).getJSONObject("transit_details").getString("num_stops") + "<br><br>"
-                                    )
+                                    //instructions.add("Departure Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getJSONObject("departure_stop").getString("name") + "<br><br>Arrival Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getJSONObject("arrival_stop").getString("name") + "<br><br>Total Number of Stop: " + stepsArray.getJSONObject(i).getJSONObject("transit_details").getString("num_stops"))
                                 }
                             } else {
-                                instructions.add(stepsArray.getJSONObject(i).getString("html_instructions") + "<br>")
+                                instructions.add(stepsArray.getJSONObject(i).getString("html_instructions"))
                             }
                             path.add(PolyUtil.decode(points))
                         }catch (e : org.json.JSONException){

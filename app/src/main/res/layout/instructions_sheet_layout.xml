@@ -15,7 +15,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:background="@android:color/white">
 
         <ImageButton
@@ -25,14 +25,6 @@
             android:backgroundTint="@color/white"
             android:src="@drawable/ic_close_black_24dp"
             android:text="@string/x_button" />
-
-        <TextView
-            android:id="@+id/instructionsStepsID"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/buttonCloseInstructions"
-            android:gravity="center"
-            android:text="" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -48,6 +40,8 @@
                 android:layout_toStartOf="@+id/nextArrow"
                 android:layout_toEndOf="@+id/prevArrow"
                 android:gravity="center"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textSize="15dp"
                 android:text="" />
 
             <ImageView

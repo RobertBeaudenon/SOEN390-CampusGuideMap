@@ -10,7 +10,6 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
-import android.text.Html.fromHtml
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -93,9 +92,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val MAP_PADDING_RIGHT = 15
         var stepInsts = ""
         private var currentNavigationRoute : NavigationRoute? = null
+        var myArrayHolder = ArrayList<String>()
     }
 
-    private var stepInstructions: String = ""
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
 
@@ -379,18 +378,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    //Todo: Remove this whole part in the end.
     //Handle the clicking of the instructions button. Should probably move from here later
     private fun showInstructions(instructions : ArrayList<String>) {
         buttonInstructions.visibility = View.VISIBLE
         //instruction button listener
         buttonInstructions.setOnClickListener {
-            for (item in instructions) {
-                stepInstructions += item
-            }
-            stepInsts = fromHtml(stepInstructions).toString()
+            myArrayHolder = instructions.clone() as ArrayList<String>
             instructions.clear() // Array is cleared
-            stepInstructions = "" // String instruction cleared
             findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
         }
     }
