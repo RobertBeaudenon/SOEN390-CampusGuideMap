@@ -26,15 +26,16 @@
         <action
             android:id="@+id/action_mapsActivity_to_calendarFragment"
             app:destination="@id/nav_schedule"
-            app:popUpTo="@id/map_fragment"
-            app:popUpToInclusive="true"/>
+            app:launchSingleTop="true" />
         <action
             android:id="@+id/action_map_fragment_to_instructionFragment"
-            app:destination="@id/instructionFragment" />
+            app:destination="@id/instructionFragment"
+            app:launchSingleTop="true" />
         <action
             android:id="@+id/action_map_fragment_to_search_fragment"
             app:destination="@id/search_fragment"
-            app:enterAnim="@android:anim/fade_in" />
+            app:enterAnim="@android:anim/fade_in"
+            app:launchSingleTop="true" />
     </fragment>
 
     <fragment
@@ -52,7 +53,8 @@
         <action
             android:id="@+id/action_navSchedule_to_mapFragment"
             app:destination="@id/map_fragment"
-            app:popUpTo="@id/map_fragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/nav_schedule"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
