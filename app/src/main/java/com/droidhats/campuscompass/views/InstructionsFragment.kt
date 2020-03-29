@@ -9,7 +9,8 @@ import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 
 import com.droidhats.campuscompass.R
-import kotlinx.android.synthetic.main.instructions_sheet_layout.*
+import kotlinx.android.synthetic.main.instructions_sheet_layout.buttonCloseInstructions
+import kotlinx.android.synthetic.main.instructions_sheet_layout.instructionsStepsID
 
 class InstructionFragment : Fragment() {
      private lateinit var root : View

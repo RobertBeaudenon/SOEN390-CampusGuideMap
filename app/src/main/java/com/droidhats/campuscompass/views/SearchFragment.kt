@@ -24,7 +24,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
-import com.droidhats.campuscompass.models.*
+import com.droidhats.campuscompass.models.Location
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.IndoorLocation
+import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.droidhats.mapprocessor.ProcessMap
 import com.google.android.gms.location.LocationServices

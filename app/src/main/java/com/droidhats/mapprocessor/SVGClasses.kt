@@ -1,10 +1,6 @@
 package com.droidhats.mapprocessor
 
-import java.util.*
-import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
+import java.util.Random
 
 /**
  * Abstract class for holding any element in the svg map
