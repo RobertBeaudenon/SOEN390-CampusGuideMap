@@ -1,7 +1,5 @@
 package com.droidhats.mapprocessor
 
-import java.awt.image.BufferedImage
-import java.awt.image.DataBufferByte
 import java.io.File
 
 class ProcessMap {
@@ -40,7 +38,7 @@ class ProcessMap {
 
         rectangles.forEach{ it ->
             println(it)
-            println(extractAttr("id=", it))
+            println(extractAttr("id", it))
         }
 
         paths.forEach{ it ->
@@ -49,7 +47,8 @@ class ProcessMap {
 
     }
 
-    fun extractAttr(string: String, line: String): String? {
+    fun extractAttr(attribute: String, line: String): String? {
+        val string: String = "$attribute="
         if (!line.contains(string)) return null
 
         var inString: Boolean = false
@@ -68,14 +67,6 @@ class ProcessMap {
                 continue
             }
 
-//            println(string)
-//            println(string.length)
-//            println(line)
-//            println(line.length)
-//            println(i)
-//            line.substring(i, i + string.length)
-//            string.equals(line.substring(i, string.length-1))
-
             if ((i + string.length) < line.length && string.equals(line.substring(i, i + string.length)) && !inString) {
                 startExtractingString = true
             }
@@ -88,51 +79,3 @@ class ProcessMap {
     }
 
 }
-
-//fun convertTo2DWithoutUsingGetRGB(image: BufferedImage): Array<IntArray>? {
-//    val pixels = (image.raster.dataBuffer as DataBufferByte).data
-//    val width = image.width
-//    val height = image.height
-//    val hasAlphaChannel = image.alphaRaster != null
-//    val result = Array(height) { IntArray(width) }
-//    if (hasAlphaChannel) {
-//        val pixelLength = 4
-//        var pixel = 0
-//        var row = 0
-//        var col = 0
-//        while (pixel + 3 < pixels.size) {
-//            var argb = 0
-//            argb += pixels[pixel].toInt() and 0xff shl 24 // alpha
-//            argb += pixels[pixel + 1].toInt() and 0xff // blue
-//            argb += pixels[pixel + 2].toInt() and 0xff shl 8 // green
-//            argb += pixels[pixel + 3].toInt() and 0xff shl 16 // red
-//            result[row][col] = argb
-//            col++
-//            if (col == width) {
-//                col = 0
-//                row++
-//            }
-//            pixel += pixelLength
-//        }
-//    } else {
-//        val pixelLength = 3
-//        var pixel = 0
-//        var row = 0
-//        var col = 0
-//        while (pixel + 2 < pixels.size) {
-//            var argb = 0
-//            argb += -16777216 // 255 alpha
-//            argb += pixels[pixel].toInt() and 0xff // blue
-//            argb += pixels[pixel + 1].toInt() and 0xff shl 8 // green
-//            argb += pixels[pixel + 2].toInt() and 0xff shl 16 // red
-//            result[row][col] = argb
-//            col++
-//            if (col == width) {
-//                col = 0
-//                row++
-//            }
-//            pixel += pixelLength
-//        }
-//    }
-//    return result
-//}
