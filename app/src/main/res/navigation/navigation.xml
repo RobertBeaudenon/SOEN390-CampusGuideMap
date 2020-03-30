@@ -28,10 +28,6 @@
             app:destination="@id/nav_schedule"
             app:launchSingleTop="true" />
         <action
-            android:id="@+id/action_map_fragment_to_instructionFragment"
-            app:destination="@id/instructionFragment"
-            app:launchSingleTop="true" />
-        <action
             android:id="@+id/action_map_fragment_to_floorFragment"
             app:destination="@id/floor_fragment" />
         <action
@@ -59,14 +55,6 @@
             app:launchSingleTop="true"
             app:popUpTo="@id/nav_schedule"
             app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/instructionFragment"
-        android:name="com.droidhats.campuscompass.views.InstructionFragment"
-        android:label="instructionFragment" >
-        <action
-            android:id="@+id/action_instructionFragment_to_map_fragment"
-            app:destination="@id/map_fragment" />
     </fragment>
     <fragment
         android:id="@+id/floor_fragment"

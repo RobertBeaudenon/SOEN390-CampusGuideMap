@@ -42,4 +42,7 @@
      <string name="searchInfo">Enter Street, Address, Concordia Classroom…</string>
      <string name="sample">sample</string>
      <string name="category">category</string>
+     <string name="next_button">Next Button</string>
+      <string name="previous_button">Previous Button</string>
+      <string name="done">Done</string>
  </resources>
