@@ -404,7 +404,6 @@ class SearchFragment : Fragment()  {
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.INVISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.INVISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.INVISIBLE
-                root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.INVISIBLE
             } else {
                 viewModel.getRouteTimes(
                         NavigationPoints[mainBar.id]!!,
@@ -413,7 +412,6 @@ class SearchFragment : Fragment()  {
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.VISIBLE
-                root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.VISIBLE
             }
             toggleNavigationButtonColor(Color.GREEN)
         }
