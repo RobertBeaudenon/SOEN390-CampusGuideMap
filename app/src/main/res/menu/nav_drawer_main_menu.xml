@@ -25,5 +25,11 @@
             android:id="@+id/nav_shuttle"
             android:icon="@drawable/radio_shuttle_off"
             android:title="@string/Shuttle_Feature_Name" />
+
+        <item
+            android:id="@+id/map_fragment"
+            android:icon="@drawable/icon_map"
+            android:title="@string/Map_Feature_Name" />
+
     </group>
 </menu>

@@ -10,6 +10,7 @@
      <string name="Resources_Feature_Name">Resources</string>
      <string name="Explore_Feature_Name">Explore</string>
      <string name="Shuttle_Feature_Name">Shuttle Bus</string>
+     <string name="Map_Feature_Name">Map</string>
      <string name="Settings">Settings</string>
      <string name="sgw">SGW</string>
      <string name="loy">LOY</string>
@@ -42,4 +43,7 @@
      <string name="searchInfo">Enter Street, Address, Concordia Classroom…</string>
      <string name="sample">sample</string>
      <string name="category">category</string>
+     <string name="next_button">Next Button</string>
+      <string name="previous_button">Previous Button</string>
+      <string name="done">Done</string>
  </resources>

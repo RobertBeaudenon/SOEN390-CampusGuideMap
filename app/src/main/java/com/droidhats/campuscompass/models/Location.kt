@@ -15,19 +15,24 @@ import kotlinx.android.parcel.Parcelize
 */
 abstract class Location {
     abstract val name: String
-    abstract val coordinate: LatLng
+    abstract fun getLocation(): LatLng
+    abstract fun getNextDirections() : List<String>
 }
 
 /**
  * Model for Campus
  */
 class Campus(
-    override val coordinate: LatLng,
+    val coordinate: LatLng,
     override val name: String,
     private val buildingsList: List<Building>
 ) : Location() {
 
-    fun getLocation(): LatLng = coordinate
+    override fun getLocation(): LatLng = coordinate
+    override fun getNextDirections() : List<String> {
+        return emptyList()
+    }
+
     fun getBuildings(): List<Building> = buildingsList
 }
 
@@ -36,7 +41,7 @@ class Campus(
  */
 @Parcelize
 class Building(
-    override val coordinate: LatLng,
+    val coordinate: LatLng,
     override val name: String,
 	private val centerLocation: LatLng,
     private val polygonCoordinatesList: List<LatLng>,
@@ -45,6 +50,7 @@ class Building(
     private val openHours: String,
     private val departments: String,
     private val services: String,
+    private val indoorInfo: Pair<String, List<String>>,
     private val imageResId: Int,
     private val markerResId: Int
 ) : Location(), Parcelable, Observer {
@@ -57,7 +63,11 @@ class Building(
         private const val MARKER_VISIBILITY_ZOOM_LEVEL = 16f
     }
 
-    fun getLocation(): LatLng = coordinate
+    override fun getLocation(): LatLng = coordinate
+    override fun getNextDirections() : List<String> {
+        return emptyList()
+    }
+
     fun getAddress(): String = address
     fun getPlaceId(): String = placeId
     fun getCenterLocation(): LatLng = centerLocation
@@ -68,6 +78,7 @@ class Building(
     fun getImageResId(): Int = imageResId
     fun getMarkerResId(): Int = markerResId
     fun getMarker(): Marker = marker
+    fun getIndoorInfo() = indoorInfo
 
     fun setPolygon(polygon: Polygon){
         this.polygon = polygon
@@ -116,9 +127,13 @@ class GooglePlace(
     val placeID : String,
     override val name: String,
     val category : String,
-    override var coordinate: LatLng
+    var coordinate: LatLng
 ) : Location()
 {
     var place : Place? = null
     var isCurrentLocation : Boolean = false
+    override fun getLocation(): LatLng = coordinate
+    override fun getNextDirections() : List<String> {
+        return emptyList()
+    }
 }
