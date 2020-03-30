@@ -14,15 +14,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.droidhats.campuscompass.R
-import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.viewmodels.ShuttleViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.shuttle_campus_tab.*
+import kotlinx.android.synthetic.main.shuttle_fragment.*
 
 class ShuttleFragment : Fragment() {
 
     private lateinit var shuttleAdapter: ShuttleAdapter
+    private lateinit var viewModel: ShuttleViewModel
     private lateinit var viewPager: ViewPager2
 
     override fun onCreateView(
@@ -33,6 +33,7 @@ class ShuttleFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel = ViewModelProviders.of(this).get(ShuttleViewModel::class.java)
         super.onViewCreated(view, savedInstanceState)
         shuttleAdapter = ShuttleAdapter(this)
         viewPager = view.findViewById(R.id.pager)
@@ -40,10 +41,22 @@ class ShuttleFragment : Fragment() {
 
         val tabLayout: TabLayout = view.findViewById(R.id.tab_layout)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            if (position == 0)
+            if (position == 0) {
                 tab.text = "SGW TO LOY"
-            else
+                navigateWithShuttle.setOnClickListener {
+                    findNavController().navigateUp()
+                    viewModel.navigationRepository.generateDirections(viewModel.mapRepository.getCampuses()[0],
+                    viewModel.mapRepository.getCampuses()[1], "shuttle")
+                }
+            }
+            else{
                 tab.text = "LOY TO SGW"
+                navigateWithShuttle.setOnClickListener {
+                    findNavController().navigateUp()
+                    viewModel.navigationRepository.generateDirections(viewModel.mapRepository.getCampuses()[1],
+                        viewModel.mapRepository.getCampuses()[0], "shuttle")
+                }
+            }
         }.attach()
     }
 }
@@ -93,10 +106,8 @@ class CampusTabFragment : Fragment() {
             val table = root.findViewById<TableLayout>(R.id.shuttleTimesTable)
             for (dataRow in sgwShuttleTimes) {
                 val tableRow = TableRow(root.context)
+
                 val dayText = TextView(root.context)
-                /*  var layoutParams = TableRow.LayoutParams(
-                      TableRow.LayoutParams.WRAP_CONTENT,
-                      TableRow.LayoutParams.WRAP_CONTENT)*/
                 dayText.text = dataRow.shuttle_day
 
                 val timeText = TextView(root.context)
@@ -107,11 +118,6 @@ class CampusTabFragment : Fragment() {
                 table.addView(tableRow)
             }
         })
-        navigate(
-            viewModel.mapRepository.getCampuses()[0],
-            viewModel.mapRepository.getCampuses()[1]
-        )
-
     }
 
     private fun observeLOYShuttle() {
@@ -129,17 +135,6 @@ class CampusTabFragment : Fragment() {
                 table.addView(tableRow)
             }
         })
-        navigate(
-            viewModel.mapRepository.getCampuses()[1],
-            viewModel.mapRepository.getCampuses()[0]
-        )
-    }
-
-    private fun navigate(origin: Campus, dest: Campus) {
-        navigateWithShuttle.setOnClickListener {
-            findNavController().navigateUp()
-            viewModel.navigationRepository.generateDirections(origin, dest, "shuttle")
-        }
     }
 }
 

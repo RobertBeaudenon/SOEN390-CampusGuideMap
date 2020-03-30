@@ -4,33 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/nextShuttleDeparture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Next Shuttle Departure: -"
-        android:layout_gravity="center_horizontal"/>
-
-    <Button
-        android:id="@+id/navigateWithShuttle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Shuttle Trip"
-        android:layout_gravity="center_horizontal"/>
-
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
-
-        <TableLayout
-            android:layout_width="wrap_content"
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:nestedScrollingEnabled="true"
-            android:layout_margin="10dp"
-            android:id="@+id/shuttleTimesTable"/>
-    </androidx.core.widget.NestedScrollView>
+            android:layout_gravity="center_horizontal">
 
+            <TableLayout
+                android:id="@+id/shuttleTimesTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:nestedScrollingEnabled="true"
+                android:stretchColumns="0,1" />
+        </androidx.core.widget.NestedScrollView>
 </LinearLayout>
