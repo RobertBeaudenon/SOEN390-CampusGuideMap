@@ -36,6 +36,7 @@
                     android:layout_height="190dp"
                     app:srcCompat="@drawable/building_ljacc"
                     android:contentDescription="@string/contentDescription_BuildingImage" />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -69,25 +70,50 @@
 
         <!-- this needs to be deleted after -->
 
-        <Button
-            android:id="@+id/bottom_sheet_directions_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="125dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="125dp"
-            android:background="@drawable/calendarbutton"
-            android:drawableStart="@android:drawable/ic_dialog_map"
-            android:padding="10dp"
-            android:text="@string/directions"
-            android:textColor="#FFFFFF" />
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <Button
+                android:id="@+id/bottom_sheet_directions_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/calendarbutton"
+                android:drawableStart="@drawable/baseline_near_me_white_36dp"
+                android:padding="10dp"
+                android:text="@string/directions"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/bottom_sheet_floor_map_button"
+                android:layout_toRightOf="@+id/view"
+                android:textColor="#FFFFFF" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true" />
+
+            <Button
+                android:id="@+id/bottom_sheet_floor_map_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/calendarbutton"
+                android:drawableStart="@android:drawable/ic_dialog_map"
+                android:padding="10dp"
+                android:text="Indoor Maps"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/view"
+                android:textColor="#FFFFFF" />
+
+        </RelativeLayout>
+
 
         <TableLayout
             android:id="@+id/bottom_sheet_info_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="5dp"
+            android:padding="10dp"
             android:shrinkColumns="1">
 
             <TableRow
@@ -162,16 +188,5 @@
         </TableLayout>
 
 
-        <Button
-            android:id="@+id/bottom_sheet_floor_map_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="125dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="125dp"
-            android:background="@drawable/calendarbutton"
-            android:padding="10dp"
-            android:text="Indoor Maps"
-            android:textColor="#FFFFFF" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
