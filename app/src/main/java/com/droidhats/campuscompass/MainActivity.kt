@@ -15,11 +15,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.droidhats.campuscompass.views.CalendarFragment
 import com.droidhats.campuscompass.views.MapFragment
+import com.droidhats.campuscompass.views.ShuttleFragment
 import com.droidhats.campuscompass.views.SplashFragment
 import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(){
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -34,7 +35,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         navView.setupWithNavController(navController)
-        navView.setNavigationItemSelectedListener(this)
     }
 
     fun checkLocationPermission(): Boolean {
@@ -101,30 +101,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.nav_drawer_main_menu, menu)
-        return true
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
-        val navHostFragment: Fragment? = supportFragmentManager.primaryNavigationFragment
-        val currentFragment: Fragment? = navHostFragment?.childFragmentManager?.fragments?.get(0)
-
-        when (item.title) {
-            "Map" -> {
-                if(currentFragment is CalendarFragment) {
-                    findNavController(R.id.calendar_fragment).navigate(R.id.action_navSchedule_to_mapFragment)
-                }
-            }
-            "Schedule" -> {
-                if(currentFragment is MapFragment) {
-                    findNavController(R.id.coordinate_layout).navigate(R.id.action_mapsActivity_to_calendarFragment)
-                }
-            }
-        }
-        //close drawer when done
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        if(item.title == "Schedule" || item.title == "Map")
-        drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 }

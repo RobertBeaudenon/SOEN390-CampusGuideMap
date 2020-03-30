@@ -177,6 +177,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         attachBuildingObservers()
+        if (currentNavigationRoute != null) drawPathPolyline(currentNavigationRoute!!.polyLinePath)
     }
 
     private fun attachBuildingObservers(){
@@ -373,13 +374,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
             if (tracker == instructions.size-1) {
                 nextArrow.visibility = View.INVISIBLE
-                closeButton.visibility = View.VISIBLE
             }
         }
         prevArrow.setOnClickListener {
             tracker--
             nextArrow.visibility = View.VISIBLE
-            closeButton.visibility = View.INVISIBLE
             if(tracker < instructions.size) {
                 arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
             }
@@ -387,15 +386,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 prevArrow.visibility = View.INVISIBLE
             }
         }
-
-        val doneInstructions : Button = requireActivity().findViewById(R.id.closeButton)
-        doneInstructions.setOnClickListener {
-            toggleInstructionsView(false)
-            buttonResumeNavigation.visibility = View.INVISIBLE
-            currentNavigationRoute = null
-            clearNavigationPath()
-        }
-
     }
 
     private fun toggleInstructionsView(isVisible: Boolean){
@@ -414,7 +404,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
-        clearNavigationPath()  //Clear existing path to show only one path at a time
+      clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
          val polyline= map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
             currentNavigationPath.add(polyline)

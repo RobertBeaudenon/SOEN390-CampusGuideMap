@@ -280,12 +280,6 @@ class MapFragmentTest {
 
         //Checking when the bicycle option is clicked, it's indeed selected
         onView(withId(R.id.radio_transport_mode_bicycle)).perform(click()).check(matches(isChecked()))
-
-        //Checking if shuttle option is displayed
-        onView(withId(R.id.radio_transport_mode_shuttle)).check(matches(isDisplayed()))
-
-        //Checking when the shuttle option is clicked, it's indeed selected
-        onView(withId(R.id.radio_transport_mode_shuttle)).perform(click()).check(matches(isChecked()))
     }
 
     @Test

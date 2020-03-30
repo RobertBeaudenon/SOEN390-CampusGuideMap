@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull
  * @param shuttle_day
  * @param shuttle_time
  */
-@Entity
+@Entity(tableName = "ShuttleBusLoyolaEntity")
 data class ShuttleBusLoyolaEntity (
 
     @PrimaryKey
