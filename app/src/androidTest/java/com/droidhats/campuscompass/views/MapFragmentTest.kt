@@ -280,8 +280,7 @@ class MapFragmentTest {
 
         //Checking when the bicycle option is clicked, it's indeed selected
         onView(withId(R.id.radio_transport_mode_bicycle)).perform(click()).check(matches(isChecked()))
-
-       }
+    }
 
     @Test
     fun test_PlaceInfoCard() {
