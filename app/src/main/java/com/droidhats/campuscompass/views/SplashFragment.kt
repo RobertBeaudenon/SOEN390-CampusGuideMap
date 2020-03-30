@@ -52,9 +52,10 @@ class SplashFragment : Fragment() {
     fun navigateToMapFragment() {
         GlobalScope.launch {
             delay(2000)
-            findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
+            requireActivity().runOnUiThread{
+                findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
+            }
         }
-
         //UnLock drawer
         val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)

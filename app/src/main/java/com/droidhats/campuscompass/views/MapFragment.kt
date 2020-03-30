@@ -153,7 +153,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onMapReady(googleMap: GoogleMap) {
         // Get the map from the viewModel.
         mapModel = viewModel.getMapModel(googleMap, this, this, this, this.activity as MainActivity)
-        map = mapModel!!.googleMap
+        map = mapModel?.googleMap
 
         //Add custom style to map
         try {
@@ -306,10 +306,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroy(){
         super.onDestroy()
         detachBuildingObservers()
-        mapModel?.killInstance()
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
@@ -342,43 +341,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bundle.putParcelable("destBuilding", building)
             findNavController().navigate(R.id.search_fragment, bundle)
         }
-    }
-
-    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
-    private fun placeMarkerOnMap(location: LatLng) {
-        // 1. Create a MarkerOptions object and sets the user’s current location as the position for the marker
-        val markerOptions = MarkerOptions().position(location)
-
-        //added a call to getAddress() and added this address as the marker title.
-        val titleStr = getAddress(location)
-        markerOptions.title(titleStr)
-
-        // 2. Add the marker to the map
-        map!!.addMarker(markerOptions)
-    }
-
-    private fun getAddress(latLng: LatLng): String {
-        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
-        val geocoder = Geocoder(activity as Activity)
-        val addresses: List<Address>?
-        val address: Address?
-        var addressText = ""
-
-        try {
-            // 2 Asks the geocoder to get the address from the location passed to the method
-            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            // 3 If the response contains any address, then append it to a string and return
-            if (null != addresses && addresses.isNotEmpty()) {
-                address = addresses[0]
-                for (i in 0 until address.maxAddressLineIndex) {
-                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
-                }
-            }
-        } catch (e: IOException) {
-            Log.e("MapFragment", e.localizedMessage!!)
-        }
-
-        return addressText
     }
 
     //Handle the switching views between the two campuses. Should probably move from here later

@@ -70,7 +70,6 @@ class MapFragmentTest {
         }
     }
 
-
     @Test
     fun test_SearchBar() {
         //Checks if the search bar with text "search" exists
@@ -126,24 +125,24 @@ class MapFragmentTest {
             )
         ).check(matches(isDisplayed()))
 
-        //Checks if room suggestion H-400 is displayed and performs a click on the search card
-        onView(
-            allOf(
-                withId(R.id.search_suggestions_card_view),
-                withChild(
-                    allOf(
-                        withId(R.id.relative_layout1),
-                        withChild(
-                            allOf(
-                                withId(R.id.search_suggestion),
-                                withText("hall-803")
-                            )
-                        )
-                    )
-                ),
-                isDisplayed()
-            )
-        ).perform(click())
+//        //Checks if room suggestion H-400 is displayed and performs a click on the search card
+//        onView(
+//            allOf(
+//                withId(R.id.search_suggestions_card_view),
+//                withChild(
+//                    allOf(
+//                        withId(R.id.relative_layout1),
+//                        withChild(
+//                            allOf(
+//                                withId(R.id.search_suggestion),
+//                                withText("hall-803")
+//                            )
+//                        )
+//                    )
+//                ),
+//                isDisplayed()
+//            )
+//        ).perform(click())
 
         Espresso.pressBack()
         //Performs click on the Set Navigation Button

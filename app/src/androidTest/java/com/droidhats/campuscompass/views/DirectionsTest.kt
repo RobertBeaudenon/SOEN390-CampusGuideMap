@@ -65,10 +65,8 @@ class DirectionsTest {
     }
 
     @Test
-    fun testDirectionButton() {
-   val device = UiDevice.getInstance(getInstrumentation())
-
-        Thread.sleep(2000) //Allow downtown map to fully load
+    fun testDirectionsButton(){
+        val device = UiDevice.getInstance(getInstrumentation())
 
         //Click Hall building marker to trigger bottom sheet
         device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. ")).click()
@@ -105,4 +103,71 @@ onView(ViewMatchers.withId(R.id.instructionsStepsID))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
             */
     }
+/*
+   @Test
+   fun testDirectionsButtonByWalkingMode(){
+       val device = UiDevice.getInstance(getInstrumentation())
+
+       //Click Hall building marker to trigger bottom sheet
+       device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. ")).click()
+
+       //Click directions button
+       device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet_directions_button")).click()
+
+       Thread.sleep(5000) //allow NavigationFragment to load
+
+       //Verify transport mode radio button and click it
+       onView(ViewMatchers.withId(R.id.radio_transport_mode_walking))
+           .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+
+       //Verify start navigation button is displayed & click it
+       onView(ViewMatchers.withId(R.id.startNavigationButton))
+           .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+
+       //Verify Instructions button is displayed & click it
+       onView(ViewMatchers.withId(R.id.buttonInstructions))
+           .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+
+       //Verify instructions are displayed
+       onView(ViewMatchers.withId(R.id.instructionsStepsID))
+           .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+       //Verify close instructions buttons is displayed & click it
+       onView(ViewMatchers.withId(R.id.buttonCloseInstructions))
+           .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+   }*/
+   /*
+      @Test
+      fun testDirectionsButtonByTransitMode(){
+
+          val device = UiDevice.getInstance(getInstrumentation())
+
+          //Click Hall building marker to trigger bottom sheet
+          device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. ")).click()
+
+          //Click directions button
+          device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet_directions_button")).click()
+
+          Thread.sleep(5000) //allow NavigationFragment to load
+
+          onView(ViewMatchers.withId(R.id.radio_transport_mode_transit))
+              .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+
+          //Verify start navigation button is displayed & click it
+          onView(ViewMatchers.withId(R.id.startNavigationButton))
+              .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+
+          //Verify Instructions button is displayed & click it
+          onView(ViewMatchers.withId(R.id.buttonInstructions))
+              .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+
+          //Verify instructions are displayed
+          onView(ViewMatchers.withId(R.id.instructionsStepsID))
+              .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+          //Verify close instructions buttons is displayed & click it
+          onView(ViewMatchers.withId(R.id.buttonCloseInstructions))
+              .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+   } */
 }
