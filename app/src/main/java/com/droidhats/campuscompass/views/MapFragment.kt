@@ -177,6 +177,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         attachBuildingObservers()
+        if (currentNavigationRoute != null) drawPathPolyline(currentNavigationRoute!!.polyLinePath)
     }
 
     private fun attachBuildingObservers(){
@@ -403,7 +404,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
-        clearNavigationPath()  //Clear existing path to show only one path at a time
+      clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
          val polyline= map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
             currentNavigationPath.add(polyline)
