@@ -120,10 +120,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     findNavController(R.id.coordinate_layout).navigate(R.id.action_mapsActivity_to_calendarFragment)
                 }
             }
+            "Shuttle Bus" -> {
+                    findNavController(R.id.coordinate_layout).navigate(R.id.nav_shuttle)
+            }
         }
         //close drawer when done
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        if(item.title == "Schedule" || item.title == "Map")
+        if(item.title == "Schedule" || item.title == "Map" || item.title == "Shuttle Bus")
         drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
