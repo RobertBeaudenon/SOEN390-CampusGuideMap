@@ -42,7 +42,6 @@ class NavigationRepository(private val application: Application) {
     var routeTimes = MutableLiveData<MutableMap<String, String>>()
 
 
-
     companion object {
         // Singleton instantiation
         private var instance: NavigationRepository? = null
@@ -76,7 +75,7 @@ class NavigationRepository(private val application: Application) {
         return sgwShuttleTimes
     }
 
-    suspend fun fetchPlace(location: Location) : Unit = suspendCoroutine  { cont->
+    suspend fun fetchPlace(location: Location): Unit = suspendCoroutine { cont ->
         if (location is GooglePlace) {
             val placeFields: List<Place.Field> = Place.Field.values().toList()
             val placesClient = Places.createClient(application.applicationContext)
@@ -120,7 +119,7 @@ class NavigationRepository(private val application: Application) {
                         times[method.string] = "N/A"
                     }
                     //Set only after all the times have been retrieved (to display them all at the same time)
-                    if(times.size == NavigationRoute.TransportationMethods.values().size )
+                    if (times.size == NavigationRoute.TransportationMethods.values().size)
                         routeTimes.value = times
                 },
                 Response.ErrorListener {
@@ -134,8 +133,8 @@ class NavigationRepository(private val application: Application) {
     }
 
     fun generateDirections(origin: Location, destination: Location, mode: String) {
-         val instructions = arrayListOf<String>()
-        if(origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(0.0, 0.0))
+        val instructions = arrayListOf<String>()
+        if (origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(0.0, 0.0))
             return
         val directionsRequest = object : StringRequest(
             Method.GET,
@@ -162,48 +161,51 @@ class NavigationRepository(private val application: Application) {
 
                         try {
                             if (mode == "transit" || mode == "walking") {
-                                instructions.add(
-                                    stepsArray.getJSONObject(i).getString("html_instructions") + "<br>Distance: " + stepsArray.getJSONObject(
-                                        i
-                                    ).getJSONObject("distance").getString("text") + "<br>Duration: " + stepsArray.getJSONObject(
-                                        i
-                                    ).getJSONObject("duration").getString("text") + "<br>"
-                                )
+                                if (stepsArray.getJSONObject(i).has("transit_details")) {
+                                    instructions.add(
+                                        stepsArray.getJSONObject(i)
+                                            .getString("html_instructions") + "<br><Distance: " + stepsArray.getJSONObject(
+                                            i
+                                        ).getJSONObject("distance")
+                                            .getString("text") + "<br>Duration: " + stepsArray.getJSONObject(
+                                            i
+                                        ).getJSONObject("duration")
+                                            .getString("text") + "<br>Arrival Stop: " + stepsArray.getJSONObject(
+                                            i
+                                        ).getJSONObject("transit_details")
+                                            .getJSONObject("arrival_stop")
+                                            .getString("name") + "<br>Total Number of Stop: " + stepsArray.getJSONObject(
+                                            i
+                                        ).getJSONObject("transit_details").getString("num_stops")
+                                    )
+                                } else {
+                                    instructions.add(
+                                        stepsArray.getJSONObject(i)
+                                            .getString("html_instructions") + "<br><br>Distance: " + stepsArray.getJSONObject(
+                                            i
+                                        ).getJSONObject("distance")
+                                            .getString("text") + "<br><br>Duration: " + stepsArray.getJSONObject(
+                                            i
+                                        ).getJSONObject("duration").getString("text")
+                                    )
+                                }
                                 if (stepsArray.getJSONObject(i).has("steps")) {
-                                    instructions.add("Instructions:<br>")
-                                    for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
+                                    for (j in 0 until stepsArray.getJSONObject(i)
+                                        .getJSONArray("steps").length()) {
                                         instructions.add(
-                                            stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
-                                                j
-                                            ).getString("html_instructions") + "<br>"
+                                            stepsArray.getJSONObject(i).getJSONArray("steps")
+                                                .getJSONObject(j).getString("html_instructions")
                                         )
                                     }
-                                    instructions.add("<br>")
-                                }
-                                if (stepsArray.getJSONObject(i).has("transit_details")) {
-                                    instructions.add("Information:<br>")
-                                    instructions.add(
-                                        "Departure Stop: " + stepsArray.getJSONObject(i).getJSONObject(
-                                            "transit_details"
-                                        ).getJSONObject("departure_stop").getString("name") + "<br>"
-                                    )
-                                    instructions.add(
-                                        "Arrival Stop: " + stepsArray.getJSONObject(i).getJSONObject(
-                                            "transit_details"
-                                        ).getJSONObject("arrival_stop").getString("name") + "<br>"
-                                    )
-                                    instructions.add(
-                                        "Total Number of Stop: " + stepsArray.getJSONObject(
-                                            i
-                                        ).getJSONObject("transit_details").getString("num_stops") + "<br><br>"
-                                    )
                                 }
                             } else {
-                                instructions.add(stepsArray.getJSONObject(i).getString("html_instructions") + "<br>")
+                                instructions.add(
+                                    stepsArray.getJSONObject(i).getString("html_instructions")
+                                )
                             }
                             path.add(PolyUtil.decode(points))
-                        }catch (e : org.json.JSONException){
-                            Log.e("JSONException" , e.message.toString())
+                        } catch (e: org.json.JSONException) {
+                            Log.e("JSONException", e.message.toString())
                         }
                     }
                     val navigation = NavigationRoute(origin, destination, mode, path, instructions)
@@ -220,7 +222,11 @@ class NavigationRepository(private val application: Application) {
     }
 
 
-    private fun constructRequestURL(origin: Location, destination: Location, transportationMethod : String) : String {
+    private fun constructRequestURL(
+        origin: Location,
+        destination: Location,
+        transportationMethod: String
+    ): String {
         return "https://maps.googleapis.com/maps/api/directions/json?" +
                 "origin=" + origin.getLocation().latitude.toString() + "," + origin.getLocation().longitude.toString() +
                 "&destination=" + destination.getLocation().latitude.toString() + "," + destination.getLocation().longitude.toString() +
@@ -228,5 +234,5 @@ class NavigationRepository(private val application: Application) {
                 "&key=" + application.applicationContext.getString(R.string.ApiKey)
     }
 
-    fun getNavigationRoute() : MutableLiveData<NavigationRoute> = navigationRoute
+    fun getNavigationRoute(): MutableLiveData<NavigationRoute> = navigationRoute
 }
