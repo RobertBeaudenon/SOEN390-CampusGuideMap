@@ -76,6 +76,7 @@ class SearchAdapter(
                         searchFragment.confirmSelection(destinationBar, item, true)
                     }
                 }
+                setNavigation.visibility = View.INVISIBLE
             }
         }
     }

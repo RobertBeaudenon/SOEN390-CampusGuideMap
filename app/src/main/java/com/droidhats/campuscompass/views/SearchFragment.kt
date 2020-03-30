@@ -35,6 +35,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -161,6 +162,7 @@ class SearchFragment : Fragment()  {
     private fun initiateNavigation(){
         val origin = NavigationPoints[R.id.mainSearchBar]
         val destination = NavigationPoints[R.id.secondarySearchBar]
+		secondarySearchBar.clearFocus()
 
         //Make sure BOTH coordinates are set before generating directions
         if(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0)){

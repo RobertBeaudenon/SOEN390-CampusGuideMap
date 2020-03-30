@@ -20,7 +20,19 @@
         android:elevation="5dp"
         android:outlineProvider="bounds" />
 
-    <!--hardcoded margins for now as the search bars can expand -->
+    <Button
+        android:id="@+id/buttonResumeNavigation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mapFragSearchBar"
+        android:layout_centerInParent="true"
+        android:text="Resume Navigation"
+        android:background="#791b0f"
+        android:textColor="#FFF"
+        android:padding="10dp"
+        android:textAllCaps="false"
+        android:visibility="invisible" />
+
     <ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="80dp"

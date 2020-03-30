@@ -1,31 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:id="@+id/instructionLayout">
-
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/instructionLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_margin="6dp"
+    android:background="@android:color/transparent"
+    android:paddingTop="200dp"
+    android:visibility="gone"
+    app:cardElevation="4dp"
+    app:contentPadding="8dp">
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@android:color/white">
 
-        <Button
+        <ImageButton
             android:id="@+id/buttonCloseInstructions"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="@string/x_button"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            />
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_close_black_24dp"
+            android:text="@string/x_button" />
 
-        <TextView
-            android:id="@+id/instructionsStepsID"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text=""
-            android:layout_marginTop="80dp"
-            />
-    </RelativeLayout>
+            android:layout_below="@+id/buttonCloseInstructions"
+            android:orientation="horizontal">
 
-</ScrollView>
+            <TextView
+                android:id="@+id/arrayInstruction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/nextArrow"
+                android:layout_toStartOf="@+id/nextArrow"
+                android:layout_toEndOf="@+id/prevArrow"
+                android:gravity="center"
+                android:text=""
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/prevArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/previous_button"
+                android:maxWidth="60dp"
+                android:maxHeight="60dp"
+                android:rotation="180"
+                android:src="@drawable/arrow_button"
+                android:tint="@color/colorPrimaryDark" />
+
+            <ImageView
+                android:id="@+id/nextArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/next_button"
+                android:maxWidth="60dp"
+                android:maxHeight="60dp"
+                android:src="@drawable/arrow_button"
+                android:tint="@color/colorPrimaryDark" />
+
+            <Button
+                android:id="@+id/closeButton"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:adjustViewBounds="true"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:text="@string/done"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
