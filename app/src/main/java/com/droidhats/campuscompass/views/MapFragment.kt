@@ -373,13 +373,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
             if (tracker == instructions.size-1) {
                 nextArrow.visibility = View.INVISIBLE
-                closeButton.visibility = View.VISIBLE
             }
         }
         prevArrow.setOnClickListener {
             tracker--
             nextArrow.visibility = View.VISIBLE
-            closeButton.visibility = View.INVISIBLE
             if(tracker < instructions.size) {
                 arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
             }
@@ -387,15 +385,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 prevArrow.visibility = View.INVISIBLE
             }
         }
-
-        val doneInstructions : Button = requireActivity().findViewById(R.id.closeButton)
-        doneInstructions.setOnClickListener {
-            toggleInstructionsView(false)
-            buttonResumeNavigation.visibility = View.INVISIBLE
-            currentNavigationRoute = null
-            clearNavigationPath()
-        }
-
     }
 
     private fun toggleInstructionsView(isVisible: Boolean){
