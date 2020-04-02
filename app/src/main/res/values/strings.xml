@@ -46,4 +46,5 @@
      <string name="next_button">Next Button</string>
       <string name="previous_button">Previous Button</string>
       <string name="done">Done</string>
+     <string name="explore">Explore</string>
  </resources>
