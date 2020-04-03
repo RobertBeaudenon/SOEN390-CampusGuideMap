@@ -47,4 +47,10 @@
       <string name="previous_button">Previous Button</string>
       <string name="done">Done</string>
      <string name="explore">Explore</string>
+      <string-array name="distances">
+           <item>1 km</item>
+           <item>2 km</item>
+           <item>3 km</item>
+           <item>4 km</item>
+      </string-array>
  </resources>
