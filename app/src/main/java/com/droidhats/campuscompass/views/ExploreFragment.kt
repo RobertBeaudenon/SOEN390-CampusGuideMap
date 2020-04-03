@@ -34,22 +34,22 @@ class ExploreFragment: Fragment() {
         //Event listners for button exploration categories
         val selectFoodButton: Button = root.findViewById(R.id.select_food_button)
         selectFoodButton.setOnClickListener {
-            showPointsOfInterests("food")
+            showPointsOfInterests("Food")
         }
 
         val selectDrinksButton: Button = root.findViewById(R.id.select_drinks_button)
         selectDrinksButton.setOnClickListener {
-            showPointsOfInterests("drinks")
+            showPointsOfInterests("Drinks")
         }
 
         val selectStudyButton: Button = root.findViewById(R.id.select_study_button)
         selectStudyButton.setOnClickListener {
-            showPointsOfInterests("study")
+            showPointsOfInterests("Study")
         }
 
         val selectEventsButton: Button = root.findViewById(R.id.select_events_button)
         selectEventsButton.setOnClickListener {
-            showPointsOfInterests("events")
+            showPointsOfInterests("Events")
         }
 
         return root
