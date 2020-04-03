@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/explore_category_fragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/quantum_white_100"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageButton
+            android:id="@+id/button_menu_explore"
+            android:layout_width="100dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="10dp"
+            android:background="#FFFFFF"
+            android:contentDescription="menu button"
+            android:padding="30dp"
+            android:src="@drawable/icon_menu" />
+
+        <TextView
+            android:id="@+id/text_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/explore"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+</LinearLayout>
