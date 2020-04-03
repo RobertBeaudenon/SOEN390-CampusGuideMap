@@ -14,7 +14,7 @@
         android:paddingBottom="15dp">
 
         <ImageButton
-            android:id="@+id/button_menu_explore"
+            android:id="@+id/button_explore"
             android:layout_width="100dp"
             android:layout_height="51dp"
             android:layout_marginTop="10dp"
