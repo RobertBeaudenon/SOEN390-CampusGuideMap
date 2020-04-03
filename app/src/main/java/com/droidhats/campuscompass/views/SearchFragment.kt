@@ -180,7 +180,7 @@ class SearchFragment : Fragment()  {
         } else {
             //check if both origin and destination are indoor
             if((origin is IndoorLocation) && (destination is IndoorLocation))  {
-                viewModel.setIndoorDirections(Pair(origin.lID, destination.lID))
+                viewModel.setIndoorDirections(Pair(origin, destination))
                 findNavController().navigate(R.id.floor_fragment)
             } else {
                 findNavController().popBackStack(R.id.map_fragment, false)
