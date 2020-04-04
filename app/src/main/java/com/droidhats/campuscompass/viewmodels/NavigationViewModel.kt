@@ -12,7 +12,7 @@ import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
  * And will interact with the NavigationRepository to fetch the data
  * @param application
  */
-class NavigationViewModel(application: Application) : AndroidViewModel(application) {
+class NavigationViewModel(application: Application) : NavHandler(application) {
 
     private  var navigationRepository: NavigationRepository = NavigationRepository.getInstance(getApplication())
     private  var loyolaShuttleTimes: LiveData<List<ShuttleBusLoyolaEntity>>
@@ -35,5 +35,9 @@ class NavigationViewModel(application: Application) : AndroidViewModel(applicati
      */
     fun getSGWShuttleTime(): LiveData<List<ShuttleBusSGWEntity>> {
         return sgwShuttleTimes
+    }
+
+    override fun displayNav() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
