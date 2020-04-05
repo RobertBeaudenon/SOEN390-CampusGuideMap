@@ -139,9 +139,13 @@ class NavigationRepository(private val application: Application) {
         val instructions = arrayListOf<String>()
         if (origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(0.0, 0.0))
             return
+        var transportationMethod = mode
+        //If the mode is shuttle, we want to show walking instructions towards the bus stop
+        if ( mode == NavigationRoute.TransportationMethods.SHUTTLE.string)
+            transportationMethod = NavigationRoute.TransportationMethods.WALKING.string
         val directionsRequest = object : StringRequest(
             Method.GET,
-            constructRequestURL(origin, destination, mode, waypoints),
+            constructRequestURL(origin, destination, transportationMethod, waypoints),
             Response.Listener { response ->
 
                 //Retrieve response (a JSON object)
@@ -163,7 +167,7 @@ class NavigationRepository(private val application: Application) {
                             .getString("points")
 
                         try {
-                            if (mode == "transit" || mode == "walking") {
+                            if (transportationMethod == "transit" || transportationMethod == "walking") {
                                 if (stepsArray.getJSONObject(i).has("transit_details")) {
                                     instructions.add(
                                         stepsArray.getJSONObject(i)
