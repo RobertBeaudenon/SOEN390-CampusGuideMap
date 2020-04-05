@@ -15,5 +15,6 @@ class NavigationRoute(
         DRIVING("driving"),
         TRANSIT("transit"),
         BICYCLE("bicycling"),
+        SHUTTLE("shuttle")
     }
 }
