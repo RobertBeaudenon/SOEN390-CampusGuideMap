@@ -48,32 +48,22 @@ class ProcessMap {
         var firstElement: Boolean = true
 
         stringArray = svgFile.split("\n")
+        var it = 15
+        while (it < stringArray.size) {
+            println(stringArray[it])
+            onEachLine(stringArray[it])
 
-        for (it in stringArray) {
-            onEachLine(it)
-
-            if (it.contains("<svg") && !firstElement) {
-                inSVG = true
-                onSvgElement(it)
+            if (stringArray[it].contains("<svg")) {
+                it = collectSVG(it, onSvgElement)
             }
 
-            if (it.contains("</svg>")) {
-                inSVG = false
-                element = StringBuilder()
-                continue
-            }
 
-            if (inSVG) {
-                element.append(it)
-                continue
-            }
-
-            if (it.contains("<rect")) {
+            if (stringArray[it].contains("<rect")) {
                 inRect = true
             }
-            if (inRect) element.append(it)
+            if (inRect) element.append(stringArray[it])
 
-            if (it.contains("/>") && inRect) {
+            if (stringArray[it].contains("/>") && inRect) {
                 if (firstElement) {
                     this.firstElement = createRect(element.toString())
                     firstElement = false
@@ -84,12 +74,12 @@ class ProcessMap {
                 element = StringBuilder()
             }
 
-            if (it.contains("<path")) {
+            if (stringArray[it].contains("<path")) {
                 inPath = true
             }
-            if (inPath) element.append(it)
+            if (inPath) element.append(stringArray[it])
 
-            if (it.contains("/>") && inPath) {
+            if (stringArray[it].contains("/>") && inPath) {
                 if (firstElement) {
                     this.firstElement = createPath(element.toString())
                     firstElement = false
@@ -99,8 +89,25 @@ class ProcessMap {
                 inPath = false
                 element = StringBuilder()
             }
+            it++
         }
     }
+
+    private fun collectSVG(it: Int, onSvgElement: (String) -> Unit): Int {
+        var iterator = it
+        val stringBuilder: StringBuilder = StringBuilder()
+        var retrievedOne: Boolean = false
+        while(!stringArray[iterator].contains("</svg>")) {
+            stringBuilder.append(stringArray[iterator])
+            if (stringArray[iterator].contains(">") && !retrievedOne) {
+                retrievedOne = true
+                onSvgElement(stringBuilder.toString())
+            }
+            iterator++
+        }
+        return iterator + 1
+    }
+
 
     /**
      * This method takes as input an svg file in the form of a string and digests the elements into
