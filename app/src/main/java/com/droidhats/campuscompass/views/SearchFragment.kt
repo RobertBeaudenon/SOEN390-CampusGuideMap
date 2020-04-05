@@ -186,10 +186,12 @@ class SearchFragment : Fragment()  {
                 Toast.LENGTH_LONG
             ).show()
 
-            viewModel.navigationRepository.generateDirections(
+            val navHandler: NavHandler = NavHandler.initializeChain(
                 origin!!,
                 destination!!,
-                selectedTransportationMethod)
+                selectedTransportationMethod
+            )
+            viewModel.navigationRepository.setNavigationHandler(navHandler)
 
             isNavigationViewOpen = false
         }

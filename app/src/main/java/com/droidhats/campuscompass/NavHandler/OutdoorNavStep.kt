@@ -1,8 +1,15 @@
 package com.droidhats.campuscompass.NavHandler
 
-class OutdoorNavStep : NavHandler() {
-    override fun displayNav() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+import com.droidhats.campuscompass.models.Location
+import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.repositories.NavigationRepository
+import com.google.android.gms.maps.model.LatLng
+
+class OutdoorNavStep(override val location: Location, private val selectedTransportationMode: String) : NavHandler() {
+
+    override fun getNavigationRoute() {
+        if (next?.location != null)
+            NavigationRepository.getInstance()?.generateDirections(location, next!!.location, selectedTransportationMode)
     }
 
 }

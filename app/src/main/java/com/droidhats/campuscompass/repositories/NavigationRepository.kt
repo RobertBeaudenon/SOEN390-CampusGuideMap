@@ -3,6 +3,7 @@ package com.droidhats.campuscompass.repositories
 import android.app.Application
 import android.content.ContentValues.TAG
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.Request
@@ -55,6 +56,9 @@ class NavigationRepository(private val application: Application) {
                     instance
                         ?: NavigationRepository(application).also { instance = it }
                 }
+
+        // may return null
+        fun getInstance() = instance
     }
 
     init {
@@ -79,13 +83,20 @@ class NavigationRepository(private val application: Application) {
     }
 
     fun setNavigationHandler(navHandler: NavHandler) {
-        //this.navigationRoute.value = navHandler.getNavigationRoute()
+        navHandler.getNavigationRoute()
         this.navhandler = navHandler
     }
 
     fun consumeNavigationHandler(): NavHandler? {
-        navhandler = navhandler?.next
+        if (navhandler != null && navhandler?.next != null) {
+            setNavigationHandler(navhandler!!.next!!)
+        }
         return navhandler
+    }
+
+    fun cancelNavigation() {
+        navhandler = null
+        navigationRoute.value = null
     }
 
     suspend fun fetchPlace(location: Location): Unit = suspendCoroutine { cont ->
