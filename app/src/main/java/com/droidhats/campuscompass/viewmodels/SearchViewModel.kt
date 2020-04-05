@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import androidx.sqlite.db.SimpleSQLiteQuery
-import com.droidhats.campuscompass.roomdb.IndoorLocationDatabase
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.GooglePlace
@@ -16,12 +15,14 @@ import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.repositories.IndoorLocationRepository
 import com.droidhats.campuscompass.repositories.IndoorNavigationRepository
+import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
+import com.droidhats.campuscompass.roomdb.IndoorLocationDatabase
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.model.RectangularBounds
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -29,6 +30,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.asin
+import kotlin.math.sqrt
+import kotlin.math.pow
+
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -40,6 +47,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     private lateinit var placesClient : PlacesClient // Used to query google places
     private lateinit var indoorLocationRepository : IndoorLocationRepository //Used to query indoorLocations
     internal lateinit var navigationRepository: NavigationRepository  //Used to retrieve route information (ie: transportation times)
+    internal lateinit var mapRepository: MapRepository //Used to get Campus Coordinates
 
     private val context = getApplication<Application>().applicationContext
 
@@ -48,6 +56,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         indoorLocationDatabase = Room.inMemoryDatabaseBuilder(context, IndoorLocationDatabase::class.java).build()
         indoorLocationRepository = IndoorLocationRepository.getInstance(IndoorLocationDatabase.getInstance(context).indoorLocationDao())
         navigationRepository = NavigationRepository.getInstance(getApplication())
+        mapRepository = MapRepository.getInstance(context)
     }
 
     private fun initPlacesSearch() {
@@ -92,14 +101,14 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun sendSQLiteQuery(query: String): Boolean {
-     if (query.isBlank()) return false
-     val qEsc = query.replace("'","")
+        if (query.isBlank()) return false
+        val qEsc = query.replace("'","")
         val queryString =
             "SELECT * " +
-            "FROM IndoorLocation " +
-             "WHERE location_type ='classroom' " +
-              "AND location_name like '%$qEsc%' " +
-               "OR location_name like '%${qEsc.toUpperCase(Locale.ROOT)}%' " +
+                    "FROM IndoorLocation " +
+                    "WHERE location_type ='classroom' " +
+                    "AND location_name like '%$qEsc%' " +
+                    "OR location_name like '%${qEsc.toUpperCase(Locale.ROOT)}%' " +
                     "LIMIT 5"
 
         val sqliteQuery = SimpleSQLiteQuery(queryString)
@@ -118,20 +127,61 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         val handler = CoroutineExceptionHandler{_, throwable ->
             Log.e(TAG, throwable.message!!)
         }
-       GlobalScope.launch(Dispatchers.Default + handler) {
-           if (origin is GooglePlace && !origin.isCurrentLocation)
-               navigationRepository.fetchPlace(origin)
-           if (destination is GooglePlace && !destination.isCurrentLocation)
-               navigationRepository.fetchPlace(destination)
+        GlobalScope.launch(Dispatchers.Default + handler) {
+            if (origin is GooglePlace && !origin.isCurrentLocation)
+                navigationRepository.fetchPlace(origin)
+            if (destination is GooglePlace && !destination.isCurrentLocation)
+                navigationRepository.fetchPlace(destination)
 
-           navigationRepository.fetchRouteTimes(origin, destination)
+            val closestShuttle = closestShuttleStop(origin)
+            navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
 
-           if (destination is Building)
-               navigationRepository.fetchRouteTimes(origin, destination)
-       }
+            if (destination is Building)
+                navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
+        }
     }
 
     fun setIndoorDirections(startAndEnd: Pair<String, String>) {
         IndoorNavigationRepository.getInstance().setStartAndEnd(startAndEnd)
+    }
+
+    /**
+     * Method to find the closest Concordia shuttle bus stop from a given coordinate
+     */
+
+    fun closestShuttleStop(origin: Location) : String{
+
+        val sgw =  mapRepository.getCampuses()[0]
+        val loy =  mapRepository.getCampuses()[1]
+
+        val distanceToSGW = haversine(origin, sgw)
+        val distanceToLOY = haversine(origin, loy)
+
+        return if (distanceToSGW < distanceToLOY)
+            "&waypoints=via:${sgw.coordinate.latitude}%2C${sgw.coordinate.longitude}|" +
+                    "via:${loy.coordinate.latitude}%2C${loy.coordinate.longitude}"
+        else
+            "&waypoints=via:${loy.coordinate.latitude}%2C${loy.coordinate.longitude}|" +
+                    "via:${sgw.coordinate.latitude}%2C${sgw.coordinate.longitude}"
+    }
+
+
+    /**
+     * Method used to find the distance between two world coordinates using the haversine formula
+     */
+    fun haversine(location1 : Location, location2 : Location) : Double{
+
+        val diffLat = Math.toRadians(location2.getLocation().latitude - location1.getLocation().latitude)
+        val diffLong = Math.toRadians(location2.getLocation().longitude- location1.getLocation().longitude)
+
+        val lat = Math.toRadians(location1.getLocation().latitude)
+        val lat2 = Math.toRadians(location2.getLocation().latitude)
+
+        val rad = 6371.0
+        val a = sin(diffLat / 2).pow(2.0) +
+                sin(diffLong / 2).pow(2.0) *
+                cos(lat) * cos(lat2)
+        val c = 2 * asin(sqrt(a))
+        return rad * c
     }
 }
