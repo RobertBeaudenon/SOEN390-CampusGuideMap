@@ -1,6 +1,7 @@
 package com.droidhats.campuscompass.repositories
 
 import androidx.lifecycle.MutableLiveData
+import com.droidhats.campuscompass.models.IndoorLocation
 
 class IndoorNavigationRepository private constructor() {
 
@@ -16,13 +17,13 @@ class IndoorNavigationRepository private constructor() {
                         }
     }
 
-    private var startAndEnd: MutableLiveData<Pair<String, String>?> = MutableLiveData(null)
+    private var startAndEnd: MutableLiveData<Pair<IndoorLocation, IndoorLocation>?> = MutableLiveData(null)
 
-    fun setStartAndEnd(startAndEnd: Pair<String, String>) {
+    fun setStartAndEnd(startAndEnd: Pair<IndoorLocation, IndoorLocation>) {
         this.startAndEnd.value = startAndEnd
     }
 
-    fun getStartAndEnd(): Pair<String, String>? {
+    fun getStartAndEnd(): Pair<IndoorLocation, IndoorLocation>? {
         val startAndEnd = this.startAndEnd.value
         this.startAndEnd.value = null
         return startAndEnd

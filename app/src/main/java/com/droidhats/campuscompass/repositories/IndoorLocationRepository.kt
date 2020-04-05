@@ -11,6 +11,8 @@ import java.io.InputStream
 
 class IndoorLocationRepository private constructor(private val indoorLocationDao: IndoorLocationDao) {
 
+    var currentMap: String = "hall8.svg"
+
     companion object {
         // Singleton instantiation
         private var instance: IndoorLocationRepository? = null
@@ -46,7 +48,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
         }
     }
 
-    fun insertClasses(context: Context, building: Building) {
+    private fun insertClasses(context: Context, building: Building) {
 
         for (floorMap in building.getIndoorInfo().second) {
             val inputStream: InputStream = context.assets.open(floorMap)
@@ -55,17 +57,25 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
             mapProcessor.readSVGFromString(file)
             val classes = mapProcessor.getClasses()
 
-            // todo: Consider the case where floor number is more than 1 digit
-            val floorValue: String = floorMap.split(building.getIndoorInfo().first)[1].split(".svg")[0]
-            val floorNumber: Int = Character.getNumericValue(floorValue[0])
+            // todo: Use index of for loop to determine floor instead of using map name
+            var floorValue: String = floorMap.split(building.getIndoorInfo().first)[1].split(".svg")[0]
+            var floorDigit: Int = 6
+            var floorNumber: Int = floorValue.toInt()
+            if (floorValue.length > 1) {
+                if (floorValue[0] == 's')
+                    floorNumber = ("-" + floorValue.substring(1, floorValue.length)).toInt()
+                floorDigit = 7
+            }
             for ((x, classRoom) in classes.withIndex()) {
-                if (classRoom.getID()[5] != floorValue[0]) {
+
+                if (classRoom.getID().substring(5, floorDigit) != floorValue) {
                     continue
                 }
                 val newClass = IndoorLocation(
                     classRoom.getID(),
                     convertIDToName(classRoom.getID(), building.getIndoorInfo().first, floorNumber),
                     floorNumber,
+                    floorMap,
                     "classroom",
                     building.coordinate.latitude,
                     building.coordinate.longitude

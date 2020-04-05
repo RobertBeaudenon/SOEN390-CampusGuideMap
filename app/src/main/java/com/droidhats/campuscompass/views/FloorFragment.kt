@@ -36,7 +36,13 @@ class FloorFragment : Fragment() {
     ): View? {
         root = inflater.inflate(R.layout.floor_fragment, container, false)
 
-        val inputStream: InputStream = requireContext().assets.open("hall8.svg")
+        var floor: String? = arguments?.getString("floornum")
+
+        var mapToDisplay: String = "hall8.svg" // default value
+        val map: String? = arguments?.getString("floormap")
+        if (map != null) mapToDisplay = map
+
+        val inputStream: InputStream = requireContext().assets.open(mapToDisplay)
 
         val buildingToHighlight: String? = arguments?.getString("id")
 
@@ -77,11 +83,12 @@ class FloorFragment : Fragment() {
 
         val startAndEnd = viewModel.getDirections()
         if (startAndEnd != null) {
-            val inputStream: InputStream = requireContext().assets.open("hall8.svg")
+            val inputStream: InputStream = requireContext().assets.open(startAndEnd.first.floorMap)
             val file: String = inputStream.bufferedReader().use { it.readText() }
             val mapProcessor: ProcessMap = ProcessMap()
             mapProcessor.readSVGFromString(file)
-            val svg: SVG = SVG.getFromString(mapProcessor.getSVGStringFromDirections(startAndEnd))
+            val svg: SVG = SVG.getFromString(mapProcessor
+                .getSVGStringFromDirections(Pair(startAndEnd.first.lID, startAndEnd.second.lID)))
             setImage(svg)
         }
     }

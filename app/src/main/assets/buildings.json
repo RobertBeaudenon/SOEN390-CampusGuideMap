@@ -88,7 +88,7 @@
 			"place_id": "ChIJ139JrWsayUwRbNrrU4yfp04",
 			"center_location": [45.495244, -73.578945],
             "location": [45.495496, -73.579162],
-            "floor_maps": [],
+            "floor_maps": ["mb1.svg"],
             "initial": "mb",
             "coordinates": [
                 [45.495362, -73.579385],
@@ -1282,12 +1282,12 @@
             ]
         }, {
             "name": "Vanier Library Building",
-            "initial": "VLB",
+            "initial": "vl",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
 			"place_id": "ChIJDbfcNjIXyUwRcocn3RuPPiY",
 			"center_location": [45.459015, -73.638561],
             "location": [45.458831, -73.638801],
-            "floor_maps": [],
+            "floor_maps": ["vl1.svg"],
             "coordinates": [
                 [45.4593010, -73.6386709],
                 [45.4593099, -73.6386635],
@@ -1336,12 +1336,12 @@
             ]
         }, {
             "name": "Vanier Extension",
-            "initial": "VE",
+            "initial": "ve",
             "address": "7141 Sherbrooke St W, Montreal, Quebec H4B 1R6",
 			"place_id": "None",
 			"center_location": [45.458740, -73.638587],
             "location":[45.458673, -73.638513],
-            "floor_maps": [],
+            "floor_maps": ["ve1.svg"],
             "coordinates": [
                 [45.4587170, -73.6384000],
                 [45.4586286, -73.6384683],

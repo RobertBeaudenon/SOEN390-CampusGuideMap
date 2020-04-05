@@ -19,6 +19,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
@@ -342,6 +343,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bundle.putParcelable("destBuilding", building)
             findNavController().navigate(R.id.search_fragment, bundle)
         }
+
+        val indoorMapsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_floor_map_button)
+        indoorMapsButton.setOnClickListener {
+            if (building.getIndoorInfo().second.isEmpty()) {
+                Toast.makeText(
+                    context,
+                    "This building doesn't have a floor map",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                val bundle: Bundle = Bundle()
+                bundle.putString("floormap", building.getIndoorInfo().second[0])
+                findNavController().navigate(R.id.floor_fragment, bundle)
+            }
+        }
     }
 
     //Handle the switching views between the two campuses. Should probably move from here later
@@ -455,12 +471,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * root.findViewById<NestedScrollView>(R.id.bottom_sheet).height).toInt())
             }
         })
-
-        val indoorMapsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_floor_map_button)
-        indoorMapsButton.setOnClickListener {
-
-            findNavController().navigate(R.id.floor_fragment)
-        }
     }
 
     private fun dismissBottomSheet() {
@@ -516,7 +526,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }        
         } else if (item is IndoorLocation) {
             val bundle: Bundle = Bundle()
-            bundle.putString("id", (item as IndoorLocation).lID)
+            bundle.putString("id", item.lID)
+            val building = item.name.split('-')[0]
+            bundle.putInt("floornum", item.floorNum)
+            bundle.putString("floormap", item.floorMap)
             findNavController().navigate(R.id.floor_fragment, bundle)
         }
     }
