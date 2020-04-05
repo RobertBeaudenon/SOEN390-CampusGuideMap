@@ -43,7 +43,17 @@
             android:textAppearance="?attr/textAppearanceListItemSecondary"
             android:maxWidth="@dimen/calendar_event_card_max_text_width"/>
 
+
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/place_image"
+        android:layout_width="119dp"
+        android:layout_height="60dp"
+        android:layout_gravity="end|center_vertical"
+        android:contentDescription="place_image"
+        app:srcCompat="@drawable/resto_bacaropizzeria" />
+
 
 
 
