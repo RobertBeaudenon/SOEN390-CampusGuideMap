@@ -46,7 +46,7 @@ class ShuttleFragment : Fragment() {
                 navigateWithShuttle.setOnClickListener {
                     findNavController().navigateUp()
                     viewModel.navigationRepository.generateDirections(viewModel.mapRepository.getCampuses()[0],
-                    viewModel.mapRepository.getCampuses()[1], "shuttle")
+                    viewModel.mapRepository.getCampuses()[1], "shuttle", null)
                 }
             }
             else{
@@ -54,7 +54,7 @@ class ShuttleFragment : Fragment() {
                 navigateWithShuttle.setOnClickListener {
                     findNavController().navigateUp()
                     viewModel.navigationRepository.generateDirections(viewModel.mapRepository.getCampuses()[1],
-                        viewModel.mapRepository.getCampuses()[0], "shuttle")
+                        viewModel.mapRepository.getCampuses()[0], "shuttle", null)
                 }
             }
         }.attach()

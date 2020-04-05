@@ -99,11 +99,14 @@ class NavigationRepository(private val application: Application) {
      * @param origin: The starting point from where the travel begins.
      * @param destination: The destination point where the travel ends.
      */
-    fun fetchRouteTimes(origin: Location, destination: Location) {
+    fun fetchRouteTimes(origin: Location, destination: Location, waypoints: String?) {
         val times = mutableMapOf<String, String>()
         for (method in NavigationRoute.TransportationMethods.values()) {
+            var shuttleWaypoints = waypoints
+            if (method.string != NavigationRoute.TransportationMethods.SHUTTLE.string)
+                shuttleWaypoints = ""
             val directionRequest = StringRequest(
-                Request.Method.GET, constructRequestURL(origin, destination, method.string),
+                Request.Method.GET, constructRequestURL(origin, destination, method.string, shuttleWaypoints),
                 Response.Listener { response ->
 
                     //Retrieve response (a JSON object)
@@ -132,13 +135,13 @@ class NavigationRepository(private val application: Application) {
         }
     }
 
-    fun generateDirections(origin: Location, destination: Location, mode: String) {
+    fun generateDirections(origin: Location, destination: Location, mode: String, waypoints : String?) {
         val instructions = arrayListOf<String>()
         if (origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(0.0, 0.0))
             return
         val directionsRequest = object : StringRequest(
             Method.GET,
-            constructRequestURL(origin, destination, mode),
+            constructRequestURL(origin, destination, mode, waypoints),
             Response.Listener { response ->
 
                 //Retrieve response (a JSON object)
@@ -225,11 +228,14 @@ class NavigationRepository(private val application: Application) {
     private fun constructRequestURL(
         origin: Location,
         destination: Location,
-        transportationMethod: String
+        transportationMethod: String,
+        waypoints: String?
     ): String {
+
         return "https://maps.googleapis.com/maps/api/directions/json?" +
                 "origin=" + origin.getLocation().latitude.toString() + "," + origin.getLocation().longitude.toString() +
                 "&destination=" + destination.getLocation().latitude.toString() + "," + destination.getLocation().longitude.toString() +
+                 waypoints +
                 "&mode=" + transportationMethod +
                 "&key=" + application.applicationContext.getString(R.string.ApiKey)
     }

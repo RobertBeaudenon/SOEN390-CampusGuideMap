@@ -164,6 +164,10 @@ class SearchFragment : Fragment()  {
         val destination = NavigationPoints[R.id.secondarySearchBar]
 		secondarySearchBar.clearFocus()
 
+        var waypoints = ""
+        if (selectedTransportationMethod == NavigationRoute.TransportationMethods.SHUTTLE.string)
+           waypoints = viewModel.closestShuttleStop(NavigationPoints[R.id.mainSearchBar]!!)
+
         //Make sure BOTH coordinates are set before generating directions
         if(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0)){
             val handler = CoroutineExceptionHandler{_, throwable ->
@@ -175,7 +179,8 @@ class SearchFragment : Fragment()  {
 
                 viewModel.navigationRepository.generateDirections(origin,
                     destination,
-                    selectedTransportationMethod)
+                    selectedTransportationMethod,
+                    waypoints)
             }
         } else {
             //check if both origin and destination are indoor
@@ -194,7 +199,8 @@ class SearchFragment : Fragment()  {
 
             viewModel.navigationRepository.generateDirections(origin!!,
                 destination!!,
-                selectedTransportationMethod)
+                selectedTransportationMethod,
+                waypoints)
 
             isNavigationViewOpen = false
         }
