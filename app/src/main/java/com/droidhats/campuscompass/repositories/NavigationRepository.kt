@@ -106,7 +106,8 @@ class NavigationRepository(private val application: Application) {
             if (method.string != NavigationRoute.TransportationMethods.SHUTTLE.string)
                 shuttleWaypoints = ""
             val directionRequest = StringRequest(
-                Request.Method.GET, constructRequestURL(origin, destination, method.string, shuttleWaypoints),
+                Request.Method.GET,
+                constructRequestURL(origin, destination, method.string, shuttleWaypoints),
                 Response.Listener { response ->
 
                     //Retrieve response (a JSON object)
@@ -135,13 +136,23 @@ class NavigationRepository(private val application: Application) {
         }
     }
 
-    fun generateDirections(origin: Location, destination: Location, mode: String, waypoints : String?) {
+    fun generateDirections(
+        origin: Location,
+        destination: Location,
+        mode: String,
+        waypoints: String?
+    ) {
         val instructions = arrayListOf<String>()
-        if (origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(0.0, 0.0))
+        val instructionsCoordinates = arrayListOf<String>()
+        if (origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(
+                0.0,
+                0.0
+            )
+        )
             return
         var transportationMethod = mode
         //If the mode is shuttle, we want to show walking instructions towards the bus stop
-        if ( mode == NavigationRoute.TransportationMethods.SHUTTLE.string)
+        if (mode == NavigationRoute.TransportationMethods.SHUTTLE.string)
             transportationMethod = NavigationRoute.TransportationMethods.WALKING.string
         val directionsRequest = object : StringRequest(
             Method.GET,
@@ -162,13 +173,21 @@ class NavigationRepository(private val application: Application) {
                     val path: MutableList<List<LatLng>> = ArrayList()
 
                     //Build the path polyline as well as store instruction between 2 path into an array.
+                    //Build the path polyline as well as store instruction between 2 path into an array.
                     for (i in 0 until stepsArray.length()) {
                         val points = stepsArray.getJSONObject(i).getJSONObject("polyline")
                             .getString("points")
-
                         try {
-                            if (transportationMethod == "transit" || transportationMethod == "walking") {
+                            if (mode == "transit" || mode == "walking") {
                                 if (stepsArray.getJSONObject(i).has("transit_details")) {
+                                    instructionsCoordinates.add(
+                                        stepsArray.getJSONObject(i).getJSONObject("start_location")
+                                            .getString("lat")
+                                    )
+                                    instructionsCoordinates.add(
+                                        stepsArray.getJSONObject(i).getJSONObject("start_location")
+                                            .getString("lng")
+                                    )
                                     instructions.add(
                                         stepsArray.getJSONObject(i)
                                             .getString("html_instructions") + "<br><Distance: " + stepsArray.getJSONObject(
@@ -186,6 +205,14 @@ class NavigationRepository(private val application: Application) {
                                         ).getJSONObject("transit_details").getString("num_stops")
                                     )
                                 } else {
+                                    instructionsCoordinates.add(
+                                        stepsArray.getJSONObject(i).getJSONObject("start_location")
+                                            .getString("lat")
+                                    )
+                                    instructionsCoordinates.add(
+                                        stepsArray.getJSONObject(i).getJSONObject("start_location")
+                                            .getString("lng")
+                                    )
                                     instructions.add(
                                         stepsArray.getJSONObject(i)
                                             .getString("html_instructions") + "<br><br>Distance: " + stepsArray.getJSONObject(
@@ -199,6 +226,16 @@ class NavigationRepository(private val application: Application) {
                                 if (stepsArray.getJSONObject(i).has("steps")) {
                                     for (j in 0 until stepsArray.getJSONObject(i)
                                         .getJSONArray("steps").length()) {
+                                        instructionsCoordinates.add(
+                                            stepsArray.getJSONObject(i).getJSONArray("steps")
+                                                .getJSONObject(j).getJSONObject("start_location")
+                                                .getString("lat")
+                                        )
+                                        instructionsCoordinates.add(
+                                            stepsArray.getJSONObject(i).getJSONArray("steps")
+                                                .getJSONObject(j).getJSONObject("start_location")
+                                                .getString("lng")
+                                        )
                                         instructions.add(
                                             stepsArray.getJSONObject(i).getJSONArray("steps")
                                                 .getJSONObject(j).getString("html_instructions")
@@ -206,6 +243,14 @@ class NavigationRepository(private val application: Application) {
                                     }
                                 }
                             } else {
+                                instructionsCoordinates.add(
+                                    stepsArray.getJSONObject(i).getJSONObject("start_location")
+                                        .getString("lat")
+                                )
+                                instructionsCoordinates.add(
+                                    stepsArray.getJSONObject(i).getJSONObject("start_location")
+                                        .getString("lng")
+                                )
                                 instructions.add(
                                     stepsArray.getJSONObject(i).getString("html_instructions")
                                 )
@@ -215,7 +260,15 @@ class NavigationRepository(private val application: Application) {
                             Log.e("JSONException", e.message.toString())
                         }
                     }
-                    val navigation = NavigationRoute(origin, destination, mode, path, instructions)
+
+                    val navigation = NavigationRoute(
+                        origin,
+                        destination,
+                        mode,
+                        path,
+                        instructions,
+                        instructionsCoordinates
+                    )
                     navigationRoute.value = navigation
                 }
             },
@@ -228,7 +281,6 @@ class NavigationRepository(private val application: Application) {
         requestQueue.add(directionsRequest)
     }
 
-
     private fun constructRequestURL(
         origin: Location,
         destination: Location,
@@ -239,7 +291,7 @@ class NavigationRepository(private val application: Application) {
         return "https://maps.googleapis.com/maps/api/directions/json?" +
                 "origin=" + origin.getLocation().latitude.toString() + "," + origin.getLocation().longitude.toString() +
                 "&destination=" + destination.getLocation().latitude.toString() + "," + destination.getLocation().longitude.toString() +
-                 waypoints +
+                waypoints +
                 "&mode=" + transportationMethod +
                 "&key=" + application.applicationContext.getString(R.string.ApiKey)
     }

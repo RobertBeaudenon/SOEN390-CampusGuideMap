@@ -94,7 +94,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
-        private var tracker = 0
+        private var trackerSteps = 0
+        private var trackerCoordinates = 0
         private var currentNavigationRoute : NavigationRoute? = null
     }
 
@@ -206,13 +207,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             if ( it != null && it != currentNavigationRoute) {
                 currentNavigationRoute = it
                 drawPathPolyline(it.polyLinePath)
-                showInstructions(it.instructions)
+                showInstructions(it.instructions, it.instructionsCoordinates)
                 Handler().postDelayed({
                     moveTo(it.origin!!.getLocation(), 19.0f)
                 }, 100)
             }
         })
-        tracker = 0
+        trackerSteps = 0
+        trackerCoordinates = 0
     }
 
     private fun setNavigationButtons() {
@@ -227,7 +229,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         if(currentNavigationRoute != null) {
-            showInstructions(currentNavigationRoute!!.instructions)
+            showInstructions(currentNavigationRoute!!.instructions, currentNavigationRoute!!.instructionsCoordinates)
             toggleInstructionsView(false)
         }
     }
@@ -361,28 +363,32 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun showInstructions(instructions : ArrayList<String>) {
+    private fun showInstructions(instructions : ArrayList<String>, instructionsCoordinates : ArrayList<String>) {
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
         prevArrow.visibility = View.INVISIBLE
 
         nextArrow.setOnClickListener {
-            tracker++
+            trackerSteps++
+            trackerCoordinates+=2
             prevArrow.visibility = View.VISIBLE
-            if(tracker < instructions.size) {
-                arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
+            if(trackerSteps < instructions.size) {
+                arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
+                println("Debuger: lat " + instructionsCoordinates[trackerCoordinates] + ", lng " + instructionsCoordinates[trackerCoordinates+1]) //TODO: Right now I am printing the coordinate, it's actually suppose to change the view to this coordinate. Someone please fix this :)
             }
-            if (tracker == instructions.size-1) {
+            if (trackerSteps == instructions.size-1) {
                 nextArrow.visibility = View.INVISIBLE
             }
         }
         prevArrow.setOnClickListener {
-            tracker--
+            trackerSteps--
+            trackerCoordinates-=2
             nextArrow.visibility = View.VISIBLE
-            if(tracker < instructions.size) {
-                arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
+            if(trackerSteps < instructions.size) {
+                arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
+                println("Debuger: lat " + instructionsCoordinates[trackerCoordinates] + ", lng " + instructionsCoordinates[trackerCoordinates+1]) //TODO: Right now I am printing the coordinate, it's actually suppose to change the view to this coordinate. Someone please fix this :)
             }
-            if (tracker == 0) {
+            if (trackerSteps == 0) {
                 prevArrow.visibility = View.INVISIBLE
             }
         }
