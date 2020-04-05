@@ -31,20 +31,21 @@ class ExplorePlaceEntity (
     var rating: Int = 0,
 
     @NotNull
-    @ColumnInfo(name ="image")
-    var image: String = "",
-
-    @NotNull
     @ColumnInfo(name ="category")
     var category: String = "",
 
+    @NotNull
     @ColumnInfo(name ="food_type")
     var food_type: String = "",
 
     @NotNull
     @PrimaryKey
     @ColumnInfo(name ="placeID")
-    var placeID: String = ""
+    var placeID: String = "",
+
+    @NotNull
+    @ColumnInfo(name ="distance")
+    var distance: Int
 
 
 )

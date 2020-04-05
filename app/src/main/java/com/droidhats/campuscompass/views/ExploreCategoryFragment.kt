@@ -79,9 +79,19 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
 
     private fun updateRecyclerView() {
         val places: ArrayList<ExplorePlaceEntity> = arrayListOf()
-        val explorePlaceEntity = ExplorePlaceEntity("Robert","3450 Drummond",5,"asdwdw","human","","1234")
-       // places.addAll(viewModel.getAllPlaces().value!!)
-        places.add(explorePlaceEntity)
+//        val place1= ExplorePlaceEntity("Concordia","3450 Drummond",5,"asdwdw","human","","1234")
+//        val place2= ExplorePlaceEntity("Mcgill","3450 Drummond",5,"asdwdw","human","","1234")
+//        val place3= ExplorePlaceEntity("Drummond","3450 Drummond",5,"asdwdw","human","","1234")
+//        val place4= ExplorePlaceEntity("Robert","3450 Drummond",5,"asdwdw","human","","1234")
+//        val place5= ExplorePlaceEntity("Robert","3450 Drummond",5,"asdwdw","human","","1234")
+
+
+        places.addAll(viewModel.getAllPlaces().value!!)
+//        places.add(place1)
+//        places.add(place2)
+//        places.add(place3)
+//        places.add(place4)
+//        places.add(place5)
 
 
         with(recyclerView) {
