@@ -48,15 +48,15 @@ class ProcessMap {
         var firstElement: Boolean = true
 
         stringArray = svgFile.split("\n")
-        var it = 15
+        var it = 0
         while (it < stringArray.size) {
-            println(stringArray[it])
-            onEachLine(stringArray[it])
 
-            if (stringArray[it].contains("<svg")) {
-                it = collectSVG(it, onSvgElement)
+
+            if (stringArray[it].contains("<svg") && !firstElement) {
+                it = collectSVG(it, onSvgElement, onEachLine)
             }
 
+            onEachLine(stringArray[it])
 
             if (stringArray[it].contains("<rect")) {
                 inRect = true
@@ -93,18 +93,20 @@ class ProcessMap {
         }
     }
 
-    private fun collectSVG(it: Int, onSvgElement: (String) -> Unit): Int {
+    private fun collectSVG(it: Int, onSvgElement: (String) -> Unit, onEachLine: (String) -> Unit): Int {
         var iterator = it
         val stringBuilder: StringBuilder = StringBuilder()
         var retrievedOne: Boolean = false
         while(!stringArray[iterator].contains("</svg>")) {
             stringBuilder.append(stringArray[iterator])
+            onEachLine(stringArray[iterator])
             if (stringArray[iterator].contains(">") && !retrievedOne) {
                 retrievedOne = true
                 onSvgElement(stringBuilder.toString())
             }
             iterator++
         }
+        onEachLine(stringArray[iterator])
         return iterator + 1
     }
 
