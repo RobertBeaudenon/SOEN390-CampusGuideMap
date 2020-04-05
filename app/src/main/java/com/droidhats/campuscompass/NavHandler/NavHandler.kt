@@ -1,9 +1,9 @@
-package com.droidhats.campuscompass.viewmodels
+package com.droidhats.campuscompass.NavHandler
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 
-abstract class NavHandler(application: Application) : AndroidViewModel(application) {
+abstract class NavHandler {
     private var next: NavHandler? = null
     private var prev: NavHandler? = null
 
