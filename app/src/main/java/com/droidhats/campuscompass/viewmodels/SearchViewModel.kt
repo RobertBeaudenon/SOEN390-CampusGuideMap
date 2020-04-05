@@ -15,7 +15,6 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.repositories.IndoorLocationRepository
-import com.droidhats.campuscompass.repositories.IndoorNavigationRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
@@ -129,9 +128,5 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
            if (destination is Building)
                navigationRepository.fetchRouteTimes(origin, destination)
        }
-    }
-
-    fun setIndoorDirections(startAndEnd: Pair<IndoorLocation, IndoorLocation>) {
-        IndoorNavigationRepository.getInstance().setStartAndEnd(startAndEnd)
     }
 }

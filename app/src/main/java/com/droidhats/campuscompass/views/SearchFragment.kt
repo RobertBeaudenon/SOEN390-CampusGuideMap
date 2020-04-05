@@ -156,11 +156,10 @@ class SearchFragment : Fragment()  {
                 initiateNavigation()
                 viewModel.navigationRepository.getNavigationRoute().observe(viewLifecycleOwner, Observer { route ->
                     if (route != null) {
-                        val origin = NavigationPoints[R.id.mainSearchBar]
-                        val destination = NavigationPoints[R.id.secondarySearchBar]
+                        val origin = route.origin
+                        val destination = route.destination
                         //check if both origin and destination are indoor
                         if((origin is IndoorLocation) && (destination is IndoorLocation))  {
-                            viewModel.setIndoorDirections(Pair(origin, destination))
                             findNavController().navigate(R.id.floor_fragment)
                         } else {
                             findNavController().popBackStack(R.id.map_fragment, false)

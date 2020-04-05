@@ -82,6 +82,10 @@ class NavigationRepository(private val application: Application) {
         return sgwShuttleTimes
     }
 
+    fun setNavigationRoute(navigationRoute: NavigationRoute) {
+        this.navigationRoute.value = navigationRoute
+    }
+
     fun setNavigationHandler(navHandler: NavHandler) {
         navHandler.getNavigationRoute()
         this.navhandler = navHandler
