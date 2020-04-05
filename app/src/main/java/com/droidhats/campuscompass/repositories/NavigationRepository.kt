@@ -9,10 +9,12 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.droidhats.campuscompass.NavHandler.NavHandler
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
 import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
 import com.droidhats.campuscompass.roomdb.ShuttleBusDAO
@@ -40,6 +42,7 @@ class NavigationRepository(private val application: Application) {
     private var sgwShuttleTimes: LiveData<List<ShuttleBusSGWEntity>>
     private var navigationRoute = MutableLiveData<NavigationRoute>()
     var routeTimes = MutableLiveData<MutableMap<String, String>>()
+    var navhandler: NavHandler? = null
 
 
     companion object {
@@ -75,6 +78,16 @@ class NavigationRepository(private val application: Application) {
         return sgwShuttleTimes
     }
 
+    fun setNavigationHandler(navHandler: NavHandler) {
+        //this.navigationRoute.value = navHandler.getNavigationRoute()
+        this.navhandler = navHandler
+    }
+
+    fun consumeNavigationHandler(): NavHandler? {
+        navhandler = navhandler?.next
+        return navhandler
+    }
+
     suspend fun fetchPlace(location: Location): Unit = suspendCoroutine { cont ->
         if (location is GooglePlace) {
             val placeFields: List<Place.Field> = Place.Field.values().toList()
@@ -101,7 +114,7 @@ class NavigationRepository(private val application: Application) {
      */
     fun fetchRouteTimes(origin: Location, destination: Location) {
         val times = mutableMapOf<String, String>()
-        for (method in NavigationRoute.TransportationMethods.values()) {
+        for (method in OutdoorNavigationRoute.TransportationMethods.values()) {
             val directionRequest = StringRequest(
                 Request.Method.GET, constructRequestURL(origin, destination, method.string),
                 Response.Listener { response ->
@@ -119,7 +132,7 @@ class NavigationRepository(private val application: Application) {
                         times[method.string] = "N/A"
                     }
                     //Set only after all the times have been retrieved (to display them all at the same time)
-                    if (times.size == NavigationRoute.TransportationMethods.values().size)
+                    if (times.size == OutdoorNavigationRoute.TransportationMethods.values().size)
                         routeTimes.value = times
                 },
                 Response.ErrorListener {
@@ -208,7 +221,7 @@ class NavigationRepository(private val application: Application) {
                             Log.e("JSONException", e.message.toString())
                         }
                     }
-                    val navigation = NavigationRoute(origin, destination, mode, path, instructions)
+                    val navigation = OutdoorNavigationRoute(origin, destination, mode, path, instructions)
                     navigationRoute.value = navigation
                 }
             },

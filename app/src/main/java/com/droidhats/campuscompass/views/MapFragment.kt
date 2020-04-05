@@ -5,8 +5,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.Color
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -32,7 +30,7 @@ import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.IndoorLocation
@@ -51,18 +49,15 @@ import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.IOException
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
 import kotlin.collections.ArrayList
 import kotlin.collections.List
@@ -96,7 +91,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
         private var tracker = 0
-        private var currentNavigationRoute : NavigationRoute? = null
+        private var currentOutdoorNavigationRoute : OutdoorNavigationRoute? = null
     }
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
@@ -178,7 +173,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         attachBuildingObservers()
-        if (currentNavigationRoute != null) drawPathPolyline(currentNavigationRoute!!.polyLinePath)
+        if (currentOutdoorNavigationRoute != null) drawPathPolyline(currentOutdoorNavigationRoute!!.polyLinePath)
     }
 
     private fun attachBuildingObservers(){
@@ -204,8 +199,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             // The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
             // Remove the condition check to keep the path drawn on the screen even after changing activities
             // If the condition is removed though, camera movement must be handled properly not to override other movement
-            if ( it != null && it != currentNavigationRoute) {
-                currentNavigationRoute = it
+            if ( it != null && it != currentOutdoorNavigationRoute && it is OutdoorNavigationRoute) {
+                currentOutdoorNavigationRoute = it
                 drawPathPolyline(it.polyLinePath)
                 showInstructions(it.instructions)
                 Handler().postDelayed({
@@ -227,8 +222,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             toggleInstructionsView(true)
         }
 
-        if(currentNavigationRoute != null) {
-            showInstructions(currentNavigationRoute!!.instructions)
+        if(currentOutdoorNavigationRoute != null) {
+            showInstructions(currentOutdoorNavigationRoute!!.instructions)
             toggleInstructionsView(false)
         }
     }
@@ -414,7 +409,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         else{
             instructionsView.visibility = View.INVISIBLE
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
-            if(currentNavigationRoute != null)
+            if(currentOutdoorNavigationRoute != null)
                 buttonResumeNavigation.visibility = View.VISIBLE
         }
     }

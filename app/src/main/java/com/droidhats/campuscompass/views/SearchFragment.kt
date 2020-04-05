@@ -22,13 +22,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.droidhats.campuscompass.NavHandler.NavHandler
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
-import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.droidhats.mapprocessor.ProcessMap
 import com.google.android.gms.location.LocationServices
@@ -151,9 +152,21 @@ class SearchFragment : Fragment()  {
         startNavButton.setOnClickListener{
             if (!areRouteParametersSet()) {
                 Toast.makeText(context, "Set Your Route To Begin Navigation", Toast.LENGTH_LONG).show()
-            }
-            else {
-               initiateNavigation()
+            } else {
+                initiateNavigation()
+                viewModel.navigationRepository.getNavigationRoute().observe(viewLifecycleOwner, Observer { route ->
+                    if (route != null) {
+                        val origin = NavigationPoints[R.id.mainSearchBar]
+                        val destination = NavigationPoints[R.id.secondarySearchBar]
+                        //check if both origin and destination are indoor
+                        if((origin is IndoorLocation) && (destination is IndoorLocation))  {
+                            viewModel.setIndoorDirections(Pair(origin, destination))
+                            findNavController().navigate(R.id.floor_fragment)
+                        } else {
+                            findNavController().popBackStack(R.id.map_fragment, false)
+                        }
+                    }
+                })
             }
         }
         initCurrentLocationHandler(mainSearchBar, secondarySearchBar)
@@ -165,34 +178,16 @@ class SearchFragment : Fragment()  {
 		secondarySearchBar.clearFocus()
 
         //Make sure BOTH coordinates are set before generating directions
-        if(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0)){
-            val handler = CoroutineExceptionHandler{_, throwable ->
-                Log.e(ContentValues.TAG, throwable.message!!)
-            }
-            GlobalScope.launch(Dispatchers.Default + handler) {
-                viewModel.navigationRepository.fetchPlace(origin!!)
-                viewModel.navigationRepository.fetchPlace(destination!!)
+        if (!(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0))) {
+            Toast.makeText(
+                context, "Starting Navigation\n" +
+                        "From: ${origin?.name}\n" +
+                        "To: ${destination?.name}\n",
+                Toast.LENGTH_LONG
+            ).show()
 
-                viewModel.navigationRepository.generateDirections(origin,
-                    destination,
-                    selectedTransportationMethod)
-            }
-        } else {
-            //check if both origin and destination are indoor
-            if((origin is IndoorLocation) && (destination is IndoorLocation))  {
-                viewModel.setIndoorDirections(Pair(origin, destination))
-                findNavController().navigate(R.id.floor_fragment)
-            } else {
-                findNavController().popBackStack(R.id.map_fragment, false)
-            }
-
-            Toast.makeText(context, "Starting Navigation\n" +
-                    "From: ${origin?.name}\n" +
-                    "To: ${destination?.name}\n" +
-                    "By: $selectedTransportationMethod",
-                Toast.LENGTH_LONG).show()
-
-            viewModel.navigationRepository.generateDirections(origin!!,
+            viewModel.navigationRepository.generateDirections(
+                origin!!,
                 destination!!,
                 selectedTransportationMethod)
 
@@ -291,32 +286,32 @@ class SearchFragment : Fragment()  {
     private fun resetRouteTimes(){
         if (isNavigationViewOpen) {
             val defaultTextView = mutableMapOf<String, String>()
-            for (i in NavigationRoute.TransportationMethods.values())
+            for (i in OutdoorNavigationRoute.TransportationMethods.values())
                 defaultTextView[i.string] = "-"
             viewModel.navigationRepository.routeTimes.value = defaultTextView
         }
     }
 
     private fun initTransportationRadioGroup(){
-        selectedTransportationMethod = NavigationRoute.TransportationMethods.DRIVING.string
+        selectedTransportationMethod = OutdoorNavigationRoute.TransportationMethods.DRIVING.string
         val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
         radioTransportationGroup.setOnCheckedChangeListener{ radioGroup: RadioGroup?, id: Int ->
 
             when (radioGroup?.checkedRadioButtonId) {
                 R.id.radio_transport_mode_driving -> {
-                    selectedTransportationMethod = NavigationRoute.TransportationMethods.DRIVING.string
+                    selectedTransportationMethod = OutdoorNavigationRoute.TransportationMethods.DRIVING.string
                 }
                 R.id.radio_transport_mode_transit -> {
-                    selectedTransportationMethod = NavigationRoute.TransportationMethods.TRANSIT.string
+                    selectedTransportationMethod = OutdoorNavigationRoute.TransportationMethods.TRANSIT.string
                 }
                 R.id.radio_transport_mode_walking -> {
-                    selectedTransportationMethod = NavigationRoute.TransportationMethods.WALKING.string
+                    selectedTransportationMethod = OutdoorNavigationRoute.TransportationMethods.WALKING.string
                 }
                 R.id.radio_transport_mode_bicycle -> {
-                    selectedTransportationMethod = NavigationRoute.TransportationMethods.BICYCLE.string
+                    selectedTransportationMethod = OutdoorNavigationRoute.TransportationMethods.BICYCLE.string
                 }
                 R.id.radio_transport_mode_shuttle -> {
-                    selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
+                    selectedTransportationMethod = OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string
                 }
             }
         }
@@ -329,11 +324,11 @@ class SearchFragment : Fragment()  {
         val bicycleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle)
         val shuttleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle)
 
-        drivingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.DRIVING.string]
-        transitRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.TRANSIT.string]
-        walkingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.WALKING.string]
-        bicycleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.BICYCLE.string]
-        shuttleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
+        drivingRadioButton.text =  routeTimes[OutdoorNavigationRoute.TransportationMethods.DRIVING.string]
+        transitRadioButton.text =  routeTimes[OutdoorNavigationRoute.TransportationMethods.TRANSIT.string]
+        walkingRadioButton.text =  routeTimes[OutdoorNavigationRoute.TransportationMethods.WALKING.string]
+        bicycleRadioButton.text =  routeTimes[OutdoorNavigationRoute.TransportationMethods.BICYCLE.string]
+        shuttleRadioButton.text =  routeTimes[OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string]
     }
 
     override fun onDetach() {

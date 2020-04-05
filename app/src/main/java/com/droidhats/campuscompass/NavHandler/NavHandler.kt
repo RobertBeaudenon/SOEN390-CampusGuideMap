@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 
 abstract class NavHandler {
-    private var next: NavHandler? = null
+    var next: NavHandler? = null
     private var prev: NavHandler? = null
 
     fun setNext(navHandler: NavHandler): NavHandler {
