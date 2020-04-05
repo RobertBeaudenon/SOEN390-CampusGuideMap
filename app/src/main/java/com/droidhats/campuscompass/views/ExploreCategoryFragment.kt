@@ -9,20 +9,29 @@ import android.widget.*
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.adapters.ExplorePlaceAdapter
+import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
+import com.droidhats.campuscompass.viewmodels.ExplorePlaceViewModel
 import com.google.android.libraries.places.api.model.Place
 
 class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
+
     private lateinit var root : View
+    private lateinit var viewModel: ExplorePlaceViewModel
+    private lateinit var recyclerView: RecyclerView
+    private var columnCount = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        viewModel = ViewModelProviders.of(this).get(ExplorePlaceViewModel::class.java)
         super.onCreate(savedInstanceState)
-
-
-
-
 
     }
 
@@ -57,12 +66,33 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
             spinner1.adapter = adapter
         }
 
+        recyclerView = root.findViewById(R.id.explore_recycler_view)
+        viewModel.getAllPlaces().observe(viewLifecycleOwner, Observer {
 
-
+            updateRecyclerView()
+            recyclerView.adapter!!.notifyDataSetChanged()
+        })
 
 
         return root
     }
+
+    private fun updateRecyclerView() {
+        val places: ArrayList<ExplorePlaceEntity> = arrayListOf()
+        val explorePlaceEntity = ExplorePlaceEntity("Robert","3450 Drummond",5,"asdwdw","human","","1234")
+       // places.addAll(viewModel.getAllPlaces().value!!)
+        places.add(explorePlaceEntity)
+
+
+        with(recyclerView) {
+            layoutManager = when {
+                columnCount <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, columnCount)
+            }
+            adapter = ExplorePlaceAdapter(places)
+        }
+    }
+
 
     private fun retrieveArguments(){
         val categoryName = arguments?.getString("name")
