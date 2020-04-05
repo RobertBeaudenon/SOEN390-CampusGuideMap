@@ -11,11 +11,22 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
+import com.droidhats.campuscompass.views.ExploreCategoryFragment
 import kotlinx.android.synthetic.main.explore_recycler_item.view.*
+import androidx.navigation.findNavController
 
 
-class ExplorePlaceAdapter(private val items: ArrayList<ExplorePlaceEntity>):
+class ExplorePlaceAdapter(private val items: ArrayList<ExplorePlaceEntity>, private val listener: ExploreCategoryFragment.OnExplorePlaceClickListener?):
     RecyclerView.Adapter<ExplorePlaceAdapter.ViewHolder>() {
+
+    private val onClickListener: View.OnClickListener
+
+    init {
+        onClickListener = View.OnClickListener { view ->
+            val item = view.tag as ExplorePlaceEntity
+            listener?.onExplorePlaceClick(item)
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExplorePlaceAdapter.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.explore_recycler_item, parent, false)
@@ -36,15 +47,15 @@ class ExplorePlaceAdapter(private val items: ArrayList<ExplorePlaceEntity>):
 
        // holder.cardView.setCardBackgroundColor(item.color!!.toInt())
 
-//        with(holder.view) {
-//            tag = item
-//            holder.navButton.setOnClickListener{
-//                val bundle = Bundle()
-//                bundle.putString("destEventLocation",item.location )
-//                findNavController().popBackStack()
-//                findNavController().navigate(R.id.search_fragment, bundle)
-//            }
-//        }
+        with(holder.view) {
+            tag = item
+            holder.cardView.setOnClickListener{
+                //val bundle = Bundle()
+                //bundle.putString("destEventLocation",item.location )
+                findNavController().popBackStack()
+                findNavController().navigate(R.id.search_fragment)
+            }
+        }
     }
 
     override fun getItemCount(): Int = items.size

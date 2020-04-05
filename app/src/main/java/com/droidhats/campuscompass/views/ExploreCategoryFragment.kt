@@ -29,6 +29,10 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     private lateinit var recyclerView: RecyclerView
     private var columnCount = 1
 
+    companion object {
+        var onExplorePlaceClickListener: OnExplorePlaceClickListener? = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ExplorePlaceViewModel::class.java)
         super.onCreate(savedInstanceState)
@@ -79,19 +83,8 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
 
     private fun updateRecyclerView() {
         val places: ArrayList<ExplorePlaceEntity> = arrayListOf()
-//        val place1= ExplorePlaceEntity("Concordia","3450 Drummond",5,"asdwdw","human","","1234")
-//        val place2= ExplorePlaceEntity("Mcgill","3450 Drummond",5,"asdwdw","human","","1234")
-//        val place3= ExplorePlaceEntity("Drummond","3450 Drummond",5,"asdwdw","human","","1234")
-//        val place4= ExplorePlaceEntity("Robert","3450 Drummond",5,"asdwdw","human","","1234")
-//        val place5= ExplorePlaceEntity("Robert","3450 Drummond",5,"asdwdw","human","","1234")
-
 
         places.addAll(viewModel.getAllPlaces().value!!)
-//        places.add(place1)
-//        places.add(place2)
-//        places.add(place3)
-//        places.add(place4)
-//        places.add(place5)
 
 
         with(recyclerView) {
@@ -99,7 +92,7 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = ExplorePlaceAdapter(places)
+            adapter = ExplorePlaceAdapter(places, onExplorePlaceClickListener)
         }
     }
 
@@ -111,6 +104,10 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
             fragmentTitle.text = "Explore - $categoryName"
         }
 
+    }
+
+    interface OnExplorePlaceClickListener {
+        fun onExplorePlaceClick(item: ExplorePlaceEntity?)
     }
 
     override fun onItemSelected(arg0: AdapterView<*>, arg1: View, position: Int, id: Long) {
