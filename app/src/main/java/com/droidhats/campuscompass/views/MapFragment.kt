@@ -5,8 +5,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.Color
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -31,45 +29,25 @@ import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.NavigationRoute
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.IndoorLocation
-import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.models.*
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.io.IOException
-import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
-import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.instructions_sheet_layout.*
 import kotlinx.android.synthetic.main.search_bar_layout.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -374,7 +352,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             prevArrow.visibility = View.VISIBLE
             if(trackerSteps < instructions.size) {
                 arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
-                println("Debuger: lat " + instructionsCoordinates[trackerCoordinates] + ", lng " + instructionsCoordinates[trackerCoordinates+1]) //TODO: Right now I am printing the coordinate, it's actually suppose to change the view to this coordinate. Someone please fix this :)
+                map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates+1].toDouble()), 20.0f))
             }
             if (trackerSteps == instructions.size-1) {
                 nextArrow.visibility = View.INVISIBLE
@@ -386,7 +364,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             nextArrow.visibility = View.VISIBLE
             if(trackerSteps < instructions.size) {
                 arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
-                println("Debuger: lat " + instructionsCoordinates[trackerCoordinates] + ", lng " + instructionsCoordinates[trackerCoordinates+1]) //TODO: Right now I am printing the coordinate, it's actually suppose to change the view to this coordinate. Someone please fix this :)
+                map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates+1].toDouble()), 20.0f))
             }
             if (trackerSteps == 0) {
                 prevArrow.visibility = View.INVISIBLE
@@ -539,7 +517,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
        }
     }
 
-    private fun moveTo(coordinates: LatLng, zoomLevel: Float){
+    private fun moveTo(coordinates: LatLng, zoomLevel: Float) {
         map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoomLevel))
     }
 
