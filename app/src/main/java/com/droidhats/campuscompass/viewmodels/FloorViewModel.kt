@@ -7,6 +7,8 @@ import com.droidhats.campuscompass.repositories.NavigationRepository
 
 class FloorViewModel: ViewModel() {
 
+    val navigationRepository: NavigationRepository? = NavigationRepository.getInstance()
+
     fun getDirections(): Pair<IndoorLocation, IndoorLocation>? {
         val navRoute = NavigationRepository.getInstance()?.getNavigationRoute()?.value
         if (navRoute?.origin is IndoorLocation && navRoute.destination is IndoorLocation) {
@@ -15,5 +17,9 @@ class FloorViewModel: ViewModel() {
         else {
             return null
         }
+    }
+
+    fun consumeNavHandler() {
+        navigationRepository?.consumeNavigationHandler()
     }
 }

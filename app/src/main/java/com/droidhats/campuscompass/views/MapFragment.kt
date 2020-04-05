@@ -30,11 +30,7 @@ import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.OutdoorNavigationRoute
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.IndoorLocation
-import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.models.*
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -199,16 +195,26 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             // The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
             // Remove the condition check to keep the path drawn on the screen even after changing activities
             // If the condition is removed though, camera movement must be handled properly not to override other movement
-            if ( it != null && it != currentOutdoorNavigationRoute && it is OutdoorNavigationRoute) {
-                currentOutdoorNavigationRoute = it
-                drawPathPolyline(it.polyLinePath)
-                showInstructions(it.instructions)
-                Handler().postDelayed({
-                    moveTo(it.origin!!.getLocation(), 19.0f)
-                }, 100)
+
+            if ( it != null && it != currentOutdoorNavigationRoute ) {
+                if (it is OutdoorNavigationRoute) {
+                    currentOutdoorNavigationRoute = it
+                    drawPathPolyline(it.polyLinePath)
+                    showInstructions(it.instructions)
+                    Handler().postDelayed({
+                        moveTo(it.origin!!.getLocation(), 19.0f)
+                    }, 100)
+                } else {
+                    findNavController().navigate(R.id.floor_fragment)
+                }
             }
         })
         tracker = 0
+
+        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
+        doneButton.setOnClickListener {
+            viewModel.navigationRepository.consumeNavigationHandler()
+        }
     }
 
     private fun setNavigationButtons() {

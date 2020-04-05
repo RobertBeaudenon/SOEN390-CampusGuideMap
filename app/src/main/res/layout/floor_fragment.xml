@@ -51,4 +51,12 @@
     </com.otaliastudios.zoom.ZoomImageView>
     <include layout="@layout/search_bar_layout"/>
 
+    <Button
+        android:id="@+id/doneButtonFloor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I've arrived!"
+        tools:layout_editor_absoluteX="150dp"
+        tools:layout_editor_absoluteY="611dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

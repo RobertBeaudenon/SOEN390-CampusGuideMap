@@ -23,13 +23,15 @@ abstract class NavHandler {
                             .setNext(OutdoorNavStep(destination, selectedTransportationMode))
                             .setNext(IndoorNavStep(destination))
                     }
+                } else {
+                    navigationHandler
+                        .setNext(OutdoorNavStep(origin, selectedTransportationMode))
+                        .setNext(OutdoorNavStep(destination, selectedTransportationMode))
                 }
             } else {
                 navigationHandler = OutdoorNavStep(origin, selectedTransportationMode)
                 if (destination is IndoorLocation) {
-                    navigationHandler
-                        .setNext(OutdoorNavStep(destination, selectedTransportationMode))
-                        .setNext(IndoorNavStep(destination))
+                    navigationHandler.setNext(IndoorNavStep(destination))
                 } else {
                     navigationHandler.setNext(OutdoorNavStep(destination, selectedTransportationMode))
                 }
