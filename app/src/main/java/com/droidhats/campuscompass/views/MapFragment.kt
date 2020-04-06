@@ -32,18 +32,33 @@ import com.droidhats.campuscompass.helpers.Subject
 import com.droidhats.campuscompass.models.*
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.instructions_sheet_layout.*
-import kotlinx.android.synthetic.main.search_bar_layout.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.instructions_sheet_layout.prevArrow
+import kotlinx.android.synthetic.main.instructions_sheet_layout.nextArrow
+import kotlinx.android.synthetic.main.instructions_sheet_layout.arrayInstruction
+import kotlinx.android.synthetic.main.search_bar_layout.buttonResumeNavigation
+import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
+import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -75,7 +90,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
         private var trackerSteps = 0
-        private var trackerCoordinates = 0
         private var currentNavigationRoute : NavigationRoute? = null
     }
 
@@ -194,7 +208,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         })
         trackerSteps = 0
-        trackerCoordinates = 0
     }
 
     private fun setNavigationButtons() {
@@ -343,48 +356,66 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun showInstructions(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<String>) {
+    private fun showInstructions(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>){
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
-        prevArrow.visibility = View.INVISIBLE
 
-        nextArrow.setOnClickListener {
-            trackerSteps++
-            trackerCoordinates += 2
+        nextArrow.setOnClickListener{
             prevArrow.visibility = View.VISIBLE
-            if (trackerSteps < instructions.size) {
-                arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
-
-                val bearingValue = getBearing(instructionsCoordinates[trackerCoordinates - 2].toDouble(), instructionsCoordinates[trackerCoordinates - 1].toDouble(), instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates + 1].toDouble())
-                if (!bearingValue.isNaN()) {
-                    val cameraPosition: CameraPosition = CameraPosition.Builder().target(LatLng(instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates + 1].toDouble())).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
-                    map!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
+            trackerSteps++
+            arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
+                if (trackerSteps < instructions.size -1) {
+                    val bearingValue = getBearing(
+                        instructionsCoordinates[trackerSteps].latitude,
+                        instructionsCoordinates[trackerSteps].longitude,
+                        instructionsCoordinates[trackerSteps+1].latitude,
+                        instructionsCoordinates[trackerSteps+1].longitude
+                    )
+                    if (!bearingValue.isNaN()) {
+                        val cameraPosition: CameraPosition = CameraPosition.Builder().target(
+                                LatLng(
+                                    instructionsCoordinates[trackerSteps].latitude,
+                                    instructionsCoordinates[trackerSteps].longitude)
+                            ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
+                        map!!.animateCamera(
+                            CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
+                    }
                 }
-            }
-            if (trackerSteps == instructions.size - 1) {
+           else if (trackerSteps == instructions.size-1) {
                 nextArrow.visibility = View.INVISIBLE
+                moveTo(instructionsCoordinates[instructions.size-1], 20.0F)
             }
         }
-        prevArrow.setOnClickListener {
-            trackerSteps--
-            trackerCoordinates -= 2
+        prevArrow.setOnClickListener{
             nextArrow.visibility = View.VISIBLE
-            if (trackerSteps < instructions.size) {
+                trackerSteps--
                 arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
-
-                if (trackerSteps != 0) {
-                    val bearingValue = getBearing(instructionsCoordinates[trackerCoordinates - 2].toDouble(), instructionsCoordinates[trackerCoordinates - 1].toDouble(), instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates + 1].toDouble())
+            if (trackerSteps != 0) {
+                if (trackerSteps < instructions.size -1) {
+                    val bearingValue = getBearing(
+                        instructionsCoordinates[trackerSteps].latitude,
+                        instructionsCoordinates[trackerSteps].longitude,
+                        instructionsCoordinates[trackerSteps + 1].latitude,
+                        instructionsCoordinates[trackerSteps + 1].longitude
+                    )
                     if (!bearingValue.isNaN()) {
-                        val cameraPosition: CameraPosition = CameraPosition.Builder().target(LatLng(instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates + 1].toDouble())).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
-                        map!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
+                        val cameraPosition: CameraPosition = CameraPosition.Builder().target(
+                            LatLng(
+                                instructionsCoordinates[trackerSteps].latitude,
+                                instructionsCoordinates[trackerSteps].longitude)
+                        ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
+                        map!!.animateCamera(
+                            CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
                     }
                 }
             }
-            if (trackerSteps == 0) {
+            else {
                 prevArrow.visibility = View.INVISIBLE
+                moveTo(instructionsCoordinates[0], 20.0F)
             }
         }
     }
+
 
     private fun getBearing(startLat: Double, startLong: Double, endLat: Double, endLong: Double): Float {
         val lat = abs(startLat - endLat)

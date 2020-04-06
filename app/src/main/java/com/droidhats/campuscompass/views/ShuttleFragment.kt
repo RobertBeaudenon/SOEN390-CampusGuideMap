@@ -17,7 +17,7 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.ShuttleViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.shuttle_fragment.*
+import kotlinx.android.synthetic.main.shuttle_fragment.navigateWithShuttle
 
 class ShuttleFragment : Fragment() {
 
@@ -45,7 +45,7 @@ class ShuttleFragment : Fragment() {
                 tab.text = "SGW TO LOY"
                 navigateWithShuttle.setOnClickListener {
                     findNavController().navigateUp()
-                    viewModel.navigationRepository.generateDirections(viewModel.mapRepository.getCampuses()[0],
+                    viewModel.navigationRepository.fetchDirections(viewModel.mapRepository.getCampuses()[0],
                     viewModel.mapRepository.getCampuses()[1], "shuttle", null)
                 }
             }
@@ -53,7 +53,7 @@ class ShuttleFragment : Fragment() {
                 tab.text = "LOY TO SGW"
                 navigateWithShuttle.setOnClickListener {
                     findNavController().navigateUp()
-                    viewModel.navigationRepository.generateDirections(viewModel.mapRepository.getCampuses()[1],
+                    viewModel.navigationRepository.fetchDirections(viewModel.mapRepository.getCampuses()[1],
                         viewModel.mapRepository.getCampuses()[0], "shuttle", null)
                 }
             }

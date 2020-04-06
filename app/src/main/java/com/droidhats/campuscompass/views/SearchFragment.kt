@@ -35,7 +35,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.search_fragment.*
+import kotlinx.android.synthetic.main.search_fragment.secondarySearchBar
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -177,7 +177,7 @@ class SearchFragment : Fragment()  {
                 viewModel.navigationRepository.fetchPlace(origin!!)
                 viewModel.navigationRepository.fetchPlace(destination!!)
 
-                viewModel.navigationRepository.generateDirections(origin,
+                viewModel.navigationRepository.fetchDirections(origin,
                     destination,
                     selectedTransportationMethod,
                     waypoints)
@@ -197,7 +197,7 @@ class SearchFragment : Fragment()  {
                     "By: $selectedTransportationMethod",
                 Toast.LENGTH_LONG).show()
 
-            viewModel.navigationRepository.generateDirections(origin!!,
+            viewModel.navigationRepository.fetchDirections(origin!!,
                 destination!!,
                 selectedTransportationMethod,
                 waypoints)

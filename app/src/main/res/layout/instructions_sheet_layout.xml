@@ -54,6 +54,7 @@
                 android:maxWidth="60dp"
                 android:maxHeight="60dp"
                 android:rotation="180"
+                android:visibility="invisible"
                 android:src="@drawable/arrow_button"
                 android:tint="@color/colorPrimaryDark" />
 

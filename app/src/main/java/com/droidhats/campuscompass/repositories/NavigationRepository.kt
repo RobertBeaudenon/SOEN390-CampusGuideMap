@@ -98,6 +98,7 @@ class NavigationRepository(private val application: Application) {
      * Fetches the time it takes to reach the destination for all transportation methods
      * @param origin: The starting point from where the travel begins.
      * @param destination: The destination point where the travel ends.
+     * @param wapoints: Waypoints along the travel path
      */
     fun fetchRouteTimes(origin: Location, destination: Location, waypoints: String?) {
         val times = mutableMapOf<String, String>()
@@ -136,151 +137,29 @@ class NavigationRepository(private val application: Application) {
         }
     }
 
-    fun generateDirections(
-        origin: Location,
-        destination: Location,
-        mode: String,
-        waypoints: String?
-    ) {
-        val instructions = arrayListOf<String>()
-        val instructionsCoordinates = arrayListOf<String>()
-        if (origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(
-                0.0,
-                0.0
-            )
-        )
+    /**
+     * Fetches navigation route information
+     * @param origin: The starting point from where the travel begins.
+     * @param destination: The destination point where the travel ends.
+     * @param mode: The transportation method
+     * @param wapoints: Waypoints along the travel path
+     */
+    fun fetchDirections(origin: Location, destination: Location, mode: String, waypoints: String?) {
+        if (origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(0.0, 0.0))
             return
         var transportationMethod = mode
         //If the mode is shuttle, we want to show walking instructions towards the bus stop
         if (mode == NavigationRoute.TransportationMethods.SHUTTLE.string)
             transportationMethod = NavigationRoute.TransportationMethods.WALKING.string
+
         val directionsRequest = object : StringRequest(
             Method.GET,
             constructRequestURL(origin, destination, transportationMethod, waypoints),
             Response.Listener { response ->
-
                 //Retrieve response (a JSON object)
                 val jsonResponse = JSONObject(response)
-
-                // Get route information from json response
-                val routesArray = jsonResponse.getJSONArray("routes")
-                if (routesArray.length() > 0) {
-                    val routes = routesArray.getJSONObject(0)
-                    val legsArray: JSONArray = routes.getJSONArray("legs")
-                    val legs = legsArray.getJSONObject(0)
-                    val stepsArray = legs.getJSONArray("steps")
-
-                    val path: MutableList<List<LatLng>> = ArrayList()
-
-                    //Build the path polyline as well as store instruction between 2 path into an array.
-                    //Build the path polyline as well as store instruction between 2 path into an array.
-                    for (i in 0 until stepsArray.length()) {
-                        val points = stepsArray.getJSONObject(i).getJSONObject("polyline").getString("points")
-                        try {
-                            if (transportationMethod == "transit" || transportationMethod == "walking") {
-                                if (stepsArray.getJSONObject(i).has("transit_details")) {
-                                    instructionsCoordinates.add(
-                                        stepsArray.getJSONObject(i).getJSONObject("start_location")
-                                            .getString("lat")
-                                    )
-                                    instructionsCoordinates.add(
-                                        stepsArray.getJSONObject(i).getJSONObject("start_location")
-                                            .getString("lng")
-                                    )
-                                    instructions.add(
-                                        stepsArray.getJSONObject(i)
-                                            .getString("html_instructions") + "<br><Distance: " + stepsArray.getJSONObject(
-                                            i
-                                        ).getJSONObject("distance")
-                                            .getString("text") + "<br>Duration: " + stepsArray.getJSONObject(
-                                            i
-                                        ).getJSONObject("duration")
-                                            .getString("text") + "<br>Arrival Stop: " + stepsArray.getJSONObject(
-                                            i
-                                        ).getJSONObject("transit_details")
-                                            .getJSONObject("arrival_stop")
-                                            .getString("name") + "<br>Total Number of Stop: " + stepsArray.getJSONObject(
-                                            i
-                                        ).getJSONObject("transit_details").getString("num_stops")
-                                    )
-                                } else {
-                                    instructionsCoordinates.add(
-                                        stepsArray.getJSONObject(i).getJSONObject("start_location")
-                                            .getString("lat")
-                                    )
-                                    instructionsCoordinates.add(
-                                        stepsArray.getJSONObject(i).getJSONObject("start_location")
-                                            .getString("lng")
-                                    )
-                                    instructions.add(
-                                        stepsArray.getJSONObject(i)
-                                            .getString("html_instructions") + "<br><br>Distance: " + stepsArray.getJSONObject(
-                                            i
-                                        ).getJSONObject("distance")
-                                            .getString("text") + "<br><br>Duration: " + stepsArray.getJSONObject(
-                                            i
-                                        ).getJSONObject("duration").getString("text")
-                                    )
-                                }
-                                if (stepsArray.getJSONObject(i).has("steps")) {
-                                    for (j in 0 until stepsArray.getJSONObject(i)
-                                        .getJSONArray("steps").length()) {
-                                        instructionsCoordinates.add(
-                                            stepsArray.getJSONObject(i).getJSONArray("steps")
-                                                .getJSONObject(j).getJSONObject("start_location")
-                                                .getString("lat")
-                                        )
-                                        instructionsCoordinates.add(
-                                            stepsArray.getJSONObject(i).getJSONArray("steps")
-                                                .getJSONObject(j).getJSONObject("start_location")
-                                                .getString("lng")
-                                        )
-                                        instructions.add(
-                                            stepsArray.getJSONObject(i).getJSONArray("steps")
-                                                .getJSONObject(j).getString("html_instructions")
-                                        )
-                                    }
-                                }
-                            } else {
-                                instructionsCoordinates.add(
-                                    stepsArray.getJSONObject(i).getJSONObject("start_location")
-                                        .getString("lat")
-                                )
-                                instructionsCoordinates.add(
-                                    stepsArray.getJSONObject(i).getJSONObject("start_location")
-                                        .getString("lng")
-                                )
-                                instructions.add(
-                                    stepsArray.getJSONObject(i).getString("html_instructions")
-                                )
-                            }
-
-                            path.add(PolyUtil.decode(points))
-                        } catch (e: org.json.JSONException) {
-                            Log.e("JSONException", e.message.toString())
-                        }
-                    }
-
-                    instructionsCoordinates.add(
-                        stepsArray.getJSONObject(stepsArray.length()-1).getJSONObject("end_location")
-                            .getString("lat")
-                    )
-                    instructionsCoordinates.add(
-                        stepsArray.getJSONObject(stepsArray.length()-1).getJSONObject("end_location")
-                            .getString("lng")
-                    )
-                    instructions.add("You have arrived!")
-
-                    val navigation = NavigationRoute(
-                        origin,
-                        destination,
-                        mode,
-                        path,
-                        instructions,
-                        instructionsCoordinates
-                    )
-                    navigationRoute.value = navigation
-                }
+              navigationRoute.value =
+                  parseDirections(jsonResponse, origin, destination, transportationMethod)
             },
             Response.ErrorListener {
                 Log.e("Volley Error:", "HTTP response error")
@@ -289,6 +168,87 @@ class NavigationRepository(private val application: Application) {
         //Confirm and add the request with Volley
         val requestQueue = Volley.newRequestQueue(application)
         requestQueue.add(directionsRequest)
+    }
+
+    private fun parseDirections(jsonResponse: JSONObject, origin: Location, destination: Location, mode: String) : NavigationRoute {
+        val path: MutableList<List<LatLng>> = ArrayList()
+        val instructions = arrayListOf<String>()
+        val intCoordinates = arrayListOf<LatLng>()
+
+        // Get route information from json response
+        val routesArray = jsonResponse.getJSONArray("routes")
+        if (routesArray.length() > 0) {
+            val routes = routesArray.getJSONObject(0)
+            val legsArray: JSONArray = routes.getJSONArray("legs")
+            val legs = legsArray.getJSONObject(0)
+            val stepsArray = legs.getJSONArray("steps")
+
+            try {
+                for (i in 0 until stepsArray.length()) { //Each iteration is an direction step
+                    val points =
+                        stepsArray.getJSONObject(i).getJSONObject("polyline").getString("points")
+                    path.add(PolyUtil.decode(points))
+
+                    intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
+                    instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
+
+                    if (stepsArray.getJSONObject(i).has("steps")) {
+                        for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
+                            intCoordinates.add(
+                                parseCoordinates(
+                                    stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), true))
+                            instructions.add(
+                                parseInstructions(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), mode))
+                        }
+                    }
+                }
+                intCoordinates.add(
+                    parseCoordinates(stepsArray.getJSONObject(stepsArray.length() - 1), false))
+                instructions.add("You have arrived!")
+
+            } catch (e: org.json.JSONException) {
+                Log.e("JSONException", e.message.toString())
+            }
+        }
+        return NavigationRoute(origin, destination, mode, path, instructions, intCoordinates)
+    }
+
+    private fun parseInstructions(jsonObject: JSONObject, transportationMethod: String): String {
+        var instruction = jsonObject.getString("html_instructions")
+
+        if (transportationMethod == NavigationRoute.TransportationMethods.TRANSIT.string ||
+            transportationMethod == NavigationRoute.TransportationMethods.WALKING.string) {
+            instruction += "<br>Distance: " +
+                 jsonObject.getJSONObject("distance")
+                    .getString("text") + "<br>Duration: " +
+
+                 jsonObject.getJSONObject("duration")
+                     .getString("text")
+
+            if (jsonObject.has("transit_details")) {
+                instruction += "<br>Arrival Stop: " +
+
+                 jsonObject.getJSONObject("transit_details").getJSONObject("arrival_stop")
+                      .getString("name") + "<br>Total Number of Stop: " +
+
+                 jsonObject.getJSONObject("transit_details")
+                     .getString("num_stops")
+            }
+        }
+        return instruction
+    }
+
+    private fun parseCoordinates(jsonObject: JSONObject, isStartLocation : Boolean) : LatLng{
+        val name = if(isStartLocation) "start_location" else "end_location"
+
+        val lat =
+            jsonObject.getJSONObject(name)
+                .getString("lat").toDouble()
+        val lng =
+            jsonObject.getJSONObject(name)
+                .getString("lng").toDouble()
+
+        return LatLng(lat,lng)
     }
 
     private fun constructRequestURL(

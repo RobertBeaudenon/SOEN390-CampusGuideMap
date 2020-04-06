@@ -8,7 +8,7 @@ class NavigationRoute(
     var transportationMode: String?,
     var polyLinePath: MutableList<List<LatLng>>,
     var instructions: ArrayList<String>,
-    var instructionsCoordinates: ArrayList<String>
+    var instructionsCoordinates: ArrayList<LatLng>
 ) {
     var routeTime: String? = null
     enum class TransportationMethods(val string: String) {
