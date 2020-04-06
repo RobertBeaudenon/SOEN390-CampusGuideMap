@@ -31,6 +31,7 @@
         app:horizontalPanEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:maxZoom="2.5"
         app:maxZoomType="zoom"
         app:minZoom="0.7"
@@ -46,9 +47,56 @@
         app:twoFingersScrollEnabled="true"
         app:verticalPanEnabled="true"
         app:zoomEnabled="true"
-        tools:layout_editor_absoluteX="-3dp">
+        tools:layout_editor_absoluteX="1dp">
 
     </com.otaliastudios.zoom.ZoomImageView>
+
     <include layout="@layout/search_bar_layout"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="#DCDCDC"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/floormap2"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:layout_width="170dp"
+            android:layout_height="match_parent"
+            android:background="#DCDCDC"
+            android:gravity="center"
+            android:paddingLeft="80dp"
+            android:text="Floor"
+            android:textColor="#070707"
+            android:textSize="12sp"
+            android:textStyle="bold"></TextView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/button_plus"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_plus" />
+
+            <ImageButton
+                android:id="@+id/button_minus"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:src="@drawable/icon_minus" />
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
