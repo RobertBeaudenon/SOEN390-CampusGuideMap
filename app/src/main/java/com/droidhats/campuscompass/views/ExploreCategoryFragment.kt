@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.ExplorePlaceAdapter
+import com.droidhats.campuscompass.models.Explore_Place
 import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
 import com.droidhats.campuscompass.viewmodels.ExplorePlaceViewModel
 import com.google.android.libraries.places.api.model.Place
@@ -27,6 +28,7 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     private lateinit var root : View
     private lateinit var viewModel: ExplorePlaceViewModel
     private lateinit var recyclerView: RecyclerView
+    private var places: ArrayList<Explore_Place> = ArrayList()
     private var columnCount = 1
 
     companion object {
@@ -55,39 +57,16 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
 
         retrieveArguments()
 
-        //initialize spinner of distance
-        val spinner1:Spinner = root.findViewById(R.id.spinner1)
-        val distances = resources.getStringArray(R.array.distances)
-        if (spinner1 != null) {
-            val adapter = ArrayAdapter<String>(
-                requireActivity(),
-                android.R.layout.simple_spinner_item,distances
-            )
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(
-                android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            spinner1.adapter = adapter
-        }
-
-        viewModel.getPlaces("Loyola", "restaurant")
-
         recyclerView = root.findViewById(R.id.explore_recycler_view)
-        viewModel.getAllPlaces().observe(viewLifecycleOwner, Observer {
-
+        viewModel.getPlaces("Loyola", "restaurant").observe(viewLifecycleOwner, Observer {
+             places = it
             updateRecyclerView()
             recyclerView.adapter!!.notifyDataSetChanged()
         })
-
-
         return root
     }
 
     private fun updateRecyclerView() {
-        val places: ArrayList<ExplorePlaceEntity> = arrayListOf()
-
-        places.addAll(viewModel.getAllPlaces().value!!)
-
 
         with(recyclerView) {
             layoutManager = when {

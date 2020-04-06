@@ -3,6 +3,7 @@ package com.droidhats.campuscompass.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.droidhats.campuscompass.models.ExplorePlace
 import com.droidhats.campuscompass.models.Explore_Place
 import com.droidhats.campuscompass.repositories.ExplorePlaceRepository
@@ -15,7 +16,7 @@ import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
  */
 class ExplorePlaceViewModel (application: Application) : AndroidViewModel(application){
 
-    private  var explorePlaceRepository: ExplorePlaceRepository = ExplorePlaceRepository.getInstance(getApplication())
+    private var explorePlaceRepository: ExplorePlaceRepository = ExplorePlaceRepository.getInstance(getApplication())
     private  var allPlaces: LiveData<List<ExplorePlaceEntity>>
     private  var list: ArrayList<Explore_Place> = ArrayList()
 
@@ -35,10 +36,9 @@ class ExplorePlaceViewModel (application: Application) : AndroidViewModel(applic
         return explorePlaceRepository.getPlaceImageResourceID(placeName)
     }
 
-    fun getPlaces(campus:String, type: String): ArrayList<Explore_Place>{
-        list = explorePlaceRepository.getPlaces(campus, type)
-        println("RobertVIEW"+ list.size)
-        return list
+    fun getPlaces(campus:String, type: String): MutableLiveData<ArrayList<Explore_Place>>{
+        explorePlaceRepository.getPlaces(campus, type)
+        return explorePlaceRepository.placesList
     }
 
 

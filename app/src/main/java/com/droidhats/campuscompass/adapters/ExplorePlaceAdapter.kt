@@ -1,5 +1,6 @@
 package com.droidhats.campuscompass.adapters
 
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +15,10 @@ import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
 import com.droidhats.campuscompass.views.ExploreCategoryFragment
 import kotlinx.android.synthetic.main.explore_recycler_item.view.*
 import androidx.navigation.findNavController
+import com.droidhats.campuscompass.models.Explore_Place
 
 
-class ExplorePlaceAdapter(private val items: ArrayList<ExplorePlaceEntity>, private val listener: ExploreCategoryFragment.OnExplorePlaceClickListener?):
+class ExplorePlaceAdapter(private val items: ArrayList<Explore_Place>, private val listener: ExploreCategoryFragment.OnExplorePlaceClickListener?):
     RecyclerView.Adapter<ExplorePlaceAdapter.ViewHolder>() {
 
     private val onClickListener: View.OnClickListener
@@ -36,24 +38,24 @@ class ExplorePlaceAdapter(private val items: ArrayList<ExplorePlaceEntity>, priv
     override fun onBindViewHolder(holder: ExplorePlaceAdapter.ViewHolder, position: Int) {
         val item = items[position]
 
-        holder.titleView.text = item.name
-        holder.rateView.text = item.rating.toString()
-        holder.locationView.text = if (item.address.isNullOrBlank()) "None" else item.address
+        holder.titleView.text = item.place_name
+        holder.rateView.text = item.place_rating
+        holder.locationView.text = if (item.place_address.isNullOrBlank()) "None" else item.place_address
 
-        val drawable =
-            ContextCompat.getDrawable(holder.view.context, getPlaceImageResourceID(item.name))
-        holder.imageView.setImageDrawable(drawable)
+//        val drawable =
+//            ContextCompat.getDrawable(holder.view.context, getPlaceImageResourceID(item.name))
+//        holder.imageView.setImageDrawable(drawable)
 
 
        // holder.cardView.setCardBackgroundColor(item.color!!.toInt())
 
         with(holder.view) {
-            tag = item
+
             holder.cardView.setOnClickListener{
-                //val bundle = Bundle()
-                //bundle.putString("destEventLocation",item.location )
+                val bundle = Bundle()
+                bundle.putString("destExploreLocation",item.place_address )
                 findNavController().popBackStack()
-                findNavController().navigate(R.id.search_fragment)
+                findNavController().navigate(R.id.search_fragment, bundle)
             }
         }
     }

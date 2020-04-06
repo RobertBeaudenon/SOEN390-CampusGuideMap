@@ -4,6 +4,7 @@ import android.app.Application
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.android.volley.NetworkResponse
 import com.android.volley.ParseError
 import com.android.volley.Response
@@ -30,6 +31,7 @@ class ExplorePlaceRepository (private val application: Application)  {
     private var explorePlaceDAO: ExplorePlaceDAO
     private var allPlaces: LiveData<List<ExplorePlaceEntity>>
     private var list: ArrayList<Explore_Place> = ArrayList()
+    internal var placesList = MutableLiveData<ArrayList<Explore_Place>>()
 
     companion object {
         // Singleton instantiation
@@ -76,7 +78,7 @@ class ExplorePlaceRepository (private val application: Application)  {
         }
     }
 
-    fun getPlaces(campus:String, type: String): ArrayList<Explore_Place>{
+    fun getPlaces(campus:String, type: String){
         val placesRequest = object : StringRequest(
             Method.GET,
             constructRequestURL(campus, type),
@@ -87,47 +89,22 @@ class ExplorePlaceRepository (private val application: Application)  {
 
                 //Get places info from JSON response
                 val results = jsonResponse.getJSONArray("results")
-                if(results.length()>0){
-
-//                    val name = results.getJSONObject(0)
-//                    println("Robert name"+ name)
+                if(results.length() > 0){
                     for(i in 0 until results.length()-1){
                         var item_detail: JSONObject = results.getJSONObject(i)
                         var explorePlace = Explore_Place(item_detail.getString("name"),item_detail.getString("vicinity"),item_detail.getString("rating"), item_detail.getString("place_id"),item_detail.getString("icon"))
-                         //println("Robert "+ explorePlace.toString())
                         list.add(explorePlace)
                     }
-                    println("RobertRepo"+ list.size)
+                    placesList.value = list
                 }
-                println("Robert"+list.size)
-
-               // println("Robert" + jsonResponse)
             },
                 Response.ErrorListener {
                     Log.e("Volley Error:", "HTTP response error")
                 })
-        {
-//            override fun parseNetworkResponse(response:NetworkResponse): Response<String>{
-//                try{
-//
-//
-//                    val jsonResponse = JSONObject(response.data.toString())
-//                    return jsonResponse.toString()
-//
-//                   // return Response.success(jsonResponse)
-//
-//                }catch (e: JSONException){
-//                    return Response.error(ParseError(e))
-//                }
-//            }
-        }
-        println("Robert2"+list.size)
+        {}
         //Confirm and add the request with Volley
         val requestQueue = Volley.newRequestQueue(application)
         requestQueue.add(placesRequest)
-        println("RobertPlace"+ placesRequest)
-
-        return list
     }
 
     private fun constructRequestURL(
