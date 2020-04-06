@@ -10,14 +10,12 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.ShuttleViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.shuttle_fragment.navigateWithShuttle
 
 class ShuttleFragment : Fragment() {
 
@@ -43,19 +41,9 @@ class ShuttleFragment : Fragment() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             if (position == 0) {
                 tab.text = "SGW TO LOY"
-                navigateWithShuttle.setOnClickListener {
-                    findNavController().navigateUp()
-                    viewModel.navigationRepository.fetchDirections(viewModel.mapRepository.getCampuses()[0],
-                    viewModel.mapRepository.getCampuses()[1], "shuttle", null)
-                }
             }
             else{
                 tab.text = "LOY TO SGW"
-                navigateWithShuttle.setOnClickListener {
-                    findNavController().navigateUp()
-                    viewModel.navigationRepository.fetchDirections(viewModel.mapRepository.getCampuses()[1],
-                        viewModel.mapRepository.getCampuses()[0], "shuttle", null)
-                }
             }
         }.attach()
     }
