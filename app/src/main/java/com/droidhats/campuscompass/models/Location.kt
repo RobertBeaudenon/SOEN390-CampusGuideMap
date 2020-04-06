@@ -5,10 +5,11 @@ import com.droidhats.campuscompass.helpers.Observer
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Polygon
 import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolygonOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.model.Place
 import kotlinx.android.parcel.Parcelize
+
 
 /**
 * An abstract class for other location model classes
@@ -36,14 +37,9 @@ class Campus(
     fun getBuildings(): List<Building> = buildingsList
 
     companion object {
-
-        var SGW_SHUTTLE_STOP : LatLng = LatLng(45.497043, -73.578494)
+        var SGW_SHUTTLE_STOP : LatLng = LatLng(45.4970461, -73.5785012)
         var LOY_SHUTTLE_STOP : LatLng = LatLng(45.458349, -73.638310)
-
     }
-
-
-
 }
 
 /**

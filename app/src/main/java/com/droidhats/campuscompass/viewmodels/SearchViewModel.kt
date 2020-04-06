@@ -11,7 +11,6 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.repositories.IndoorLocationRepository
@@ -36,7 +35,6 @@ import kotlin.math.sin
 import kotlin.math.asin
 import kotlin.math.sqrt
 import kotlin.math.pow
-
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -159,11 +157,9 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         val distanceToLOY = haversine(origin, loy)
 
         return if (distanceToSGW < distanceToLOY)
-            "&waypoints=via:${Campus.SGW_SHUTTLE_STOP.latitude}%2C${Campus.SGW_SHUTTLE_STOP.longitude}|" +
-                    "via:${Campus.LOY_SHUTTLE_STOP.latitude}%2C${Campus.LOY_SHUTTLE_STOP.longitude}"
+            NavigationRepository.SGW_TO_LOY_WAYPOINT
         else
-            "&waypoints=via:${Campus.LOY_SHUTTLE_STOP.latitude}%2C${Campus.LOY_SHUTTLE_STOP.longitude}|" +
-                    "via:${Campus.SGW_SHUTTLE_STOP.latitude}%2C${Campus.SGW_SHUTTLE_STOP.longitude}"
+           NavigationRepository.LOY_TO_SGW_WAYPOINT
     }
 
 

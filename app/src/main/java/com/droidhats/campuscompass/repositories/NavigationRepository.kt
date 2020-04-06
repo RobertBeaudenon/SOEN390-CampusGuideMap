@@ -10,6 +10,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.NavigationRoute
@@ -52,6 +53,11 @@ class NavigationRepository(private val application: Application) {
                     instance
                         ?: NavigationRepository(application).also { instance = it }
                 }
+
+        var SGW_TO_LOY_WAYPOINT = "&waypoints=${Campus.SGW_SHUTTLE_STOP.latitude}%2C${Campus.SGW_SHUTTLE_STOP.longitude}|" +
+                "${Campus.LOY_SHUTTLE_STOP.latitude}%2C${Campus.LOY_SHUTTLE_STOP.longitude}"
+        var LOY_TO_SGW_WAYPOINT = "&waypoints=${Campus.LOY_SHUTTLE_STOP.latitude}%2C${Campus.LOY_SHUTTLE_STOP.longitude}|" +
+                "${Campus.SGW_SHUTTLE_STOP.latitude}%2C${Campus.SGW_SHUTTLE_STOP.longitude}"
     }
 
     init {
@@ -159,7 +165,7 @@ class NavigationRepository(private val application: Application) {
                 //Retrieve response (a JSON object)
                 val jsonResponse = JSONObject(response)
               navigationRoute.value =
-                  parseDirections(jsonResponse, origin, destination, transportationMethod)
+                  parseDirections(jsonResponse, origin, destination, mode, waypoints)
             },
             Response.ErrorListener {
                 Log.e("Volley Error:", "HTTP response error")
@@ -170,7 +176,7 @@ class NavigationRepository(private val application: Application) {
         requestQueue.add(directionsRequest)
     }
 
-    private fun parseDirections(jsonResponse: JSONObject, origin: Location, destination: Location, mode: String) : NavigationRoute {
+    private fun parseDirections(jsonResponse: JSONObject, origin: Location, destination: Location, mode: String,  waypoints: String?) : NavigationRoute {
         val path: MutableList<List<LatLng>> = ArrayList()
         val instructions = arrayListOf<String>()
         val intCoordinates = arrayListOf<LatLng>()
@@ -180,31 +186,46 @@ class NavigationRepository(private val application: Application) {
         if (routesArray.length() > 0) {
             val routes = routesArray.getJSONObject(0)
             val legsArray: JSONArray = routes.getJSONArray("legs")
-            val legs = legsArray.getJSONObject(0)
-            val stepsArray = legs.getJSONArray("steps")
 
-            for (i in 0 until stepsArray.length()) { //Each iteration is an direction step
-                try {
-                    val points =
-                        stepsArray.getJSONObject(i).getJSONObject("polyline").getString("points")
-                    path.add(PolyUtil.decode(points))
-                    instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
-                    intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
-                    if (stepsArray.getJSONObject(i).has("steps")) {
-                        for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
-                            instructions.add(
-                                parseInstructions(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), mode))
-                            intCoordinates.add(parseCoordinates(
-                                stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), true))
+            for (leg in 0 until legsArray.length()) {
+                val stepsArray = legsArray.getJSONObject(leg).getJSONArray("steps")
+                    for (i in 0 until stepsArray.length()) {
+                        try {
+                            path.add(PolyUtil.decode(stepsArray.getJSONObject(i)
+                                .getJSONObject("polyline").getString("points")))
+
+                            if (leg != 1) {
+                                instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
+                                intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
+                                if (stepsArray.getJSONObject(i).has("steps")) {
+                                    for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
+                                        instructions.add(
+                                            parseInstructions(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), mode))
+                                        intCoordinates.add(
+                                        parseCoordinates(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), true))
+                                    }
+                                }
+                            }
+                        } catch (e: org.json.JSONException) {
+                            Log.e("JSONException", e.message.toString())
                         }
                     }
-                } catch (e: org.json.JSONException) {
-                    Log.e("JSONException", e.message.toString())
+                if (leg == 0 && mode == NavigationRoute.TransportationMethods.SHUTTLE.string) {
+                    if (waypoints == SGW_TO_LOY_WAYPOINT) {
+                        intCoordinates.add(Campus.SGW_SHUTTLE_STOP)
+                        instructions.add("Take the Shuttle Bus to Loyola Campus")
+                    }
+                    else {
+                        intCoordinates.add(Campus.LOY_SHUTTLE_STOP)
+                        instructions.add("Take the Shuttle Bus to SGW Campus")
+                    }
+                }
+                if (leg == legsArray.length()-1) {
+                    intCoordinates.add(
+                        parseCoordinates(stepsArray.getJSONObject(stepsArray.length() - 1),false))
+                    instructions.add("You have arrived!")
                 }
             }
-            intCoordinates.add(
-                parseCoordinates(stepsArray.getJSONObject(stepsArray.length() - 1), false))
-            instructions.add("You have arrived!")
         }
         return NavigationRoute(origin, destination, mode, path, instructions, intCoordinates)
     }
@@ -213,7 +234,8 @@ class NavigationRepository(private val application: Application) {
         var instruction = jsonObject.getString("html_instructions")
 
         if (transportationMethod == NavigationRoute.TransportationMethods.TRANSIT.string ||
-            transportationMethod == NavigationRoute.TransportationMethods.WALKING.string) {
+            transportationMethod == NavigationRoute.TransportationMethods.WALKING.string  ||
+            transportationMethod == NavigationRoute.TransportationMethods.SHUTTLE.string) {
             instruction += "<br>Distance: " +
                  jsonObject.getJSONObject("distance")
                     .getString("text") + "<br>Duration: " +
