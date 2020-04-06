@@ -17,6 +17,7 @@ import com.droidhats.campuscompass.models.Explore_Place
 import com.droidhats.campuscompass.roomdb.ExplorePlaceDAO
 import com.droidhats.campuscompass.roomdb.ExplorePlaceDB
 import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
+import com.google.android.gms.maps.model.LatLng
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -31,7 +32,7 @@ class ExplorePlaceRepository (private val application: Application)  {
     private var explorePlaceDAO: ExplorePlaceDAO
     private var allPlaces: LiveData<List<ExplorePlaceEntity>>
     private var list: ArrayList<Explore_Place> = ArrayList()
-    internal var placesList = MutableLiveData<ArrayList<Explore_Place>>()
+    internal  var placesList = MutableLiveData<ArrayList<Explore_Place>>()
 
     companion object {
         // Singleton instantiation
@@ -84,6 +85,8 @@ class ExplorePlaceRepository (private val application: Application)  {
             constructRequestURL(campus, type),
             Response.Listener { response ->
 
+                // placesList = MutableLiveData<ArrayList<Explore_Place>>()
+
                 //Retrieve response (a JSON object)
                 val jsonResponse = JSONObject(response)
 
@@ -92,7 +95,17 @@ class ExplorePlaceRepository (private val application: Application)  {
                 if(results.length() > 0){
                     for(i in 0 until results.length()-1){
                         var item_detail: JSONObject = results.getJSONObject(i)
-                        var explorePlace = Explore_Place(item_detail.getString("name"),item_detail.getString("vicinity"),item_detail.getString("rating"), item_detail.getString("place_id"),item_detail.getString("icon"))
+                        var geometry: JSONObject = item_detail.getJSONObject("geometry")
+                        var location: JSONObject = geometry.getJSONObject("location")
+                        
+                        var explorePlace = Explore_Place(
+                            item_detail.getString("name"),
+                            item_detail.getString("vicinity"),
+                            item_detail.getString("rating"),
+                            item_detail.getString("place_id"),
+                            item_detail.getString("icon"),
+                            LatLng(location.getString("lat").toDouble(),location.getString("lng").toDouble())
+                        )
                         list.add(explorePlace)
                     }
                     placesList.value = list
