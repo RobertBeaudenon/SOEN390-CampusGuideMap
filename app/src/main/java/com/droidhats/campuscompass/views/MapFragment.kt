@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
-import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -18,12 +17,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
@@ -109,7 +109,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -154,12 +154,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         try {
             val success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
-                            context, R.raw.map_style));
+                            context, R.raw.map_style))
             if (!success) {
-                Log.e("MapStyle", "Style parsing failed.");
+                Log.e("MapStyle", "Style parsing failed.")
             }
         } catch (e: android.content.res.Resources.NotFoundException) {
-            Log.e("MapStyle", "Can't find style. Error: ", e);
+            Log.e("MapStyle", "Can't find style. Error: ", e)
         }
 
         // Move camera to SGW
@@ -357,6 +357,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun showInstructions(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>){
+        toggleButton.visibility = View.GONE
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
 
@@ -451,7 +452,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
       clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
-         val polyline= map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+         val polyline= map!!.addPolyline(context?.let { ContextCompat.getColor(it, R.color.colorPrimaryDark) }?.let {
+             PolylineOptions().addAll(path[i]).width(10F).color(it)
+         })
             currentNavigationPath.add(polyline)
         }
     }

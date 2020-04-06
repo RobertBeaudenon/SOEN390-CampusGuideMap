@@ -3,7 +3,6 @@ package com.droidhats.campuscompass.views
 import android.app.Activity
 import android.content.ContentValues
 import android.graphics.Color
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +17,7 @@ import android.widget.RadioGroup
 import android.widget.RadioButton
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,7 +73,7 @@ class SearchFragment : Fragment()  {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
         viewModel.init()
         initSearch()
         observeSearchSuggestions()
@@ -83,7 +83,7 @@ class SearchFragment : Fragment()  {
         val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
         backButton.setOnClickListener{
             isNavigationViewOpen = false
-            requireFragmentManager().beginTransaction().detach(this).attach(this).commit()
+            parentFragmentManager.beginTransaction().detach(this).attach(this).commit()
         }
         retrieveArguments()
     }
@@ -306,7 +306,7 @@ class SearchFragment : Fragment()  {
     private fun initTransportationRadioGroup(){
         selectedTransportationMethod = NavigationRoute.TransportationMethods.DRIVING.string
         val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
-        radioTransportationGroup.setOnCheckedChangeListener{ radioGroup: RadioGroup?, id: Int ->
+        radioTransportationGroup.setOnCheckedChangeListener{ radioGroup: RadioGroup?, _: Int ->
 
             when (radioGroup?.checkedRadioButtonId) {
                 R.id.radio_transport_mode_driving -> {
@@ -363,7 +363,7 @@ class SearchFragment : Fragment()  {
         val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
         val infoMessage = root.findViewById<TextView>(R.id.search_info)
         val searchPlate = mainBar.findViewById<View>(R.id.search_plate)
-        searchPlate.setBackgroundResource(R.color.colorPrimaryDark);
+        searchPlate.setBackgroundResource(R.color.colorPrimaryDark)
 
         mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
         destinationBar.visibility = View.VISIBLE

@@ -4,18 +4,11 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.droidhats.campuscompass.views.CalendarFragment
-import com.droidhats.campuscompass.views.MapFragment
-import com.droidhats.campuscompass.views.ShuttleFragment
 import com.droidhats.campuscompass.views.SplashFragment
 import com.google.android.material.navigation.NavigationView
 

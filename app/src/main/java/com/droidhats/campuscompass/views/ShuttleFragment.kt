@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.views
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.droidhats.campuscompass.R
@@ -31,7 +31,7 @@ class ShuttleFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(ShuttleViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ShuttleViewModel::class.java)
         super.onViewCreated(view, savedInstanceState)
         shuttleAdapter = ShuttleAdapter(this)
         viewPager = view.findViewById(R.id.pager)
@@ -79,7 +79,7 @@ class CampusTabFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(ShuttleViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ShuttleViewModel::class.java)
 
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             if (getInt(ARG_OBJECT) == 0)
