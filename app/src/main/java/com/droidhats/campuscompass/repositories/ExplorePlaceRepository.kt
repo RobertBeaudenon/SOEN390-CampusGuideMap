@@ -97,13 +97,16 @@ class ExplorePlaceRepository (private val application: Application)  {
                         var item_detail: JSONObject = results.getJSONObject(i)
                         var geometry: JSONObject = item_detail.getJSONObject("geometry")
                         var location: JSONObject = geometry.getJSONObject("location")
-                        
+                        var photos = item_detail.getJSONArray("photos")
+                        var photo: JSONObject = photos.getJSONObject(0)
+                        var imageURL: String = constructImageURL(photo.getString("photo_reference"))
+
                         var explorePlace = Explore_Place(
                             item_detail.getString("name"),
                             item_detail.getString("vicinity"),
                             item_detail.getString("rating"),
                             item_detail.getString("place_id"),
-                            item_detail.getString("icon"),
+                            imageURL,
                             LatLng(location.getString("lat").toDouble(),location.getString("lng").toDouble())
                         )
                         list.add(explorePlace)
@@ -140,6 +143,15 @@ class ExplorePlaceRepository (private val application: Application)  {
                     "&key=" + application.applicationContext.getString(R.string.ApiKey)
         }
 
+    }
+
+    private fun constructImageURL( reference: String): String{
+        return "https://maps.googleapis.com/maps/api/place/photo?" +
+                "&photoreference=" + reference +
+                "&sensor=" + "false" +
+                "&maxheight=" + "3024" +
+                "&maxwidth=" + "3024" +
+                "&key=" + application.applicationContext.getString(R.string.ApiKey)
     }
 
 }
