@@ -91,7 +91,21 @@ class Path(val id: String, val d: String, var transform: String, var style: Stri
             // Parsing path
             val anArray = d.substring(2, d.length - 2).split(" ")
             var prevVertex = Pair<Double, Double>(0.0, 0.0)
-            anArray.forEach { it ->
+            var c = 0 // if there is a c variable, this will count the number of skips
+            for (it in anArray) {
+                
+                // the intention of this block of code is to handle the cubic bezier
+                // We handle it by completely ignoring it and cutting a rectangle through the
+                // arc that was supposed to be formed.
+                if (it == "l") continue
+                if (it == "c") {
+                    c = 2
+                }
+                if (c > 0) {
+                    c--
+                    continue
+                }
+
                 val element = it.split(",")
                 val vert = Pair<Double, Double>(element[0].toDouble() + prevVertex.first, element[1].toDouble() + prevVertex.second)
                 vertices.add(Pair<Double, Double>(element[0].toDouble() + prevVertex.first, element[1].toDouble() + prevVertex.second))

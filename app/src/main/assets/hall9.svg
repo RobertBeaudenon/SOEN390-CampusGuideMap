@@ -359,7 +359,7 @@
          x="876.30731"
          height="43.436577"
          width="55.558575"
-         id="rect4961.12"
+         id="rect4961.10"
          style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <text x="880" y="335" font-family="Arial" font-size="15" fill="black" stroke-width="0" > 961.10 </text>
       <rect
@@ -597,7 +597,7 @@
          x="209.60666"
          height="59.093925"
          width="57.578693"
-         id="rect4920"
+         id="rect4800"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
          inkscape:connector-curvature="0"
@@ -620,9 +620,9 @@
          x="330.31989"
          height="131.3125"
          width="97.492615"
-         id="rect4920"
+         id="rect4910"
          style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <text x="370" y="700" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 920 </text>
+      <text x="370" y="700" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 910 </text>
       <rect
          y="644.1875"
          x="278.29703"
