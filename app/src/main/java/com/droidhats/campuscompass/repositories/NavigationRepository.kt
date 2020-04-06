@@ -183,32 +183,28 @@ class NavigationRepository(private val application: Application) {
             val legs = legsArray.getJSONObject(0)
             val stepsArray = legs.getJSONArray("steps")
 
-            try {
-                for (i in 0 until stepsArray.length()) { //Each iteration is an direction step
+            for (i in 0 until stepsArray.length()) { //Each iteration is an direction step
+                try {
                     val points =
                         stepsArray.getJSONObject(i).getJSONObject("polyline").getString("points")
                     path.add(PolyUtil.decode(points))
-
-                    intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
                     instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
-
+                    intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
                     if (stepsArray.getJSONObject(i).has("steps")) {
                         for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
-                            intCoordinates.add(
-                                parseCoordinates(
-                                    stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), true))
                             instructions.add(
                                 parseInstructions(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), mode))
+                            intCoordinates.add(parseCoordinates(
+                                stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), true))
                         }
                     }
+                } catch (e: org.json.JSONException) {
+                    Log.e("JSONException", e.message.toString())
                 }
-                intCoordinates.add(
-                    parseCoordinates(stepsArray.getJSONObject(stepsArray.length() - 1), false))
-                instructions.add("You have arrived!")
-
-            } catch (e: org.json.JSONException) {
-                Log.e("JSONException", e.message.toString())
             }
+            intCoordinates.add(
+                parseCoordinates(stepsArray.getJSONObject(stepsArray.length() - 1), false))
+            instructions.add("You have arrived!")
         }
         return NavigationRoute(origin, destination, mode, path, instructions, intCoordinates)
     }
