@@ -35,6 +35,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -161,6 +162,7 @@ class SearchFragment : Fragment()  {
     private fun initiateNavigation(){
         val origin = NavigationPoints[R.id.mainSearchBar]
         val destination = NavigationPoints[R.id.secondarySearchBar]
+		secondarySearchBar.clearFocus()
 
         //Make sure BOTH coordinates are set before generating directions
         if(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0)){
@@ -313,9 +315,6 @@ class SearchFragment : Fragment()  {
                 R.id.radio_transport_mode_bicycle -> {
                     selectedTransportationMethod = NavigationRoute.TransportationMethods.BICYCLE.string
                 }
-                R.id.radio_transport_mode_shuttle -> {
-                    selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
-                }
             }
         }
     }
@@ -325,13 +324,11 @@ class SearchFragment : Fragment()  {
         val transitRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_transit)
         val walkingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_walking)
         val bicycleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle)
-        val shuttleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle)
 
         drivingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.DRIVING.string]
         transitRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.TRANSIT.string]
         walkingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.WALKING.string]
         bicycleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.BICYCLE.string]
-        shuttleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
     }
 
     override fun onDetach() {
@@ -407,7 +404,6 @@ class SearchFragment : Fragment()  {
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.INVISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.INVISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.INVISIBLE
-                root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.INVISIBLE
             } else {
                 viewModel.getRouteTimes(
                         NavigationPoints[mainBar.id]!!,
@@ -416,7 +412,6 @@ class SearchFragment : Fragment()  {
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.VISIBLE
-                root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.VISIBLE
             }
             toggleNavigationButtonColor(Color.GREEN)
         }

@@ -10,12 +10,13 @@ import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
-import android.text.Html.fromHtml
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -58,8 +59,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
-import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -68,7 +67,9 @@ import kotlin.collections.ArrayList
 import kotlin.collections.List
 import kotlin.collections.MutableList
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import kotlinx.android.synthetic.main.map_fragment.buttonInstructions
+import kotlinx.android.synthetic.main.instructions_sheet_layout.*
+import kotlinx.android.synthetic.main.search_bar_layout.*
+import kotlinx.coroutines.Dispatchers
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -93,11 +94,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
-        var stepInsts = ""
+        private var tracker = 0
         private var currentNavigationRoute : NavigationRoute? = null
     }
 
-    private var stepInstructions: String = ""
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var viewModel: MapViewModel
 
@@ -115,7 +115,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
-
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -140,6 +139,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initSearchBar()
         handleCampusSwitch()
         observeNavigation()
+        setNavigationButtons()
     }
 
     /**
@@ -151,10 +151,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      * @param googleMap a necessary google map object on which we add markers and attach listeners.
      */
     override fun onMapReady(googleMap: GoogleMap) {
-
         // Get the map from the viewModel.
         mapModel = viewModel.getMapModel(googleMap, this, this, this, this.activity as MainActivity)
-        map = mapModel!!.googleMap
+        map = mapModel?.googleMap
 
         //Add custom style to map
         try {
@@ -178,6 +177,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         attachBuildingObservers()
+        if (currentNavigationRoute != null) drawPathPolyline(currentNavigationRoute!!.polyLinePath)
     }
 
     private fun attachBuildingObservers(){
@@ -212,6 +212,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }, 100)
             }
         })
+        tracker = 0
+    }
+
+    private fun setNavigationButtons() {
+        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
+        buttonCloseInstructions.setOnClickListener{
+            toggleInstructionsView(false)
+        }
+        val buttonResumeNavigation : Button = requireActivity().findViewById(R.id.buttonResumeNavigation)
+        buttonResumeNavigation.setOnClickListener{
+            dismissBottomSheet()
+            toggleInstructionsView(true)
+        }
+
+        if(currentNavigationRoute != null) {
+            showInstructions(currentNavigationRoute!!.instructions)
+            toggleInstructionsView(false)
+        }
     }
 
     private fun createLocationRequest() {
@@ -289,10 +307,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroy(){
         super.onDestroy()
         detachBuildingObservers()
-        mapModel?.killInstance()
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
@@ -314,7 +331,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return false
     }
 
-    private fun handleBuildingClick(building: Building){
+    private fun handleBuildingClick(building: Building) {
         expandBottomSheet()
         updateAdditionalInfoBottomSheet(building.getPolygon())
 
@@ -325,44 +342,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bundle.putParcelable("destBuilding", building)
             findNavController().navigate(R.id.search_fragment, bundle)
         }
-
-    }
-
-    //the Android Maps API lets you use a marker object, which is an icon that can be placed at a particular point on the map’s surface.
-    private fun placeMarkerOnMap(location: LatLng) {
-        // 1. Create a MarkerOptions object and sets the user’s current location as the position for the marker
-        val markerOptions = MarkerOptions().position(location)
-
-        //added a call to getAddress() and added this address as the marker title.
-        val titleStr = getAddress(location)
-        markerOptions.title(titleStr)
-
-        // 2. Add the marker to the map
-        map!!.addMarker(markerOptions)
-    }
-
-    private fun getAddress(latLng: LatLng): String {
-        // 1 Creates a Geocoder object to turn a latitude and longitude coordinate into an address and vice versa
-        val geocoder = Geocoder(activity as Activity)
-        val addresses: List<Address>?
-        val address: Address?
-        var addressText = ""
-
-        try {
-            // 2 Asks the geocoder to get the address from the location passed to the method
-            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            // 3 If the response contains any address, then append it to a string and return
-            if (null != addresses && addresses.isNotEmpty()) {
-                address = addresses[0]
-                for (i in 0 until address.maxAddressLineIndex) {
-                    addressText += if (i == 0) address.getAddressLine(i) else "\n" + address.getAddressLine(i)
-                }
-            }
-        } catch (e: IOException) {
-            Log.e("MapFragment", e.localizedMessage!!)
-        }
-
-        return addressText
     }
 
     //Handle the switching views between the two campuses. Should probably move from here later
@@ -382,30 +361,57 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    //Handle the clicking of the instructions button. Should probably move from here later
     private fun showInstructions(instructions : ArrayList<String>) {
-        buttonInstructions.visibility = View.VISIBLE
-        //instruction button listener
-        buttonInstructions.setOnClickListener {
-            for (item in instructions) {
-                stepInstructions += item
+        toggleInstructionsView(true)
+        arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
+        prevArrow.visibility = View.INVISIBLE
+
+        nextArrow.setOnClickListener {
+            tracker++
+            prevArrow.visibility = View.VISIBLE
+            if(tracker < instructions.size) {
+                arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
             }
-            stepInsts = fromHtml(stepInstructions).toString()
-            instructions.clear() // Array is cleared
-            stepInstructions = "" // String instruction cleared
-            findNavController().navigate(R.id.action_map_fragment_to_instructionFragment)
+            if (tracker == instructions.size-1) {
+                nextArrow.visibility = View.INVISIBLE
+            }
+        }
+        prevArrow.setOnClickListener {
+            tracker--
+            nextArrow.visibility = View.VISIBLE
+            if(tracker < instructions.size) {
+                arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
+            }
+            if (tracker == 0) {
+                prevArrow.visibility = View.INVISIBLE
+            }
+        }
+    }
+
+    private fun toggleInstructionsView(isVisible: Boolean){
+        val instructionsView : CardView = requireActivity().findViewById(R.id.instructionLayout)
+        if(isVisible){
+            instructionsView.visibility = View.VISIBLE
+            buttonResumeNavigation.visibility = View.INVISIBLE
+            map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, instructionsView.height+20)
+        }
+        else{
+            instructionsView.visibility = View.INVISIBLE
+            map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
+            if(currentNavigationRoute != null)
+                buttonResumeNavigation.visibility = View.VISIBLE
         }
     }
 
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
-        clearNavigationPath()  //Clear existing path to show only one path at a time
+      clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
-         val path= map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
-            currentNavigationPath.add(path)
+         val polyline= map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+            currentNavigationPath.add(polyline)
         }
     }
 
-    private fun clearNavigationPath(){
+    private fun clearNavigationPath() {
         for ( polyline in currentNavigationPath){
             polyline.remove()
         }
@@ -442,16 +448,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-                if(newState == BottomSheetBehavior.STATE_EXPANDED){
-                    mapFragSearchBar.visibility = View.INVISIBLE
-                    toggleButton.visibility =  View.INVISIBLE
-                }
-                else{
-                    mapFragSearchBar.visibility = View.VISIBLE
-                    toggleButton.visibility =  View.VISIBLE
-                }
            }
-
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
@@ -474,6 +471,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun expandBottomSheet() {
         if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
             togglePlaceCard(false)
+            toggleInstructionsView(false)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
     }
@@ -505,9 +503,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onCalendarEventClick(item: CalendarEvent?) {}
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
+        var isCampusBuilding = false
         if (item is GooglePlace) {
-            findNavController().popBackStack(R.id.map_fragment, false)
-            focusLocation(item)
+ 			findNavController().popBackStack(R.id.map_fragment, false)
+            GlobalScope.launch(Dispatchers.Main) {
+                for (building in viewModel.getBuildings())
+                    if (building.getPlaceId() == item.placeID) { //Check if location is a concordia building
+                        isCampusBuilding = true
+                        handleBuildingClick(building)
+                    }
+              focusLocation(item, isCampusBuilding)
+            }        
         } else if (item is IndoorLocation) {
             val bundle: Bundle = Bundle()
             bundle.putString("id", (item as IndoorLocation).lID)
@@ -515,12 +521,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun focusLocation(location: GooglePlace){
+    private fun focusLocation(location: GooglePlace, isCampusBuilding : Boolean){
        GlobalScope.launch {
            viewModel.navigationRepository.fetchPlace(location)
        }.invokeOnCompletion {
            requireActivity().runOnUiThread{
                moveTo(location.coordinate, 17.0f)
+               if (!isCampusBuilding)
                populatePlaceInfoCard(location)
            }
        }
@@ -560,11 +567,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val placeCard : CardView = requireActivity().findViewById(R.id.place_card)
         if(isVisible){
             placeCard.visibility = View.VISIBLE
-            map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, placeCard.height+75)
+            map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, placeCard.height+75)
         }
         else{
             placeCard.visibility = View.INVISIBLE
-            map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
+            map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
         }
     }
 

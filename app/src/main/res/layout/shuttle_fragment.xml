@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/nextShuttleDeparture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next Shuttle Departure: -"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/navigateWithShuttle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Shuttle Trip"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

@@ -10,7 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -61,7 +64,12 @@ class CalendarFragment : DialogFragment(), DialogInterface.OnDismissListener {
 
         recyclerView = root.findViewById(R.id.calendar_recycler_view)
 
-      val selectCalendarButton: Button = root.findViewById(R.id.select_calendar_button)
+        val sideDrawerButton: ImageButton = root.findViewById(R.id.button_menu)
+        sideDrawerButton.setOnClickListener {
+            requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START)
+        }
+
+        val selectCalendarButton: Button = root.findViewById(R.id.select_calendar_button)
         selectCalendarButton.setOnClickListener {
             showDialog()
         }
