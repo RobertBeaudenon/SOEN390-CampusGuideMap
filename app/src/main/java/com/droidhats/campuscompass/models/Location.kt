@@ -34,6 +34,16 @@ class Campus(
     }
 
     fun getBuildings(): List<Building> = buildingsList
+
+    companion object {
+
+        var SGW_SHUTTLE_STOP : LatLng = LatLng(45.497043, -73.578494)
+        var LOY_SHUTTLE_STOP : LatLng = LatLng(45.458349, -73.638310)
+
+    }
+
+
+
 }
 
 /**

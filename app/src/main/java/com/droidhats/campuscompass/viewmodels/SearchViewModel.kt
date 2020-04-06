@@ -9,10 +9,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.droidhats.campuscompass.R
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.Location
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.Campus
+import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.repositories.IndoorLocationRepository
 import com.droidhats.campuscompass.repositories.IndoorNavigationRepository
 import com.droidhats.campuscompass.repositories.MapRepository
@@ -158,11 +159,11 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         val distanceToLOY = haversine(origin, loy)
 
         return if (distanceToSGW < distanceToLOY)
-            "&waypoints=via:${sgw.coordinate.latitude}%2C${sgw.coordinate.longitude}|" +
-                    "via:${loy.coordinate.latitude}%2C${loy.coordinate.longitude}"
+            "&waypoints=via:${Campus.SGW_SHUTTLE_STOP.latitude}%2C${Campus.SGW_SHUTTLE_STOP.longitude}|" +
+                    "via:${Campus.LOY_SHUTTLE_STOP.latitude}%2C${Campus.LOY_SHUTTLE_STOP.longitude}"
         else
-            "&waypoints=via:${loy.coordinate.latitude}%2C${loy.coordinate.longitude}|" +
-                    "via:${sgw.coordinate.latitude}%2C${sgw.coordinate.longitude}"
+            "&waypoints=via:${Campus.LOY_SHUTTLE_STOP.latitude}%2C${Campus.LOY_SHUTTLE_STOP.longitude}|" +
+                    "via:${Campus.SGW_SHUTTLE_STOP.latitude}%2C${Campus.SGW_SHUTTLE_STOP.longitude}"
     }
 
 

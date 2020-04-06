@@ -178,7 +178,7 @@ class NavigationRepository(private val application: Application) {
                         val points = stepsArray.getJSONObject(i).getJSONObject("polyline")
                             .getString("points")
                         try {
-                            if (mode == "transit" || mode == "walking") {
+                            if (transportationMethod == "transit" || transportationMethod == "walking") {
                                 if (stepsArray.getJSONObject(i).has("transit_details")) {
                                     instructionsCoordinates.add(
                                         stepsArray.getJSONObject(i).getJSONObject("start_location")
