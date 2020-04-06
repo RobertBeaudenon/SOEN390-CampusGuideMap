@@ -4,13 +4,20 @@ import android.app.Application
 import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
+import com.android.volley.NetworkResponse
+import com.android.volley.ParseError
 import com.android.volley.Response
+import com.android.volley.toolbox.HttpHeaderParser
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.ExplorePlace
+import com.droidhats.campuscompass.models.Explore_Place
 import com.droidhats.campuscompass.roomdb.ExplorePlaceDAO
 import com.droidhats.campuscompass.roomdb.ExplorePlaceDB
 import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
+import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 
 /**
@@ -22,6 +29,7 @@ class ExplorePlaceRepository (private val application: Application)  {
 
     private var explorePlaceDAO: ExplorePlaceDAO
     private var allPlaces: LiveData<List<ExplorePlaceEntity>>
+    private var list: ArrayList<Explore_Place> = ArrayList()
 
     companion object {
         // Singleton instantiation
@@ -68,8 +76,7 @@ class ExplorePlaceRepository (private val application: Application)  {
         }
     }
 
-    fun getPlaces(campus:String, type: String){
-
+    fun getPlaces(campus:String, type: String): ArrayList<Explore_Place>{
         val placesRequest = object : StringRequest(
             Method.GET,
             constructRequestURL(campus, type),
@@ -77,15 +84,50 @@ class ExplorePlaceRepository (private val application: Application)  {
 
                 //Retrieve response (a JSON object)
                 val jsonResponse = JSONObject(response)
-                println("Robert" + jsonResponse)
+
+                //Get places info from JSON response
+                val results = jsonResponse.getJSONArray("results")
+                if(results.length()>0){
+
+//                    val name = results.getJSONObject(0)
+//                    println("Robert name"+ name)
+                    for(i in 0 until results.length()-1){
+                        var item_detail: JSONObject = results.getJSONObject(i)
+                        var explorePlace = Explore_Place(item_detail.getString("name"),item_detail.getString("vicinity"),item_detail.getString("rating"), item_detail.getString("place_id"),item_detail.getString("icon"))
+                         //println("Robert "+ explorePlace.toString())
+                        list.add(explorePlace)
+                    }
+                    println("RobertRepo"+ list.size)
+                }
+                println("Robert"+list.size)
+
+               // println("Robert" + jsonResponse)
             },
                 Response.ErrorListener {
                     Log.e("Volley Error:", "HTTP response error")
-                }) {}
-
+                })
+        {
+//            override fun parseNetworkResponse(response:NetworkResponse): Response<String>{
+//                try{
+//
+//
+//                    val jsonResponse = JSONObject(response.data.toString())
+//                    return jsonResponse.toString()
+//
+//                   // return Response.success(jsonResponse)
+//
+//                }catch (e: JSONException){
+//                    return Response.error(ParseError(e))
+//                }
+//            }
+        }
+        println("Robert2"+list.size)
         //Confirm and add the request with Volley
         val requestQueue = Volley.newRequestQueue(application)
         requestQueue.add(placesRequest)
+        println("RobertPlace"+ placesRequest)
+
+        return list
     }
 
     private fun constructRequestURL(
