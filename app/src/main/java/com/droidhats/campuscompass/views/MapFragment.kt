@@ -18,6 +18,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
@@ -130,8 +131,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initBottomSheetBehavior()
         initSearchBar()
         handleCampusSwitch()
-        observeNavigation()
-        setNavigationButtons()
     }
 
     /**
@@ -169,7 +168,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         attachBuildingObservers()
-        if (currentOutdoorNavigationRoute != null) drawPathPolyline(currentOutdoorNavigationRoute!!.polyLinePath)
+        //if (currentOutdoorNavigationRoute != null) drawPathPolyline(currentOutdoorNavigationRoute!!.polyLinePath)
+        observeNavigation()
+        setNavigationButtons()
     }
 
     private fun attachBuildingObservers(){
@@ -198,6 +199,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
             if ( it != null && it != currentOutdoorNavigationRoute ) {
                 if (it is OutdoorNavigationRoute) {
+                    requireActivity().onBackPressedDispatcher.addCallback(this) {
+                        viewModel.navigationRepository?.stepBack()
+                    }
                     currentOutdoorNavigationRoute = it
                     drawPathPolyline(it.polyLinePath)
                     showInstructions(it.instructions)
@@ -205,7 +209,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         moveTo(it.origin!!.getLocation(), 19.0f)
                     }, 100)
                 } else {
-                    findNavController().navigate(R.id.floor_fragment)
+                    findNavController().navigate(R.id.action_map_fragment_to_floorFragment)
                 }
             }
         })
@@ -356,7 +360,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             } else {
                 val bundle: Bundle = Bundle()
                 bundle.putString("floormap", building.getIndoorInfo().second[0])
-                findNavController().navigate(R.id.floor_fragment, bundle)
+                findNavController().navigate(R.id.action_map_fragment_to_floorFragment, bundle)
             }
         }
     }
@@ -515,6 +519,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         var isCampusBuilding = false
+        viewModel.navigationRepository.cancelNavigation()
         if (item is GooglePlace) {
  			findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch(Dispatchers.Main) {
@@ -531,7 +536,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             val building = item.name.split('-')[0]
             bundle.putInt("floornum", item.floorNum)
             bundle.putString("floormap", item.floorMap)
-            findNavController().navigate(R.id.floor_fragment, bundle)
+            findNavController().navigate(R.id.action_map_fragment_to_floorFragment, bundle)
         }
     }
 

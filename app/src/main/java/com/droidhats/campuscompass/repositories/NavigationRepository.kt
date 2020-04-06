@@ -103,6 +103,12 @@ class NavigationRepository(private val application: Application) {
         navigationRoute.value = null
     }
 
+    fun stepBack() {
+        if (navhandler?.prev != null) {
+            setNavigationHandler(navhandler!!.prev!!)
+        }
+    }
+
     suspend fun fetchPlace(location: Location): Unit = suspendCoroutine { cont ->
         if (location is GooglePlace) {
             val placeFields: List<Place.Field> = Place.Field.values().toList()

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ToggleButton
+import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -111,9 +112,13 @@ class FloorFragment : Fragment() {
             println(it is OutdoorNavigationRoute)
             println(it.origin is IndoorLocation)
             if (it is OutdoorNavigationRoute) {
-                findNavController().popBackStack(R.id.map_fragment, false)
+                findNavController().navigate(R.id.map_fragment)
             }
         })
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            viewModel.navigationRepository?.stepBack()
+        }
     }
 
     private fun initSearchBar() {

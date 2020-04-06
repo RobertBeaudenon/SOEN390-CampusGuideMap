@@ -6,7 +6,7 @@ import com.droidhats.campuscompass.models.Location
 
 abstract class NavHandler {
     var next: NavHandler? = null
-    private var prev: NavHandler? = null
+    var prev: NavHandler? = null
     abstract val location: Location
 
     companion object {
