@@ -27,4 +27,14 @@ class ExplorePlaceViewModel (application: Application) : AndroidViewModel(applic
     fun getAllPlaces(): LiveData<List<ExplorePlaceEntity>> {
         return allPlaces
     }
+
+    fun getImageID(placeName: String):Int{
+        return explorePlaceRepository.getPlaceImageResourceID(placeName)
+    }
+
+    fun getPlaces(campus:String, type: String){
+        return explorePlaceRepository.getPlaces(campus, type)
+    }
+
+
 }

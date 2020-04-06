@@ -70,6 +70,8 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
             spinner1.adapter = adapter
         }
 
+        viewModel.getPlaces("Loyola", "restaurant")
+
         recyclerView = root.findViewById(R.id.explore_recycler_view)
         viewModel.getAllPlaces().observe(viewLifecycleOwner, Observer {
 
