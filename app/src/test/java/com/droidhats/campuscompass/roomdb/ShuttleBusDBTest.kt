@@ -48,8 +48,8 @@ class ShuttleBusDBTest {
         shuttleBusDAO.saveLoyolaShuttleTime(shuttleBusLoyolaEntity)
         shuttleBusDAO.saveSGWShuttleTime(shuttleBusSGWEntity)
 
-        val sgwCount = 1
-        val loyolaCount = 1
+        val sgwCount = 66
+        val loyolaCount = 65
 
         Assert.assertEquals(sgwCount, shuttleBusDAO.getSGWShuttleTimeCount())
         Assert.assertEquals(loyolaCount, shuttleBusDAO.getLoyolaShuttleTimeCount())

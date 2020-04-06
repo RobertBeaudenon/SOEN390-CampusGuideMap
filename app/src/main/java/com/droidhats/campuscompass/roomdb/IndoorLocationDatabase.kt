@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass
+package com.droidhats.campuscompass.roomdb
 
 import android.content.Context
 import androidx.room.Database
@@ -30,9 +30,8 @@ abstract class IndoorLocationDatabase : RoomDatabase() {
 
         // Create and pre-populate the database
         private fun buildDatabase(context: Context): IndoorLocationDatabase {
-            return Room.databaseBuilder(context, IndoorLocationDatabase::class.java, "IndoorLocationSchema.db")
-                .createFromAsset("database/IndoorLocationSchema.db")
-                .build()
+            return Room.databaseBuilder(context, IndoorLocationDatabase::class.java, "IndoorLocationSchema.2db")
+                    .build()
         }
     }
 }

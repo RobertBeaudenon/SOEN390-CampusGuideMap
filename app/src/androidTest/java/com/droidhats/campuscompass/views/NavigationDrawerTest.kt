@@ -51,7 +51,14 @@ class NavigationDrawerTest {
         onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isOpen()))
 
         //clicking outside of the menu to check if it closes
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(1200, 200)
+        // tap position works with Pixel 2XL emulator and most smartphones
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).click(1050, 200)
+
+        //wait for side menu to close
+        Thread.sleep(1000)
+
+        //check if side menu is really closed
+        onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isClosed()))
     }
 
     @Test
@@ -77,5 +84,27 @@ class NavigationDrawerTest {
 
         //Checking if Settings menu item is displayed
         onView(withText("Settings")).check(matches(isDisplayed()))
+
+        //Checking if Settings menu item is displayed
+        onView(withText("Map")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun test_isMapNavigationCorrect() {
+
+        //Opening side menu by clicking on menu  button
+        onView(withId(R.id.mt_nav)).check(matches(isDisplayed())).perform(click())
+
+        //checking if side menu is opened
+        onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isOpen()))
+
+        //clicking on Map menu list item
+        onView(withText("Map")).perform(click())
+
+        //check if side menu closes
+        onView(withId(R.id.drawer_layout)).check(matches(DrawerMatchers.isClosed()))
+
+        //check if Map Fragment is in view
+        onView(withId(R.id.coordinate_layout)).check(matches(isDisplayed()))
     }
 }

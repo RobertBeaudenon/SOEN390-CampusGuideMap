@@ -62,7 +62,7 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
     ): Map
     {
         // Get initialized map model from Map Model using singleton.
-        val mapModel: Map = Map.getInstance(
+        val mapModel = Map(
             googleMap, buildings
         )
 

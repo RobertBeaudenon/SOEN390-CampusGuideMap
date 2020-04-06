@@ -24,16 +24,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
-import com.droidhats.campuscompass.models.*
+import com.droidhats.campuscompass.models.Location
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.IndoorLocation
+import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
+import com.droidhats.mapprocessor.ProcessMap
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.android.synthetic.main.search_fragment.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.InputStream
 
 class SearchFragment : Fragment()  {
 
@@ -43,7 +50,7 @@ class SearchFragment : Fragment()  {
     private lateinit var root: View
     private var columnCount = 1
     private lateinit var selectedTransportationMethod : String
-
+    
     companion object{
         var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
         var isNavigationViewOpen = false
@@ -146,7 +153,7 @@ class SearchFragment : Fragment()  {
                 Toast.makeText(context, "Set Your Route To Begin Navigation", Toast.LENGTH_LONG).show()
             }
             else {
-                initiateNavigation()
+               initiateNavigation()
             }
         }
         initCurrentLocationHandler(mainSearchBar, secondarySearchBar)
@@ -155,15 +162,10 @@ class SearchFragment : Fragment()  {
     private fun initiateNavigation(){
         val origin = NavigationPoints[R.id.mainSearchBar]
         val destination = NavigationPoints[R.id.secondarySearchBar]
-        findNavController().navigateUp() // Navigate Back To MapFragment
-        Toast.makeText(context, "Starting Navigation\n" +
-                "From: ${origin?.name}\n" +
-                "To: ${destination?.name}\n" +
-                "By: $selectedTransportationMethod",
-            Toast.LENGTH_LONG).show()
+		secondarySearchBar.clearFocus()
 
         //Make sure BOTH coordinates are set before generating directions
-        if(origin?.coordinate == LatLng(0.0, 0.0) || destination?.coordinate == LatLng(0.0, 0.0)){
+        if(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0)){
             val handler = CoroutineExceptionHandler{_, throwable ->
                 Log.e(ContentValues.TAG, throwable.message!!)
             }
@@ -175,10 +177,26 @@ class SearchFragment : Fragment()  {
                     destination,
                     selectedTransportationMethod)
             }
-        }else {
+        } else {
+            //check if both origin and destination are indoor
+            if((origin is IndoorLocation) && (destination is IndoorLocation))  {
+                viewModel.setIndoorDirections(Pair(origin.lID, destination.lID))
+                findNavController().navigate(R.id.floor_fragment)
+            } else {
+                findNavController().popBackStack(R.id.map_fragment, false)
+            }
+
+            Toast.makeText(context, "Starting Navigation\n" +
+                    "From: ${origin?.name}\n" +
+                    "To: ${destination?.name}\n" +
+                    "By: $selectedTransportationMethod",
+                Toast.LENGTH_LONG).show()
+
             viewModel.navigationRepository.generateDirections(origin!!,
                 destination!!,
                 selectedTransportationMethod)
+
+            isNavigationViewOpen = false
         }
     }
 
@@ -297,9 +315,6 @@ class SearchFragment : Fragment()  {
                 R.id.radio_transport_mode_bicycle -> {
                     selectedTransportationMethod = NavigationRoute.TransportationMethods.BICYCLE.string
                 }
-                R.id.radio_transport_mode_shuttle -> {
-                    selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
-                }
             }
         }
     }
@@ -309,13 +324,11 @@ class SearchFragment : Fragment()  {
         val transitRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_transit)
         val walkingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_walking)
         val bicycleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle)
-        val shuttleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle)
 
         drivingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.DRIVING.string]
         transitRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.TRANSIT.string]
         walkingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.WALKING.string]
         bicycleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.BICYCLE.string]
-        shuttleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
     }
 
     override fun onDetach() {
@@ -375,10 +388,31 @@ class SearchFragment : Fragment()  {
         NavigationPoints[searchView.id] = location
 
         if (areRouteParametersSet()) {
-            viewModel.getRouteTimes(
-                NavigationPoints[mainBar.id]!!,
-                NavigationPoints[destinationBar.id]!!
-            )
+            if (NavigationPoints[mainBar.id]!! is IndoorLocation &&
+                    NavigationPoints[destinationBar.id]!! is IndoorLocation) {
+                val processMap = ProcessMap()
+                val inputStream: InputStream = requireContext().assets.open("hall8.svg")
+                val file: String = inputStream.bufferedReader().use { it.readText() }
+                processMap.readSVGFromString(file)
+                val distance = processMap.getTimeInSeconds(
+                        (NavigationPoints[mainBar.id]!! as IndoorLocation).lID,
+                        (NavigationPoints[destinationBar.id]!! as IndoorLocation).lID
+                )
+                val walkingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_walking)
+                walkingRadioButton.text =  distance.toString() + "s"
+                walkingRadioButton.isChecked = true
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.INVISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.INVISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.INVISIBLE
+            } else {
+                viewModel.getRouteTimes(
+                        NavigationPoints[mainBar.id]!!,
+                        NavigationPoints[destinationBar.id]!!
+                )
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.VISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.VISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.VISIBLE
+            }
             toggleNavigationButtonColor(Color.GREEN)
         }
     }

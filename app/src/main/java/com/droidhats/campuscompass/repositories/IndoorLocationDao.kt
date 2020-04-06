@@ -3,6 +3,7 @@ package com.droidhats.campuscompass.repositories
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Insert
 import androidx.room.RawQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.droidhats.campuscompass.models.IndoorLocation
@@ -17,7 +18,10 @@ interface IndoorLocationDao {
      * Returns ALL the rows in the IndoorLocation Table
      */
     @Query("SELECT * FROM IndoorLocation")
-    fun getAll(): LiveData<List<IndoorLocation>>
+    fun getAll(): List<IndoorLocation>
+
+    @Query("SELECT * FROM IndoorLocation LIMIT 1")
+    fun getOne(): LiveData<IndoorLocation>
 
     /**
      * Returns ALL the classrooms in the IndoorLocation Table
@@ -30,5 +34,11 @@ interface IndoorLocationDao {
      */
     @RawQuery(observedEntities = [IndoorLocation::class])
     fun getMatchedClassrooms(query : SupportSQLiteQuery): LiveData<List<IndoorLocation>>
+
+    @Insert
+    fun insertIndoorLocation(loc: IndoorLocation)
+
+    @Query("DELETE FROM IndoorLocation")
+    fun deleteAllIndoor()
 
 }

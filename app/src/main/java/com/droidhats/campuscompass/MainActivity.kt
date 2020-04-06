@@ -3,15 +3,24 @@ package com.droidhats.campuscompass
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.navigation.NavigationView
 import com.droidhats.campuscompass.views.CalendarFragment
+import com.droidhats.campuscompass.views.MapFragment
+import com.droidhats.campuscompass.views.ShuttleFragment
 import com.droidhats.campuscompass.views.SplashFragment
+import com.google.android.material.navigation.NavigationView
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity(){
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -87,5 +96,11 @@ class MainActivity : AppCompatActivity() {
                 return
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.nav_drawer_main_menu, menu)
+        return true
     }
 }

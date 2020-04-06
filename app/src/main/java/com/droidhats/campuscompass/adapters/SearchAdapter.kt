@@ -76,6 +76,7 @@ class SearchAdapter(
                         searchFragment.confirmSelection(destinationBar, item, true)
                     }
                 }
+                setNavigation.visibility = View.INVISIBLE
             }
         }
     }
@@ -92,5 +93,4 @@ class SearchAdapter(
     interface OnSearchResultClickListener {
         fun onSearchResultClickListener(item: Location?)
     }
-
 }
