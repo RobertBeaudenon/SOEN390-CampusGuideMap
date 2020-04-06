@@ -9,15 +9,14 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.NavigationRoute
-import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
-import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
 import com.droidhats.campuscompass.roomdb.ShuttleBusDAO
 import com.droidhats.campuscompass.roomdb.ShuttleBusDB
+import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
+import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -26,8 +25,11 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.maps.android.PolyUtil
 import org.json.JSONArray
 import org.json.JSONObject
+import kotlin.collections.ArrayList
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import com.droidhats.campuscompass.R
+
 
 /**
  * This class will create a connection with the SQLite DB in order to get the
@@ -125,7 +127,20 @@ class NavigationRepository(private val application: Application) {
                         val routes: JSONObject = routesArray.getJSONObject(0)
                         val legsArray: JSONArray = routes.getJSONArray("legs")
                         val legs: JSONObject = legsArray.getJSONObject(0)
-                        times[method.string] = legs.getJSONObject("duration").getString("text")
+
+                        if (method.string == NavigationRoute.TransportationMethods.SHUTTLE.string) {
+                            val totalDurationInSec = legs.getJSONObject("duration").getString("value").toInt() +
+                            legsArray.getJSONObject(1).getJSONObject("duration").getString("value").toInt() +
+                            legsArray.getJSONObject(2).getJSONObject("duration").getString("value").toInt()
+                            val hours = totalDurationInSec / 3600
+                            val minutes = (totalDurationInSec % 3600) / 60
+                            times[method.string] =
+                                "$hours" + if (hours > 1) " hours" else " hour $minutes" +
+                                           if (minutes > 1) " mins" else " min"
+                        }
+                        else
+                            times[method.string] = legs.getJSONObject("duration").getString("text")
+
                     } else {
                         times[method.string] = "N/A"
                     }
