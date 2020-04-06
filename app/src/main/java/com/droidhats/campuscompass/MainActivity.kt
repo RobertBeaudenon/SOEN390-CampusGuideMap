@@ -4,28 +4,23 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.droidhats.campuscompass.views.CalendarFragment
-import com.droidhats.campuscompass.views.MapFragment
-import com.droidhats.campuscompass.views.ShuttleFragment
 import com.droidhats.campuscompass.views.SplashFragment
 import com.google.android.material.navigation.NavigationView
+import com.novoda.merlin.*
 
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val READ_CALENDAR_PERMISSION_REQUEST_CODE = 2
     }
+    private lateinit var merlinsBeard: MerlinsBeard
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +30,46 @@ class MainActivity : AppCompatActivity(){
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         navView.setupWithNavController(navController)
+    }
+
+    override fun createMerlin(): Merlin? {
+        return Merlin.Builder()
+            .withConnectableCallbacks()
+            .withDisconnectableCallbacks()
+            .withBindableCallbacks()
+            .build(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        registerConnectable(this)
+        registerDisconnectable(this)
+        registerBindable(this)
+    }
+
+    override fun onBind(networkStatus: NetworkStatus) {
+        if (!networkStatus.isAvailable) {
+            onDisconnect()
+        }
+    }
+
+    override fun onConnect() {
+        //leave empty - only let them know when their internet is bad
+    }
+
+    override fun onDisconnect() {
+        AlertDialog.Builder(this)
+            .setTitle("Campus Compass")
+            .setMessage("You lost internet connection")
+            .setPositiveButton("OK", null).show()
+    }
+
+    fun ifInternet():Boolean {
+        merlinsBeard = MerlinsBeard.from(applicationContext)
+        if ((merlinsBeard.isConnected()) || (merlinsBeard.isConnectedToWifi())) {
+            return true
+        }
+        return false
     }
 
     fun checkLocationPermission(): Boolean {
@@ -91,9 +126,11 @@ class MainActivity : AppCompatActivity(){
             LOCATION_PERMISSION_REQUEST_CODE -> {
                 //If the user granted, denied, or cancelled the location permission, load the map
                 //since splash isn't initializing components yet, it will perform normal navigation to MapFragment
-                val splashFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as SplashFragment
-                splashFragment.navigateToMapFragment()
-                return
+                if(ifInternet()) {
+                    val splashFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as SplashFragment
+                    splashFragment.navigateToMapFragment()
+                    return
+                }
             }
         }
     }

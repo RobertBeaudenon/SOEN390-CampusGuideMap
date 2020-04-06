@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -43,9 +45,19 @@ class SplashFragment : Fragment() {
         //for now, it lets MainActiivty manage the navigation if no permissions were given
         if(!(activity as MainActivity).checkLocationPermission()) {
             (activity as MainActivity).requestLocationPermission()
-        } else {
+        } else if((activity as MainActivity).ifInternet()) {
             //if permission is granted, navigate to MapFragment
+            Toast.makeText(context, "IT WORKS?!", Toast.LENGTH_LONG).show()
             navigateToMapFragment()
+        } else {
+
+            /*
+            AlertDialog.Builder((activity as MainActivity))
+                .setTitle("Campus Compass")
+                .setMessage("Your internet is fucked")
+                .setPositiveButton("OK", null).show()
+
+             */
         }
     }
 
