@@ -47,6 +47,8 @@ import kotlinx.android.synthetic.main.search_bar_layout.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlin.math.abs
+import kotlin.math.atan
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
 import com.droidhats.campuscompass.models.Map as MapModel
 
@@ -341,35 +343,63 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun showInstructions(instructions : ArrayList<String>, instructionsCoordinates : ArrayList<String>) {
+    private fun showInstructions(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<String>) {
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
         prevArrow.visibility = View.INVISIBLE
 
         nextArrow.setOnClickListener {
             trackerSteps++
-            trackerCoordinates+=2
+            trackerCoordinates += 2
             prevArrow.visibility = View.VISIBLE
-            if(trackerSteps < instructions.size) {
+            if (trackerSteps < instructions.size) {
                 arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
-                map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates+1].toDouble()), 20.0f))
+
+                val bearingValue = getBearing(instructionsCoordinates[trackerCoordinates - 2].toDouble(), instructionsCoordinates[trackerCoordinates - 1].toDouble(), instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates + 1].toDouble())
+                if (!bearingValue.isNaN()) {
+                    val cameraPosition: CameraPosition = CameraPosition.Builder().target(LatLng(instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates + 1].toDouble())).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
+                    map!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
+                }
             }
-            if (trackerSteps == instructions.size-1) {
+            if (trackerSteps == instructions.size - 1) {
                 nextArrow.visibility = View.INVISIBLE
             }
         }
         prevArrow.setOnClickListener {
             trackerSteps--
-            trackerCoordinates-=2
+            trackerCoordinates -= 2
             nextArrow.visibility = View.VISIBLE
-            if(trackerSteps < instructions.size) {
+            if (trackerSteps < instructions.size) {
                 arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
-                map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates+1].toDouble()), 20.0f))
+
+                if (trackerSteps != 0) {
+                    val bearingValue = getBearing(instructionsCoordinates[trackerCoordinates - 2].toDouble(), instructionsCoordinates[trackerCoordinates - 1].toDouble(), instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates + 1].toDouble())
+                    if (!bearingValue.isNaN()) {
+                        val cameraPosition: CameraPosition = CameraPosition.Builder().target(LatLng(instructionsCoordinates[trackerCoordinates].toDouble(), instructionsCoordinates[trackerCoordinates + 1].toDouble())).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
+                        map!!.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
+                    }
+                }
             }
             if (trackerSteps == 0) {
                 prevArrow.visibility = View.INVISIBLE
             }
         }
+    }
+
+    private fun getBearing(startLat: Double, startLong: Double, endLat: Double, endLong: Double): Float {
+        val lat = abs(startLat - endLat)
+        val lng = abs(startLong - endLong)
+
+        if (startLat < endLat && startLong < endLong) {
+            return Math.toDegrees(atan(lng / lat)).toFloat()
+        } else if (startLat >= endLat && startLong < endLong) {
+            return (90 - Math.toDegrees(atan(lng / lat)) + 90).toFloat()
+        } else if (startLat >= endLat && startLong >= endLong) {
+            return (Math.toDegrees(atan(lng / lat)) + 180).toFloat()
+        } else if (startLat < endLat && startLong >= endLong) {
+            return (90 - Math.toDegrees(atan(lng / lat)) + 270).toFloat()
+        }
+        return (-1).toFloat()
     }
 
     private fun toggleInstructionsView(isVisible: Boolean){

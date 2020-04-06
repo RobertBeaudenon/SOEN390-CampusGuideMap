@@ -175,8 +175,7 @@ class NavigationRepository(private val application: Application) {
                     //Build the path polyline as well as store instruction between 2 path into an array.
                     //Build the path polyline as well as store instruction between 2 path into an array.
                     for (i in 0 until stepsArray.length()) {
-                        val points = stepsArray.getJSONObject(i).getJSONObject("polyline")
-                            .getString("points")
+                        val points = stepsArray.getJSONObject(i).getJSONObject("polyline").getString("points")
                         try {
                             if (transportationMethod == "transit" || transportationMethod == "walking") {
                                 if (stepsArray.getJSONObject(i).has("transit_details")) {
@@ -255,11 +254,22 @@ class NavigationRepository(private val application: Application) {
                                     stepsArray.getJSONObject(i).getString("html_instructions")
                                 )
                             }
+
                             path.add(PolyUtil.decode(points))
                         } catch (e: org.json.JSONException) {
                             Log.e("JSONException", e.message.toString())
                         }
                     }
+
+                    instructionsCoordinates.add(
+                        stepsArray.getJSONObject(stepsArray.length()-1).getJSONObject("end_location")
+                            .getString("lat")
+                    )
+                    instructionsCoordinates.add(
+                        stepsArray.getJSONObject(stepsArray.length()-1).getJSONObject("end_location")
+                            .getString("lng")
+                    )
+                    instructions.add("You have arrived!")
 
                     val navigation = NavigationRoute(
                         origin,
