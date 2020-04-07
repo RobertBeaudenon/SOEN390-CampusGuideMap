@@ -5,8 +5,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.Color
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -29,11 +27,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
-import com.droidhats.campuscompass.adapters.ExplorePlaceAdapter
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
 import com.droidhats.campuscompass.models.*
-import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -48,19 +44,15 @@ import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.IOException
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
 import kotlin.collections.ArrayList
 import kotlin.collections.List

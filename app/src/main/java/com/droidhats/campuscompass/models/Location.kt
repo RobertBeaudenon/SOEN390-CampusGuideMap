@@ -128,7 +128,7 @@ class GooglePlace(
     override val name: String,
     val category : String,
     var coordinate: LatLng
-) : Location()
+): Location()
 {
     var place : Place? = null
     var isCurrentLocation : Boolean = false

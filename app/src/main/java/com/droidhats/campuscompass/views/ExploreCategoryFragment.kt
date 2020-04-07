@@ -95,11 +95,7 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
         fun onExplorePlaceClick(item: Explore_Place?)
     }
 
-    override fun onItemSelected(arg0: AdapterView<*>, arg1: View, position: Int, id: Long) {
-        //textView_msg!!.text = "Selected : "+[position]
-    }
+    override fun onItemSelected(arg0: AdapterView<*>, arg1: View, position: Int, id: Long) {}
 
-    override fun onNothingSelected(arg0: AdapterView<*>) {
-
-    }
+    override fun onNothingSelected(arg0: AdapterView<*>) {}
 }

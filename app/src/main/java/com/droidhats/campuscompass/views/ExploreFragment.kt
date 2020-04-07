@@ -46,8 +46,6 @@ class ExploreFragment: Fragment() {
         selectStudyButton.setOnClickListener {
             showPointsOfInterests("Study")
         }
-
-
         return root
     }
 
