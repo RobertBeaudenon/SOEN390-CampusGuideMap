@@ -112,5 +112,20 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         }
         return selectedBuilding
     }
+
+    /**
+     * Searches and returns the building object that matches the initial
+     */
+    fun findBuildingByInitial(initial: String): Building?
+    {
+        var selectedBuilding : Building? = null
+
+        //Iterate through all buildings in both campuses until the initial matches the building initial
+        for (building in this.buildings) {
+            if (initial == building.getIndoorInfo().first)
+                selectedBuilding = building
+        }
+        return selectedBuilding
+    }
 }
 

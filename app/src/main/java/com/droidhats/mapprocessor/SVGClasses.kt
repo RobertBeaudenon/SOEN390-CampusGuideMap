@@ -98,9 +98,9 @@ class Path(val id: String, val d: String, var transform: String, var style: Stri
             val anArray = d.substring(2, d.length - 2).split(" ")
             var prevVertex = Pair<Double, Double>(0.0, 0.0)
             var c = 0 // if there is a c variable, this will count the number of skips
+
             var diffMode = true
             for (it in anArray) {
-
                 // the intention of this block of code is to handle the cubic bezier
                 // We handle it by completely ignoring it and cutting a rectangle through the
                 // arc that was supposed to be formed.

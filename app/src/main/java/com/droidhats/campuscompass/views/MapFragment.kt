@@ -354,7 +354,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 ).show()
             } else {
                 val bundle: Bundle = Bundle()
-                bundle.putString("floormap", building.getIndoorInfo().second[0])
+                bundle.putParcelable("building", building)
                 findNavController().navigate(R.id.floor_fragment, bundle)
             }
         }
@@ -527,9 +527,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         } else if (item is IndoorLocation) {
             val bundle: Bundle = Bundle()
             bundle.putString("id", item.lID)
-            val building = item.name.split('-')[0]
+            val buildingInitial = item.name.split('-')[0]
             bundle.putInt("floornum", item.floorNum)
             bundle.putString("floormap", item.floorMap)
+            val building = viewModel.findBuildingByInitial(buildingInitial)
+            bundle.putParcelable("building", building)
             findNavController().navigate(R.id.floor_fragment, bundle)
         }
     }

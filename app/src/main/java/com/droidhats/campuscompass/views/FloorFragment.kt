@@ -5,10 +5,12 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ToggleButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -18,7 +20,9 @@ import androidx.navigation.fragment.findNavController
 import com.droidhats.mapprocessor.ProcessMap
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
+import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
@@ -28,6 +32,7 @@ import java.io.InputStream
 class FloorFragment : Fragment() {
 
     private lateinit var viewModel: FloorViewModel
+    private lateinit var viewModelMapViewModel: MapViewModel
     private lateinit var root: View
 
     override fun onCreateView(
@@ -38,12 +43,28 @@ class FloorFragment : Fragment() {
 
         var floor: String? = arguments?.getString("floornum")
 
+        viewModelMapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+
+
         var mapToDisplay: String = "hall8.svg" // default value
-        val map: String? = arguments?.getString("floormap")
-        if (map != null) mapToDisplay = map
+        var mapsDefault: List<String>? = viewModelMapViewModel.findBuildingByInitial("hall")?.getIndoorInfo()?.second
+        val building : Building? = arguments?.getParcelable("building")
+        val floormap : String? = arguments?.getString("floormap")
+        var maps : List<String>?
 
-        val inputStream: InputStream = requireContext().assets.open(mapToDisplay)
+        if(building?.getIndoorInfo()?.second != null){
+            maps = building?.getIndoorInfo()?.second
+        }
+        maps = mapsDefault
 
+        if(floormap.isNullOrBlank()) {
+            if (maps != null) mapToDisplay = maps[0]
+        }
+        else {
+            mapToDisplay = floormap
+        }
+
+        var inputStream: InputStream = requireContext().assets.open(mapToDisplay)
         val buildingToHighlight: String? = arguments?.getString("id")
 
         if (buildingToHighlight == null) {
@@ -56,6 +77,33 @@ class FloorFragment : Fragment() {
             val svg: SVG = SVG.getFromString(highlightedSVG)
             setImage(svg)
         }
+
+        val buttonPlus: ImageButton = root.findViewById(R.id.button_plus)
+        var newSvg : SVG
+        buttonPlus.setOnClickListener(View.OnClickListener {
+            val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
+            if(indexOfCurrentMap != maps?.size?.minus(1) && indexOfCurrentMap !=null) {
+                if (maps != null) if (indexOfCurrentMap != null) {
+                    mapToDisplay = maps[indexOfCurrentMap.plus(1)]
+                }
+                inputStream = requireContext().assets.open(mapToDisplay)
+                newSvg = SVG.getFromInputStream(inputStream)
+                setImage(newSvg)
+            }
+        })
+
+        val buttonMinus: ImageButton = root.findViewById(R.id.button_minus)
+        buttonMinus.setOnClickListener(View.OnClickListener {
+            val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
+            if(indexOfCurrentMap != 0 && indexOfCurrentMap !=null) {
+                if (maps != null) if (indexOfCurrentMap != null) {
+                    mapToDisplay = maps[indexOfCurrentMap.minus(1)]
+                }
+                inputStream = requireContext().assets.open(mapToDisplay)
+                newSvg = SVG.getFromInputStream(inputStream)
+                setImage(newSvg)
+            }
+        })
 
         return root
     }
@@ -78,6 +126,7 @@ class FloorFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FloorViewModel::class.java)
+
 
         initSearchBar()
 
