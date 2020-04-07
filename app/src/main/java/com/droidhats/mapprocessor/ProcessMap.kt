@@ -354,8 +354,8 @@ class ProcessMap {
         val pathPoints: MutableList<Circle> = mutableListOf()
 
         // scatter points in missing spots, using average distance as a scale for step size
-        for (x in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step 17) {
-            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step 15) {
+        for (x in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step 18) {
+            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step 20) {
                 if (inPath(x.toDouble(), y.toDouble())) {
                     pathPoints.add(Circle(x.toDouble(), y.toDouble(), 5.0))
                 }

@@ -67,7 +67,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
                 floorDigit = 7
             }
             for ((x, classRoom) in classes.withIndex()) {
-
+                if (classRoom.getID() == "") continue
                 if (classRoom.getID().substring(5, floorDigit) != floorValue) {
                     continue
                 }
