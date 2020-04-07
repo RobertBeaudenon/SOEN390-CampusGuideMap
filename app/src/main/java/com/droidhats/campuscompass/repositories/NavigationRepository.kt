@@ -105,7 +105,7 @@ class NavigationRepository(private val application: Application) {
      * Fetches the time it takes to reach the destination for all transportation methods
      * @param origin: The starting point from where the travel begins.
      * @param destination: The destination point where the travel ends.
-     * @param wapoints: Waypoints along the travel path
+     * @param waypoints: Waypoints along the travel path
      */
     fun fetchRouteTimes(origin: Location, destination: Location, waypoints: String?) {
         val times = mutableMapOf<String, String>()
@@ -165,7 +165,7 @@ class NavigationRepository(private val application: Application) {
      * @param origin: The starting point from where the travel begins.
      * @param destination: The destination point where the travel ends.
      * @param mode: The transportation method
-     * @param wapoints: Waypoints along the travel path
+     * @param waypoints: Waypoints along the travel path
      */
     fun fetchDirections(origin: Location, destination: Location, mode: String, waypoints: String?) {
         if (origin.getLocation() == LatLng(0.0, 0.0) || destination.getLocation() == LatLng(0.0, 0.0))

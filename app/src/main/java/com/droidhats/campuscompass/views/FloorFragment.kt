@@ -13,7 +13,7 @@ import android.widget.ToggleButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.droidhats.mapprocessor.ProcessMap
 import com.caverock.androidsvg.SVG
@@ -71,7 +71,7 @@ class FloorFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(FloorViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(FloorViewModel::class.java)
 
         initSearchBar()
 

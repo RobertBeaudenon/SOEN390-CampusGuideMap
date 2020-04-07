@@ -4,7 +4,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -131,11 +130,11 @@ class DirectionsTest {
 
         //Verify transport mode radio button and click it
         onView(ViewMatchers.withId(R.id.radio_transport_mode_walking))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+            .check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
 
         //Verify start navigation button is displayed & click it
         onView(ViewMatchers.withId(R.id.startNavigationButton))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+            .check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
 
         //Click close instructions button button
         device.findObject(By.res("com.droidhats.campuscompass:id/buttonCloseInstructions"))
@@ -168,11 +167,11 @@ class DirectionsTest {
         Thread.sleep(5000) //allow NavigationFragment to load
 
         onView(ViewMatchers.withId(R.id.radio_transport_mode_transit))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+            .check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
 
         //Verify start navigation button is displayed & click it
         onView(ViewMatchers.withId(R.id.startNavigationButton))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
+            .check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
 
         //Click close instructions button button
         device.findObject(By.res("com.droidhats.campuscompass:id/buttonCloseInstructions"))
