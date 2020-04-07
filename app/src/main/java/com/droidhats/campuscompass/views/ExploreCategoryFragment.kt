@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.ExplorePlaceAdapter
 import com.droidhats.campuscompass.models.Explore_Place
-import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
 import com.droidhats.campuscompass.viewmodels.ExplorePlaceViewModel
 
 class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
@@ -62,8 +61,7 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
        }
 
         recyclerView = root.findViewById(R.id.explore_recycler_view)
-        viewModel.getPlaces("Loyola", type).observe(viewLifecycleOwner, Observer {
-            println("Makram"+it.size)
+        viewModel.getPlaces("SGW", type).observe(viewLifecycleOwner, Observer {
              places = ArrayList()
              places = it
             updateRecyclerView()
@@ -94,7 +92,7 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     }
 
     interface OnExplorePlaceClickListener {
-        fun onExplorePlaceClick(item: ExplorePlaceEntity?)
+        fun onExplorePlaceClick(item: Explore_Place?)
     }
 
     override fun onItemSelected(arg0: AdapterView<*>, arg1: View, position: Int, id: Long) {
