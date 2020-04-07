@@ -36,6 +36,7 @@ import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.repositories.FavoritesRepository
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -546,6 +547,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         placeName.text = location.name
         placeCategory.text = location.place?.address
 
+        // TODO: Move this to init
+        val favoritesRepository : FavoritesRepository = FavoritesRepository.getInstance()
+
+        // TODO: Change text depending on existence of place in FavoritesRepo
+        val saveButton : Button = requireActivity().findViewById(R.id.place_card_favorites_button)
+        var isFavorited : Boolean = favoritesRepository.findById(location.placeID) != null
+        if (isFavorited) {
+            saveButton.text = "Saved"
+            // TODO: Change fill colour when button is in "saved" state
+        } else {
+            saveButton.text = "Save"
+        }
+
         placeName.setOnClickListener {
             moveTo(location.coordinate, 17.0f)
         }
@@ -559,6 +573,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             val bundle = Bundle()
             bundle.putParcelable("destPlace", location.place)
             findNavController().navigate(R.id.search_fragment, bundle)
+        }
+
+        saveButton.setOnClickListener {
+            // TODO: Change UI properties when clicking on button
+            if (isFavorited) {
+                favoritesRepository.removeById(location.placeID)
+            } else {
+                favoritesRepository.save(location)
+
+            }
+
+            isFavorited = isFavorited.not()
         }
         togglePlaceCard(true)
     }
