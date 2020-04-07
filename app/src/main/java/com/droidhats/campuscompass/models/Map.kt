@@ -48,7 +48,6 @@ class Map(
         }
         setBuildingMarker()
         addShuttleStopMarkers()
-
     }
 
     private fun addShuttleStopMarkers() {

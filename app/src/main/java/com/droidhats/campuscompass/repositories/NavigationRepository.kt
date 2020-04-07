@@ -142,7 +142,6 @@ class NavigationRepository(private val application: Application) {
                         }
                         else
                             times[method.string] = legs.getJSONObject("duration").getString("text")
-
                     } else {
                         times[method.string] = "N/A"
                     }

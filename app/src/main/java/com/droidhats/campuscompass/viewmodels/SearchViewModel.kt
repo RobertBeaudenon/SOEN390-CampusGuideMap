@@ -101,14 +101,14 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun sendSQLiteQuery(query: String): Boolean {
         if (query.isBlank()) return false
-        val qEsc = query.replace("'","")
+            val qEsc = query.replace("'", "")
         val queryString =
             "SELECT * " +
-                    "FROM IndoorLocation " +
-                    "WHERE location_type ='classroom' " +
-                    "AND location_name like '%$qEsc%' " +
+              "FROM IndoorLocation " +
+                "WHERE location_type ='classroom' " +
+                  "AND location_name like '%$qEsc%' " +
                     "OR location_name like '%${qEsc.toUpperCase(Locale.ROOT)}%' " +
-                    "LIMIT 5"
+                      "LIMIT 5"
 
         val sqliteQuery = SimpleSQLiteQuery(queryString)
         indoorSearchSuggestions = indoorLocationRepository.getMatchedClassrooms(sqliteQuery)
@@ -122,21 +122,21 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         return success
     }
 
-    fun getRouteTimes(origin : Location, destination : Location)  {
-        val handler = CoroutineExceptionHandler{_, throwable ->
+    fun getRouteTimes(origin: Location, destination: Location) {
+        val handler = CoroutineExceptionHandler { _, throwable ->
             Log.e(TAG, throwable.message!!)
         }
         GlobalScope.launch(Dispatchers.Default + handler) {
-            if (origin is GooglePlace && !origin.isCurrentLocation)
-                navigationRepository.fetchPlace(origin)
-            if (destination is GooglePlace && !destination.isCurrentLocation)
-                navigationRepository.fetchPlace(destination)
+           if (origin is GooglePlace && !origin.isCurrentLocation)
+               navigationRepository.fetchPlace(origin)
+           if (destination is GooglePlace && !destination.isCurrentLocation)
+               navigationRepository.fetchPlace(destination)
 
-            val closestShuttle = closestShuttleStop(origin)
-            navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
+           val closestShuttle = closestShuttleStop(origin)
+               navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
 
-            if (destination is Building)
-                navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
+           if (destination is Building)
+               navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
         }
     }
 
@@ -147,7 +147,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     /**
      * Method to find the closest Concordia shuttle bus stop from a given coordinate
      */
-
     fun closestShuttleStop(origin: Location) : String{
 
         val sgw =  mapRepository.getCampuses()[0]

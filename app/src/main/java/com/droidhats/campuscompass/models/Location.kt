@@ -10,7 +10,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.model.Place
 import kotlinx.android.parcel.Parcelize
 
-
 /**
 * An abstract class for other location model classes
 */

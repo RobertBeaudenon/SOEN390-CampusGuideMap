@@ -150,17 +150,6 @@ class ShuttleBusTest {
             allOf(
                 withContentDescription("SGW TO LOY"),
                 isDisplayed())).perform(click())
-
-        //Click to view LOY campus view
-        onView(
-            allOf(
-                withId(R.id.toggleButton), withText("SGW"),
-                isDisplayed())).perform(click())
-
-        onView(
-            allOf(
-                withId(R.id.toggleButton), withText("LOY"),
-                isDisplayed())).check(matches(isDisplayed()))
     }
     private fun childAtPosition(
         parentMatcher: Matcher<View>, position: Int
