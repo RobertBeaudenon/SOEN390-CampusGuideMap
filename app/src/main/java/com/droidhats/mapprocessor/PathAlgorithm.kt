@@ -1,5 +1,8 @@
 package com.droidhats.mapprocessor
 
+import kotlin.math.pow
+import kotlin.math.sqrt
+
 /**
  * Function that returns a string of path elements that would display the shortest path between 2 elements
  * in a graph of path Nodes.
@@ -90,6 +93,7 @@ fun SubDijkstra(currentPoint: Node, endPoint: Node, visited: MutableList<Node>) 
  * @return returns a string of the path elements
  */
 fun pathToString(nodeList: List<Circle>): String {
+
     val string: StringBuilder = StringBuilder()
     var x: Int = 0
     while (x < nodeList.size - 1) {
@@ -97,7 +101,59 @@ fun pathToString(nodeList: List<Circle>): String {
         string.append(path)
         x++
     }
+
+    // Get the start and end point of the last drawn path and use them to draw the arrow head paths
+    val lastDrawnPathStartPoint = nodeList[x-1]
+    val lastDrawnPathEndPoint = nodeList[x]
+    val arrowHeadPaths: List<String> = getArrowHeadPaths(lastDrawnPathStartPoint, lastDrawnPathEndPoint)
+
+    // Append the two arrow heads' paths to the string to be drawn on the map.
+    string.append(arrowHeadPaths[0])
+    string.append(arrowHeadPaths[1])
+
     return string.toString()
+}
+
+
+/**
+ * Takes the start and end point of a path and returns a list of strings represnting paths for
+ * two arrow heads originating from the end of the path
+ * @param startPoint The start point of the navigation path
+ * @param endPoint The end point of the navigation path
+ * @return returns a list of two strings of the arrow heads path elements
+ */
+fun getArrowHeadPaths(startPoint: Circle, endPoint: Circle) : List<String> {
+
+    // Get the x and y coordinates of the start and end points of the path
+    val x1: Double = startPoint.getCenter().first
+    val y1: Double = startPoint.getCenter().second
+    val x2: Double = endPoint.getCenter().first
+    val y2: Double = endPoint.getCenter().second
+
+    // The value of cosine at 45 degrees
+    val cos = 0.707
+
+    // The lengths of the path between the start and end points
+    val pathLength: Double = sqrt(((x2-x1).pow(2)+(y2-y1).pow(2)))
+
+    // The lengths of the path between the end point and the arrow head point
+    val arrowLength = 25.0
+
+    // Calculate the x and y coordinates for the two arrow head points.
+    val x3: Double = x2 + (arrowLength/pathLength)*((x1-x2)*cos + (y1-y2)*cos)
+    val y3: Double = y2 + (arrowLength/pathLength)*((y1-y2)*cos - (x1-x2)*cos)
+    val x4: Double = x2 + (arrowLength/pathLength)*((x1-x2)*cos - (y1-y2)*cos)
+    val y4: Double = y2 + (arrowLength/pathLength)*((y1-y2)*cos + (x1-x2)*cos)
+
+    // Use the x and y coordinates to create arrow head circles.
+    val firstArrowEnd = Circle(x3, y3, 2.0 )
+    val secondArrowEnd = Circle(x4, y4, 2.0 )
+
+    // Draw two paths each connecting the end point of the navigation path to one of the arrow head ends
+    val firstArrowPath = Path.createPath(endPoint.getCenter(), firstArrowEnd.getCenter())
+    val secondArrowPath = Path.createPath(endPoint.getCenter(), secondArrowEnd.getCenter())
+
+    return listOf(firstArrowPath.toString(), secondArrowPath.toString())
 }
 
 /**
