@@ -30,7 +30,6 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import com.droidhats.campuscompass.R
 
-
 /**
  * This class will create a connection with the SQLite DB in order to get the
  * SGW and Loyola shuttle times
@@ -134,9 +133,12 @@ class NavigationRepository(private val application: Application) {
                             legsArray.getJSONObject(2).getJSONObject("duration").getString("value").toInt()
                             val hours = totalDurationInSec / 3600
                             val minutes = (totalDurationInSec % 3600) / 60
-                            times[method.string] =
-                                "$hours" + if (hours > 1) " hours" else " hour $minutes" +
-                                           if (minutes > 1) " mins" else " min"
+                            val minText = if (minutes > 1) " mins" else " min"
+                            times[method.string] =  when (hours){
+                                0 -> "$minutes $minText"
+                                1 -> "$hours hour $minutes $minText"
+                                else -> "$hours hours $minutes $minText"
+                            }
                         }
                         else
                             times[method.string] = legs.getJSONObject("duration").getString("text")

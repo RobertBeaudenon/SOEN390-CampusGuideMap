@@ -3,6 +3,7 @@ package com.droidhats.campuscompass.models
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 
 /**
  * A Model for the map.
@@ -46,6 +47,17 @@ class Map(
             drawBuildingPolygon(building)
         }
         setBuildingMarker()
+        addShuttleStopMarkers()
+
+    }
+
+    private fun addShuttleStopMarkers() {
+        googleMap.addMarker(
+            MarkerOptions().position(Campus.SGW_SHUTTLE_STOP)
+                .title("Shuttle Bus Stop"))
+        googleMap.addMarker(
+            MarkerOptions().position(Campus.LOY_SHUTTLE_STOP)
+                .title("Shuttle Bus Stop"))
     }
 
     /**
