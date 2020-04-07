@@ -47,10 +47,6 @@ class ExploreFragment: Fragment() {
             showPointsOfInterests("Study")
         }
 
-        val selectEventsButton: Button = root.findViewById(R.id.select_events_button)
-        selectEventsButton.setOnClickListener {
-            showPointsOfInterests("Events")
-        }
 
         return root
     }

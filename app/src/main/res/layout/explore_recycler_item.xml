@@ -14,25 +14,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/place_title_item"
-            android:layout_width="wrap_content"
+            android:layout_width="291dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="80dp"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textSize="20sp" />
 
         <TextView
             android:id="@+id/place_rating_item"
+            android:layout_width="26dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="0dp"
+            android:maxWidth="@dimen/calendar_event_card_max_text_width"
+            android:textAppearance="?attr/textAppearanceListItemSecondary"
+            android:textSize="12sp" />
+
+        <RatingBar
+            android:id="@+id/rating"
+            style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
-            android:textSize="12sp"
-            android:maxWidth="@dimen/calendar_event_card_max_text_width"/>
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="0dp"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:stepSize="0.1" />
 
         <TextView
             android:id="@+id/place_location_item"
@@ -40,20 +52,19 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:drawableStart="@drawable/ic_location_on_black_24dp"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
-            android:maxWidth="@dimen/calendar_event_card_max_text_width"/>
+            android:maxWidth="@dimen/calendar_event_card_max_text_width"
+            android:textAppearance="?attr/textAppearanceListItemSecondary" />
 
 
     </LinearLayout>
 
     <ImageView
         android:id="@+id/place_image"
-        android:layout_width="119dp"
+        android:layout_width="66dp"
         android:layout_height="60dp"
-        android:layout_gravity="end|center_vertical"
-        android:scaleType="centerCrop"
+        android:layout_gravity=""
         android:contentDescription="place_image"
-        />
+        android:scaleType="centerCrop" />
 
 
 

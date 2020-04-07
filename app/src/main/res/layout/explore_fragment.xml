@@ -130,39 +130,4 @@
             android:paddingTop="12dp" />
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingBottom="15dp"
-        android:paddingTop="15dp">
-
-        <TextView
-            android:id="@+id/text_info_events"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:textAlignment="center"
-            android:textSize="15sp"
-            />
-
-        <Button
-            android:id="@+id/select_events_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:text="Events"
-            android:textAllCaps="false"
-            android:textColor="@color/quantum_white_text"
-            android:background="@drawable/calendarbutton"
-            android:paddingStart="55dp"
-            android:paddingEnd="55dp"
-            android:paddingBottom="14dp"
-            android:paddingTop="12dp" />
-
-    </LinearLayout>
-
-
-
 </LinearLayout>

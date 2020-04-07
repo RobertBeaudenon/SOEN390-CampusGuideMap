@@ -1,17 +1,14 @@
 package com.droidhats.campuscompass.views
 
-import android.content.Context
+
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,14 +18,14 @@ import com.droidhats.campuscompass.adapters.ExplorePlaceAdapter
 import com.droidhats.campuscompass.models.Explore_Place
 import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
 import com.droidhats.campuscompass.viewmodels.ExplorePlaceViewModel
-import com.google.android.libraries.places.api.model.Place
 
 class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
 
     private lateinit var root : View
     private lateinit var viewModel: ExplorePlaceViewModel
     private lateinit var recyclerView: RecyclerView
-    private var places: ArrayList<Explore_Place> = ArrayList()
+    private lateinit var places: ArrayList<Explore_Place>
+    private var category: String? = null
     private var columnCount = 1
 
     companion object {
@@ -55,10 +52,19 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
             findNavController().popBackStack()
         }
 
-        retrieveArguments()
+       category = retrieveArguments()
+
+       var type: String = when(category){
+            "Food" -> "restaurant"
+            "Drinks" -> "bar"
+            "Study" ->  "cafe"
+           else -> ""
+       }
 
         recyclerView = root.findViewById(R.id.explore_recycler_view)
-        viewModel.getPlaces("Loyola", "restaurant").observe(viewLifecycleOwner, Observer {
+        viewModel.getPlaces("Loyola", type).observe(viewLifecycleOwner, Observer {
+            println("Makram"+it.size)
+             places = ArrayList()
              places = it
             updateRecyclerView()
             recyclerView.adapter!!.notifyDataSetChanged()
@@ -78,13 +84,13 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     }
 
 
-    private fun retrieveArguments(){
+    private fun retrieveArguments(): String? {
         val categoryName = arguments?.getString("name")
         if(categoryName != null) {
             val fragmentTitle: TextView = root.findViewById(R.id.text_category) as TextView
             fragmentTitle.text = "Explore - $categoryName"
         }
-
+        return categoryName
     }
 
     interface OnExplorePlaceClickListener {
