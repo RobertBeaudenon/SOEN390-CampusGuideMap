@@ -265,6 +265,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 201
        d="m 762.16016,164.86523 0,169.95899 65.66015,0 0,-20.45703 24.74805,0 0,-131.31836 -24.74805,0 0,-18.1836 -65.66015,0 z"
        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <text x="800" y="250" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 223 </text>
+    <!-- Displaying icons on the map -->
     <!-- Displaying washroom icon on the map -->
     <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="restroom_w1" x="660" y="275">
       <path

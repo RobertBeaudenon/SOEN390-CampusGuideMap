@@ -1,5 +1,10 @@
 package com.droidhats.mapprocessor
 
+import kotlinx.coroutines.*
+import java.sql.Date
+import java.sql.Time
+import java.time.LocalDateTime
+import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -11,15 +16,19 @@ import kotlin.math.sqrt
  */
 class ProcessMap {
     // list of classrooms
-    private var classes: MutableList<MapElement> = mutableListOf()
+    private var classes: MutableList<ClassRoom> = mutableListOf()
     fun getClasses() = classes
 
     // list of indoor transportation modes
     private val indoorTransportations: MutableList<SVG> = mutableListOf()
     fun getIndoorTransportationMethods(): List<SVG> = indoorTransportations
 
+    // list of all elements
+    private val allElements: MutableList<MapElement> = mutableListOf()
+    fun getAllElements(): List<MapElement> = allElements
+
     // first element in the map (holds all the other elements within its dimensions
-    internal var firstElement: MapElement? = null
+    internal var firstElement: ClassRoom? = null
     private lateinit var stringArray: List<String>
 
     /**
@@ -35,16 +44,15 @@ class ProcessMap {
      * @param onSvgElement lambda function to execute on each svg element
      */
     private fun readSVG(
-            svgFile: String,
-            onEachLine: (String) -> Unit,
-            onRectElement: (String) -> Unit,
-            onPathElement: (String) -> Unit,
-            onSvgElement: (String) -> Unit
+        svgFile: String,
+        onEachLine: (String) -> Unit,
+        onRectElement: (String) -> Unit,
+        onPathElement: (String) -> Unit,
+        onSvgElement: (String) -> Unit
     ) {
         var element: StringBuilder = StringBuilder()
         var inRect: Boolean = false
         var inPath: Boolean = false
-        var inSVG: Boolean = false
         var firstElement: Boolean = true
 
         stringArray = svgFile.split("\n")
@@ -53,7 +61,7 @@ class ProcessMap {
 
 
             if (stringArray[it].contains("<svg") && !firstElement) {
-                it = collectSVG(it, onSvgElement, onEachLine)
+                it = collectElement(it, onSvgElement, onEachLine, "</svg>")
             }
 
             onEachLine(stringArray[it])
@@ -61,7 +69,9 @@ class ProcessMap {
             if (stringArray[it].contains("<rect")) {
                 inRect = true
             }
-            if (inRect) element.append(stringArray[it])
+            if (inRect) {
+                element.append(stringArray[it])
+            }
 
             if (stringArray[it].contains("/>") && inRect) {
                 if (firstElement) {
@@ -77,7 +87,9 @@ class ProcessMap {
             if (stringArray[it].contains("<path")) {
                 inPath = true
             }
-            if (inPath) element.append(stringArray[it])
+            if (inPath) {
+                element.append(stringArray[it])
+            }
 
             if (stringArray[it].contains("/>") && inPath) {
                 if (firstElement) {
@@ -93,11 +105,11 @@ class ProcessMap {
         }
     }
 
-    private fun collectSVG(it: Int, onSvgElement: (String) -> Unit, onEachLine: (String) -> Unit): Int {
+    private fun collectElement(it: Int, onSvgElement: (String) -> Unit, onEachLine: (String) -> Unit, endString:String): Int {
         var iterator = it
         val stringBuilder: StringBuilder = StringBuilder()
         var retrievedOne: Boolean = false
-        while(!stringArray[iterator].contains("</svg>")) {
+        while(!stringArray[iterator].contains(endString)) {
             stringBuilder.append(stringArray[iterator])
             onEachLine(stringArray[iterator])
             if (stringArray[iterator].contains(">") && !retrievedOne) {
@@ -107,7 +119,7 @@ class ProcessMap {
             iterator++
         }
         onEachLine(stringArray[iterator])
-        return iterator + 1
+        return iterator
     }
 
 
@@ -118,13 +130,24 @@ class ProcessMap {
      */
     fun readSVGFromString(svgFile: String) {
         readSVG(svgFile,
-                fun (str: String) {},
-                fun(rect: String) { classes.add(createRect(rect)) },
-                fun(path: String) {
-                    val mapElement = createPath(path)
-                    if (mapElement.isClosed) classes.add(mapElement)
-                },
-                fun(svg: String) { indoorTransportations.add(createSVG(svg)) }
+            fun (str: String) {},
+            fun(rect: String) {
+                val newRect = createRect(rect)
+                classes.add(newRect)
+                allElements.add(newRect)
+            },
+            fun(path: String) {
+                val mapElement = createPath(path)
+                if (mapElement.isClosed) {
+                    classes.add(mapElement)
+                    allElements.add(mapElement)
+                }
+            },
+            fun(svg: String) {
+                val newSVG = createSVG(svg)
+                indoorTransportations.add(newSVG)
+                allElements.add(newSVG)
+            }
         )
     }
 
@@ -141,28 +164,28 @@ class ProcessMap {
         val highlightedColor: String = "#bca878"
 
         readSVG(svg,
-                fun (line) {highlightedSVG.append(line).append("\n")},
-                fun (rect) {
-                    val rectangle = createRect(rect)
-                    if (rectangle.getID().equals(id)) {
-                        rectangle.style = "fill:$highlightedColor;fill-opacity:1;stroke:#000000;" +
-                                "stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;" +
-                                "stroke-dasharray:none"
-                        highlightedSVG.append(rectangle.toString()).append("\n")
-                    }
-                },
-                fun (path) {
-                    val thePath = createPath(path)
-                    if (thePath.getID().equals(id)) {
-                        thePath.style = "fill:$highlightedColor;fill-opacity:1;stroke:#000000;" +
-                                "stroke-width:1.36025514;stroke-linecap:butt;" +
-                                "stroke-linejoin:miter;stroke-miterlimit:4;" +
-                                "stroke-opacity:1;stroke-dasharray:none"
-                        highlightedSVG.append(thePath.toString()).append("\n")
-                    }
-                },
-                fun(svg) {}
-                )
+            fun (line) {highlightedSVG.append(line).append("\n")},
+            fun (rect) {
+                val rectangle = createRect(rect)
+                if (rectangle.getID().equals(id)) {
+                    rectangle.style = "fill:$highlightedColor;fill-opacity:1;stroke:#000000;" +
+                            "stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;" +
+                            "stroke-dasharray:none"
+                    highlightedSVG.append(rectangle.toString()).append("\n")
+                }
+            },
+            fun (path) {
+                val thePath = createPath(path)
+                if (thePath.getID().equals(id)) {
+                    thePath.style = "fill:$highlightedColor;fill-opacity:1;stroke:#000000;" +
+                            "stroke-width:1.36025514;stroke-linecap:butt;" +
+                            "stroke-linejoin:miter;stroke-miterlimit:4;" +
+                            "stroke-opacity:1;stroke-dasharray:none"
+                    highlightedSVG.append(thePath.toString()).append("\n")
+                }
+            },
+            fun(svg) {}
+        )
         return highlightedSVG.toString()
     }
 
@@ -174,10 +197,10 @@ class ProcessMap {
     internal fun createSVG(elmnt: String): SVG {
         val id = extractAttr("id", elmnt)
         var type: String = ""
-        when (id.substring(0, 6)) {
-            "stairs" -> type = "stairs"
-            "escala" -> type = "escalators"
-            "elevat" -> type = "elevators"
+        when (id.substring(0, 5)) {
+            "stair" -> type = "stairs"
+            "escal" -> type = "escalators"
+            "eleva" -> type = "elevators"
         }
         val x = extractAttr("x", elmnt)
         val y = extractAttr("y", elmnt)
@@ -208,7 +231,7 @@ class ProcessMap {
         val id = extractAttr("id", elmnt)
         val d = extractAttr("d", elmnt)
         val style = extractAttr("style", elmnt)
-        val isClosed = d[d.length - 1] == 'z'
+        val isClosed = d[d.length - 1] == 'z' || d[d.length - 1] == 'Z'
         val transform: String = extractAttr("transform", elmnt)
         return Path(id, d, transform, style, isClosed)
     }
@@ -256,10 +279,10 @@ class ProcessMap {
      * @return the time required to travel between one classroom and the other
      */
     fun getTimeInSeconds(start: String, end: String): Int {
-        val startAndEndClasses = getStartAndEndClasses(Pair(start, end))
-        if (startAndEndClasses.first == null || startAndEndClasses.second == null) return 0
-        val startClass: MapElement = classes[startAndEndClasses.first!!]
-        val endClass: MapElement = classes[startAndEndClasses.second!!]
+        val startAndEnd = getStartAndEnd(Pair(start, end))
+        if (startAndEnd.first == null || startAndEnd.second == null) return 0
+        val startClass: MapElement = allElements[startAndEnd.first!!]
+        val endClass: MapElement = allElements[startAndEnd.second!!]
 
         val topLeft = Pair(firstElement!!.getWidth().first, firstElement!!.getHeight().first)
         val bottomRight = Pair(firstElement!!.getWidth().second, firstElement!!.getHeight().second)
@@ -273,11 +296,11 @@ class ProcessMap {
      * @param startAndEnd a pair with the start being the first element and the second being the last element
      * @return pair of start and end indices for the classes
      */
-    fun getStartAndEndClasses(startAndEnd: Pair<String, String>): Pair<Int?, Int?> {
+    fun getStartAndEnd(startAndEnd: Pair<String, String>): Pair<Int?, Int?> {
         var startInt: Int? = null
         var endInt: Int? = null
         var x = 0
-        for (aClass in classes) {
+        for (aClass in allElements) {
             var start = startAndEnd.first
             if (start[start.length - 1] == '0' && start[start.length - 2] == '.') {
                 start = start.substring(0, start.length - 1)
@@ -301,23 +324,22 @@ class ProcessMap {
      * @return svg file as a string
      */
     fun getSVGStringFromDirections(startAndEnd: Pair<String, String>): String {
-        val startAndEndClasses = getStartAndEndClasses(startAndEnd)
-        val startInt: Int? = startAndEndClasses.first
-        val endInt: Int? = startAndEndClasses.second
+        val startAndEnd = getStartAndEnd(startAndEnd)
+        val startInt: Int? = startAndEnd.first
+        val endInt: Int? = startAndEnd.second
 
         if (startInt == null || endInt == null) {
             return ""
         }
-
         val list: MutableList<Circle> = generatePointsAcrossMap()
 
         val string: StringBuilder = StringBuilder()
-        var wrote: Boolean = false
-        stringArray.forEach { it ->
-            if (it.contains("</g>") && !wrote) {
-                string.append(Dijkstra(classes[startInt], classes[endInt], createPaths(list)) + "\n")
-                wrote = true
+        stringArray.forEach {
+
+            if (it.contains("<!-- Displaying icons on the map -->")) {
+                string.append(Dijkstra(allElements[startInt], allElements[endInt], createPaths(list)) + "\n")
             }
+
             string.append(it + "\n")
         }
         return string.toString()
@@ -332,8 +354,8 @@ class ProcessMap {
         val pathPoints: MutableList<Circle> = mutableListOf()
 
         // scatter points in missing spots, using average distance as a scale for step size
-        for (x in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step 20) {
-            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step 20) {
+        for (x in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step 17) {
+            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step 15) {
                 if (inPath(x.toDouble(), y.toDouble())) {
                     pathPoints.add(Circle(x.toDouble(), y.toDouble(), 5.0))
                 }
@@ -351,26 +373,50 @@ class ProcessMap {
      */
     internal fun createPaths(pathPoints: MutableList<Circle>): MutableList<Node> {
         val nodeList: MutableList<Node> = mutableListOf()
-        val finalList: MutableList<Node> = mutableListOf()
 
-        for(point in pathPoints) {
+        val num: Int = pathPoints.size/8
+        val threads: MutableList<Thread> = mutableListOf()
+
+        for (point in pathPoints) {
             nodeList.add(Node(point, mutableListOf()))
         }
 
-        for (pointA in nodeList) {
-            var numberOfNeighbors: Int = 0
+        for (i in 0..7) {
+            threads.add(
+                thread(start = true) {
+                    connectNeighbours(nodeList.subList(i * num, (i + 1) * num), nodeList)
+                }
+            )
+        }
+
+        for (thread in threads) {
+            thread.join()
+        }
+
+        // for any that might be missed
+        for (point in nodeList) {
+            if (point.neighbors.size == 0) {
+                connectNeighbours(mutableListOf(point), nodeList)
+            }
+        }
+        return nodeList
+    }
+
+    /**
+     * This method connects all points that can be added as neighbors and adds them
+     * @param subsection sublist of nodeList for this thread
+     * @param nodeList total list of nodes (used with all the threads but not mutated)
+     * @return subsection with neighbors added
+     */
+    fun connectNeighbours(subsection: MutableList<Node>, nodeList: MutableList<Node>): MutableList<Node> {
+        for (pointA in subsection) {
             for (pointB in nodeList) {
                 if (checkPath(pointA.circle, pointB.circle) && !pointA.circle.equals(pointB.circle)) {
                     pointA.neighbors.add(pointB)
-                    numberOfNeighbors++
                 }
             }
-            if (numberOfNeighbors > 0) {
-                finalList.add(pointA)
-            }
         }
-
-        return finalList
+        return subsection
     }
 
     /**
@@ -425,7 +471,7 @@ class ProcessMap {
         classes.forEach{ it ->
             if (it.isWithin(x, y)) return false
         }
-        return true
+        return isWithinBounds(x, y)
     }
 
     /**
