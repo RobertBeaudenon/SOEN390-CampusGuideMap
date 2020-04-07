@@ -6,6 +6,7 @@ apply plugin: "kotlin-kapt"
 apply plugin: "org.jetbrains.dokka"
 apply plugin: "org.sonarqube"
 
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -129,6 +130,8 @@ dependencies {
     implementation 'com.otaliastudios:zoomlayout:1.7.1'
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "org.robolectric:robolectric:4.3.1"
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
 
 sonarqube {

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
@@ -16,7 +15,6 @@ import com.droidhats.campuscompass.views.ExploreCategoryFragment
 import kotlinx.android.synthetic.main.explore_recycler_item.view.*
 import androidx.navigation.findNavController
 import com.droidhats.campuscompass.models.Explore_Place
-
 import com.squareup.picasso.Picasso;
 
 
