@@ -33,7 +33,7 @@ class ExplorePlaceRepository (private val application: Application)  {
                         ?: ExplorePlaceRepository(application).also { instance = it }
                 }
     }
-    
+
     fun getPlaces(campus:String, type: String){
         list.clear()
         val placesRequest = object : StringRequest(

@@ -29,13 +29,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.adapters.ExplorePlaceAdapter
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.NavigationRoute
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.IndoorLocation
-import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.models.*
+import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -57,6 +55,7 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.coroutines.GlobalScope
@@ -77,7 +76,7 @@ import com.droidhats.campuscompass.models.Map as MapModel
  * It displays all the UI components of the map and dynamically interacts with the user input.
  */
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, OnCameraIdleListener,
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener,ExploreCategoryFragment.OnExplorePlaceClickListener, OnCameraIdleListener,
     Subject {
 
     private var mapModel: MapModel? = null
@@ -133,6 +132,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Event click callbacks
         CalendarFragment.onCalendarEventClickListener = this
         SearchFragment.onSearchResultClickListener = this
+        ExploreCategoryFragment.onExplorePlaceClickListener = this
 
         createLocationRequest()
         initBottomSheetBehavior()
@@ -512,7 +512,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         isCampusBuilding = true
                         handleBuildingClick(building)
                     }
-              focusLocation(item, isCampusBuilding)
+              focusLocation(item, isCampusBuilding, true)
             }        
         } else if (item is IndoorLocation) {
             val bundle: Bundle = Bundle()
@@ -521,9 +521,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun focusLocation(location: GooglePlace, isCampusBuilding : Boolean){
+    private fun focusLocation(location: GooglePlace, isCampusBuilding : Boolean, isRequired : Boolean){
        GlobalScope.launch {
-           viewModel.navigationRepository.fetchPlace(location)
+           if(isRequired) {
+               viewModel.navigationRepository.fetchPlace(location)
+           }
        }.invokeOnCompletion {
            requireActivity().runOnUiThread{
                moveTo(location.coordinate, 17.0f)
@@ -544,7 +546,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val closeButton : ImageView = requireActivity().findViewById(R.id.place_card_close_button)
 
         placeName.text = location.name
-        placeCategory.text = location.place?.address
+        placeCategory.text = location.category
 
         placeName.setOnClickListener {
             moveTo(location.coordinate, 17.0f)
@@ -598,6 +600,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         for (observer in observerList) {
             observer?.update(map!!.cameraPosition.zoom)
         }
+    }
+
+    override fun onExplorePlaceClick(item: Explore_Place?) {
+        findNavController().popBackStack(R.id.map_fragment, false)
+
+        val exploreLocation = GooglePlace(
+            item?.place_placeID!!,
+            item.place_name!!,
+           item?.place_address!!,
+            item!!.place_coordinate
+        )
+        Handler().postDelayed({
+            focusLocation(exploreLocation, false, true)
+        }, 1000)
     }
 }
 

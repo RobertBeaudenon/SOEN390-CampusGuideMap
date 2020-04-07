@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.droidhats.campuscompass.models.ExplorePlace
 import com.droidhats.campuscompass.models.Explore_Place
 import com.droidhats.campuscompass.repositories.ExplorePlaceRepository
 import com.droidhats.campuscompass.roomdb.ExplorePlaceEntity

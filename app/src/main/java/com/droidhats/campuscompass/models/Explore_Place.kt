@@ -1,6 +1,7 @@
 package com.droidhats.campuscompass.models
 
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.model.Place
 
 class Explore_Place(
     name: String,
@@ -16,6 +17,7 @@ class Explore_Place(
     var  place_placeID: String? = placeID
     var place_image: String? = image
     var place_coordinate: LatLng = coordinate
+    var place : Place? = null
 
     override fun toString(): String {
 
