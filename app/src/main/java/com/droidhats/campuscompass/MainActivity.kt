@@ -2,26 +2,36 @@ package com.droidhats.campuscompass
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
-import androidx.appcompat.app.AlertDialog
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.droidhats.campuscompass.views.CalendarFragment
 import com.droidhats.campuscompass.views.SplashFragment
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.novoda.merlin.*
 
-
+/**
+ * This class has the objective of defining the commonly accessible attributes.
+ * All fragments utilize the class for navigation, permission requests, and network connectivity purposes
+ */
 class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val READ_CALENDAR_PERMISSION_REQUEST_CODE = 2
     }
-    private lateinit var merlinsBeard: MerlinsBeard
+    private lateinit var snackbar: Snackbar
 
+    /**
+     * Overrides the activity's OnCreate method to instantiate the navigation component
+     *
+     * @param Bundle: the saved state of the application to pass between default Android methods.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,8 +40,14 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         navView.setupWithNavController(navController)
+        snackbar = Snackbar.make(findViewById(android.R.id.content), "No internet found. Please check your network connection.", Snackbar.LENGTH_INDEFINITE)
     }
 
+    /**
+     *  Initializes the Merlin object to monitor the network connect while application is active
+     *
+     *  @return the Merlin Builder with the indicated callbacks
+     */
     override fun createMerlin(): Merlin? {
         return Merlin.Builder()
             .withConnectableCallbacks()
@@ -40,6 +56,9 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
             .build(this)
     }
 
+    /**
+     *  Registers the Connectable, Disconnectable, and Bindable obects in superclass when activity resumes in view
+     */
     override fun onResume() {
         super.onResume()
         registerConnectable(this)
@@ -47,31 +66,41 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
         registerBindable(this)
     }
 
+    /**
+     *  Checks the application's current network status and calls method to show alert if it's not available
+     *
+     *  @param networkStatus: the current network status of the application
+     */
     override fun onBind(networkStatus: NetworkStatus) {
         if (!networkStatus.isAvailable) {
             onDisconnect()
         }
     }
 
+    /**
+     * Dismisses the Snackbar once the internet is made available
+     */
     override fun onConnect() {
-        //leave empty - only let them know when their internet is bad
-    }
-
-    override fun onDisconnect() {
-        AlertDialog.Builder(this)
-            .setTitle("Campus Compass")
-            .setMessage("You lost internet connection")
-            .setPositiveButton("OK", null).show()
-    }
-
-    fun ifInternet():Boolean {
-        merlinsBeard = MerlinsBeard.from(applicationContext)
-        if ((merlinsBeard.isConnected()) || (merlinsBeard.isConnectedToWifi())) {
-            return true
+        if (snackbar != null) {
+            snackbar.dismiss()
         }
-        return false
     }
 
+    /**
+     *  Displays a red alert (Snackbar) when the application loses internet connection
+     */
+    override fun onDisconnect() {
+        val snackBarView: View = snackbar.getView()
+        snackBarView.setBackgroundColor(Color.RED)
+        snackBarView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER)
+        snackbar.show()
+    }
+
+    /**
+     * Checks if the location permission has been previously granted
+     *
+     *  @return false if the location permission has not been granted and true if otherwise
+     */
     fun checkLocationPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -82,6 +111,11 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
         return true
     }
 
+    /**
+     * Checks if the calendar permission has been previously granted
+     *
+     *  @return false if the calendar permission has not been granted and true if otherwise
+     */
     fun checkCalendarPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -91,6 +125,9 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
         return true
     }
 
+    /**
+     * Requests the permission to access the user's current location
+     */
     fun requestLocationPermission() {
         requestPermissions(
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
@@ -98,6 +135,9 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
         )
     }
 
+    /**
+     * Requests the permission to read the device's calendar application's data
+     */
     fun requestCalendarPermission() {
         requestPermissions(
             arrayOf(Manifest.permission.READ_CALENDAR),
@@ -105,6 +145,13 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
         )
     }
 
+    /**
+     * Responds to the result of requesting the location and calendar permissions
+     *
+     * @param requestCode: request code passed in requestPermissions() method
+     * @param permissions: the requested permission
+     * @param grantResults: the result of the requested permission
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -126,17 +173,17 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
             LOCATION_PERMISSION_REQUEST_CODE -> {
                 //If the user granted, denied, or cancelled the location permission, load the map
                 //since splash isn't initializing components yet, it will perform normal navigation to MapFragment
-                if(ifInternet()) {
                     val splashFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as SplashFragment
                     splashFragment.navigateToMapFragment()
                     return
-                }
             }
         }
     }
 
+    /**
+     *  Inflates the side menu to be used by the fragments and adds items to the action bar (if present)
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.nav_drawer_main_menu, menu)
         return true
     }

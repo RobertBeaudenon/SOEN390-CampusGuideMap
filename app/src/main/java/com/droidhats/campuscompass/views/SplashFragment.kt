@@ -5,9 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.appcompat.app.AlertDialog
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -18,12 +16,24 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * This class has the objective of displaying an introductory view to the user while initializing components of the application.
+ * Once the operations are complete, the fragment will navigate to the main view (MapFragment)
+ */
 class SplashFragment : Fragment() {
 
     private lateinit var splashViewModel: SplashViewModel
 
+    /**
+     * Overrides the fragments onCreateView method to display the splash screen view
+     *
+     * @param inflater: inflates the splash_fragment layout XML file into the View object
+     * @param container: the parent ViewGroup (in activity's layout) in which the fragment layout will be inserted
+     * @param Bundle: the saved state of the application to pass between default Android methods
+     */
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         //Lock the nav drawer access during to the splash screen
@@ -36,6 +46,11 @@ class SplashFragment : Fragment() {
         return inflater.inflate(R.layout.splash_fragment, container, false)
     }
 
+    /**
+     * Overrides the fragments onActivityCreated method to initialize the application and check the permissions
+     *
+     * @param Bundle: the saved state of the application to pass between default Android methods
+     */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         splashViewModel = ViewModelProviders.of(this).get(SplashViewModel::class.java)
@@ -45,22 +60,15 @@ class SplashFragment : Fragment() {
         //for now, it lets MainActiivty manage the navigation if no permissions were given
         if(!(activity as MainActivity).checkLocationPermission()) {
             (activity as MainActivity).requestLocationPermission()
-        } else if((activity as MainActivity).ifInternet()) {
-            //if permission is granted, navigate to MapFragment
-            Toast.makeText(context, "IT WORKS?!", Toast.LENGTH_LONG).show()
-            navigateToMapFragment()
         } else {
-
-            /*
-            AlertDialog.Builder((activity as MainActivity))
-                .setTitle("Campus Compass")
-                .setMessage("Your internet is fucked")
-                .setPositiveButton("OK", null).show()
-
-             */
+            //if permission is granted, navigate to MapFragment
+            navigateToMapFragment()
         }
     }
 
+    /**
+     * Performs the navigation to the MapFragment after a 2 second delay and unlocks the side menu for use
+     */
     fun navigateToMapFragment() {
         GlobalScope.launch {
             delay(2000)
