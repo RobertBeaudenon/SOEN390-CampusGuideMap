@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.explore_recycler_item.view.*
 import androidx.navigation.findNavController
 import com.droidhats.campuscompass.models.Explore_Place
 
+import com.squareup.picasso.Picasso;
+
 
 class ExplorePlaceAdapter(private val items: ArrayList<Explore_Place>, private val listener: ExploreCategoryFragment.OnExplorePlaceClickListener?):
     RecyclerView.Adapter<ExplorePlaceAdapter.ViewHolder>() {
@@ -41,13 +43,7 @@ class ExplorePlaceAdapter(private val items: ArrayList<Explore_Place>, private v
         holder.titleView.text = item.place_name
         holder.rateView.text = item.place_rating
         holder.locationView.text = if (item.place_address.isNullOrBlank()) "None" else item.place_address
-
-//        val drawable =
-//            ContextCompat.getDrawable(holder.view.context, getPlaceImageResourceID(item.name))
-//        holder.imageView.setImageDrawable(drawable)
-
-
-       // holder.cardView.setCardBackgroundColor(item.color!!.toInt())
+        Picasso.get().load(item.place_image).into(holder.imageView);
 
         with(holder.view) {
 
@@ -69,27 +65,5 @@ class ExplorePlaceAdapter(private val items: ArrayList<Explore_Place>, private v
         val locationView: TextView = view.place_location_item
         val imageView: ImageView = view.place_image
         var cardView: CardView = view.findViewById(R.id.explore_card_view)
-      //  var navButton : ImageButton = view.findViewById(R.id.navigateFromEvent)
-
-    }
-
-    /**
-     * Returns the explore place image from drawable resources
-     * @param placeName: Used to map the place name to the place image.
-     */
-    fun getPlaceImageResourceID(placeName: String): Int {
-
-        // The id for the place image resource is of Int type
-        // Return the place image resource id that corresponds to the place name
-        return when (placeName) {
-            "Restaurant Maison Prathet Thai" -> R.drawable.resto_restaurantmaisonprathetthai
-            "Les Saisons de Corée" -> R.drawable.resto_lessaisonsdecoree
-            "Bar-B-Barn" -> R.drawable.resto_bar_b_barn
-            "Kazu" -> R.drawable.resto_kazu
-            "Bacaro Pizzeria" -> R.drawable.resto_bacaropizzeria
-            "Garage Beirut" -> R.drawable.resto_garagebeirut
-            "Da Vinci Ristorante" -> R.drawable.resto_davinciristorante
-            else -> Log.v("ImageError", "couldn't load image")
-        }
     }
 }

@@ -51,8 +51,9 @@
         android:layout_width="119dp"
         android:layout_height="60dp"
         android:layout_gravity="end|center_vertical"
+        android:scaleType="centerCrop"
         android:contentDescription="place_image"
-        app:srcCompat="@drawable/resto_bacaropizzeria" />
+        />
 
 
 
