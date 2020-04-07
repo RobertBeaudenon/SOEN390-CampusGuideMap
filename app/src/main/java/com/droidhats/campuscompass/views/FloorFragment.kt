@@ -41,10 +41,16 @@ class FloorFragment : Fragment() {
 
         var floor: String? = arguments?.getString("floornum")
 
-        var mapToDisplay: String = "hall8.svg" // default value
+        var mapToDisplay: String = "hall9.svg" // default value
         val building : Building? = arguments?.getParcelable("building")
         val maps: List<String>? = building?.getIndoorInfo()?.second
-        if (maps != null) mapToDisplay = maps[0]
+        val floormap : String? = arguments?.getString("floormap")
+        if(floormap.isNullOrBlank()) {
+            if (maps != null) mapToDisplay = maps[0]
+        }
+        else {
+            mapToDisplay = floormap
+        }
 
         var inputStream: InputStream = requireContext().assets.open(mapToDisplay)
         val buildingToHighlight: String? = arguments?.getString("id")
