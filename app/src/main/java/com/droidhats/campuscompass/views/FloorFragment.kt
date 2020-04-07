@@ -22,6 +22,7 @@ import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
+import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
@@ -31,6 +32,7 @@ import java.io.InputStream
 class FloorFragment : Fragment() {
 
     private lateinit var viewModel: FloorViewModel
+    private lateinit var viewModelMapViewModel: MapViewModel
     private lateinit var root: View
 
     override fun onCreateView(
@@ -41,10 +43,20 @@ class FloorFragment : Fragment() {
 
         var floor: String? = arguments?.getString("floornum")
 
-        var mapToDisplay: String = "hall9.svg" // default value
+        viewModelMapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+
+
+        var mapToDisplay: String = "hall8.svg" // default value
+        var mapsDefault: List<String>? = viewModelMapViewModel.findBuildingByInitial("hall")?.getIndoorInfo()?.second
         val building : Building? = arguments?.getParcelable("building")
-        val maps: List<String>? = building?.getIndoorInfo()?.second
         val floormap : String? = arguments?.getString("floormap")
+        var maps : List<String>?
+
+        if(building?.getIndoorInfo()?.second != null){
+            maps = building?.getIndoorInfo()?.second
+        }
+        maps = mapsDefault
+
         if(floormap.isNullOrBlank()) {
             if (maps != null) mapToDisplay = maps[0]
         }
@@ -70,7 +82,7 @@ class FloorFragment : Fragment() {
         var newSvg : SVG
         buttonPlus.setOnClickListener(View.OnClickListener {
             val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
-            if(indexOfCurrentMap != maps?.size?.minus(1)) {
+            if(indexOfCurrentMap != maps?.size?.minus(1) && indexOfCurrentMap !=null) {
                 if (maps != null) if (indexOfCurrentMap != null) {
                     mapToDisplay = maps[indexOfCurrentMap.plus(1)]
                 }
@@ -83,7 +95,7 @@ class FloorFragment : Fragment() {
         val buttonMinus: ImageButton = root.findViewById(R.id.button_minus)
         buttonMinus.setOnClickListener(View.OnClickListener {
             val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
-            if(indexOfCurrentMap != 0) {
+            if(indexOfCurrentMap != 0 && indexOfCurrentMap !=null) {
                 if (maps != null) if (indexOfCurrentMap != null) {
                     mapToDisplay = maps[indexOfCurrentMap.minus(1)]
                 }
@@ -114,6 +126,7 @@ class FloorFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FloorViewModel::class.java)
+
 
         initSearchBar()
 
