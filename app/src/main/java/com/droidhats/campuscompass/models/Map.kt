@@ -1,9 +1,11 @@
 package com.droidhats.campuscompass.models
 
+import com.droidhats.campuscompass.R
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.droidhats.campuscompass.helpers.Observer
 
 /**
  * A Model for the map.
@@ -18,10 +20,13 @@ import com.google.android.gms.maps.model.MarkerOptions
 class Map(
     var googleMap: GoogleMap,
     private var buildings: List<Building>
-) {
+): Observer {
     companion object {
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
+        private const val MARKER_VISIBILITY_ZOOM_LEVEL = 16f
+        private lateinit var sgwShuttleBusMarker: Marker
+        private lateinit var loyolaShuttleBusMarker: Marker
     }
     /**
      * Initializes the map, and attaches listeners to it.
@@ -51,12 +56,16 @@ class Map(
     }
 
     private fun addShuttleStopMarkers() {
-        googleMap.addMarker(
+        sgwShuttleBusMarker = googleMap.addMarker(
             MarkerOptions().position(Campus.SGW_SHUTTLE_STOP)
-                .title("Shuttle Bus Stop"))
-        googleMap.addMarker(
+                .title("SGW Shuttle Bus Stop"))
+
+        loyolaShuttleBusMarker = googleMap.addMarker(
             MarkerOptions().position(Campus.LOY_SHUTTLE_STOP)
-                .title("Shuttle Bus Stop"))
+                .title("Loyola Shuttle Bus Stop"))
+
+        sgwShuttleBusMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_shuttle_bus_marker))
+        loyolaShuttleBusMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_shuttle_bus_marker))
     }
 
     /**
@@ -81,5 +90,13 @@ class Map(
                     .setIcon(BitmapDescriptorFactory.fromResource(building.getMarkerResId()))
             }
         }
+    }
+
+    /**
+     * A building's marker is visible only at its visibility zoom level
+     */
+    override fun update(mapZoomLevel: Float) {
+        sgwShuttleBusMarker.isVisible = mapZoomLevel >= MARKER_VISIBILITY_ZOOM_LEVEL
+        loyolaShuttleBusMarker.isVisible = mapZoomLevel >= MARKER_VISIBILITY_ZOOM_LEVEL
     }
 }

@@ -172,6 +172,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         attachBuildingObservers()
+        attach(mapModel)
         if (currentNavigationRoute != null) drawPathPolyline(currentNavigationRoute!!.polyLinePath)
     }
 
@@ -305,6 +306,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onDestroy(){
         super.onDestroy()
         detachBuildingObservers()
+        detach(mapModel)
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
