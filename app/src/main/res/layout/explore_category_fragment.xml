@@ -36,7 +36,7 @@
             android:textSize="20sp" />
 
     </RelativeLayout>
-    
+
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_container"
