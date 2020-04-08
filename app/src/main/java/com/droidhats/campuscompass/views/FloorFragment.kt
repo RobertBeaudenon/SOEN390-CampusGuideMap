@@ -47,15 +47,22 @@ class FloorFragment : Fragment() {
 
 
         var mapToDisplay: String = "hall8.svg" // default value
-        var mapsDefault: List<String>? = viewModelMapViewModel.findBuildingByInitial("hall")?.getIndoorInfo()?.second
+       // var mapsDefault: List<String>? = viewModelMapViewModel.findBuildingByInitial("hall")?.getIndoorInfo()?.second
         val building : Building? = arguments?.getParcelable("building")
         val floormap : String? = arguments?.getString("floormap")
-        var maps : List<String>?
-
-        if(building?.getIndoorInfo()?.second != null){
-            maps = building?.getIndoorInfo()?.second
+        var maps : MutableList<String>? = mutableListOf()
+        for (ting in viewModelMapViewModel?.findBuildingByInitial("hall")?.getIndoorInfo()?.second!!.values) {
+            maps?.add(ting)
         }
-        maps = mapsDefault
+
+
+//        val indoorLocation = insertedClass
+//        map = automatesvg(context.assets.open(indoorLocation.floor_map), indoorLocation.floor_num)
+
+//        if(building?.getIndoorInfo()?.second != null){
+//            maps = building?.getIndoorInfo()?.second
+//        }
+        //maps = mapsDefault
 
         if(floormap.isNullOrBlank()) {
             if (maps != null) mapToDisplay = maps[0]

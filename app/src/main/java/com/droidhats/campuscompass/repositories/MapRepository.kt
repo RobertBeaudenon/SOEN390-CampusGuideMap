@@ -135,9 +135,12 @@ class MapRepository(applicationContext: Context) {
                 val initial: String = buildingsArray.getJSONObject(i).get("initial").toString()
                 val floorMapArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("floor_maps")
-                var floorMaps: MutableList<String> = mutableListOf()
+                var floorMaps: MutableMap<String, String> = mutableMapOf()
                 for (x in 0 until floorMapArray.length()) {
-                    floorMaps.add(floorMapArray.getString(x))
+                    val keys = floorMapArray.getJSONObject(x).keys()
+                    for (key in keys) {
+                        floorMaps.put(key, floorMapArray.getJSONObject(x).getString(key))
+                    }
                 }
 
                 val buildingLocation = LatLng(

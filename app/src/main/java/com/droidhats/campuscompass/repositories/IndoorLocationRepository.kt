@@ -7,6 +7,7 @@ import com.droidhats.mapprocessor.ProcessMap
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import org.json.JSONObject
+import java.io.File
 import java.io.InputStream
 
 class IndoorLocationRepository private constructor(private val indoorLocationDao: IndoorLocationDao) {
@@ -51,14 +52,14 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
     private fun insertClasses(context: Context, building: Building) {
 
         for (floorMap in building.getIndoorInfo().second) {
-            val inputStream: InputStream = context.assets.open(floorMap)
+            val inputStream: InputStream = context.assets.open(floorMap.value)
             val file: String = inputStream.bufferedReader().use { it.readText() }
             val mapProcessor: ProcessMap = ProcessMap()
             mapProcessor.readSVGFromString(file)
             val classes = mapProcessor.getClasses()
 
             // todo: Use index of for loop to determine floor instead of using map name
-            var floorValue: String = floorMap.split(building.getIndoorInfo().first)[1].split(".svg")[0]
+            var floorValue: String = floorMap.value.split(building.getIndoorInfo().first)[1].split(".svg")[0]
             var floorDigit: Int = 6
             var floorNumber: Int = floorValue.toInt()
             if (floorValue.length > 1) {
@@ -73,9 +74,9 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
                 }
                 val newClass = IndoorLocation(
                     classRoom.getID(),
-                    convertIDToName(classRoom.getID(), building.getIndoorInfo().first, floorNumber),
-                    floorNumber,
-                    floorMap,
+                    convertIDToName(classRoom.getID(), building.getIndoorInfo().first, floorMap.key),
+                    floorMap.key,
+                    floorMap.value,
                     "classroom",
                     building.coordinate.latitude,
                     building.coordinate.longitude
@@ -94,8 +95,8 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
      * @param floorNumber This is the number of the floor within the building
      * @return returns the string of the generated room name
      */
-    fun convertIDToName(id: String, buildingName: String, floorNumber: Int): String {
-        return buildingName + "-" + floorNumber.toString() + id.substring(6, id.length)
+    fun convertIDToName(id: String, buildingName: String, floorNumber: String): String {
+        return buildingName + "-" + floorNumber + id.substring(6, id.length)
     }
 }
 

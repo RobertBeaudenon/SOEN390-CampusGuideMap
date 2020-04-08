@@ -50,7 +50,7 @@ class Building(
     private val openHours: String,
     private val departments: String,
     private val services: String,
-    private val indoorInfo: Pair<String, List<String>>,
+    private val indoorInfo: Pair<String, MutableMap<String, String>>,
     private val imageResId: Int,
     private val markerResId: Int
 ) : Location(), Parcelable, Observer {

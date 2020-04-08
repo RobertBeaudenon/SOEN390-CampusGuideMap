@@ -151,6 +151,38 @@ class ProcessMap {
         )
     }
 
+    fun automateSVG(svg: String, floorNumber: Int): String {
+
+        var newFileStr = ""
+
+        val patternText = Regex("<text")
+        val originalSVG: List<String> = svg.split("\n")
+        var svgArray = mutableListOf<String>()
+
+        //Add all of the svg in the
+        for (line in originalSVG) {
+            svgArray.add(line)
+        }
+
+        for (i in svgArray) {
+            var resultText = patternText.containsMatchIn(i)
+
+            if (!resultText) {
+                newFileStr += i + "\n"
+                continue
+            }
+            if (resultText) {
+                var textArray = i.split("> ")
+                var str = textArray[1].split(" </")
+                var roomNum = str[0]
+                var roomNumRegex = Regex(floorNumber.toString())
+                var newFloor = roomNumRegex.replaceFirst(roomNum, floorNumber.toString())
+                var newTextTag = "${textArray.elementAt(0)}" + "> " + "$newFloor" + " </" + "${str.elementAt(1)}"
+                newFileStr += newTextTag + "\n"
+            }
+        }
+        return newFileStr
+    }
     /**
      * This method takes as input the svg file string and searches for an element with a matching
      * id. Once found, it will add another element right on top with a different colour to
@@ -496,65 +528,3 @@ internal fun getDistance(x: Pair<Double, Double>, y: Pair<Double, Double>): Doub
     return sqrt(abs(x.first - y.first).pow(2.0) + abs(x.second - y.second).pow(2.0))
 }
 
-internal fun automateSVG(svg: String, floorNumber: Int) {
-
-    //get fileName from svg string input
-    val prepreBuilding = svg.split("docname=\"")
-    val preBuilding = prepreBuilding[1].split("-")
-    val preNumBuilding = preBuilding[1].split(".svg")
-    val numBuilding = preNumBuilding[0]
-    val building = preBuilding[0].toLowerCase()
-    val fileName = "$building" + "$numBuilding" + ".svg"
-    val file: File = File(fileName)
-
-    val patternPath = Regex("<text")
-    val patternIdRect = Regex("id=\"rect")
-    val patternIdPath = Regex("id=\"path")
-
-
-    var newfileName = "hall" + "$floorNumber" + ".svg"
-    var newFile: File = File("$newfileName")
-    val bufferedReader = file.bufferedReader()
-    val out = newFile.bufferedWriter()
-    val originalSVG: List<String> = bufferedReader.readLines()
-    var svgArray = mutableListOf<String>()
-
-    //Add all of the svg in the
-    for (line in originalSVG) {
-        svgArray.add(line)
-    }
-
-    for (i in svgArray) {
-        var resultPath = patternPath.containsMatchIn(i)
-        var resultIdPath = patternIdPath.containsMatchIn(i)
-        var resultIdRect = patternIdRect.containsMatchIn(i)
-
-        if (!resultPath && !resultIdPath && !resultIdRect) {
-            out.write(i)
-            out.newLine()
-            continue
-        }
-        if (resultPath) {
-            var textArray = i.split("> ")
-            var str = textArray[1].split(" </")
-            var roomNum = str[0]
-            var roomNumRegex = Regex(numBuilding.toString())
-            var newFloor = roomNumRegex.replaceFirst(roomNum, floorNumber.toString())
-            var newTextTag = "${textArray.elementAt(0)}" + "> " + "$newFloor" + " </" + "${str.elementAt(1)}"
-            out.write(newTextTag)
-            out.newLine()
-            continue
-        }
-
-        if (resultIdRect || resultIdPath) {
-
-            var roomFloorRegex = Regex(numBuilding.toString())
-            var newIdTag = roomFloorRegex.replaceFirst(i, floorNumber.toString())
-            println(newIdTag)
-            out.write(newIdTag)
-            out.newLine()
-            continue
-        }
-    }
-    out.close()
-}

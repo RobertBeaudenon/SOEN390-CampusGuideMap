@@ -11,7 +11,7 @@ data class IndoorLocation(
         @ColumnInfo(name = "lID") val lID: String,
         @PrimaryKey
         @ColumnInfo(name = "location_name") override val name: String,
-        @ColumnInfo(name = "floor_num") val floorNum: Int,
+        @ColumnInfo(name = "floor_num") val floorNum: String,
         @ColumnInfo(name = "floor_map") val floorMap: String,
         @ColumnInfo(name = "location_type") val type: String,
         @ColumnInfo(name = "location_first") val latlat: Double,
