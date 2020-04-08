@@ -90,7 +90,7 @@ class DirectionsTest {
             .check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
 
         //Click close instructions button button
-        device.findObject(By.res("com.droidhats.campuscompass:id/buttonCloseInstructions"))
+        device.findObject(By.res("com.droidhats.campuscompass:id/buttonMinimizeInstructions"))
             .click()
 
         //Click Resume Navigation button
@@ -137,7 +137,7 @@ class DirectionsTest {
             .check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
 
         //Click close instructions button button
-        device.findObject(By.res("com.droidhats.campuscompass:id/buttonCloseInstructions"))
+        device.findObject(By.res("com.droidhats.campuscompass:id/buttonMinimizeInstructions"))
             .click()
 
         //Click Resume Navigation button
@@ -174,7 +174,7 @@ class DirectionsTest {
             .check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
 
         //Click close instructions button button
-        device.findObject(By.res("com.droidhats.campuscompass:id/buttonCloseInstructions"))
+        device.findObject(By.res("com.droidhats.campuscompass:id/buttonMinimizeInstructions"))
             .click()
 
         //Click Resume Navigation button
