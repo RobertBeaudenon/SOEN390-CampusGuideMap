@@ -528,7 +528,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             val bundle: Bundle = Bundle()
             bundle.putString("id", item.lID)
             val buildingInitial = item.name.split('-')[0]
-            bundle.putInt("floornum", item.floorNum)
+            bundle.putString("floornum", item.floorNum)
             bundle.putString("floormap", item.floorMap)
             val building = viewModel.findBuildingByInitial(buildingInitial)
             bundle.putParcelable("building", building)

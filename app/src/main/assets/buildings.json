@@ -88,7 +88,7 @@
 			"place_id": "ChIJ139JrWsayUwRbNrrU4yfp04",
 			"center_location": [45.495244, -73.578945],
             "location": [45.495496, -73.579162],
-            "floor_maps": ["mb1.svg"],
+            "floor_maps": [{"1":"mb1.svg"}],
             "initial": "mb",
             "coordinates": [
                 [45.495362, -73.579385],
