@@ -91,13 +91,13 @@ class ExplorePlaceRepository (private val application: Application)  {
         if (campus.equals("Loyola")) {
             return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                     "&location=" + "45.458488,-73.639862" +
-                    "&radius=" + "600" +
+                    "&radius=" + "1000" +
                     "&type=" + type +
                     "&key=" + application.applicationContext.getString(R.string.ApiKey)
         } else {
             return "https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                     "&location=" + "45.497406,-73.577102" +
-                    "&radius=" + "600" +
+                    "&radius=" + "1000" +
                     "&type=" + type +
                     "&key=" + application.applicationContext.getString(R.string.ApiKey)
         }
