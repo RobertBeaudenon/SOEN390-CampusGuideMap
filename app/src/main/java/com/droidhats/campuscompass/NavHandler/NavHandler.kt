@@ -10,7 +10,7 @@ abstract class NavHandler {
     abstract val location: Location
 
     companion object {
-        fun initializeChain(origin: Location, destination: Location, selectedTransportationMode: String): NavHandler {
+        fun initializeChain(origin: Location, destination: Location, selectedTransportationMode: String, wayPoints: String): NavHandler {
             val navigationHandler: NavHandler
             if (origin is IndoorLocation) {
                 navigationHandler = IndoorNavStep(origin)
@@ -19,21 +19,21 @@ abstract class NavHandler {
                         navigationHandler.setNext(IndoorNavStep(destination))
                     } else {
                         navigationHandler
-                            .setNext(OutdoorNavStep(origin, selectedTransportationMode))
-                            .setNext(OutdoorNavStep(destination, selectedTransportationMode))
+                            .setNext(OutdoorNavStep(origin, selectedTransportationMode, wayPoints))
+                            .setNext(OutdoorNavStep(destination, selectedTransportationMode, wayPoints))
                             .setNext(IndoorNavStep(destination))
                     }
                 } else {
                     navigationHandler
-                        .setNext(OutdoorNavStep(origin, selectedTransportationMode))
-                        .setNext(OutdoorNavStep(destination, selectedTransportationMode))
+                        .setNext(OutdoorNavStep(origin, selectedTransportationMode, wayPoints))
+                        .setNext(OutdoorNavStep(destination, selectedTransportationMode, wayPoints))
                 }
             } else {
-                navigationHandler = OutdoorNavStep(origin, selectedTransportationMode)
+                navigationHandler = OutdoorNavStep(origin, selectedTransportationMode, wayPoints)
                 if (destination is IndoorLocation) {
                     navigationHandler.setNext(IndoorNavStep(destination))
                 } else {
-                    navigationHandler.setNext(OutdoorNavStep(destination, selectedTransportationMode))
+                    navigationHandler.setNext(OutdoorNavStep(destination, selectedTransportationMode, wayPoints))
                 }
             }
             return navigationHandler
