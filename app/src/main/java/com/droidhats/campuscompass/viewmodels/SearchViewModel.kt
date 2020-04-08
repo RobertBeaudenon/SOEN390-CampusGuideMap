@@ -50,6 +50,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
     internal lateinit var mapRepository: MapRepository //Used to get Campus Coordinates
 
     private val context = getApplication<Application>().applicationContext
+    var isShuttleValid = false
 
     fun init(){
         initPlacesSearch()
@@ -161,7 +162,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
            NavigationRepository.LOY_TO_SGW_WAYPOINT
     }
 
-
     /**
      * Checks if the shuttle route is valid. Validity is determined by the location of the destination.
      * If the destination is too far from the exit shuttle stop, the path is invalid.
@@ -169,23 +169,20 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
      */
     private fun verifyShuttleAvailability(destination: Location, waypoints : String){
         val radius = 3
-        var isValid = false
         val sgwCampus = mapRepository.getCampuses()[0]
         val loyCampus = mapRepository.getCampuses()[1]
 
         if (waypoints == NavigationRepository.SGW_TO_LOY_WAYPOINT){
             val distanceFromLOY = haversine(destination,loyCampus )
             if (distanceFromLOY < radius)
-                isValid = true
+                isShuttleValid = true
         }
         else{
             val distanceFromSGW = haversine(destination, sgwCampus)
             if (distanceFromSGW < radius)
-                isValid = true
+                isShuttleValid = true
         }
-        SearchFragment.isShuttleAvailable = isValid
     }
-
 
     /**
      * Method used to find the distance between two world coordinates using the haversine formula

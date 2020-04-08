@@ -55,7 +55,6 @@ class SearchFragment : Fragment()  {
     companion object{
         var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
         var isNavigationViewOpen = false
-        var isShuttleAvailable = false
         // The Navigation Start and End points. Each search bar must contain a valid location to initiate navigation
         var NavigationPoints = mutableMapOf<Int, Location?>(R.id.mainSearchBar to null,
             R.id.secondarySearchBar to null)
@@ -345,9 +344,9 @@ class SearchFragment : Fragment()  {
         walkingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.WALKING.string]
         bicycleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.BICYCLE.string]
 
-        setShuttleAvailability(isShuttleAvailable)
+        setShuttleAvailability(viewModel.isShuttleValid)
         shuttleRadioButton.text =
-            if (isShuttleAvailable) routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
+            if (viewModel.isShuttleValid) routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
             else "-"
     }
 
@@ -439,7 +438,7 @@ class SearchFragment : Fragment()  {
     }
 
     private fun setShuttleAvailability(isAvailable : Boolean){
-        isShuttleAvailable = isAvailable
+        viewModel.isShuttleValid = isAvailable
         val shuttleRadioButton = root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle)
         val drivingRadioButton = root.findViewById<RadioButton>(R.id.radio_transport_mode_driving)
         if (!isAvailable && shuttleRadioButton.isChecked) drivingRadioButton.isChecked = true
