@@ -114,7 +114,6 @@ class ProcessMap {
             }
             iterator++
         }
-        onEachLine(stringArray[iterator])
         return iterator
     }
 
@@ -147,7 +146,7 @@ class ProcessMap {
         )
     }
 
-    fun automateSVG(svg: String, floorNumber: Int): String {
+    fun automateSVG(svg: String, floorNumber: String): String {
 
         var newFileStr = ""
 
@@ -171,8 +170,8 @@ class ProcessMap {
                 var textArray = i.split("> ")
                 var str = textArray[1].split(" </")
                 var roomNum = str[0]
-                var roomNumRegex = Regex(floorNumber.toString())
-                var newFloor = roomNumRegex.replaceFirst(roomNum, floorNumber.toString())
+                var roomNumRegex = Regex(floorNumber)
+                var newFloor = roomNumRegex.replaceFirst(roomNum, floorNumber)
                 var newTextTag = "${textArray.elementAt(0)}" + "> " + "$newFloor" + " </" + "${str.elementAt(1)}"
                 newFileStr += newTextTag + "\n"
             }

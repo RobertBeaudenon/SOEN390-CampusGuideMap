@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +25,6 @@ import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
-import java.io.FileInputStream
 import java.io.InputStream
 
 
@@ -42,45 +40,42 @@ class FloorFragment : Fragment() {
     ): View? {
         root = inflater.inflate(R.layout.floor_fragment, container, false)
 
-        var floor: String? = arguments?.getString("floornum")
+        var floorNum: String? = arguments?.getString("floornum")
+        var mapToDisplay: String = "hall8.svg" // default value
+        val building : Building? = arguments?.getParcelable("building")
+        var floormap : String? = arguments?.getString("floormap")
+        if (floorNum == null && building != null) {
+            floorNum = building.getIndoorInfo().second.keys.first()
+        }
+        if (floormap == null && building != null) {
+            floormap = building.getIndoorInfo().second[floorNum]
+        }
 
         viewModelMapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
-
-        var mapToDisplay: String = "hall8.svg" // default value
-       // var mapsDefault: List<String>? = viewModelMapViewModel.findBuildingByInitial("hall")?.getIndoorInfo()?.second
-        val building : Building? = arguments?.getParcelable("building")
-        val floormap : String? = arguments?.getString("floormap")
-        var maps : MutableList<String>? = mutableListOf()
-        for (ting in viewModelMapViewModel?.findBuildingByInitial("hall")?.getIndoorInfo()?.second!!.values) {
-            maps?.add(ting)
+        var maps : MutableList<String> = mutableListOf()
+        if (building != null) {
+            for (ting in building?.getIndoorInfo()?.second!!.values) {
+                maps.add(ting)
+            }
         }
 
-
-//        val indoorLocation = insertedClass
-//        map = automatesvg(context.assets.open(indoorLocation.floor_map), indoorLocation.floor_num)
-
-//        if(building?.getIndoorInfo()?.second != null){
-//            maps = building?.getIndoorInfo()?.second
-//        }
-        //maps = mapsDefault
-
-        if(floormap.isNullOrBlank()) {
-            if (maps != null) mapToDisplay = maps[0]
-        }
-        else {
+        if(!floormap.isNullOrBlank()) {
             mapToDisplay = floormap
         }
 
         var inputStream: InputStream = requireContext().assets.open(mapToDisplay)
+        val mapProcessor: ProcessMap = ProcessMap()
+        var file: String = inputStream.bufferedReader().use { it.readText() }
+        println("floornum: $floorNum")
+        file = mapProcessor.automateSVG(file, floorNum!!)
+
         val buildingToHighlight: String? = arguments?.getString("id")
 
         if (buildingToHighlight == null) {
-            val svg: SVG = SVG.getFromInputStream(inputStream)
+            val svg: SVG = SVG.getFromString(file)
             setImage(svg)
         } else {
-            val mapProcessor: ProcessMap = ProcessMap()
-            val file = inputStream.bufferedReader().use { it.readText() }
             val highlightedSVG = mapProcessor.highlightClassroom(file, buildingToHighlight)
             val svg: SVG = SVG.getFromString(highlightedSVG)
             setImage(svg)
@@ -91,7 +86,7 @@ class FloorFragment : Fragment() {
         buttonPlus.setOnClickListener(View.OnClickListener {
             val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
             if(indexOfCurrentMap != maps?.size?.minus(1) && indexOfCurrentMap !=null) {
-                if (maps != null) if (indexOfCurrentMap != null) {
+                if (maps != null && indexOfCurrentMap != null) {
                     mapToDisplay = maps[indexOfCurrentMap.plus(1)]
                 }
                 inputStream = requireContext().assets.open(mapToDisplay)
@@ -104,7 +99,7 @@ class FloorFragment : Fragment() {
         buttonMinus.setOnClickListener(View.OnClickListener {
             val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
             if(indexOfCurrentMap != 0 && indexOfCurrentMap !=null) {
-                if (maps != null) if (indexOfCurrentMap != null) {
+                if (maps != null && indexOfCurrentMap != null) {
                     mapToDisplay = maps[indexOfCurrentMap.minus(1)]
                 }
                 inputStream = requireContext().assets.open(mapToDisplay)
@@ -143,7 +138,8 @@ class FloorFragment : Fragment() {
             val inputStream: InputStream = requireContext().assets.open(startAndEnd.first.floorMap)
             val file: String = inputStream.bufferedReader().use { it.readText() }
             val mapProcessor: ProcessMap = ProcessMap()
-            mapProcessor.readSVGFromString(file)
+            val newFile = mapProcessor.automateSVG(file, startAndEnd.first.floorNum)
+            mapProcessor.readSVGFromString(newFile)
             val svg: SVG = SVG.getFromString(mapProcessor
                 .getSVGStringFromDirections(Pair(startAndEnd.first.lID, startAndEnd.second.lID)))
             setImage(svg)
