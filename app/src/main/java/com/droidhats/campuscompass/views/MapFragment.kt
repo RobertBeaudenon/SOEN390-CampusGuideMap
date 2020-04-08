@@ -29,7 +29,11 @@ import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.*
+import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
