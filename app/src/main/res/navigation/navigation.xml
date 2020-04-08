@@ -68,4 +68,9 @@
             app:destination="@id/search_fragment"
             app:enterAnim="@android:anim/fade_in" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_shuttle"
+        android:name="com.droidhats.campuscompass.views.ShuttleFragment"
+        tools:layout="@layout/shuttle_fragment" >
+    </fragment>
 </navigation>

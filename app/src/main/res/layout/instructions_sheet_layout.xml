@@ -69,18 +69,6 @@
                 android:src="@drawable/arrow_button"
                 android:tint="@color/colorPrimaryDark" />
 
-            <Button
-                android:id="@+id/closeButton"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:adjustViewBounds="true"
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:text="@string/done"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:visibility="invisible" />
-
         </RelativeLayout>
 
     </RelativeLayout>
