@@ -26,23 +26,33 @@
             android:src="@drawable/ic_close_black_24dp"
             android:text="@string/x_button" />
 
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/buttonCloseInstructions"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/arrayInstruction"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/nextArrow"
+                android:layout_centerHorizontal="true"
                 android:layout_toStartOf="@+id/nextArrow"
                 android:layout_toEndOf="@+id/prevArrow"
-                android:gravity="center"
-                android:text=""
-                android:textAppearance="?attr/textAppearanceListItem"
-                android:textSize="15sp" />
+                android:fadeScrollbars="false"
+                android:scrollbars="vertical">
+
+                <TextView
+                    android:id="@+id/arrayInstruction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=""
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    android:textSize="15sp" />
+
+            </androidx.core.widget.NestedScrollView>
 
             <ImageView
                 android:id="@+id/prevArrow"
@@ -54,9 +64,9 @@
                 android:maxWidth="60dp"
                 android:maxHeight="60dp"
                 android:rotation="180"
-                android:visibility="invisible"
                 android:src="@drawable/arrow_button"
-                android:tint="@color/colorPrimaryDark" />
+                android:tint="@color/colorPrimaryDark"
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/nextArrow"
