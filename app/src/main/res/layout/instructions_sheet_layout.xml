@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/instructionLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,16 +23,19 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
-            android:paddingLeft="25dp"
             android:backgroundTint="@color/white"
+            android:contentDescription="@string/contentDescription_CloseButton"
+            android:paddingStart="25dp"
             android:src="@drawable/ic_close_black_24dp"
-            android:text="@string/x_button" />
+            android:text="@string/x_button"
+            tools:ignore="RtlSymmetry" />
 
         <ImageButton
             android:id="@+id/buttonMinimizeInstructions"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:backgroundTint="@color/white"
+            android:contentDescription="@string/contentDescription_MinimizeButton"
             android:src="@drawable/ic_minimize_black"
             android:text="@string/minimize_button" />
 
@@ -53,11 +57,10 @@
 
                 <TextView
                     android:id="@+id/arrayInstruction"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="center"
                     android:text=""
-                    android:textAppearance="?attr/textAppearanceListItem"
                     android:textSize="15sp" />
 
             </androidx.core.widget.NestedScrollView>
@@ -89,6 +92,5 @@
                 android:tint="@color/colorPrimaryDark" />
 
         </RelativeLayout>
-
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
