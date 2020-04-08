@@ -3,7 +3,6 @@ package com.droidhats.campuscompass.views
 import android.app.Activity
 import android.content.ContentValues
 import android.graphics.Color
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +17,7 @@ import android.widget.RadioGroup
 import android.widget.RadioButton
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,7 +35,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.search_fragment.*
+import kotlinx.android.synthetic.main.search_fragment.secondarySearchBar
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -50,6 +50,7 @@ class SearchFragment : Fragment()  {
     private lateinit var root: View
     private var columnCount = 1
     private lateinit var selectedTransportationMethod : String
+
     
     companion object{
         var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
@@ -73,7 +74,7 @@ class SearchFragment : Fragment()  {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
         viewModel.init()
         initSearch()
         observeSearchSuggestions()
@@ -83,7 +84,7 @@ class SearchFragment : Fragment()  {
         val backButton  = root.findViewById<ImageButton>(R.id.backFromNavigationButton)
         backButton.setOnClickListener{
             isNavigationViewOpen = false
-            requireFragmentManager().beginTransaction().detach(this).attach(this).commit()
+            parentFragmentManager.beginTransaction().detach(this).attach(this).commit()
         }
         retrieveArguments()
     }
@@ -164,6 +165,10 @@ class SearchFragment : Fragment()  {
         val destination = NavigationPoints[R.id.secondarySearchBar]
 		secondarySearchBar.clearFocus()
 
+        var waypoints = ""
+        if (selectedTransportationMethod == NavigationRoute.TransportationMethods.SHUTTLE.string)
+            waypoints = viewModel.closestShuttleStop(NavigationPoints[R.id.mainSearchBar]!!)
+
         //Make sure BOTH coordinates are set before generating directions
         if(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0)){
             val handler = CoroutineExceptionHandler{_, throwable ->
@@ -173,9 +178,10 @@ class SearchFragment : Fragment()  {
                 viewModel.navigationRepository.fetchPlace(origin!!)
                 viewModel.navigationRepository.fetchPlace(destination!!)
 
-                viewModel.navigationRepository.generateDirections(origin,
+                viewModel.navigationRepository.fetchDirections(origin,
                     destination,
-                    selectedTransportationMethod)
+                    selectedTransportationMethod,
+                    waypoints)
             }
         } else {
             //check if both origin and destination are indoor
@@ -192,9 +198,10 @@ class SearchFragment : Fragment()  {
                     "By: $selectedTransportationMethod",
                 Toast.LENGTH_LONG).show()
 
-            viewModel.navigationRepository.generateDirections(origin!!,
+            viewModel.navigationRepository.fetchDirections(origin!!,
                 destination!!,
-                selectedTransportationMethod)
+                selectedTransportationMethod,
+                waypoints)
 
             isNavigationViewOpen = false
         }
@@ -233,8 +240,7 @@ class SearchFragment : Fragment()  {
                 if (areRouteParametersSet()) {
                     viewModel.getRouteTimes(
                         NavigationPoints[R.id.mainSearchBar]!!,
-                        NavigationPoints[R.id.secondarySearchBar]!!
-                    )
+                        NavigationPoints[R.id.secondarySearchBar]!!)
                     toggleNavigationButtonColor(Color.GREEN)
                 }
             }
@@ -288,8 +294,12 @@ class SearchFragment : Fragment()  {
             queryText.setTextColor(Color.BLACK)
     }
 
+    /**
+     * Resets the route time for all transportation method.
+     */
     private fun resetRouteTimes(){
         if (isNavigationViewOpen) {
+            setShuttleAvailability(false)
             val defaultTextView = mutableMapOf<String, String>()
             for (i in NavigationRoute.TransportationMethods.values())
                 defaultTextView[i.string] = "-"
@@ -300,7 +310,7 @@ class SearchFragment : Fragment()  {
     private fun initTransportationRadioGroup(){
         selectedTransportationMethod = NavigationRoute.TransportationMethods.DRIVING.string
         val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
-        radioTransportationGroup.setOnCheckedChangeListener{ radioGroup: RadioGroup?, id: Int ->
+        radioTransportationGroup.setOnCheckedChangeListener{ radioGroup: RadioGroup?, _: Int ->
 
             when (radioGroup?.checkedRadioButtonId) {
                 R.id.radio_transport_mode_driving -> {
@@ -315,6 +325,9 @@ class SearchFragment : Fragment()  {
                 R.id.radio_transport_mode_bicycle -> {
                     selectedTransportationMethod = NavigationRoute.TransportationMethods.BICYCLE.string
                 }
+                R.id.radio_transport_mode_shuttle -> {
+                    selectedTransportationMethod = NavigationRoute.TransportationMethods.SHUTTLE.string
+                }
             }
         }
     }
@@ -324,11 +337,17 @@ class SearchFragment : Fragment()  {
         val transitRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_transit)
         val walkingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_walking)
         val bicycleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle)
+        val shuttleRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle)
 
         drivingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.DRIVING.string]
         transitRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.TRANSIT.string]
         walkingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.WALKING.string]
         bicycleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.BICYCLE.string]
+
+        setShuttleAvailability(viewModel.isShuttleValid)
+        shuttleRadioButton.text =
+            if (viewModel.isShuttleValid) routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
+            else "-"
     }
 
     override fun onDetach() {
@@ -352,7 +371,7 @@ class SearchFragment : Fragment()  {
         val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
         val infoMessage = root.findViewById<TextView>(R.id.search_info)
         val searchPlate = mainBar.findViewById<View>(R.id.search_plate)
-        searchPlate.setBackgroundResource(R.color.colorPrimaryDark);
+        searchPlate.setBackgroundResource(R.color.colorPrimaryDark)
 
         mainBar.maxWidth = root.resources.getDimension(R.dimen.search_bar_max_width).toInt()
         destinationBar.visibility = View.VISIBLE
@@ -404,17 +423,27 @@ class SearchFragment : Fragment()  {
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.INVISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.INVISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.INVISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.INVISIBLE
             } else {
                 viewModel.getRouteTimes(
                         NavigationPoints[mainBar.id]!!,
-                        NavigationPoints[destinationBar.id]!!
-                )
+                        NavigationPoints[destinationBar.id]!!)
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.VISIBLE
+                root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.VISIBLE
             }
-            toggleNavigationButtonColor(Color.GREEN)
+                toggleNavigationButtonColor(Color.GREEN)
         }
+    }
+
+    private fun setShuttleAvailability(isAvailable : Boolean){
+        viewModel.isShuttleValid = isAvailable
+        val shuttleRadioButton = root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle)
+        val drivingRadioButton = root.findViewById<RadioButton>(R.id.radio_transport_mode_driving)
+        if (!isAvailable && shuttleRadioButton.isChecked) drivingRadioButton.isChecked = true
+        shuttleRadioButton.isClickable = isAvailable
+        shuttleRadioButton.isEnabled = isAvailable
     }
 
     private fun toggleNavigationButtonColor(color : Int){
