@@ -18,33 +18,39 @@ class FavoritesRepository {
                 }
     }
 
-    // save place
-    fun savePlace(placeToSave : FavoritePlace) {
+    fun removePlace(placeID: String) {
+        repository.remove(placeID)
+    }
+
+    fun savePlace(location: GooglePlace) {
+        repository[location.placeID] = createFavoritePlace(location)
+    }
+
+    fun findPlaceById(placeID: String) : FavoritePlace? {
+        if (repository.containsKey(placeID)) {
+            return repository[placeID]
+        } else {
+            return null
+        }
+    }
+
+    fun listAllPlaces() : List<FavoritePlace> = repository.values.toList()
+
+    fun storeToDevice() {
 
     }
 
-
-    // delete place
-    fun removePlace(placeToRemove: FavoritePlace) {
+    fun loadFromDevice() {
 
     }
 
-    // find place
-    fun findPlace(placeId: String) {
+    fun createFavoritePlace(googlePlace: GooglePlace) : FavoritePlace {
+        val name : String = googlePlace.name
+        val latitude : Double = googlePlace.coordinate.latitude
+        val longitude : Double =  googlePlace.coordinate.longitude
+        val address : String? = googlePlace.place?.address
+        val placeId : String = googlePlace.placeID
 
+        return FavoritePlace(placeId, name, latitude, longitude, address)
     }
-
-    fun removeById(placeID: String) {
-
-    }
-
-    fun save(location: GooglePlace) {
-
-    }
-
-    fun findById(placeID: String) {
-
-    }
-    // find all places
-
 }

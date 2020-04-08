@@ -1,10 +1,14 @@
 package com.droidhats.campuscompass.models
 
-class FavoritePlace(
-    var name : String?,
-    var latitude : Double?,
-    var longitude: Double?,
-    var address : String?,
-    var placeId : String?
-) {
-}
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
+data class FavoritePlace(
+    @PrimaryKey val placeId : String,
+    @ColumnInfo(name = "name") val name : String?,
+    @ColumnInfo(name = "latitude") val latitude : Double?,
+    @ColumnInfo(name = "longitude") val longitude: Double?,
+    @ColumnInfo(name = "address") val address : String?
+)

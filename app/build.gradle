@@ -129,6 +129,9 @@ dependencies {
     implementation 'com.otaliastudios:zoomlayout:1.7.1'
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "org.robolectric:robolectric:4.3.1"
+    implementation "androidx.room:room-runtime:2.2.5"
+    implementation "androidx.room:room-ktx:2.2.5"
+
 }
 
 sonarqube {
