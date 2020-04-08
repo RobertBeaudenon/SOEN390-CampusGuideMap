@@ -22,10 +22,18 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
+            android:paddingLeft="25dp"
             android:backgroundTint="@color/white"
             android:src="@drawable/ic_close_black_24dp"
             android:text="@string/x_button" />
 
+        <ImageButton
+            android:id="@+id/buttonMinimizeInstructions"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_minimize_black"
+            android:text="@string/minimize_button" />
 
         <RelativeLayout
             android:layout_width="match_parent"

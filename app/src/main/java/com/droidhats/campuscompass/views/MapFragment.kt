@@ -216,7 +216,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun setNavigationButtons() {
-        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
+        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonMinimizeInstructions)
         buttonCloseInstructions.setOnClickListener{
             toggleInstructionsView(false)
         }

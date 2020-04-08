@@ -35,6 +35,7 @@
      <string name="select_calendars">select calendars</string>
      <string name="navigate">Navigate</string>
      <string name="x_button">X</string>
+     <string name="minimize_button">Minimize</string>
      <string name="instructions">Instructions</string>
      <string name="place_name">Place Name</string>
      <string name="secondaryinfo">SecondaryInfo</string>
