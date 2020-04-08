@@ -12,7 +12,8 @@ class OutdoorNavigationRoute(
     override var destination: Location?,
     var transportationMode: String?,
     var polyLinePath: MutableList<List<LatLng>>,
-    var instructions: ArrayList<String>
+    var instructions: ArrayList<String>,
+    var instructionsCoordinates: ArrayList<LatLng>
 ) : NavigationRoute(origin, destination) {
     var routeTime: String? = null
     enum class TransportationMethods(val string: String) {

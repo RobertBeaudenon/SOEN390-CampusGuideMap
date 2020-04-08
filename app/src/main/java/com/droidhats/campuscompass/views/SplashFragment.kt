@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
@@ -36,7 +36,7 @@ class SplashFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        splashViewModel = ViewModelProviders.of(this).get(SplashViewModel::class.java)
+        splashViewModel = ViewModelProvider(this).get(SplashViewModel::class.java)
         splashViewModel.init()
 
         //this structure will change based on refactoring our app
