@@ -1,14 +1,10 @@
 package com.droidhats.mapprocessor
 
-import kotlinx.coroutines.*
-import java.sql.Date
-import java.sql.Time
-import java.time.LocalDateTime
 import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
-import java.io.File
+
 
 /**
  * Class ProcessMap is where all the parsing of the svg formatted map, and interacts with the other
@@ -333,17 +329,19 @@ class ProcessMap {
         var endInt: Int? = null
         var x = 0
         for (aClass in allElements) {
+            // todo: I have no idea what this section of code does (up to 4 lines below)
             var start = startAndEnd.first
             if (start[start.length - 1] == '0' && start[start.length - 2] == '.') {
                 start = start.substring(0, start.length - 1)
             }
+
             if (aClass.getID().equals(startAndEnd.first)) {
                 startInt = x
             }
-
             if(aClass.getID().equals(startAndEnd.second)) {
                 endInt = x
             }
+
             x++
         }
         return Pair(startInt, endInt)
@@ -363,7 +361,7 @@ class ProcessMap {
         if (startInt == null || endInt == null) {
             return ""
         }
-        val list: MutableList<Circle> = generatePointsAcrossMap()
+        val list: MutableList<Circle> = generatePoints()
 
         val string: StringBuilder = StringBuilder()
         stringArray.forEach {
@@ -371,7 +369,6 @@ class ProcessMap {
             if (it.contains("<!-- Displaying icons on the map -->")) {
                 string.append(Dijkstra(allElements[startInt], allElements[endInt], createPaths(list)) + "\n")
             }
-
             string.append(it + "\n")
         }
         return string.toString()
@@ -396,6 +393,130 @@ class ProcessMap {
         return pathPoints
     }
 
+    fun generatePoints(): MutableList<Circle> {
+
+        var pathPoints: MutableList<Circle> = mutableListOf()
+
+        // average distance is used for scaling the distance between points in the next step
+        var averageDistance: Double = 0.0
+        var totalPoints: Int = 0
+        findNearestPointToClasses() { closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>> ->
+            pathPoints.add(Circle((closestPoint.first.first + closestPoint.second.first)/2,
+                (closestPoint.first.second + closestPoint.second.second)/2, 5.0))
+            averageDistance += getDistance(closestPoint.first, closestPoint.second)
+            totalPoints++
+        }
+        averageDistance /= totalPoints
+
+        // scatter points in missing spots, using average distance as a scale for step size
+        for (i in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step (averageDistance/2).toInt()) {
+            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step (averageDistance/2).toInt()) {
+                if (inPath(i.toDouble(), y.toDouble()) && notInRange(pathPoints, i.toDouble(), y.toDouble(), averageDistance)) {
+                    pathPoints.add(Circle(i.toDouble(), y.toDouble(), 5.0))
+                }
+            }
+        }
+
+        var x: Int = 0
+        var y: Int = 0
+        var pathPointsSize: Int = pathPoints.size
+
+        // clean up points that are too close and too many together
+        while (x < pathPointsSize) {
+            var circle1: Circle = pathPoints[x]
+            y = 0
+            while (y < pathPointsSize) {
+                var circle: Circle = pathPoints[y]
+                if (circle1.isWithinRange(circle.cx, circle.cy, 20.0) && circle1.cx != circle.cx && circle.cy != circle1.cy) {
+                    if (x > y) x = y
+                    pathPoints.removeAt(y)
+                    pathPointsSize--
+                }
+                y++
+            }
+            x++
+        }
+
+        return pathPoints
+    }
+
+    fun notInRange(pathPoints: MutableList<Circle>, x: Double, y: Double, averageDistance: Double):Boolean {
+        for (circle in pathPoints) {
+            if (circle.isWithin(x, y, averageDistance)) return false
+        }
+        return true
+    }
+
+    fun findNearestPointToClasses(doForClosestPoint: (Pair<Pair<Double, Double>, Pair<Double, Double>>) -> Unit) {
+
+        val stepSize: Double = 2.0
+        classes.forEach{ it ->
+            val center = it.getCenter()
+            var closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
+
+            // draw a line in 8 directions (top, left, up, down, top-left, top-right, bottom-left, bottom-right)
+            // and get the nearest point and furthest point of the path, if it traverses the path
+            var nearestPoints: MutableList<Pair<Pair<Double, Double>, Pair<Double, Double>>?> = mutableListOf()
+            nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, true, false))
+            nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, true, true))
+            nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, false, true))
+            nearestPoints.add(getNearestPathPoint(center, stepSize, -stepSize, true, true))
+            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize, true, false))
+            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize,true, true))
+            nearestPoints.add(getNearestPathPoint(center, -stepSize, stepSize,true, true))
+            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize,false, true))
+
+            // find the closests point our of all the nearest points
+            for (point in nearestPoints) {
+                if (point != null) {
+                    doForClosestPoint(point)
+                }
+            }
+
+            // if a closest point was found do stuff
+            if(closestPoint != null) {
+                doForClosestPoint(closestPoint)
+            }
+        }
+    }
+
+    fun getNearestPathPoint(center: Pair<Double, Double>,
+                            stepSizeX: Double,
+                            stepSizeY: Double,
+                            applyX: Boolean,
+                            applyY: Boolean
+    ): Pair<Pair<Double, Double>, Pair<Double, Double>>? {
+        var navPointX = center.first
+        var navPointY = center.second
+        var closestPoint: Pair<Double, Double>? = null
+        var points: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
+        var pathFound: Boolean = false
+
+        while(isWithinBounds(navPointX, navPointY)) {
+            //take step in direction
+            if (applyX) navPointX += stepSizeX
+            if (applyY) navPointY += stepSizeY
+
+            // if it's in the path return the point as it is the first
+            if (inPath(navPointX, navPointY) && !pathFound) {
+                closestPoint = Pair(navPointX, navPointY)
+                pathFound = true
+                continue
+            }
+
+            if (!inPath(navPointX, navPointY) && pathFound) {
+                if (applyX) navPointX -= stepSizeX
+                if (applyY) navPointY -= stepSizeY
+                points = Pair(closestPoint!!, Pair(navPointX, navPointY))
+                break
+            }
+        }
+
+        if (closestPoint == null || isWithinBounds(closestPoint.first, closestPoint.second))
+            return points
+        return null
+    }
+
     /**
      * This method takes as input the points in a path and creates paths between them in a Node data structure.
      * It creates these paths in between nodes first by checking to make sure that this path won't go through any
@@ -409,14 +530,15 @@ class ProcessMap {
         val num: Int = pathPoints.size/8
         val threads: MutableList<Thread> = mutableListOf()
 
-        for (point in pathPoints) {
+        for(point in pathPoints) {
             nodeList.add(Node(point, mutableListOf()))
         }
 
         for (i in 0..7) {
+            println(i)
             threads.add(
-                thread(start = true) {
-                    connectNeighbours(nodeList.subList(i * num, (i + 1) * num), nodeList)
+                thread(start = true){
+                    connectNeighbours(nodeList.subList(i*num, (i+1)*num), nodeList)
                 }
             )
         }
@@ -458,6 +580,7 @@ class ProcessMap {
      * @return returns whether the path is good (true, doesn't cross anything) or not
      */
     internal fun checkPath(pointA: Circle, pointB: Circle): Boolean {
+        if (getDistance(pointA.getCenter(), pointB.getCenter()) > 110.0) return false
         // making line equation y = mx + b
         val m: Double = (pointA.cy - pointB.cy)/(pointA.cx - pointB.cx)
         val b: Double = pointA.cy - (m*pointA.cx)
@@ -465,7 +588,7 @@ class ProcessMap {
         if (abs(pointA.cx - pointB.cx) > abs (pointA.cy - pointB.cy)) {
 
             val x: Double = if (pointA.cx < pointB.cx) pointA.cx else pointB.cx
-            for (step in 10 until abs(pointB.cx - pointA.cx).toInt() step 10) {
+            for (step in 10 until abs(pointB.cx - pointA.cx).toInt() step 15) {
                 val newX: Double = x + step
                 if (!inPath(newX, (m*newX) + b)) {
                     return false
@@ -527,4 +650,3 @@ class ProcessMap {
 internal fun getDistance(x: Pair<Double, Double>, y: Pair<Double, Double>): Double {
     return sqrt(abs(x.first - y.first).pow(2.0) + abs(x.second - y.second).pow(2.0))
 }
-

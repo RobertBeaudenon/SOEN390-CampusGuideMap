@@ -3,6 +3,10 @@ package com.droidhats.mapprocessor
 import java.lang.Double.max
 import java.lang.Double.min
 import java.util.Random
+import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 /**
  * Abstract class for holding any element in the svg map
@@ -93,13 +97,14 @@ class Path(val id: String, val d: String, var transform: String, var style: Stri
     private lateinit var theCenter: Pair<Double, Double>
 
     init {
-        if (d.isNotEmpty() && d[0] == 'm' && isClosed) {
+        if (d.isNotEmpty() && isClosed) {
             // Parsing path
             val anArray = d.substring(2, d.length - 2).split(" ")
             var prevVertex = Pair<Double, Double>(0.0, 0.0)
             var c = 0 // if there is a c variable, this will count the number of skips
-
             var diffMode = true
+            if (d[0] == 'M') diffMode = false
+
             for (it in anArray) {
                 // the intention of this block of code is to handle the cubic bezier
                 // We handle it by completely ignoring it and cutting a rectangle through the
@@ -302,6 +307,17 @@ class Circle(val cx: Double, val cy: Double, val r: Double) : MapElement() {
 
     override fun getCenter(): Pair<Double, Double> {
         return Pair<Double, Double>(cx, cy)
+    }
+
+    fun isWithin(x: Double, y: Double, range: Double): Boolean {
+        //val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
+
+        return (cx.roundToInt() == x.roundToInt() && abs(y - cy) < range) || (cy.roundToInt() == y.roundToInt() && abs(cx - x) < range)//distance < range
+    }
+    fun isWithinRange(x: Double, y: Double, range: Double): Boolean {
+        val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
+
+        return distance < range
     }
 
     /**

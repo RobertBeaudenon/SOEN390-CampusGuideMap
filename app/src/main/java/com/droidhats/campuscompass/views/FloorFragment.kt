@@ -26,6 +26,7 @@ import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
+import java.io.FileInputStream
 import java.io.InputStream
 
 
