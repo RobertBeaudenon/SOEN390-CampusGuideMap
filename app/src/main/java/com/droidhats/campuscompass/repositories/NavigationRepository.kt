@@ -127,7 +127,7 @@ class NavigationRepository(private val application: Application) {
                         val legsArray: JSONArray = routes.getJSONArray("legs")
                         val legs: JSONObject = legsArray.getJSONObject(0)
 
-                        if (method.string == NavigationRoute.TransportationMethods.SHUTTLE.string) {
+                        if (method.string == NavigationRoute.TransportationMethods.SHUTTLE.string && legsArray.length() > 1) {
                             val totalDurationInSec = legs.getJSONObject("duration").getString("value").toInt() +
                             legsArray.getJSONObject(1).getJSONObject("duration").getString("value").toInt() +
                             legsArray.getJSONObject(2).getJSONObject("duration").getString("value").toInt()

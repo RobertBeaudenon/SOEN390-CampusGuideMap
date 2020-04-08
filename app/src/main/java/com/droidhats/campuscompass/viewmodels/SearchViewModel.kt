@@ -18,7 +18,6 @@ import com.droidhats.campuscompass.repositories.IndoorNavigationRepository
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.droidhats.campuscompass.roomdb.IndoorLocationDatabase
-import com.droidhats.campuscompass.views.SearchFragment
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -135,7 +134,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
                navigationRepository.fetchPlace(destination)
 
            val closestShuttle = closestShuttleStop(origin)
-          verifyShuttleAvailability(SearchFragment.NavigationPoints[R.id.secondarySearchBar]!!, closestShuttle)
+          verifyShuttleAvailability(origin, destination, closestShuttle)
                navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
            if (destination is Building)
                navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
@@ -167,20 +166,26 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
      * If the destination is too far from the exit shuttle stop, the path is invalid.
      * The out-of-range radius is set at 3km.
      */
-    private fun verifyShuttleAvailability(destination: Location, waypoints : String){
+    private fun verifyShuttleAvailability(origin : Location, destination: Location, waypoints : String){
         val radius = 3
         val sgwCampus = mapRepository.getCampuses()[0]
         val loyCampus = mapRepository.getCampuses()[1]
+        val destDistToLOY = haversine(destination,loyCampus)
+        val destDistToSGW = haversine(destination, sgwCampus)
+        val origDistToLOY = haversine(origin,loyCampus)
+        val origDistToSGW = haversine(origin, sgwCampus)
 
         if (waypoints == NavigationRepository.SGW_TO_LOY_WAYPOINT){
-            val distanceFromLOY = haversine(destination,loyCampus )
-            if (distanceFromLOY < radius)
-                isShuttleValid = true
+            if (destDistToLOY < radius) isShuttleValid = true
+            // Extra check to verify that the starting location is not too far from the closest Shuttle Bus Stop.
+            // Technically can be verified in the closestShuttleStop() method
+            // but it is included here in this manner to be able to easily disable if ever required
+            if (origDistToSGW > radius) isShuttleValid = false
         }
         else{
-            val distanceFromSGW = haversine(destination, sgwCampus)
-            if (distanceFromSGW < radius)
-                isShuttleValid = true
+            if (destDistToSGW < radius) isShuttleValid = true
+            //Same check here for LOY
+            if (origDistToLOY > radius) isShuttleValid = false
         }
     }
 
