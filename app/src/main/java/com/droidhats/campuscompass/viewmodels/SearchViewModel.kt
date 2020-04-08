@@ -18,6 +18,7 @@ import com.droidhats.campuscompass.repositories.IndoorNavigationRepository
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.droidhats.campuscompass.roomdb.IndoorLocationDatabase
+import com.droidhats.campuscompass.views.SearchFragment
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -133,8 +134,8 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
                navigationRepository.fetchPlace(destination)
 
            val closestShuttle = closestShuttleStop(origin)
+          verifyShuttleAvailability(SearchFragment.NavigationPoints[R.id.secondarySearchBar]!!, closestShuttle)
                navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
-
            if (destination is Building)
                navigationRepository.fetchRouteTimes(origin, destination, closestShuttle)
         }
@@ -148,7 +149,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
      * Method to find the closest Concordia shuttle bus stop from a given coordinate
      */
     fun closestShuttleStop(origin: Location) : String{
-
         val sgw =  mapRepository.getCampuses()[0]
         val loy =  mapRepository.getCampuses()[1]
 
@@ -163,10 +163,35 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
 
     /**
-     * Method used to find the distance between two world coordinates using the haversine formula
+     * Checks if the shuttle route is valid. Validity is determined by the location of the destination.
+     * If the destination is too far from the exit shuttle stop, the path is invalid.
+     * The out-of-range radius is set at 3km.
      */
-    fun haversine(location1 : Location, location2 : Location) : Double{
+    private fun verifyShuttleAvailability(destination: Location, waypoints : String){
+        val radius = 3
+        var isValid = false
+        val sgwCampus = mapRepository.getCampuses()[0]
+        val loyCampus = mapRepository.getCampuses()[1]
 
+        if (waypoints == NavigationRepository.SGW_TO_LOY_WAYPOINT){
+            val distanceFromLOY = haversine(destination,loyCampus )
+            if (distanceFromLOY < radius)
+                isValid = true
+        }
+        else{
+            val distanceFromSGW = haversine(destination, sgwCampus)
+            if (distanceFromSGW < radius)
+                isValid = true
+        }
+        SearchFragment.isShuttleAvailable = isValid
+    }
+
+
+    /**
+     * Method used to find the distance between two world coordinates using the haversine formula
+     * The distance returned is in km
+     */
+    private fun haversine(location1 : Location, location2 : Location) : Double{
         val diffLat = Math.toRadians(location2.getLocation().latitude - location1.getLocation().latitude)
         val diffLong = Math.toRadians(location2.getLocation().longitude- location1.getLocation().longitude)
 

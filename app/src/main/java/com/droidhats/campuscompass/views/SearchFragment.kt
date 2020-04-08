@@ -50,10 +50,12 @@ class SearchFragment : Fragment()  {
     private lateinit var root: View
     private var columnCount = 1
     private lateinit var selectedTransportationMethod : String
+
     
     companion object{
         var onSearchResultClickListener: SearchAdapter.OnSearchResultClickListener? = null
         var isNavigationViewOpen = false
+        var isShuttleAvailable = false
         // The Navigation Start and End points. Each search bar must contain a valid location to initiate navigation
         var NavigationPoints = mutableMapOf<Int, Location?>(R.id.mainSearchBar to null,
             R.id.secondarySearchBar to null)
@@ -166,7 +168,7 @@ class SearchFragment : Fragment()  {
 
         var waypoints = ""
         if (selectedTransportationMethod == NavigationRoute.TransportationMethods.SHUTTLE.string)
-           waypoints = viewModel.closestShuttleStop(NavigationPoints[R.id.mainSearchBar]!!)
+            waypoints = viewModel.closestShuttleStop(NavigationPoints[R.id.mainSearchBar]!!)
 
         //Make sure BOTH coordinates are set before generating directions
         if(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0)){
@@ -239,8 +241,7 @@ class SearchFragment : Fragment()  {
                 if (areRouteParametersSet()) {
                     viewModel.getRouteTimes(
                         NavigationPoints[R.id.mainSearchBar]!!,
-                        NavigationPoints[R.id.secondarySearchBar]!!
-                    )
+                        NavigationPoints[R.id.secondarySearchBar]!!)
                     toggleNavigationButtonColor(Color.GREEN)
                 }
             }
@@ -294,8 +295,12 @@ class SearchFragment : Fragment()  {
             queryText.setTextColor(Color.BLACK)
     }
 
+    /**
+     * Resets the route time for all transportation method.
+     */
     private fun resetRouteTimes(){
         if (isNavigationViewOpen) {
+            setShuttleAvailability(false)
             val defaultTextView = mutableMapOf<String, String>()
             for (i in NavigationRoute.TransportationMethods.values())
                 defaultTextView[i.string] = "-"
@@ -339,7 +344,11 @@ class SearchFragment : Fragment()  {
         transitRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.TRANSIT.string]
         walkingRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.WALKING.string]
         bicycleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.BICYCLE.string]
-        shuttleRadioButton.text =  routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
+
+        setShuttleAvailability(isShuttleAvailable)
+        shuttleRadioButton.text =
+            if (isShuttleAvailable) routeTimes[NavigationRoute.TransportationMethods.SHUTTLE.string]
+            else "-"
     }
 
     override fun onDetach() {
@@ -419,15 +428,23 @@ class SearchFragment : Fragment()  {
             } else {
                 viewModel.getRouteTimes(
                         NavigationPoints[mainBar.id]!!,
-                        NavigationPoints[destinationBar.id]!!
-                )
+                        NavigationPoints[destinationBar.id]!!)
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_driving).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_transit).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.VISIBLE
             }
-            toggleNavigationButtonColor(Color.GREEN)
+                toggleNavigationButtonColor(Color.GREEN)
         }
+    }
+
+    private fun setShuttleAvailability(isAvailable : Boolean){
+        isShuttleAvailable = isAvailable
+        val shuttleRadioButton = root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle)
+        val drivingRadioButton = root.findViewById<RadioButton>(R.id.radio_transport_mode_driving)
+        if (!isAvailable && shuttleRadioButton.isChecked) drivingRadioButton.isChecked = true
+        shuttleRadioButton.isClickable = isAvailable
+        shuttleRadioButton.isEnabled = isAvailable
     }
 
     private fun toggleNavigationButtonColor(color : Int){
