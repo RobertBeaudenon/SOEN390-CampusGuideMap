@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
-import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -33,7 +32,6 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
 import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.CalendarEvent
@@ -241,10 +239,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         buttonMinimizeInstructions.setOnClickListener{
             toggleInstructionsView(false)
         }
+
         val buttonResumeNavigation : Button = requireActivity().findViewById(R.id.buttonResumeNavigation)
         buttonResumeNavigation.setOnClickListener{
             dismissBottomSheet()
             toggleInstructionsView(true)
+        }
+
+        // The close button in the instruction sheet
+        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
+        buttonCloseInstructions.setOnClickListener{
+            clearNavigationPath()
+            viewModel.navigationRepository.cancelNavigation()
+            currentOutdoorNavigationRoute = null
+            toggleInstructionsView(false)
+
+            // When the close button is clicked, we make the campus toggle button visible again
+            // We also add a listener to handle the campus switching
+            toggleButton.visibility = View.VISIBLE
+            handleCampusSwitch()
         }
 
         if(currentOutdoorNavigationRoute != null) {
