@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.views
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,14 +9,13 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.ShuttleViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.shuttle_fragment.*
 
 class ShuttleFragment : Fragment() {
 
@@ -33,7 +31,7 @@ class ShuttleFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(ShuttleViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ShuttleViewModel::class.java)
         super.onViewCreated(view, savedInstanceState)
         shuttleAdapter = ShuttleAdapter(this)
         viewPager = view.findViewById(R.id.pager)
@@ -43,19 +41,9 @@ class ShuttleFragment : Fragment() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             if (position == 0) {
                 tab.text = "SGW TO LOY"
-                navigateWithShuttle.setOnClickListener {
-                    findNavController().navigateUp()
-                    viewModel.navigationRepository.generateDirections(viewModel.mapRepository.getCampuses()[0],
-                    viewModel.mapRepository.getCampuses()[1], "shuttle")
-                }
             }
             else{
                 tab.text = "LOY TO SGW"
-                navigateWithShuttle.setOnClickListener {
-                    findNavController().navigateUp()
-                    viewModel.navigationRepository.generateDirections(viewModel.mapRepository.getCampuses()[1],
-                        viewModel.mapRepository.getCampuses()[0], "shuttle")
-                }
             }
         }.attach()
     }
@@ -91,7 +79,7 @@ class CampusTabFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(ShuttleViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ShuttleViewModel::class.java)
 
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             if (getInt(ARG_OBJECT) == 0)

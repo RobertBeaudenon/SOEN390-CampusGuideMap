@@ -16,7 +16,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,7 +42,7 @@ class CalendarFragment : DialogFragment(), DialogInterface.OnDismissListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-      calendarViewModel = ViewModelProviders.of(this)
+      calendarViewModel = ViewModelProvider(this)
           .get(CalendarViewModel::class.java)
 
         if(!(activity as MainActivity).checkCalendarPermission()) {
@@ -94,7 +94,7 @@ class CalendarFragment : DialogFragment(), DialogInterface.OnDismissListener {
         if (isDialogOpen) return
         val dialog = CalendarFragment()
         dialog.setTargetFragment(this, targetRequestCode)
-        dialog.show(requireFragmentManager(), "select calendars dialog")
+        dialog.show(parentFragmentManager, "select calendars dialog")
          isDialogOpen = true
     }
 

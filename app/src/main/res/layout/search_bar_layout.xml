@@ -41,7 +41,7 @@
         android:background="@drawable/toggle_switch"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:layout_marginLeft="14dp"
+        android:layout_marginStart="14dp"
         android:layout_marginTop="14dp"
         android:text="@string/togglebutton"
         android:textColor="#FFFFFF"
