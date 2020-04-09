@@ -178,7 +178,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         attachBuildingObservers()
-        //if (currentOutdoorNavigationRoute != null) drawPathPolyline(currentOutdoorNavigationRoute!!.polyLinePath)
         observeNavigation()
         setNavigationButtons()
         attach(mapModel)
@@ -233,8 +232,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun setNavigationButtons() {
-        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonMinimizeInstructions)
-        buttonCloseInstructions.setOnClickListener{
+        val buttonMinimizeInstructions : ImageButton = requireActivity().findViewById(R.id.buttonMinimizeInstructions)
+        buttonMinimizeInstructions.setOnClickListener{
             toggleInstructionsView(false)
         }
         val buttonResumeNavigation : Button = requireActivity().findViewById(R.id.buttonResumeNavigation)
@@ -245,7 +244,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         if(currentOutdoorNavigationRoute != null) {
             showInstructions(currentOutdoorNavigationRoute!!.instructions, currentOutdoorNavigationRoute!!.instructionsCoordinates)
-            toggleInstructionsView(false)
+            toggleInstructionsView(true)
         }
     }
 
@@ -584,6 +583,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         var isCampusBuilding = false
+        currentOutdoorNavigationRoute = null
         viewModel.navigationRepository.cancelNavigation()
         if (item is GooglePlace) {
  			findNavController().popBackStack(R.id.map_fragment, false)
