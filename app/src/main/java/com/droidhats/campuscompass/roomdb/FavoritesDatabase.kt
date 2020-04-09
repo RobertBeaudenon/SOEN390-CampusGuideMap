@@ -26,7 +26,8 @@ abstract class FavoritesDatabase : RoomDatabase() {
         // Create and pre-populate the database
         private fun buildDatabase(context: Context): FavoritesDatabase {
             return Room.databaseBuilder(context, FavoritesDatabase::class.java, "favorites-db.rdb")
-                    .build()
+                .allowMainThreadQueries().fallbackToDestructiveMigration()
+                .build()
         }
     }
 }

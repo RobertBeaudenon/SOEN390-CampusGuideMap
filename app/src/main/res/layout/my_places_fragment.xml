@@ -26,7 +26,7 @@
             android:src="@drawable/icon_menu" />
 
         <TextView
-            android:id="@+id/text_calendar"
+            android:id="@+id/text_my_places"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -43,23 +43,22 @@
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/calendar_recycler_view"
-            android:name="com.droidhats.campuscompass.CalendarFragment"
+            android:id="@+id/favorites_recycler_view"
+            android:name="FavoritesFragment"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="16dp"
-            app:layoutManager="LinearLayoutManager"
-            tools:context=".views.CalendarFragment"
-            tools:listitem="@layout/calendar_recycler_item"
-            android:scrollbars="vertical"
+            android:layout_weight="1"
             android:scrollbarStyle="insideInset"
-            />
+            android:scrollbars="vertical"
+            app:layoutManager="LinearLayoutManager"
+            tools:context=".views.MyPlacesFragment"
+            tools:listitem="@layout/favorites_recycler_item" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -68,30 +67,5 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="15dp"
-        android:paddingTop="15dp">
-
-        <TextView
-            android:id="@+id/text_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:textAlignment="center"
-            android:textSize="15sp"
-            />
-
-        <Button
-            android:id="@+id/select_calendar_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|bottom"
-            android:text="@string/select_calendars"
-            android:textAllCaps="false"
-            android:textColor="@color/quantum_white_text"
-            android:background="@drawable/calendarbutton"
-            android:paddingStart="55dp"
-            android:paddingEnd="55dp"
-            android:paddingBottom="14dp"
-            android:paddingTop="12dp" />
-
-    </LinearLayout>
+        android:paddingTop="15dp"/>
 </LinearLayout>

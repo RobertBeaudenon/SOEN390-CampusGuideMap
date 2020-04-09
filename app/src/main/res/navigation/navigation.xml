@@ -76,6 +76,13 @@
     <fragment
         android:id="@+id/my_places_fragment"
         android:name="com.droidhats.campuscompass.views.MyPlacesFragment"
-        android:label="myplacesfragment"
-        tools:layout="@layout/my_places_fragment" />
+        tools:layout="@layout/my_places_fragment">
+        <action
+            android:id="@+id/action_my_places_fragment_to_map_fragment"
+            app:destination="@id/map_fragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/my_places_fragment"
+            app:popUpToInclusive="true"/>
+
+    </fragment>
 </navigation>

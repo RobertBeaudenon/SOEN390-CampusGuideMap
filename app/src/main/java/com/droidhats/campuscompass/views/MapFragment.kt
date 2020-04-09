@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
-import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -35,6 +34,7 @@ import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.models.IndoorLocation
+import com.droidhats.campuscompass.models.FavoritePlace
 import com.droidhats.campuscompass.roomdb.FavoritesDatabase
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
@@ -77,7 +77,6 @@ import kotlin.collections.MutableList
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.instructions_sheet_layout.*
 import kotlinx.android.synthetic.main.search_bar_layout.*
-import kotlinx.coroutines.Dispatchers
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -86,7 +85,7 @@ import com.droidhats.campuscompass.models.Map as MapModel
  */
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, OnCameraIdleListener,
-    Subject {
+    Subject, MyPlacesFragment.OnFavoriteClickListener {
 
     private var mapModel: MapModel? = null
     private var map: GoogleMap? = null
@@ -141,6 +140,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Event click callbacks
         CalendarFragment.onCalendarEventClickListener = this
         SearchFragment.onSearchResultClickListener = this
+        MyPlacesFragment.onFavoriteClickListener = this
 
         createLocationRequest()
         initBottomSheetBehavior()
@@ -610,10 +610,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         placeCategory.text = location.place?.address
 
         // TODO: Move this to init
-        val favoritesDb : FavoritesDatabase = FavoritesDatabase.getInstance()
 
         // TODO: Change text depending on existence of place in FavoritesRepo
         val saveButton : Button = requireActivity().findViewById(R.id.place_card_favorites_button)
+        val favoritesDb : FavoritesDatabase = viewModel.getFavoritesDb()
         var foundPlace : FavoritePlace? = favoritesDb.favoritePlacesDao().findPlaceById(location.placeID)
         if (foundPlace != null) {
             saveButton.text = "Saved"
@@ -685,6 +685,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         for (observer in observerList) {
             observer?.update(map!!.cameraPosition.zoom)
         }
+    }
+
+    override fun onFavoriteClick(item: FavoritePlace?) {
+        TODO("not implemented")
     }
 }
 

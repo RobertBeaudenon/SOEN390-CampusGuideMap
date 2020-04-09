@@ -1,33 +1,33 @@
 package com.droidhats.campuscompass.views
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
+import com.droidhats.campuscompass.adapters.FavoritesAdapter
+import com.droidhats.campuscompass.models.FavoritePlace
+import com.droidhats.campuscompass.viewmodels.FavoritesViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class MyPlacesFragment : DialogFragment() {
+    private lateinit var favoritesViewModel: FavoritesViewModel
+    private lateinit var recyclerView : RecyclerView
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MyPlacesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MyPlacesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    companion object {
+        var onFavoriteClickListener: OnFavoriteClickListener? = null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+        favoritesViewModel = ViewModelProvider(this)
+            .get(FavoritesViewModel::class.java)
+
     }
 
     override fun onCreateView(
@@ -35,26 +35,32 @@ class MyPlacesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.my_places_fragment, container, false)
+        val root : View = inflater.inflate(R.layout.my_places_fragment, container, false)
+        var recyclerView : RecyclerView = root.findViewById(R.id.favorites_recycler_view)
+
+        updateRecyclerView()
+        recyclerView.adapter?.notifyDataSetChanged()
+
+        return root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment favorites_fragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MyPlacesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun updateRecyclerView() {
+        val places : List<FavoritePlace> = favoritesViewModel.getFavorites()
+
+        with(recyclerView) {
+            layoutManager = when {
+                places.size <= 1 -> LinearLayoutManager(context)
+                else -> GridLayoutManager(context, places.size)
             }
+
+            adapter = FavoritesAdapter(
+                places,
+                onFavoriteClickListener
+            )
+        }
+    }
+
+    interface OnFavoriteClickListener {
+        fun onFavoriteClick(item: FavoritePlace?)
     }
 }
