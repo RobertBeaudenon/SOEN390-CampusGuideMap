@@ -7,9 +7,7 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.rule.ActivityTestRule
@@ -37,7 +35,7 @@ class ShuttleBusTest {
 
     @Rule
     @JvmField
-    var mGrantPermissionRule =
+    var mGrantPermissionRule: GrantPermissionRule =
         GrantPermissionRule.grant(
             "android.permission.ACCESS_FINE_LOCATION"
         )
@@ -67,8 +65,8 @@ class ShuttleBusTest {
             Thread.sleep(5000)
 
             //Checking if that action id did take you to map_fragment view
-            onView(ViewMatchers.withId(R.id.coordinate_layout))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            onView(withId(R.id.coordinate_layout))
+                .check(matches(isDisplayed()))
         }
     }
     @Test
@@ -134,12 +132,6 @@ class ShuttleBusTest {
                 withId(R.id.nextShuttleDeparture), withText("Next Shuttle Departure: -"),
                 isDisplayed())).check(matches(withText("Next Shuttle Departure: -")))
 
-        //Checks that start shuttle trip button is displayed
-        onView(
-            allOf(
-                withId(R.id.navigateWithShuttle),
-                isDisplayed())).check(matches(isDisplayed()))
-
         //Checks that the table with the Shuttle times is populated with at least 26 visible entries
         onView(
             allOf(
@@ -158,23 +150,6 @@ class ShuttleBusTest {
             allOf(
                 withContentDescription("SGW TO LOY"),
                 isDisplayed())).perform(click())
-
-        //Checks that a click on the Start Shuttle Trip button is displayed
-        onView(
-            allOf(
-                withId(R.id.navigateWithShuttle), withText("Start Shuttle Trip"),
-                isDisplayed())).perform(click())
-
-        //Click to view LOY campus view
-        onView(
-            allOf(
-                withId(R.id.toggleButton), withText("SGW"),
-                isDisplayed())).perform(click())
-
-        onView(
-            allOf(
-                withId(R.id.toggleButton), withText("LOY"),
-                isDisplayed())).check(matches(isDisplayed()))
     }
     private fun childAtPosition(
         parentMatcher: Matcher<View>, position: Int
