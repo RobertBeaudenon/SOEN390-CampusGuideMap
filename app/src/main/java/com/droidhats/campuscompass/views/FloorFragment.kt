@@ -82,13 +82,32 @@ class FloorFragment : Fragment() {
         }
 
         val numberPicker: NumberPicker = root.findViewById(R.id.floorPicker)
-        numberPicker.minValue = 2
-        numberPicker.maxValue = 12
+        numberPicker.minValue = 0
+        numberPicker.maxValue = maps.size - 1
         numberPicker.wrapSelectorWheel = false
 
-        numberPicker.setOnValueChangedListener(NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-            if (newVal >= 9) {
-                Toast.makeText(context, "changed to floor 9", Toast.LENGTH_LONG).show()
+        val keys : Array<String> = Array(maps.size){""}
+        if (building != null) {
+            var index = 0
+            for (key in building?.getIndoorInfo()?.second!!.keys) {
+                keys[index] = key
+                index++
+            }
+        }
+        numberPicker.displayedValues = keys
+
+        numberPicker.value = keys.indexOf(floorNum)
+        
+        numberPicker.setOnScrollListener(NumberPicker.OnScrollListener { picker, scrollState ->
+            if(scrollState == 0){
+                val newVal = numberPicker.value
+                val newFloorNum = building!!.getIndoorInfo().second.keys.elementAt(newVal)
+
+                inputStream = requireContext().assets.open(maps[newVal])
+                file = inputStream.bufferedReader().use { it.readText() }
+                file = mapProcessor.automateSVG(file, newFloorNum)
+                val svg = SVG.getFromString(file)
+                setImage(svg)
             }
         })
 
