@@ -24,7 +24,6 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     private lateinit var viewModel: ExplorePlaceViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var places: ArrayList<Explore_Place>
-    private var category: String? = null
     private var columnCount = 1
 
     companion object {
@@ -51,9 +50,9 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
             findNavController().popBackStack()
         }
 
-       category = retrieveArguments()
+       var list : ArrayList<String> = retrieveArguments()
 
-       var type: String = when(category){
+       var type: String = when(list.get(0)){
             "Food" -> "restaurant"
             "Drinks" -> "bar"
             "Study" ->  "cafe"
@@ -61,7 +60,7 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
        }
 
         recyclerView = root.findViewById(R.id.explore_recycler_view)
-        viewModel.getPlaces("SGW", type).observe(viewLifecycleOwner, Observer {
+        viewModel.getPlaces(list.get(1), type).observe(viewLifecycleOwner, Observer {
              places = ArrayList()
              places = it
             updateRecyclerView()
@@ -82,13 +81,20 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     }
 
 
-    private fun retrieveArguments(): String? {
+    private fun retrieveArguments(): ArrayList<String> {
+        val list = ArrayList<String>()
         val categoryName = arguments?.getString("name")
         if(categoryName != null) {
+            list.add(categoryName)
             val fragmentTitle: TextView = root.findViewById(R.id.text_category) as TextView
             fragmentTitle.text = "Explore - $categoryName"
         }
-        return categoryName
+
+        val campus = arguments?.getString("campus")
+        if(campus != null){
+            list.add(campus)
+        }
+        return list
     }
 
     interface OnExplorePlaceClickListener {

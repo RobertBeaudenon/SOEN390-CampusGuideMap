@@ -6,15 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ToggleButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.droidhats.campuscompass.R
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.maps.model.LatLng
+import kotlinx.android.synthetic.main.search_bar_layout.*
 
 class ExploreFragment: Fragment() {
 
     private lateinit var root : View
+    private var campus: String = "SGW"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,28 +35,39 @@ class ExploreFragment: Fragment() {
                 GravityCompat.START)
         }
 
+        var toggleButton: ToggleButton = root.findViewById(R.id.toggleButton2)
+
+        toggleButton.setOnCheckedChangeListener { _, onSwitch ->
+            if (onSwitch) {
+                campus = "Loyola"
+            } else {
+                campus = "SGW"
+            }
+        }
+
         //Event listners for button exploration categories
         val selectFoodButton: Button = root.findViewById(R.id.select_food_button)
         selectFoodButton.setOnClickListener {
-            showPointsOfInterests("Food")
+            showPointsOfInterests("Food", campus)
         }
 
         val selectDrinksButton: Button = root.findViewById(R.id.select_drinks_button)
         selectDrinksButton.setOnClickListener {
-            showPointsOfInterests("Drinks")
+            showPointsOfInterests("Drinks", campus)
         }
 
         val selectStudyButton: Button = root.findViewById(R.id.select_study_button)
         selectStudyButton.setOnClickListener {
-            showPointsOfInterests("Study")
+            showPointsOfInterests("Study", campus)
         }
         return root
     }
 
     //Navigates to appropriate fragment
-    fun showPointsOfInterests(category: String){
+    fun showPointsOfInterests(category: String, campus: String){
         val bundle = Bundle()
         bundle.putString("name",category )
+        bundle.putString("campus",campus )
         findNavController().navigate(R.id.explore_category_fragment, bundle)
     }
 }
