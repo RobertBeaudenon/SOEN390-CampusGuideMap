@@ -27,7 +27,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.collections.ArrayList
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import com.droidhats.campuscompass.R
