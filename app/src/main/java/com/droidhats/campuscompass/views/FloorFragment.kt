@@ -9,7 +9,8 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.NumberPicker
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -80,30 +81,14 @@ class FloorFragment : Fragment() {
             setImage(svg)
         }
 
-        val buttonPlus: ImageButton = root.findViewById(R.id.button_plus)
-        var newSvg : SVG
-        buttonPlus.setOnClickListener(View.OnClickListener {
-            val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
-            if(indexOfCurrentMap != maps?.size?.minus(1) && indexOfCurrentMap !=null) {
-                if (maps != null && indexOfCurrentMap != null) {
-                    mapToDisplay = maps[indexOfCurrentMap.plus(1)]
-                }
-                inputStream = requireContext().assets.open(mapToDisplay)
-                newSvg = SVG.getFromInputStream(inputStream)
-                setImage(newSvg)
-            }
-        })
+        val numberPicker: NumberPicker = root.findViewById(R.id.floorPicker)
+        numberPicker.minValue = 2
+        numberPicker.maxValue = 12
+        numberPicker.wrapSelectorWheel = false
 
-        val buttonMinus: ImageButton = root.findViewById(R.id.button_minus)
-        buttonMinus.setOnClickListener(View.OnClickListener {
-            val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
-            if(indexOfCurrentMap != 0 && indexOfCurrentMap !=null) {
-                if (maps != null && indexOfCurrentMap != null) {
-                    mapToDisplay = maps[indexOfCurrentMap.minus(1)]
-                }
-                inputStream = requireContext().assets.open(mapToDisplay)
-                newSvg = SVG.getFromInputStream(inputStream)
-                setImage(newSvg)
+        numberPicker.setOnValueChangedListener(NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
+            if (newVal >= 9) {
+                Toast.makeText(context, "changed to floor 9", Toast.LENGTH_LONG).show()
             }
         })
 
