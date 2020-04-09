@@ -60,16 +60,10 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
 
             // todo: Use index of for loop to determine floor instead of using map name
             var floorValue: String = floorMap.value.split(building.getIndoorInfo().first)[1].split(".svg")[0]
-            var floorDigit: Int = 6
-            var floorNumber: Int = floorValue.toInt()
-            if (floorValue.length > 1) {
-                if (floorValue[0] == 's')
-                    floorNumber = ("-" + floorValue.substring(1, floorValue.length)).toInt()
-                floorDigit = 7
-            }
+
             for ((x, classRoom) in classes.withIndex()) {
                 if (classRoom.getID() == "") continue
-                if (classRoom.getID().substring(5, floorDigit) != floorValue) {
+                if (!classRoom.getID().contains(floorValue)) {
                     continue
                 }
                 val newClass = IndoorLocation(
