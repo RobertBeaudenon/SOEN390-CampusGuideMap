@@ -28,17 +28,5 @@
         app:headerLayout="@layout/nav_drawer_header_main_layout"
         app:menu="@menu/nav_drawer_main_menu">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="30dp"
-            android:layout_marginStart="16dp"
-            android:drawablePadding="30dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/Settings"
-            android:drawableStart="@drawable/icon_settings"
-            android:textColor="#181818" />
-
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

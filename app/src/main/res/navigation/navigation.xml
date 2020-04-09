@@ -73,4 +73,9 @@
         android:name="com.droidhats.campuscompass.views.ShuttleFragment"
         tools:layout="@layout/shuttle_fragment" >
     </fragment>
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.droidhats.campuscompass.views.SettingsFragment"
+        tools:layout="@layout/settings_fragment" >
+    </fragment>
 </navigation>

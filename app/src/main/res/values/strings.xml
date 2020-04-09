@@ -11,7 +11,7 @@
     <string name="Explore_Feature_Name">Explore</string>
     <string name="Shuttle_Feature_Name">Shuttle Bus Schedule</string>
     <string name="Map_Feature_Name">Map</string>
-    <string name="Settings">Settings</string>
+    <string name="Settings_Feature_Name">Settings</string>
     <string name="sgw">SGW</string>
     <string name="loy">LOY</string>
     <string name="dash">-</string>
@@ -48,4 +48,7 @@
     <string name="next_button">Next Button</string>
     <string name="previous_button">Previous Button</string>
     <string name="done">Done</string>
+    <string name="settings_stairs">Stairs</string>
+    <string name="settings_escalators">Escalators</string>
+    <string name="settings_elevators">Elevators</string>
 </resources>
