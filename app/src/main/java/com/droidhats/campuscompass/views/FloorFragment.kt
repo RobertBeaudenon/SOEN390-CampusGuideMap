@@ -67,7 +67,6 @@ class FloorFragment : Fragment() {
         var inputStream: InputStream = requireContext().assets.open(mapToDisplay)
         val mapProcessor: ProcessMap = ProcessMap()
         var file: String = inputStream.bufferedReader().use { it.readText() }
-        println("floornum: $floorNum")
         file = mapProcessor.automateSVG(file, floorNum!!)
 
         val buildingToHighlight: String? = arguments?.getString("id")

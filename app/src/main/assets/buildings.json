@@ -6,7 +6,7 @@
             "address": "1455, de, Maisonneuve Blvd W, Montréal, QC H3G 1M8",
 			"place_id": "ChIJtd6Zh2oayUwRAu_CnRIfoBw",
 			"center_location": [45.497320, -73.579031],
-            "floor_maps": [{"1":"hall8.svg"}, {"2":"hall9.svg"}],
+            "floor_maps": [{"1":"hall8.svg"},{"2":"hall8.svg"},{"3":"hall8.svg"},{"4":"hall8.svg"},{"5":"hall8.svg"},{"6":"hall8.svg"},{"7":"hall8.svg"},{"8":"hall8.svg"}, {"9":"hall9.svg"},{"10":"hall8.svg"},{"11":"hall8.svg"},{"12":"hall8.svg"}],
             "initial": "hall",
             "location": [45.497320, -73.579031],
             "coordinates": [
@@ -88,7 +88,7 @@
 			"place_id": "ChIJ139JrWsayUwRbNrrU4yfp04",
 			"center_location": [45.495244, -73.578945],
             "location": [45.495496, -73.579162],
-            "floor_maps": [{"1":"mb1.svg", "2":  "mb1.svg"}],
+            "floor_maps": [{"1":"mb1.svg", "2":  "mb1.svg", "3":  "mb1.svg", "4":  "mb1.svg", "5":  "mb1.svg", "6":  "mb1.svg", "7":  "mb1.svg", "8":  "mb1.svg", "9":  "mb1.svg", "10":  "mb1.svg", "11":  "mb1.svg", "12":  "mb1.svg", "13":  "mb1.svg", "14":  "mb1.svg", "15":  "mb1.svg", "16":  "mb1.svg", "17":  "mb1.svg", "s2":  "mbs2.svg", "s1":  "mbs2.svg"}],
             "initial": "mb",
             "coordinates": [
                 [45.495362, -73.579385],

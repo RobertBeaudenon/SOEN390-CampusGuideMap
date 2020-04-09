@@ -147,35 +147,47 @@ class ProcessMap {
     }
 
     fun automateSVG(svg: String, floorNumber: String): String {
-
+        val prepreBuilding = svg.split("docname=\"")
+        val preBuilding = prepreBuilding[1].split("-")
+        val preNumBuilding = preBuilding[1].split(".svg")
+        val numBuilding = preNumBuilding[0]
         var newFileStr = ""
 
         val patternText = Regex("<text")
         val originalSVG: List<String> = svg.split("\n")
         var svgArray = mutableListOf<String>()
 
-        //Add all of the svg in the
-        for (line in originalSVG) {
-            svgArray.add(line)
+        if(floorNumber==numBuilding){
+            newFileStr = svg
+        }
+        if(floorNumber!=numBuilding) {
+            //Add all of the svg in the
+            for (line in originalSVG) {
+                svgArray.add(line)
+            }
+
+            for (i in svgArray) {
+                var resultText = patternText.containsMatchIn(i)
+
+                if (!resultText) {
+                    newFileStr += i + "\n"
+                    continue
+                }
+                if (resultText) {
+                    var textArray = i.split("> ")
+                    var str = textArray[1].split(" </")
+                    var roomNum = str[0]
+                    var roomNumRegex = Regex(numBuilding)
+                    var newFloor = roomNumRegex.replaceFirst(roomNum, floorNumber)
+                    var newTextTag =
+                        "${textArray.elementAt(0)}" + "> " + "$newFloor" + " </" + "${str.elementAt(
+                            1
+                        )}"
+                    newFileStr += newTextTag + "\n"
+                }
+            }
         }
 
-        for (i in svgArray) {
-            var resultText = patternText.containsMatchIn(i)
-
-            if (!resultText) {
-                newFileStr += i + "\n"
-                continue
-            }
-            if (resultText) {
-                var textArray = i.split("> ")
-                var str = textArray[1].split(" </")
-                var roomNum = str[0]
-                var roomNumRegex = Regex(floorNumber)
-                var newFloor = roomNumRegex.replaceFirst(roomNum, floorNumber)
-                var newTextTag = "${textArray.elementAt(0)}" + "> " + "$newFloor" + " </" + "${str.elementAt(1)}"
-                newFileStr += newTextTag + "\n"
-            }
-        }
         return newFileStr
     }
     /**
