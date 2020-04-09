@@ -226,9 +226,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         trackerSteps = 0
 
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
+
+        // The done button ("I've arrived") will initially be hidden
+        doneButton.visibility = View.GONE
+        
         doneButton.setOnClickListener {
             viewModel.navigationRepository.consumeNavigationHandler()
         }
+
     }
 
     private fun setNavigationButtons() {
@@ -473,13 +478,26 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun toggleInstructionsView(isVisible: Boolean){
         val instructionsView : CardView = requireActivity().findViewById(R.id.instructionLayout)
+        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
+
         if(isVisible){
             instructionsView.visibility = View.VISIBLE
             buttonResumeNavigation.visibility = View.INVISIBLE
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, instructionsView.height+20)
+
+            // The done button ("I've arrived") will be displayed when the navigation instruction is displayed
+            doneButton.visibility = View.VISIBLE
+
+            doneButton.setOnClickListener {
+                viewModel.navigationRepository.consumeNavigationHandler()
+            }
         }
         else{
             instructionsView.visibility = View.INVISIBLE
+
+            // The done button ("I've arrived") will be hidden when the navigation instruction is hidden
+            doneButton.visibility = View.GONE
+
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
             if(currentOutdoorNavigationRoute != null)
                 buttonResumeNavigation.visibility = View.VISIBLE
