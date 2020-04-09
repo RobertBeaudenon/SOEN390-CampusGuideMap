@@ -88,7 +88,7 @@
 			"place_id": "ChIJ139JrWsayUwRbNrrU4yfp04",
 			"center_location": [45.495244, -73.578945],
             "location": [45.495496, -73.579162],
-            "floor_maps": [{"1":"mb1.svg", "2":  "mb1.svg", "3":  "mb1.svg", "4":  "mb1.svg", "5":  "mb1.svg", "6":  "mb1.svg", "7":  "mb1.svg", "8":  "mb1.svg", "9":  "mb1.svg", "10":  "mb1.svg", "11":  "mb1.svg", "12":  "mb1.svg", "13":  "mb1.svg", "14":  "mb1.svg", "15":  "mb1.svg", "16":  "mb1.svg", "17":  "mb1.svg", "s2":  "mbs2.svg", "s1":  "mbs2.svg"}],
+            "floor_maps": [{"s2": "mbs2.svg", "s1":  "mbs2.svg","1":"mb1.svg", "2":  "mb1.svg", "3":  "mb1.svg", "4":  "mb1.svg", "5":  "mb1.svg", "6":  "mb1.svg", "7":  "mb1.svg", "8":  "mb1.svg", "9":  "mb1.svg", "10":  "mb1.svg", "11":  "mb1.svg", "12":  "mb1.svg", "13":  "mb1.svg", "14":  "mb1.svg", "15":  "mb1.svg", "16":  "mb1.svg", "17":  "mb1.svg"}],
             "initial": "mb",
             "coordinates": [
                 [45.495362, -73.579385],

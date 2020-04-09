@@ -154,6 +154,7 @@ class ProcessMap {
         var newFileStr = ""
 
         val patternText = Regex("<text")
+        val patternDocName = Regex ("docname=")
         val originalSVG: List<String> = svg.split("\n")
         var svgArray = mutableListOf<String>()
 
@@ -168,8 +169,9 @@ class ProcessMap {
 
             for (i in svgArray) {
                 var resultText = patternText.containsMatchIn(i)
+                var resultDocName = patternDocName.containsMatchIn(i)
 
-                if (!resultText) {
+                if (!resultText && !resultDocName) {
                     newFileStr += i + "\n"
                     continue
                 }
@@ -184,6 +186,16 @@ class ProcessMap {
                             1
                         )}"
                     newFileStr += newTextTag + "\n"
+                }
+                if(resultDocName){
+                    var textArray = i.split("-")
+                    var str = textArray[1].split(".")
+                    var docNum = str[0]
+                    var docNumRegex = Regex(numBuilding)
+                    var newDocNum = docNumRegex.replaceFirst(docNum, floorNumber)
+                    var newDocTag = "${textArray.elementAt(0)}" + "-" + "$newDocNum" + "." + "${str.elementAt(
+                        1)}"
+                    newFileStr += newDocTag + "\n"
                 }
             }
         }
