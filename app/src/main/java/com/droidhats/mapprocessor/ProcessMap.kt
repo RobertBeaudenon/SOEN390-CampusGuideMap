@@ -390,7 +390,8 @@ class ProcessMap {
         stringArray.forEach {
 
             if (it.contains("<!-- Displaying icons on the map -->")) {
-                string.append(Dijkstra(allElements[startInt], allElements[endInt], createPaths(list)) + "\n")
+                //string.append(Dijkstra(allElements[startInt], allElements[endInt], createPaths(list)) + "\n")
+                string.append(A_Star(allElements[startInt], allElements[endInt], createPaths(list, allElements[endInt])) + "\n")
             }
             string.append(it + "\n")
         }
@@ -579,6 +580,38 @@ class ProcessMap {
         return nodeList
     }
 
+    internal fun createPaths(pathPoints: MutableList<Circle>, endPoint: MapElement): MutableList<Vertex> {
+        val vertices: MutableList<Vertex> = mutableListOf()
+
+        val num: Int = pathPoints.size/8
+        val threads: MutableList<Thread> = mutableListOf()
+
+        for(point in pathPoints) {
+            vertices.add(Vertex(point, endPoint.getCenter()))
+        }
+
+        for (i in 0..7) {
+            println(i)
+            threads.add(
+                thread(start = true){
+                    connectNeighboursA(vertices.subList(i*num, (i+1)*num), vertices)
+                }
+            )
+        }
+
+        for (thread in threads) {
+            thread.join()
+        }
+
+        // for any that might be missed
+        for (point in vertices) {
+            if (point.neighbors.size == 0) {
+                connectNeighboursA(mutableListOf(point), vertices)
+            }
+        }
+        return vertices
+    }
+
     /**
      * This method connects all points that can be added as neighbors and adds them
      * @param subsection sublist of nodeList for this thread
@@ -589,6 +622,23 @@ class ProcessMap {
         for (pointA in subsection) {
             for (pointB in nodeList) {
                 if (checkPath(pointA.circle, pointB.circle) && !pointA.circle.equals(pointB.circle)) {
+                    pointA.neighbors.add(pointB)
+                }
+            }
+        }
+        return subsection
+    }
+
+    fun connectNeighboursA(subsection: MutableList<Vertex>, nodeList: MutableList<Vertex>): MutableList<Vertex> {
+        for (pointA in subsection) {
+            for (pointB in nodeList) {
+                if (
+                    checkPath(
+                        Circle.getPoint(pointA.pos.first, pointA.pos.second),
+                        Circle.getPoint(pointB.pos.first, pointB.pos.second)
+                    )
+                    && pointA.pos != pointB.pos
+                ) {
                     pointA.neighbors.add(pointB)
                 }
             }
