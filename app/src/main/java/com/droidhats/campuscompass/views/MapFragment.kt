@@ -4,9 +4,6 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
-import android.graphics.Color
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -20,57 +17,60 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.widget.NestedScrollView
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.instructions_sheet_layout.prevArrow
+import kotlinx.android.synthetic.main.instructions_sheet_layout.nextArrow
+import kotlinx.android.synthetic.main.instructions_sheet_layout.arrayInstruction
+import kotlinx.android.synthetic.main.search_bar_layout.buttonResumeNavigation
+import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
+import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.IOException
+import kotlin.math.abs
+import kotlin.math.atan
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
-import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
-import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import kotlinx.android.synthetic.main.instructions_sheet_layout.*
-import kotlinx.android.synthetic.main.search_bar_layout.*
-import kotlinx.coroutines.Dispatchers
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -95,8 +95,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val REQUEST_CHECK_SETTINGS = 2
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
-        private var tracker = 0
-        private var currentNavigationRoute : NavigationRoute? = null
+        private var trackerSteps = 0
+        private var currentOutdoorNavigationRoute : OutdoorNavigationRoute? = null
     }
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
@@ -115,7 +115,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -139,8 +139,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initBottomSheetBehavior()
         initSearchBar()
         handleCampusSwitch()
-        observeNavigation()
-        setNavigationButtons()
     }
 
     /**
@@ -160,12 +158,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         try {
             val success = googleMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
-                            context, R.raw.map_style));
+                            context, R.raw.map_style))
             if (!success) {
-                Log.e("MapStyle", "Style parsing failed.");
+                Log.e("MapStyle", "Style parsing failed.")
             }
         } catch (e: android.content.res.Resources.NotFoundException) {
-            Log.e("MapStyle", "Can't find style. Error: ", e);
+            Log.e("MapStyle", "Can't find style. Error: ", e)
         }
 
         // Move camera to SGW
@@ -178,7 +176,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         attachBuildingObservers()
-        if (currentNavigationRoute != null) drawPathPolyline(currentNavigationRoute!!.polyLinePath)
+        observeNavigation()
+        setNavigationButtons()
+        attach(mapModel)
     }
 
     private fun attachBuildingObservers(){
@@ -204,32 +204,65 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             // The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
             // Remove the condition check to keep the path drawn on the screen even after changing activities
             // If the condition is removed though, camera movement must be handled properly not to override other movement
-            if ( it != null && it != currentNavigationRoute) {
-                currentNavigationRoute = it
-                drawPathPolyline(it.polyLinePath)
-                showInstructions(it.instructions)
-                Handler().postDelayed({
-                    moveTo(it.origin!!.getLocation(), 19.0f)
-                }, 100)
+
+            if ( it != null && it != currentOutdoorNavigationRoute ) {
+                if (it is OutdoorNavigationRoute) {
+                    requireActivity().onBackPressedDispatcher.addCallback(this) {
+                        viewModel.navigationRepository?.stepBack()
+                    }
+                    currentOutdoorNavigationRoute = it
+                    drawPathPolyline(it.polyLinePath)
+                    showInstructions(it.instructions, it.instructionsCoordinates)
+                    Handler().postDelayed({
+                        moveTo(it.origin!!.getLocation(), 19.0f)
+                    }, 100)
+                } else {
+                    findNavController().navigate(R.id.floor_fragment)
+                }
             }
         })
-        tracker = 0
+        trackerSteps = 0
+
+        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
+
+        // The done button ("I've arrived") will initially be hidden
+        doneButton.visibility = View.GONE
+        
+        doneButton.setOnClickListener {
+            viewModel.navigationRepository.consumeNavigationHandler()
+        }
+
     }
 
     private fun setNavigationButtons() {
-        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
-        buttonCloseInstructions.setOnClickListener{
+        val buttonMinimizeInstructions : ImageButton = requireActivity().findViewById(R.id.buttonMinimizeInstructions)
+        buttonMinimizeInstructions.setOnClickListener{
             toggleInstructionsView(false)
         }
+
         val buttonResumeNavigation : Button = requireActivity().findViewById(R.id.buttonResumeNavigation)
         buttonResumeNavigation.setOnClickListener{
             dismissBottomSheet()
             toggleInstructionsView(true)
         }
 
-        if(currentNavigationRoute != null) {
-            showInstructions(currentNavigationRoute!!.instructions)
+        // The close button in the instruction sheet
+        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
+        buttonCloseInstructions.setOnClickListener{
+            clearNavigationPath()
+            viewModel.navigationRepository.cancelNavigation()
+            currentOutdoorNavigationRoute = null
             toggleInstructionsView(false)
+
+            // When the close button is clicked, we make the campus toggle button visible again
+            // We also add a listener to handle the campus switching
+            toggleButton.visibility = View.VISIBLE
+            handleCampusSwitch()
+        }
+
+        if(currentOutdoorNavigationRoute != null) {
+            showInstructions(currentOutdoorNavigationRoute!!.instructions, currentOutdoorNavigationRoute!!.instructionsCoordinates)
+            toggleInstructionsView(true)
         }
     }
 
@@ -311,6 +344,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onDestroy(){
         super.onDestroy()
         detachBuildingObservers()
+        detach(mapModel)
     }
 
     //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
@@ -377,44 +411,108 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun showInstructions(instructions : ArrayList<String>) {
+    private fun showInstructions(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>){
+        toggleButton.visibility = View.GONE
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
-        prevArrow.visibility = View.INVISIBLE
 
-        nextArrow.setOnClickListener {
-            tracker++
+        nextArrow.setOnClickListener{
             prevArrow.visibility = View.VISIBLE
-            if(tracker < instructions.size) {
-                arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
-            }
-            if (tracker == instructions.size-1) {
+            trackerSteps++
+            arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
+                if (trackerSteps < instructions.size -1) {
+                    val bearingValue = getBearing(
+                        instructionsCoordinates[trackerSteps].latitude,
+                        instructionsCoordinates[trackerSteps].longitude,
+                        instructionsCoordinates[trackerSteps+1].latitude,
+                        instructionsCoordinates[trackerSteps+1].longitude
+                    )
+                    if (!bearingValue.isNaN()) {
+                        val cameraPosition: CameraPosition = CameraPosition.Builder().target(
+                                LatLng(
+                                    instructionsCoordinates[trackerSteps].latitude,
+                                    instructionsCoordinates[trackerSteps].longitude)
+                            ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
+                        map!!.animateCamera(
+                            CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
+                    }
+                }
+           else if (trackerSteps == instructions.size-1) {
                 nextArrow.visibility = View.INVISIBLE
+                moveTo(instructionsCoordinates[instructions.size-1], 20.0F)
             }
         }
-        prevArrow.setOnClickListener {
-            tracker--
+        prevArrow.setOnClickListener{
             nextArrow.visibility = View.VISIBLE
-            if(tracker < instructions.size) {
-                arrayInstruction.text = Html.fromHtml(instructions[tracker]).toString()
+                trackerSteps--
+                arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
+            if (trackerSteps != 0) {
+                if (trackerSteps < instructions.size -1) {
+                    val bearingValue = getBearing(
+                        instructionsCoordinates[trackerSteps].latitude,
+                        instructionsCoordinates[trackerSteps].longitude,
+                        instructionsCoordinates[trackerSteps + 1].latitude,
+                        instructionsCoordinates[trackerSteps + 1].longitude
+                    )
+                    if (!bearingValue.isNaN()) {
+                        val cameraPosition: CameraPosition = CameraPosition.Builder().target(
+                            LatLng(
+                                instructionsCoordinates[trackerSteps].latitude,
+                                instructionsCoordinates[trackerSteps].longitude)
+                        ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
+                        map!!.animateCamera(
+                            CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
+                    }
+                }
             }
-            if (tracker == 0) {
+            else {
                 prevArrow.visibility = View.INVISIBLE
+                moveTo(instructionsCoordinates[0], 20.0F)
             }
         }
     }
 
+
+    private fun getBearing(startLat: Double, startLong: Double, endLat: Double, endLong: Double): Float {
+        val lat = abs(startLat - endLat)
+        val lng = abs(startLong - endLong)
+
+        if (startLat < endLat && startLong < endLong) {
+            return Math.toDegrees(atan(lng / lat)).toFloat()
+        } else if (startLat >= endLat && startLong < endLong) {
+            return (90 - Math.toDegrees(atan(lng / lat)) + 90).toFloat()
+        } else if (startLat >= endLat && startLong >= endLong) {
+            return (Math.toDegrees(atan(lng / lat)) + 180).toFloat()
+        } else if (startLat < endLat && startLong >= endLong) {
+            return (90 - Math.toDegrees(atan(lng / lat)) + 270).toFloat()
+        }
+        return (-1).toFloat()
+    }
+
     private fun toggleInstructionsView(isVisible: Boolean){
         val instructionsView : CardView = requireActivity().findViewById(R.id.instructionLayout)
+        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
+
         if(isVisible){
             instructionsView.visibility = View.VISIBLE
             buttonResumeNavigation.visibility = View.INVISIBLE
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, instructionsView.height+20)
+
+            // The done button ("I've arrived") will be displayed when the navigation instruction is displayed
+            doneButton.visibility = View.VISIBLE
+
+            doneButton.setOnClickListener {
+                viewModel.navigationRepository.consumeNavigationHandler()
+            }
         }
         else{
             instructionsView.visibility = View.INVISIBLE
+
+            // The done button ("I've arrived") will be hidden when the navigation instruction is hidden
+            doneButton.visibility = View.GONE
+
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
-            if(currentNavigationRoute != null)
+            if(currentOutdoorNavigationRoute != null)
                 buttonResumeNavigation.visibility = View.VISIBLE
         }
     }
@@ -422,7 +520,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
       clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
-         val polyline= map!!.addPolyline(PolylineOptions().addAll(path[i]).color(Color.RED))
+         val polyline= map!!.addPolyline(context?.let { ContextCompat.getColor(it, R.color.colorPrimaryDark) }?.let {
+             PolylineOptions().addAll(path[i]).width(10F).color(it)
+         })
             currentNavigationPath.add(polyline)
         }
     }
@@ -514,6 +614,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         var isCampusBuilding = false
+        currentOutdoorNavigationRoute = null
+        viewModel.navigationRepository.cancelNavigation()
         if (item is GooglePlace) {
  			findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch(Dispatchers.Main) {
@@ -548,7 +650,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
        }
     }
 
-    private fun moveTo(coordinates: LatLng, zoomLevel: Float){
+    private fun moveTo(coordinates: LatLng, zoomLevel: Float) {
         map!!.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, zoomLevel))
     }
 

@@ -51,7 +51,17 @@
 
     </com.otaliastudios.zoom.ZoomImageView>
 
-    <include layout="@layout/search_bar_layout"/>
+    <include
+        android:id="@+id/include"
+        layout="@layout/search_bar_layout" />
+
+    <Button
+        android:id="@+id/doneButtonFloor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I've arrived!"
+        app:layout_constraintTop_toTopOf="@+id/floormap2"
+        tools:layout_editor_absoluteX="150dp" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -75,7 +85,7 @@
             android:text="Floor"
             android:textColor="#070707"
             android:textSize="12sp"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="wrap_content"

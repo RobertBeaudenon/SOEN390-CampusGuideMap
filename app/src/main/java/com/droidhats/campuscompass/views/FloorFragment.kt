@@ -10,16 +10,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.Button
 import android.widget.ToggleButton
+import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.droidhats.mapprocessor.ProcessMap
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.IndoorLocation
+import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
@@ -127,12 +133,15 @@ class FloorFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(FloorViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(FloorViewModel::class.java)
 
 
         initSearchBar()
 
-        val startAndEnd = viewModel.getDirections()
+        var startAndEnd = viewModel.getDirections()
+        if (startAndEnd?.first?.lID == "") {
+            startAndEnd = Pair(startAndEnd.second, startAndEnd.second)
+        }
         if (startAndEnd != null) {
             val inputStream: InputStream = requireContext().assets.open(startAndEnd.first.floorMap)
             val file: String = inputStream.bufferedReader().use { it.readText() }
@@ -142,6 +151,26 @@ class FloorFragment : Fragment() {
             val svg: SVG = SVG.getFromString(mapProcessor
                 .getSVGStringFromDirections(Pair(startAndEnd.first.lID, startAndEnd.second.lID)))
             setImage(svg)
+        }
+
+        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
+        doneButton.setOnClickListener {
+            viewModel.consumeNavHandler()
+            println("hiiii")
+        }
+
+        viewModel.navigationRepository?.getNavigationRoute()?.observe(viewLifecycleOwner, Observer {
+            println("helloooo")
+            println(it)
+            println(it is OutdoorNavigationRoute)
+            println(it?.origin is IndoorLocation)
+            if (it is OutdoorNavigationRoute) {
+                findNavController().navigate(R.id.map_fragment)
+            }
+        })
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            viewModel.navigationRepository?.stepBack()
         }
     }
 
