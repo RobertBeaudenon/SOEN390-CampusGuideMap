@@ -12,12 +12,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.droidhats.campuscompass.R
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.maps.model.LatLng
-import kotlinx.android.synthetic.main.search_bar_layout.*
 
+/**
+ * A View Fragment for the Explore places to choose between one of the categories: Food, Study and Drinks.
+ * It displays all the UI components of the places and dynamically interacts with the user click.
+ */
 class ExploreFragment: Fragment() {
 
-    private lateinit var root : View
+    private lateinit var root: View
     private var campus: String = "SGW"
 
     override fun onCreateView(

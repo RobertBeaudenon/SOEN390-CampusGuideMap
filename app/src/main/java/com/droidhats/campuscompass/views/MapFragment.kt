@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.IntentSender
-import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -63,7 +62,6 @@ import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.IOException
 import kotlin.math.abs
 import kotlin.math.atan
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver

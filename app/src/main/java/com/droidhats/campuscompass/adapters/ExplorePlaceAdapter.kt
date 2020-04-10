@@ -14,7 +14,12 @@ import kotlinx.android.synthetic.main.explore_recycler_item.view.*
 import com.droidhats.campuscompass.models.Explore_Place
 import com.squareup.picasso.Picasso;
 
-
+/**
+ * This class will create access to the data items in the view
+ * in order to populate the explore places
+ * @param items
+ * @param listener
+ */
 class ExplorePlaceAdapter(private val items: ArrayList<Explore_Place>, private val listener: ExploreCategoryFragment.OnExplorePlaceClickListener?):
     RecyclerView.Adapter<ExplorePlaceAdapter.ViewHolder>() {
 
@@ -43,7 +48,7 @@ class ExplorePlaceAdapter(private val items: ArrayList<Explore_Place>, private v
         Picasso.get().load(item.place_image).into(holder.imageView);
 
         with(holder.view) {
-              tag = item
+            tag = item
             holder.cardView.setOnClickListener(onClickListener)
         }
     }

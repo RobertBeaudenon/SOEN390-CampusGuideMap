@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.views
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +17,10 @@ import com.droidhats.campuscompass.adapters.ExplorePlaceAdapter
 import com.droidhats.campuscompass.models.Explore_Place
 import com.droidhats.campuscompass.viewmodels.ExplorePlaceViewModel
 
+/**
+ * A View Fragment for the Explore places for one of the existing categories: Food, Study and Drinks.
+ * It displays all the UI components of the places and dynamically interacts with the user click.
+ */
 class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
 
     private lateinit var root : View
@@ -33,7 +36,6 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ExplorePlaceViewModel::class.java)
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -79,7 +81,6 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
             adapter = ExplorePlaceAdapter(places, onExplorePlaceClickListener)
         }
     }
-
 
     private fun retrieveArguments(): ArrayList<String> {
         val list = ArrayList<String>()
