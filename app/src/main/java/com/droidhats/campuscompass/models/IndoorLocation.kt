@@ -14,6 +14,7 @@ data class IndoorLocation(
         @ColumnInfo(name = "floor_num") val floorNum: String,
         @ColumnInfo(name = "floor_map") val floorMap: String,
         @ColumnInfo(name = "location_type") val type: String,
+        @ColumnInfo(name = "building_index") val buildingIndex: Int,
         @ColumnInfo(name = "location_first") val latlat: Double,
         @ColumnInfo(name = "location_second") val lnglng: Double
 ) :Location() {
