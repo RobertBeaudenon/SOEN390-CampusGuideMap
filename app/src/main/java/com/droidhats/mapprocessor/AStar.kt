@@ -102,5 +102,15 @@ fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>
     string.append(Circle.getPoint(endVertex.pos.first, endVertex.pos.second))
     string.append(Circle.getPoint(startVertex.pos.first, startVertex.pos.second))
 
+    // Get the start and end point of the last drawn path and use them to draw the arrow head paths
+    val lastDrawnPathStartPoint = Circle(endVertex.prev!!.pos.first, endVertex.prev!!.pos.second, 2.0)
+    val lastDrawnPathEndPoint = Circle(endVertex.pos.first, endVertex.pos.second, 2.0)
+
+    val arrowHeadPaths: List<String> = getArrowHeadPaths(lastDrawnPathStartPoint, lastDrawnPathEndPoint)
+
+    // Append the two arrow heads' paths to the string to be drawn on the map.
+    string.append(arrowHeadPaths[0])
+    string.append(arrowHeadPaths[1])
+
     return string.toString()
 }
