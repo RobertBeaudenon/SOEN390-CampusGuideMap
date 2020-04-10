@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.droidhats.campuscompass.models.FavoritePlace
 import com.droidhats.campuscompass.repositories.FavoritePlacesDao
 
-@Database(entities = [FavoritePlace::class], version = 1, exportSchema = true)
+@Database(entities = [FavoritePlace::class], version = 2, exportSchema = true)
 abstract class FavoritesDatabase : RoomDatabase() {
     abstract fun favoritePlacesDao(): FavoritePlacesDao
 

@@ -36,14 +36,6 @@ class FavoritesRepository {
 
     fun listAllPlaces() : List<FavoritePlace> = repository.values.toList()
 
-    fun storeToDevice() {
-
-    }
-
-    fun loadFromDevice() {
-
-    }
-
     fun createFavoritePlace(googlePlace: GooglePlace) : FavoritePlace {
         val name : String = googlePlace.name
         val latitude : Double = googlePlace.coordinate.latitude

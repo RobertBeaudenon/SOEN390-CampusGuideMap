@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class FavoritePlace(
     @PrimaryKey val placeId : String,
     @ColumnInfo(name = "name") val name : String?,
-    @ColumnInfo(name = "latitude") val latitude : Double?,
-    @ColumnInfo(name = "longitude") val longitude: Double?,
+    @ColumnInfo(name = "latitude") val latitude : Double,
+    @ColumnInfo(name = "longitude") val longitude: Double,
     @ColumnInfo(name = "address") val address : String?
 )
