@@ -47,11 +47,22 @@ class FloorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         root = inflater.inflate(R.layout.floor_fragment, container, false)
+        viewModel = ViewModelProvider(this).get(FloorViewModel::class.java)
+        var startAndEnd = viewModel.getDirections()
 
+        if (startAndEnd != null) {
+            handleNavigation(startAndEnd)
+        } else {
+            handleView()
+        }
+
+        return root
+    }
+
+    fun handleView() {
         var floorNum: String? = arguments?.getString("floornum")
         var mapToDisplay: String = "hall8.svg" // default value
         val building : Building? = arguments?.getParcelable("building")
-        println("building: $building")
         var floormap : String? = arguments?.getString("floormap")
         if (floorNum == null && building != null) {
             floorNum = building.getIndoorInfo().second.keys.first()
@@ -105,7 +116,7 @@ class FloorFragment : Fragment() {
         numberPicker.displayedValues = keys
 
         numberPicker.value = keys.indexOf(floorNum)
-        
+
         numberPicker.setOnScrollListener(NumberPicker.OnScrollListener { picker, scrollState ->
             if(scrollState == 0){
                 val newVal = numberPicker.value
@@ -118,8 +129,6 @@ class FloorFragment : Fragment() {
                 setImage(svg)
             }
         })
-
-        return root
     }
 
     fun setImage(svg: SVG) {
@@ -137,27 +146,29 @@ class FloorFragment : Fragment() {
         imageView.setImageDrawable(BitmapDrawable(getResources(), bitmap))
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FloorViewModel::class.java)
-
-
-        initSearchBar()
-
-        var startAndEnd = viewModel.getDirections()
+    fun handleNavigation(startToEnd: Pair<IndoorLocation, IndoorLocation>) {
+        var startAndEnd = startToEnd
         if (startAndEnd?.first?.lID == "") {
             startAndEnd = Pair(startAndEnd.second, startAndEnd.second)
         }
-        if (startAndEnd != null) {
-            val inputStream: InputStream = requireContext().assets.open(startAndEnd.first.floorMap)
-            val file: String = inputStream.bufferedReader().use { it.readText() }
-            val mapProcessor: ProcessMap = ProcessMap()
-            val newFile = mapProcessor.automateSVG(file, startAndEnd.first.floorNum)
-            mapProcessor.readSVGFromString(newFile)
-            val svg: SVG = SVG.getFromString(mapProcessor
-                .getSVGStringFromDirections(Pair(startAndEnd.first.lID, startAndEnd.second.lID)))
-            setImage(svg)
-        }
+        val inputStream: InputStream = requireContext().assets.open(startAndEnd.first.floorMap)
+        val file: String = inputStream.bufferedReader().use { it.readText() }
+        val mapProcessor: ProcessMap = ProcessMap()
+        val newFile = mapProcessor.automateSVG(file, startAndEnd.first.floorNum)
+        mapProcessor.readSVGFromString(newFile)
+        val svg: SVG = SVG.getFromString(
+            mapProcessor
+                .getSVGStringFromDirections(Pair(startAndEnd.first.lID, startAndEnd.second.lID))
+        )
+        setImage(svg)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+
+
+        initSearchBar()
 
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
