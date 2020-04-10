@@ -1,17 +1,15 @@
 package com.droidhats.campuscompass.views
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageButton
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
+import android.widget.Toast
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SwitchPreferenceCompat
 import com.droidhats.campuscompass.R
 
-class SettingsFragment: Fragment() {
 
+class SettingsFragment: PreferenceFragmentCompat() {
+    /*
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,6 +22,34 @@ class SettingsFragment: Fragment() {
                 GravityCompat.START
             )
         }
+
      return root
+    }
+*/
+    //loads view from res/xml/settings_preference.xml
+    //want to try to integrate the Preference view into the settings_fragment layouyt
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.settings_preferences, rootKey)
+
+        val stairsPreference: SwitchPreferenceCompat? = findPreference("stairs")
+        val escalatorsPreference: SwitchPreferenceCompat? = findPreference("escalators")
+        val elevatorsPreference: SwitchPreferenceCompat? = findPreference("elevators")
+
+        stairsPreference?.setOnPreferenceChangeListener(object : Preference.OnPreferenceChangeListener {
+            override fun onPreferenceChange(
+                preference: Preference?,
+                newValue: Any
+            ): Boolean {
+                if (newValue as Boolean) {
+                    //needed to update the switch UI
+                    stairsPreference.setChecked(true)
+                    Toast.makeText(context, "Stairs are on", Toast.LENGTH_LONG).show()
+                } else {
+                    stairsPreference.setChecked(false)
+                    Toast.makeText(context, "Stairs are off", Toast.LENGTH_LONG).show()
+                }
+                return true
+            }
+        })
     }
 }

@@ -1,6 +1,8 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
@@ -9,23 +11,24 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.droidhats.mapprocessor.ProcessMap
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
+import com.droidhats.mapprocessor.ProcessMap
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
-import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
+import kotlinx.android.synthetic.main.search_bar_layout.*
 import java.io.InputStream
 
 
-class FloorFragment : Fragment() {
+class FloorFragment : Fragment(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private lateinit var viewModel: FloorViewModel
     private lateinit var root: View
@@ -108,5 +111,13 @@ class FloorFragment : Fragment() {
             override fun onSearchConfirmed(text: CharSequence?) {
             }
         })
+    }
+
+    //this was my next solution - just started it but saw lots of content online
+    override fun onSharedPreferenceChanged(prefs: SharedPreferences, key: String) {
+
+        when (key) {
+            //getString(R.string.settings_stairs) ->
+        }
     }
 }

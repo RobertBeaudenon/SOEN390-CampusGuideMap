@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:persistent="true">
+
+    <PreferenceCategory
+        app:key="indoor_category"
+        app:title="Vertical Transportation Modes"
+        android:id="@+id/settings_pref">
+
+        <SwitchPreferenceCompat
+            app:key="stairs"
+            app:title="@string/settings_stairs"
+            android:icon="@drawable/icon_settings"
+            android:defaultValue="true"/>
+
+        <SwitchPreferenceCompat
+            app:key="escalators"
+            app:title="@string/settings_escalators"
+            android:icon="@drawable/icon_settings"
+            android:defaultValue="true"/>
+
+        <SwitchPreferenceCompat
+            app:key="elevators"
+            app:title="@string/settings_elevators"
+            android:icon="@drawable/icon_settings"
+            android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
