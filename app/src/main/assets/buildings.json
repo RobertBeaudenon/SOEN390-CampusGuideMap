@@ -1287,7 +1287,7 @@
 			"place_id": "ChIJDbfcNjIXyUwRcocn3RuPPiY",
 			"center_location": [45.459015, -73.638561],
             "location": [45.458831, -73.638801],
-            "floor_maps": ["vl1.svg"],
+            "floor_maps": [{"1":"vl1.svg"}, {"2": "vl2.svg"}, {"3": "vl2.svg"}],
             "coordinates": [
                 [45.4593010, -73.6386709],
                 [45.4593099, -73.6386635],
@@ -1341,7 +1341,7 @@
 			"place_id": "None",
 			"center_location": [45.458740, -73.638587],
             "location":[45.458673, -73.638513],
-            "floor_maps": ["ve1.svg"],
+            "floor_maps": [{"1":"ve1.svg"}, {"2": "ve2.svg"}, {"3": "ve2.svg"}],
             "coordinates": [
                 [45.4587170, -73.6384000],
                 [45.4586286, -73.6384683],
