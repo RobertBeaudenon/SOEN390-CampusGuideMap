@@ -29,6 +29,7 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.droidhats.mapprocessor.ProcessMap
 import com.google.android.gms.location.LocationServices
@@ -45,6 +46,7 @@ import java.io.InputStream
 class SearchFragment : Fragment()  {
 
     private lateinit var viewModel: SearchViewModel
+    private lateinit var viewModelMapViewModel: MapViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var root: View
@@ -74,6 +76,7 @@ class SearchFragment : Fragment()  {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        viewModelMapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         viewModel.init()
         initSearch()
         observeSearchSuggestions()
@@ -181,7 +184,12 @@ class SearchFragment : Fragment()  {
             //check if both origin and destination are indoor
             if((origin is IndoorLocation) && (destination is IndoorLocation))  {
                 viewModel.setIndoorDirections(Pair(origin, destination))
-                findNavController().navigate(R.id.floor_fragment)
+                val bundle: Bundle = Bundle()
+                bundle.putString("floornum", origin.floorNum)
+                val buildingInitial = origin.name.split('-')[0]
+                val building = viewModelMapViewModel.findBuildingByInitial(buildingInitial)
+                bundle.putParcelable("building", building)
+                findNavController().navigate(R.id.floor_fragment, bundle)
             } else {
                 findNavController().popBackStack(R.id.map_fragment, false)
             }

@@ -71,6 +71,7 @@
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
+            android:id="@+id/text_floor"
             android:layout_width="170dp"
             android:layout_height="match_parent"
             android:background="#DCDCDC"
@@ -84,10 +85,10 @@
         <NumberPicker
             android:id="@+id/floorPicker"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
+            android:scaleX="1"
+            android:scaleY="1"
             android:showDividers="middle"
             android:textAlignment="center"></NumberPicker>
 
