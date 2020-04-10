@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <!-- ***************************************************************************************************
-DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 201-223  IN CHRONOLOGICAL ORDER.
+DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 201-224  IN CHRONOLOGICAL ORDER.
 *****************************************************************************************************-->
 <svg
     xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -177,27 +177,27 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 201
     <path
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
         d="m 187.14258,332.57227 0,48.57031 12.85742,0 0,5.71484 5.71484,0 0,-5.71484 0,-48.57031 -18.57226,0 z"
-        id="path4215"
+        id="path4224"
         inkscape:connector-curvature="0" />
     <path
         style="fill:#ff8080;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
         d="m 242.94141,364.71429 -37.22657,0"
-        id="line"
+        id="path4403"
         inkscape:connector-curvature="0" />
     <path
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
         d="m 792.85714,463.87042 0,102.27216"
-        id="line"
+        id="path4404"
         inkscape:connector-curvature="0" />
     <path
         sodipodi:nodetypes="ccccc"
         inkscape:connector-curvature="0"
-        id="line"
+        id="path4401"
         d="m 543.46204,327.92857 0,6.78572 -302.03347,0 0,-22.85714 -35.71373,0"
         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="line"
+        id="path4402"
         d="m 543.46204,176.5 0,-14.53892 98.99499,0 0,5.42956"
         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
@@ -259,7 +259,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 201
     <text x="800" y="720" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 222 </text>
     <path
         inkscape:connector-curvature="0"
-        id="line"
+        id="path4406"
         d="m 707.61133,334.82422 67.68074,0 0,26.00976"
         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
@@ -382,7 +382,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 201
           stroke-width="0"/>
     </svg>
     <!-- display printer-->
-    <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="printer" x="615" y="280" >
+    <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="printer1" x="615" y="280" >
       <path
           d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
           fill="#666666"

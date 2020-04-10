@@ -205,7 +205,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM 201-23
     <text x="710" y="125" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 215 </text>
     <path
        inkscape:connector-curvature="0"
-       id="path4216"
+       id="path4216.1"
        d="m 742.9668,38.285156 0,64.960934 16.91992,0 0,-7.324215 34.39844,0 0,-57.636719 -34.39844,0 -16.91992,0 z"
        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <text x="750" y="60" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 216.1 </text>
@@ -214,7 +214,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM 201-23
        x="683.11566"
        height="42.989986"
        width="59.851147"
-       id="rect4216"
+       id="rect4216.2"
        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <text x="695" y="60" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 216.2 </text>
     <rect
