@@ -18,6 +18,7 @@ import android.widget.RadioButton
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +31,8 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.OutdoorNavigationRoute
+import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.droidhats.mapprocessor.ProcessMap
 import com.google.android.gms.location.LocationServices
@@ -46,6 +49,7 @@ import java.io.InputStream
 class SearchFragment : Fragment()  {
 
     private lateinit var viewModel: SearchViewModel
+    private lateinit var viewModelMapViewModel: MapViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var root: View
@@ -74,7 +78,8 @@ class SearchFragment : Fragment()  {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        viewModelMapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
         viewModel.init()
         initSearch()
         observeSearchSuggestions()
@@ -160,7 +165,13 @@ class SearchFragment : Fragment()  {
                         val destination = route.destination
                         //check if both origin and destination are indoor
                         if((origin is IndoorLocation) && (destination is IndoorLocation))  {
-                            findNavController().navigate(R.id.floor_fragment)
+                            val bundle: Bundle = Bundle()
+                            bundle.putString("floornum", origin.floorNum)
+                            val buildingInitial = origin.name.split('-')[0]
+                            val building = viewModelMapViewModel.findBuildingByInitial(buildingInitial)
+                            println("building1: $building")
+                            bundle.putParcelable("building", building)
+                            findNavController().navigate(R.id.floor_fragment, bundle)
                         } else {
                             findNavController().popBackStack(R.id.map_fragment, false)
                         }

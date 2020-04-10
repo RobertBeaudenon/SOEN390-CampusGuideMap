@@ -3,7 +3,7 @@ package com.droidhats.campuscompass.views
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.*
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -49,8 +49,9 @@ class FloorFragmentTest {
 
     @Test
     fun navigationFromBuildingTest() {
+        Thread.sleep(1000)
 
-        device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. ")).click()
+        device.findObject(UiSelector().descriptionContains("Henry F. Hall")).click()
 
         //Retrieve bottom sheet once it is in the view
         val bottomSheet = device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet"))
@@ -82,14 +83,16 @@ class FloorFragmentTest {
             )
         )
 
+        //check if Floor Fragment is in view
         onView(withId(R.id.text_floor))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        onView(withId(R.id.button_plus))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(click())
+        //check if floor picker is in view
+        onView(withId(R.id.floorPicker))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        onView(withId(R.id.button_minus))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(click())
+        //swipe the floor picker to change floor map
+        onView(withId(R.id.floorPicker)).perform(GeneralSwipeAction(Swipe.FAST, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
 
     }
 
@@ -115,16 +118,16 @@ class FloorFragmentTest {
             Matchers.allOf(
                 withId(R.id.search_src_text), ViewMatchers.isDisplayed()
             )
-        ).perform(ViewActions.typeText("H"), ViewActions.closeSoftKeyboard())
+        ).perform(ViewActions.typeText("h"), ViewActions.closeSoftKeyboard())
 
         //allow suggestions to load
         Thread.sleep(2000)
 
-        //click on the H-803 suggestion from list
+        //click on the hall-167 suggestion from list
         onView(
             Matchers.allOf(
                 withId(R.id.search_suggestion),
-                withText("hall-803")
+                withText("hall-167")
             )
         ).perform(click())
 
@@ -135,14 +138,16 @@ class FloorFragmentTest {
             )
         )
 
+        //check if Floor Fragment is in view
         onView(withId(R.id.text_floor))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        onView(withId(R.id.button_plus))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(click())
+        //check if floor picker is in view
+        onView(withId(R.id.floorPicker))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        onView(withId(R.id.button_minus))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(click())
+        //swipe the floor picker to change floor map
+        onView(withId(R.id.floorPicker)).perform(GeneralSwipeAction(Swipe.FAST, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
 
     }
 

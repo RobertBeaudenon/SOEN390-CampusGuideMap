@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Button
+import android.widget.NumberPicker
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
@@ -49,6 +51,7 @@ class FloorFragment : Fragment() {
         var floorNum: String? = arguments?.getString("floornum")
         var mapToDisplay: String = "hall8.svg" // default value
         val building : Building? = arguments?.getParcelable("building")
+        println("building: $building")
         var floormap : String? = arguments?.getString("floormap")
         if (floorNum == null && building != null) {
             floorNum = building.getIndoorInfo().second.keys.first()
@@ -86,30 +89,33 @@ class FloorFragment : Fragment() {
             setImage(svg)
         }
 
-        val buttonPlus: ImageButton = root.findViewById(R.id.button_plus)
-        var newSvg : SVG
-        buttonPlus.setOnClickListener(View.OnClickListener {
-            val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
-            if(indexOfCurrentMap != maps?.size?.minus(1) && indexOfCurrentMap !=null) {
-                if (maps != null && indexOfCurrentMap != null) {
-                    mapToDisplay = maps[indexOfCurrentMap.plus(1)]
-                }
-                inputStream = requireContext().assets.open(mapToDisplay)
-                newSvg = SVG.getFromInputStream(inputStream)
-                setImage(newSvg)
-            }
-        })
+        val numberPicker: NumberPicker = root.findViewById(R.id.floorPicker)
+        numberPicker.minValue = 0
+        numberPicker.maxValue = maps.size - 1
+        numberPicker.wrapSelectorWheel = false
 
-        val buttonMinus: ImageButton = root.findViewById(R.id.button_minus)
-        buttonMinus.setOnClickListener(View.OnClickListener {
-            val indexOfCurrentMap = maps?.indexOf(mapToDisplay)
-            if(indexOfCurrentMap != 0 && indexOfCurrentMap !=null) {
-                if (maps != null && indexOfCurrentMap != null) {
-                    mapToDisplay = maps[indexOfCurrentMap.minus(1)]
-                }
-                inputStream = requireContext().assets.open(mapToDisplay)
-                newSvg = SVG.getFromInputStream(inputStream)
-                setImage(newSvg)
+        val keys : Array<String> = Array(maps.size){""}
+        if (building != null) {
+            var index = 0
+            for (key in building?.getIndoorInfo()?.second!!.keys) {
+                keys[index] = key
+                index++
+            }
+        }
+        numberPicker.displayedValues = keys
+
+        numberPicker.value = keys.indexOf(floorNum)
+        
+        numberPicker.setOnScrollListener(NumberPicker.OnScrollListener { picker, scrollState ->
+            if(scrollState == 0){
+                val newVal = numberPicker.value
+                val newFloorNum = building!!.getIndoorInfo().second.keys.elementAt(newVal)
+
+                inputStream = requireContext().assets.open(maps[newVal])
+                file = inputStream.bufferedReader().use { it.readText() }
+                file = mapProcessor.automateSVG(file, newFloorNum)
+                val svg = SVG.getFromString(file)
+                setImage(svg)
             }
         })
 
@@ -156,14 +162,9 @@ class FloorFragment : Fragment() {
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
             viewModel.consumeNavHandler()
-            println("hiiii")
         }
 
         viewModel.navigationRepository?.getNavigationRoute()?.observe(viewLifecycleOwner, Observer {
-            println("helloooo")
-            println(it)
-            println(it is OutdoorNavigationRoute)
-            println(it?.origin is IndoorLocation)
             if (it is OutdoorNavigationRoute) {
                 findNavController().navigate(R.id.map_fragment)
             }

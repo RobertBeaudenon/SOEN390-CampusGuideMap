@@ -12,17 +12,18 @@
     <ImageView
         android:id="@+id/floormap2"
         android:layout_width="412dp"
-        android:layout_height="444dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="166dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:layout_constraintVertical_bias="0.422" />
 
     <com.otaliastudios.zoom.ZoomImageView
         android:id="@+id/floormap"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:scrollbars="vertical|horizontal"
         app:alignment="center"
@@ -30,8 +31,11 @@
         app:flingEnabled="true"
         app:horizontalPanEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintVertical_bias="0.0"
         app:maxZoom="2.5"
         app:maxZoomType="zoom"
         app:minZoom="0.7"
@@ -46,13 +50,12 @@
         app:transformationGravity="auto"
         app:twoFingersScrollEnabled="true"
         app:verticalPanEnabled="true"
-        app:zoomEnabled="true"
-        tools:layout_editor_absoluteX="1dp">
+        app:zoomEnabled="true">
 
     </com.otaliastudios.zoom.ZoomImageView>
 
     <include
-        android:id="@+id/include"
+        android:id="@+id/include2"
         layout="@layout/search_bar_layout" />
 
     <Button
@@ -87,26 +90,15 @@
             android:textSize="12sp"
             android:textStyle="bold" />
 
-        <LinearLayout
+        <NumberPicker
+            android:id="@+id/floorPicker"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/button_plus"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:src="@drawable/icon_plus" />
-
-            <ImageButton
-                android:id="@+id/button_minus"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:src="@drawable/icon_minus" />
-        </LinearLayout>
-
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:scaleX="1"
+            android:scaleY="1"
+            android:showDividers="middle"
+            android:textAlignment="center" />
 
     </LinearLayout>
 
