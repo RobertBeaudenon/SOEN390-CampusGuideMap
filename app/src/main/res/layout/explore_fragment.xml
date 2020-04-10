@@ -136,7 +136,7 @@
         android:layout_width="80dp"
         android:layout_height="40dp"
         android:layout_below="@+id/mapFragSearchBar"
-        android:layout_marginLeft="165dp"
+        android:layout_gravity="center|bottom"
         android:layout_marginTop="50dp"
         android:background="@drawable/toggle_switch"
         android:elevation="0dp"
