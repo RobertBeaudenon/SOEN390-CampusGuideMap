@@ -496,27 +496,27 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 101
       <text x="50" y="850" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 156 </text>
       <path
         inkscape:connector-curvature="0"
-        id="path4615"
+        id="path4616"
         d="m 690.94434,167.39064 0,-30.30458"
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4617"
+        id="path4618"
         d="m 508.92857,165.37033 0,-28.28427"
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4619"
+        id="path4620"
         d="m 274.28571,165.37109 0,-29.29492"
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4621"
+        id="path4622"
         d="m 241.42578,136.07617 -33.33399,0"
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4623"
+        id="path4624"
         d="m 242.94141,187.57143 -37.22657,0"
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
@@ -526,51 +526,52 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 101
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4627"
+        id="path4628"
         d="m 242.94141,364.71429 -37.22657,0"
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4629"
+        id="path4630"
         d="m 823.77942,169.91602 -83.84268,0 0,30.80966"
         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4631"
+        id="path4632"
         d="m 792.85714,463.87042 0,102.27216"
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4633"
+        id="path4634"
         d="m 762.14286,463.87042 0,102.27217"
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4635"
+        id="path4636"
         d="m 778.32227,566.14259 14.53485,0"
         style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4637"
+        id="path4638"
         d="M 520,491.14286 C 530.71429,530.42857 550,558.28571 572.85714,574"
         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         sodipodi:nodetypes="cc"
         inkscape:connector-curvature="0"
-        id="path4639"
+        id="path4640"
         d="M 600.71429,589.71429 C 642.5,606.85714 685,598.28571 717.85714,574"
         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4641"
+        id="path4642"
         d="m 478.92857,501.5 c 6.78572,31.42857 22.5,57.85714 22.5,57.85714"
         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
         inkscape:connector-curvature="0"
-        id="path4643"
+        id="path4644"
         d="M 507.5,569.35714 C 528.21429,600.07143 548.57143,614 548.57143,614"
         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 
+    <rect x="205" y="365" width="40" height="30" style="fill:none;stroke:none"/>
     <!-- Displaying icons on the map -->
     <!-- Displaying washroom icon on the map -->
     <svg width="35" height="52" viewBox="0 0 35 52" fill="none"

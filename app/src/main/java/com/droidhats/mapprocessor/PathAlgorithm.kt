@@ -28,6 +28,7 @@ fun Dijkstra(start: MapElement, end: MapElement, pathElements: MutableList<Node>
     for (point in startPoint.neighbors) {
         val dist = getDistance(startPoint, point)
         point.value = dist
+        point.shortestPath = mutableListOf()
         point.shortestPath.add(startPoint.circle)
     }
 
@@ -64,7 +65,7 @@ fun Dijkstra(start: MapElement, end: MapElement, pathElements: MutableList<Node>
  * @param visited the list of nodes already visited
  */
 fun SubDijkstra(currentPoint: Node, endPoint: Node, visited: MutableList<Node>) {
-    if (currentPoint.circle.equals(endPoint.circle) || isInList(currentPoint, visited)) return
+    if (currentPoint.circle.equals(endPoint.circle)) return
     visited.add(currentPoint)
 
     for (point in currentPoint.neighbors) {
@@ -74,16 +75,19 @@ fun SubDijkstra(currentPoint: Node, endPoint: Node, visited: MutableList<Node>) 
             point.shortestPath = copyList(currentPoint.shortestPath)
             point.shortestPath.add(currentPoint.circle)
         }
-        if (point.value > dist && !isInList(point, currentPoint.visitedBy)) {
+        if (point.value > dist) {
             point.value = dist
             point.shortestPath = copyList(currentPoint.shortestPath)
             point.shortestPath.add(currentPoint.circle)
+            SubDijkstra(point, endPoint, visited)
         }
         point.visitedBy.add(currentPoint)
     }
 
     for (point in currentPoint.neighbors) {
-        SubDijkstra(point, endPoint, visited)
+        if (!isInList(point, visited)){
+            SubDijkstra(point, endPoint, visited)
+        }
     }
 }
 
