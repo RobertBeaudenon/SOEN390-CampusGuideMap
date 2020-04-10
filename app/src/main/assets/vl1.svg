@@ -528,6 +528,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 101
         d="M 507.5,569.35714 C 528.21429,600.07143 548.57143,614 548.57143,614"
         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 
+    <rect x="205" y="365" width="40" height="30" style="fill:none;stroke:none"/>
     <!-- Displaying icons on the map -->
     <!-- Displaying washroom icon on the map -->
     <svg width="35" height="52" viewBox="0 0 35 52" fill="none"

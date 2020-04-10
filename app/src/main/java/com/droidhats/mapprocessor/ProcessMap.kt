@@ -620,7 +620,7 @@ class ProcessMap {
         } else if (abs(pointA.cx - pointB.cx) > 1.0){
 
             val y: Double = if (pointA.cy < pointB.cy) pointA.cy else pointB.cy
-            for (step in 10 until abs(pointB.cy - pointA.cy).toInt() step 10) {
+            for (step in 10 until abs(pointB.cy - pointA.cy).toInt() step 15) {
                 val newY: Double = y + step
                 if (!inPath((newY-b)/m, newY)) {
                     return false
@@ -628,7 +628,7 @@ class ProcessMap {
             }
         } else {
             val y: Double = if (pointA.cy < pointB.cy) pointA.cy else pointB.cy
-            for (step in 10 until abs(pointB.cy - pointA.cy).toInt() step 10) {
+            for (step in 10 until abs(pointB.cy - pointA.cy).toInt() step 15) {
                 val newY: Double = y + step
                 if (!inPath(pointA.cx, newY)) {
                     return false
