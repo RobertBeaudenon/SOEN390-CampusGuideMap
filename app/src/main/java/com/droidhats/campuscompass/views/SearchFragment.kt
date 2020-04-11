@@ -29,6 +29,7 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.FavoritePlace
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.droidhats.mapprocessor.ProcessMap
 import com.google.android.gms.location.LocationServices
@@ -97,22 +98,31 @@ class SearchFragment : Fragment()  {
                 destinationPlace.address!!,
                 destinationPlace.latLng!!)
             showNavigationView(googlePlace, true)
-            arguments?.clear()
         }
 
         val destinationBuilding = arguments?.getParcelable<Building>("destBuilding")
         if (destinationBuilding != null) {
             showNavigationView(destinationBuilding, true)
-            arguments?.clear()
         }
 
         val destinationEventLocation = arguments?.getString("destEventLocation")
         if (destinationEventLocation != null) {
             val calendarLocation = GooglePlace("",destinationEventLocation, "", LatLng(0.0,0.0) )
-
             showNavigationView(calendarLocation, true)
-            arguments?.clear()
         }
+
+        val favPlaceArg = arguments?.getParcelable<FavoritePlace>("favPlace")
+        if (favPlaceArg != null) {
+            showNavigationView(
+                GooglePlace(
+                    favPlaceArg.placeId,
+                    favPlaceArg.name + ", " + favPlaceArg.address,
+                    "",
+                    LatLng(favPlaceArg.latitude, favPlaceArg.longitude)
+                ), true
+            )
+        }
+        arguments?.clear()
     }
 
     private fun observeSearchSuggestions() {

@@ -194,11 +194,15 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
      * The distance returned is in km
      */
     private fun haversine(location1 : Location, location2 : Location) : Double{
-        val diffLat = Math.toRadians(location2.getLocation().latitude - location1.getLocation().latitude)
-        val diffLong = Math.toRadians(location2.getLocation().longitude- location1.getLocation().longitude)
+        return haversine(location1.getLocation(), location2.getLocation())
+    }
 
-        val lat = Math.toRadians(location1.getLocation().latitude)
-        val lat2 = Math.toRadians(location2.getLocation().latitude)
+    private fun haversine(latLng1: LatLng, latLng2: LatLng) : Double {
+        val diffLat = Math.toRadians(latLng2.latitude - latLng1.latitude)
+        val diffLong = Math.toRadians(latLng2.longitude- latLng1.longitude)
+
+        val lat = Math.toRadians(latLng1.latitude)
+        val lat2 = Math.toRadians(latLng2.latitude)
 
         val rad = 6371.0
         val a = sin(diffLat / 2).pow(2.0) +
