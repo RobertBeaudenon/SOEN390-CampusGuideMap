@@ -9,7 +9,11 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.NumberPicker
+import android.widget.Toast
+import android.widget.ToggleButton
+import android.widget.ProgressBar
 import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -28,8 +32,9 @@ import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
-import kotlinx.android.synthetic.main.map_fragment.*
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.InputStream
 
 
@@ -38,6 +43,7 @@ class FloorFragment : Fragment() {
     private lateinit var viewModel: FloorViewModel
     private lateinit var viewModelMapViewModel: MapViewModel
     private lateinit var root: View
+    private lateinit var progressBar: ProgressBar
     private var canConsume: Boolean = true
     private var intermediateTransportID: String? = null
 
@@ -54,6 +60,7 @@ class FloorFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(FloorViewModel::class.java)
         viewModelMapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        progressBar = root.findViewById(R.id.progressFloor)
 
         val startAndEnd = viewModel.getDirections()
         if (startAndEnd != null) {
@@ -204,8 +211,6 @@ class FloorFragment : Fragment() {
                 canConsume = true
                 if (intermediateTransportID != null) {
                     if (startAndEnd.first.lID == "") {
-                        println("intermediate")
-                        println(intermediateTransportID)
                         generateDirectionsOnFloor(
                             intermediateTransportID!!,
                             startAndEnd.second.lID,
@@ -306,11 +311,17 @@ class FloorFragment : Fragment() {
                 )
             }
         }
-        val svg: SVG = SVG.getFromString(
-            mapProcessor
-                .getSVGStringFromDirections(Pair(startPos, endPos))
-        )
-        setImage(svg)
+        progressBar.visibility = View.VISIBLE
+        GlobalScope.launch {
+            val svg: SVG = SVG.getFromString(
+                mapProcessor
+                    .getSVGStringFromDirections(Pair(startPos, endPos))
+            )
+            requireActivity().runOnUiThread {
+                setImage(svg)
+                progressBar.visibility = View.GONE
+            }
+        }
     }
 
     private fun initSearchBar() {
