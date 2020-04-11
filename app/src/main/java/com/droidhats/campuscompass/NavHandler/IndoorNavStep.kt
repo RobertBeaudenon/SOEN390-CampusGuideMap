@@ -23,7 +23,7 @@ class IndoorNavStep(override val location: IndoorLocation) : NavHandler() {
                 location
             )
             NavigationRepository.getInstance()?.setNavigationRoute(navRoute)
-        } else if (next !is IndoorNavStep) {
+        } else if (next is OutdoorNavStep) {
             val navRoute = NavigationRoute(
                 location,
                 IndoorLocation(

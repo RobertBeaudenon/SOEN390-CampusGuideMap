@@ -15,7 +15,7 @@ abstract class NavHandler {
             if (origin is IndoorLocation) {
                 navigationHandler = IndoorNavStep(origin)
                 if (destination is IndoorLocation) {
-                    if (origin.floorMap == destination.floorMap) {
+                    if (origin.buildingIndex == destination.buildingIndex) {
                         navigationHandler.setNext(IndoorNavStep(destination))
                     } else {
                         navigationHandler
