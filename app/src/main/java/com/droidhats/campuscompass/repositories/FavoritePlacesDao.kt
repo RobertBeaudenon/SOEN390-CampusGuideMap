@@ -28,6 +28,7 @@ interface FavoritePlacesDao {
         val longitude : Double =  googlePlace.coordinate.longitude
         val address : String? = googlePlace.place?.address
         val placeId : String = googlePlace.placeID
+        googlePlace.place
 
         return FavoritePlace(placeId, name, latitude, longitude, address)
     }
