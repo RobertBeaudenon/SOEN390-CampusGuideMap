@@ -429,7 +429,7 @@ class SearchFragment : Fragment()  {
                 && origin.buildingIndex == destination.buildingIndex
             ) {
                 val processMap = ProcessMap()
-                val inputStream: InputStream = requireContext().assets.open("hall8.svg")
+                val inputStream: InputStream = requireContext().assets.open(origin.floorMap)
                 val file: String = inputStream.bufferedReader().use { it.readText() }
                 processMap.readSVGFromString(file)
                 var distance: Int = 0
@@ -440,11 +440,20 @@ class SearchFragment : Fragment()  {
                     var transport: String = processMap
                         .findNearestIndoorTransportation(
                             originPos!!,
-                            origin.floorNum < destination.floorNum
+                            origin.getFloorNumber() < destination.getFloorNumber()
                         )
-                    // taking into account
-                    distance += processMap.getTimeInSeconds(origin.lID, transport) +
-                            processMap.getTimeInSeconds(transport, destination.lID)
+                    distance += processMap.getTimeInSeconds(origin.lID, transport)
+
+                    // taking into account different floor maps
+                    if (origin.floorMap != destination.floorMap) {
+                        val destinationProcessMap = ProcessMap()
+                        val inputStreamDest: InputStream = requireContext().assets.open(origin.floorMap)
+                        val fileDest: String = inputStreamDest.bufferedReader().use { it.readText() }
+                        destinationProcessMap.readSVGFromString(fileDest)
+                        distance += destinationProcessMap.getTimeInSeconds(transport, destination.lID)
+                    } else {
+                        distance += processMap.getTimeInSeconds(transport, destination.lID)
+                    }
                 } else {
                     distance = processMap.getTimeInSeconds(
                         origin.lID,
