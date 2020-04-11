@@ -66,6 +66,16 @@
 
     </com.otaliastudios.zoom.ZoomImageView>
 
+    <ProgressBar
+        android:id="@+id/progressFloor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="@+id/floormap"
+        app:layout_constraintStart_toStartOf="@+id/floormap"
+        app:layout_constraintTop_toBottomOf="@+id/include2" />
+
     <include
         android:id="@+id/include2"
         layout="@layout/search_bar_layout" />
