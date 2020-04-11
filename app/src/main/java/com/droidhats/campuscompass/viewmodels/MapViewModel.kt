@@ -37,7 +37,6 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
         campuses = mapRepository.getCampuses()
         buildings = mapRepository.getBuildings()
         favoritesDb = FavoritesDatabase.getInstance(context)
-
     }
 
     fun getFavoritesDb() : FavoritesDatabase = favoritesDb

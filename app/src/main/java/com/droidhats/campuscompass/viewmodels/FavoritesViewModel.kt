@@ -15,7 +15,7 @@ import kotlin.math.pow
 
 /*
   This class must extend AndroidViewModel instead of just ViewModel because
-  ContentResolver requires the application context to be able to query calendar info
+ "ContentResolver requires the application context to be able to query favorite place info"
 */
 class FavoritesViewModel(application: Application) : AndroidViewModel(application) {
 

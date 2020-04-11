@@ -12,7 +12,6 @@ abstract class FavoritesDatabase : RoomDatabase() {
     abstract fun favoritePlacesDao(): FavoritePlacesDao
 
     companion object {
-
         // For Singleton instantiation
         @Volatile
         private var instance: FavoritesDatabase? = null

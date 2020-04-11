@@ -197,7 +197,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         return haversine(location1.getLocation(), location2.getLocation())
     }
 
-    fun haversine(latLng1: LatLng, latLng2: LatLng) : Double {
+    private fun haversine(latLng1: LatLng, latLng2: LatLng) : Double {
         val diffLat = Math.toRadians(latLng2.latitude - latLng1.latitude)
         val diffLong = Math.toRadians(latLng2.longitude- latLng1.longitude)
 

@@ -28,12 +28,10 @@ class FavoritesAdapter(
             // Notify the activity/fragment that an item has been clicked
              listener?.onFavoriteClick(item)
         }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.favorites_recycler_item, parent, false)
-
 
         return ViewHolder(view)
     }
@@ -51,7 +49,7 @@ class FavoritesAdapter(
             view.tag = item
             navButton.setOnClickListener{
                 val bundle = Bundle()
-                bundle.putParcelable("favPlace", item )
+                bundle.putString("destEventLocation",item.address )
                 view.findNavController().popBackStack()
                 view.findNavController().navigate(R.id.search_fragment, bundle)
             }
@@ -66,10 +64,8 @@ class FavoritesAdapter(
 
         val titleView: TextView = view.findViewById(R.id.favorites_title_item)
         val locationView: TextView = view.findViewById(R.id.favorites_location_item)
-        var cardView: CardView = view.findViewById(R.id.favorites_card_view)
-        var navButton : ImageButton = view.findViewById(R.id.setNavigationPoint)
+        val navButton : ImageButton = view.findViewById(R.id.setNavigationPoint)
         val distanceView: TextView = view.findViewById(R.id.favorites_distance_view)
-
     }
 
     interface OnFavoriteClickListener {

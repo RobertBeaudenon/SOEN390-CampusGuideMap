@@ -431,7 +431,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-
     private fun getBearing(startLat: Double, startLong: Double, endLat: Double, endLong: Double): Float {
         val lat = abs(startLat - endLat)
         val lng = abs(startLong - endLong)
@@ -601,16 +600,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun toggleSaveButton() {
         val saveButton : Button = requireActivity().findViewById(R.id.place_card_favorites_button)
-        if (saveButton.text.equals("Save")) {
+        if (saveButton.text == "Save") {
             saveButton.text = "Saved"
-            val redHeart : Drawable? = context?.resources?.getDrawable(R.drawable.ic_favorites_heart_red)
+            val redHeart : Drawable? = activity?.let { ContextCompat.getDrawable(it, R.drawable.ic_favorites_heart_red) }
             saveButton.setCompoundDrawablesWithIntrinsicBounds(redHeart, null, null, null)
         } else {
             saveButton.text = "Save"
-            val greyHeart : Drawable? = context?.resources?.getDrawable(R.drawable.ic_favorites_heart_grey)
+            val greyHeart : Drawable? = activity?.let { ContextCompat.getDrawable(it, R.drawable.ic_favorites_heart_grey) }
             saveButton.setCompoundDrawablesWithIntrinsicBounds(greyHeart, null, null, null)
         }
-
     }
 
     private fun populatePlaceInfoCard(location: GooglePlace){
@@ -626,13 +624,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val foundPlace : FavoritePlace? = favoritesDb.favoritePlacesDao().findPlaceById(location.placeID)
         if (foundPlace != null) {
             saveButton.text = "Saved"
-            val redHeart : Drawable? = context?.resources?.getDrawable(R.drawable.ic_favorites_heart_red)
+            val redHeart : Drawable? = activity?.let { ContextCompat.getDrawable(it, R.drawable.ic_favorites_heart_red)}
             saveButton.setCompoundDrawablesWithIntrinsicBounds(redHeart, null, null, null)
         } else {
             saveButton.text = "Save"
-            val greyHeart : Drawable? = context?.resources?.getDrawable(R.drawable.ic_favorites_heart_grey)
+            val greyHeart : Drawable? = activity?.let { ContextCompat.getDrawable(it, R.drawable.ic_favorites_heart_grey)}
             saveButton.setCompoundDrawablesWithIntrinsicBounds(greyHeart, null, null, null)
-
         }
 
         placeName.setOnClickListener {
@@ -703,7 +700,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onFavoriteClick(item: FavoritePlace?) {
         if (item != null) {
-            var googlePlace : GooglePlace = GooglePlace(item.placeId, item.name?:"", item.address?:"", LatLng(item.latitude, item.longitude))
+            val googlePlace : GooglePlace = GooglePlace(item.placeId, item.name?:"", item.address?:"", LatLng(item.latitude, item.longitude))
 
             findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch {
