@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.ExplorePlaceAdapter
 import com.droidhats.campuscompass.models.Explore_Place
@@ -26,6 +27,7 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     private lateinit var root : View
     private lateinit var viewModel: ExplorePlaceViewModel
     private lateinit var recyclerView: RecyclerView
+    private lateinit var swiperefreshLayout: SwipeRefreshLayout
     private lateinit var places: ArrayList<Explore_Place>
     private var columnCount = 1
 
@@ -60,6 +62,9 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
             "Study" ->  "cafe"
            else -> ""
        }
+        swiperefreshLayout = root.findViewById(R.id.swipe_container)
+        swiperefreshLayout.setRefreshing(false);
+        swiperefreshLayout.setEnabled(false);
 
         recyclerView = root.findViewById(R.id.explore_recycler_view)
         viewModel.getPlaces(list.get(1), type).observe(viewLifecycleOwner, Observer {
