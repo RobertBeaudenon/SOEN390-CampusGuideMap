@@ -365,6 +365,10 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM 201-23
        id="rect4236"
        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 
+    <rect x="290" y="160" height="121" width="20" style="fill:none;stroke:none" />
+    <rect x="495" y="240" height="95" width="50" style="fill:none;stroke:none" />
+    <rect x="745" y="310" height="25" width="20" style="fill:none;stroke:none" />
+
     <!-- Displaying icons on the map -->
     <!-- Displaying washroom icon on the map -->
     <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="restroom_w1" x="309" y="80">
