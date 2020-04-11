@@ -181,6 +181,20 @@ class FloorFragment : Fragment() {
             canConsume = false
         }
 
+        val goingUp: Boolean = when(true) {
+            (startAndEnd.first.lID != "" && startAndEnd.second.lID != "") -> {
+                startAndEnd.first.floorNum.replace('s', '-').toInt() <
+                        startAndEnd.second.floorNum.replace('s', '-').toInt()
+            }
+            startAndEnd.first.lID == "" -> {
+                1 < startAndEnd.second.floorNum.replace('s', '-').toInt()
+            }
+            else -> { // second.lID is an empty string
+                startAndEnd.first.floorNum.replace('s', '-').toInt() < 1
+            }
+        }
+
+
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
             if (canConsume) {
@@ -189,18 +203,22 @@ class FloorFragment : Fragment() {
                 canConsume = true
                 if (intermediateTransportID != null) {
                     if (startAndEnd.first.lID == "") {
+                        println("intermediate")
+                        println(intermediateTransportID)
                         generateDirectionsOnFloor(
                             intermediateTransportID!!,
                             startAndEnd.second.lID,
                             startAndEnd.second.floorMap,
-                            startAndEnd.second.floorNum
+                            startAndEnd.second.floorNum,
+                            goingUp
                         )
                     } else {
                         generateDirectionsOnFloor(
                             intermediateTransportID!!,
                             "entrance",
                             building.getIndoorInfo().second["1"]!!,
-                            "1"
+                            "1",
+                            goingUp
                         )
                     }
                 }
@@ -213,31 +231,34 @@ class FloorFragment : Fragment() {
                 "entrance",
                 "", // intentionally left blank to find the nearest transportation method
                 building.getIndoorInfo().second["1"]!!,
-                "1"
+                "1",
+                goingUp
             )
         } else {
             generateDirectionsOnFloor(
                 startAndEnd.first.lID,
                 startAndEnd.second.lID,
                 startAndEnd.first.floorMap,
-                startAndEnd.first.floorNum
+                startAndEnd.first.floorNum,
+                goingUp
             )
         }
 
     }
 
-    fun findNearestIndoorTransportation(mapProcessor: ProcessMap, pos: Pair<Double, Double>): String {
+    fun findNearestIndoorTransportation(mapProcessor: ProcessMap, pos: Pair<Double, Double>, goingUp: Boolean): String {
         var closestTransport: MapElement? = null
         for (transport in mapProcessor.getIndoorTransportationMethods()) {
             if (closestTransport == null
                 || getDistance(transport.getCenter(), pos) < getDistance(closestTransport.getCenter(), pos)) {
-                closestTransport = transport
+                if (goingUp && !transport.id.contains("down")) closestTransport = transport
+                if (!goingUp && !transport.id.contains("up")) closestTransport = transport
             }
         }
         return closestTransport!!.getID()
     }
 
-    fun generateDirectionsOnFloor(start: String, end: String, floorMap: String, floorNum: String) {
+    fun generateDirectionsOnFloor(start: String, end: String, floorMap: String, floorNum: String, goingUp: Boolean) {
         val inputStream: InputStream = requireContext().assets.open(floorMap)
         val file: String = inputStream.bufferedReader().use { it.readText() }
         val mapProcessor: ProcessMap = ProcessMap()
@@ -248,8 +269,13 @@ class FloorFragment : Fragment() {
         if (start == "") {
             val pos = mapProcessor.getPositionWithId(endPos)
             if (pos != null) {
-                startPos = findNearestIndoorTransportation(mapProcessor, pos)
-                intermediateTransportID = startPos
+                startPos = findNearestIndoorTransportation(mapProcessor, pos, goingUp)
+                if (goingUp) {
+                    intermediateTransportID = startPos.replace("up", "down")
+                } else {
+                    intermediateTransportID = startPos.replace("down", "up")
+                }
+
             } else {
                 Toast.makeText(
                     context,
@@ -261,8 +287,12 @@ class FloorFragment : Fragment() {
         if (end == "") {
             val pos = mapProcessor.getPositionWithId(startPos)
             if (pos != null) {
-                endPos = findNearestIndoorTransportation(mapProcessor, pos)
-                intermediateTransportID = endPos
+                endPos = findNearestIndoorTransportation(mapProcessor, pos, goingUp)
+                if (goingUp) {
+                    intermediateTransportID = endPos.replace("up", "down")
+                } else {
+                    intermediateTransportID = endPos.replace("down", "up")
+                }
             } else {
                 Toast.makeText(
                     context,
