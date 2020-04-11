@@ -16,6 +16,7 @@ class IndoorNavStep(override val location: IndoorLocation) : NavHandler() {
                     "0",
                     "",
                     "",
+                    0,
                     0.0,
                     0.0
                 ),
@@ -31,6 +32,7 @@ class IndoorNavStep(override val location: IndoorLocation) : NavHandler() {
                     "0",
                     "",
                     "",
+                    0,
                     0.0,
                     0.0
                 )

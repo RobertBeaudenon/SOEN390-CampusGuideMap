@@ -43,13 +43,13 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
             indoorLocationDao.deleteAllIndoor()
         }
         if (config == "debug" || indoorLocationDao.getOne().value == null) {
-            map.forEachBuilding { building ->
-                insertClasses(context, building)
+            for ((index, building) in map.getBuildings().withIndex()) {
+                insertClasses(context, building, index)
             }
         }
     }
 
-    private fun insertClasses(context: Context, building: Building) {
+    private fun insertClasses(context: Context, building: Building, index: Int) {
 
         for (floorMap in building.getIndoorInfo().second) {
             val inputStream: InputStream = context.assets.open(floorMap.value)
@@ -72,6 +72,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
                     floorMap.key,
                     floorMap.value,
                     "classroom",
+                    index,
                     building.coordinate.latitude,
                     building.coordinate.longitude
                 )

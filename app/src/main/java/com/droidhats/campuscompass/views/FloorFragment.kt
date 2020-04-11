@@ -47,36 +47,55 @@ class FloorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         root = inflater.inflate(R.layout.floor_fragment, container, false)
+        return root
+    }
 
-        var floorNum: String? = arguments?.getString("floornum")
-        var mapToDisplay: String = "hall8.svg" // default value
-        val building : Building? = arguments?.getParcelable("building")
-        println("building: $building")
-        var floormap : String? = arguments?.getString("floormap")
-        if (floorNum == null && building != null) {
-            floorNum = building.getIndoorInfo().second.keys.first()
-        }
-        if (floormap == null && building != null) {
-            floormap = building.getIndoorInfo().second[floorNum]
-        }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
+        viewModel = ViewModelProvider(this).get(FloorViewModel::class.java)
         viewModelMapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
 
-        var maps : MutableList<String> = mutableListOf()
-        if (building != null) {
-            for (ting in building?.getIndoorInfo()?.second!!.values) {
-                maps.add(ting)
-            }
+        val startAndEnd = viewModel.getDirections()
+        if (startAndEnd != null) {
+            handleNavigation(startAndEnd)
+        } else {
+            handleView()
         }
 
+        initSearchBar()
+        viewModel.navigationRepository?.getNavigationRoute()?.observe(viewLifecycleOwner, Observer {
+            if (it is OutdoorNavigationRoute) {
+                findNavController().navigate(R.id.map_fragment)
+            }
+        })
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            viewModel.navigationRepository?.stepBack()
+        }
+    }
+
+    fun handleView() {
+        var floorNum: String? = arguments?.getString("floornum")
+        var mapToDisplay: String = "hall8.svg" // default value
+        val building : Building = arguments?.getParcelable("building")!!
+        var floormap : String? = arguments?.getString("floormap")
+
+        // handle case that you only want to view indoor map
+        if (floorNum == null) {
+            floorNum = building.getIndoorInfo().second.keys.first()
+        }
+        if (floormap == null) {
+            floormap = building.getIndoorInfo().second[floorNum]
+        }
         if(!floormap.isNullOrBlank()) {
             mapToDisplay = floormap
         }
 
-        var inputStream: InputStream = requireContext().assets.open(mapToDisplay)
+        val inputStream: InputStream = requireContext().assets.open(mapToDisplay)
         val mapProcessor: ProcessMap = ProcessMap()
         var file: String = inputStream.bufferedReader().use { it.readText() }
-        file = mapProcessor.automateSVG(file, floorNum!!)
+        file = mapProcessor.automateSVG(file, floorNum)
 
         val buildingToHighlight: String? = arguments?.getString("id")
 
@@ -88,38 +107,46 @@ class FloorFragment : Fragment() {
             val svg: SVG = SVG.getFromString(highlightedSVG)
             setImage(svg)
         }
+        setNumberPicker(building, floorNum)
+    }
+
+    fun setNumberPicker(building: Building, floorNum: String?) {
+        val mapProcessor = ProcessMap()
+        // number picker stuff
+        val maps : MutableList<String> = mutableListOf()
+        val keys: Array<String> = Array(building.getIndoorInfo().second.size) { "" }
+        var index = 0
+        for (map in building.getIndoorInfo().second) {
+            keys[index] = map.key
+            maps.add(map.value)
+            index++
+        }
 
         val numberPicker: NumberPicker = root.findViewById(R.id.floorPicker)
         numberPicker.minValue = 0
-        numberPicker.maxValue = maps.size - 1
+        numberPicker.maxValue = keys.size - 1
         numberPicker.wrapSelectorWheel = false
 
-        val keys : Array<String> = Array(maps.size){""}
-        if (building != null) {
-            var index = 0
-            for (key in building?.getIndoorInfo()?.second!!.keys) {
-                keys[index] = key
-                index++
-            }
-        }
         numberPicker.displayedValues = keys
 
-        numberPicker.value = keys.indexOf(floorNum)
-        
+        if (floorNum != null) {
+            numberPicker.value = keys.indexOf(floorNum)
+        } else {
+            numberPicker.value = 0
+        }
+
         numberPicker.setOnScrollListener(NumberPicker.OnScrollListener { picker, scrollState ->
             if(scrollState == 0){
                 val newVal = numberPicker.value
                 val newFloorNum = building!!.getIndoorInfo().second.keys.elementAt(newVal)
 
-                inputStream = requireContext().assets.open(maps[newVal])
-                file = inputStream.bufferedReader().use { it.readText() }
+                val inputStream = requireContext().assets.open(maps[newVal])
+                var file = inputStream.bufferedReader().use { it.readText() }
                 file = mapProcessor.automateSVG(file, newFloorNum)
                 val svg = SVG.getFromString(file)
                 setImage(svg)
             }
         })
-
-        return root
     }
 
     fun setImage(svg: SVG) {
@@ -137,42 +164,26 @@ class FloorFragment : Fragment() {
         imageView.setImageDrawable(BitmapDrawable(getResources(), bitmap))
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FloorViewModel::class.java)
-
-
-        initSearchBar()
-
-        var startAndEnd = viewModel.getDirections()
-        if (startAndEnd?.first?.lID == "") {
+    fun handleNavigation(startToEnd: Pair<IndoorLocation, IndoorLocation>) {
+        var startAndEnd = startToEnd
+        if (startAndEnd.first.lID == "") {
             startAndEnd = Pair(startAndEnd.second, startAndEnd.second)
         }
-        if (startAndEnd != null) {
-            val inputStream: InputStream = requireContext().assets.open(startAndEnd.first.floorMap)
-            val file: String = inputStream.bufferedReader().use { it.readText() }
-            val mapProcessor: ProcessMap = ProcessMap()
-            val newFile = mapProcessor.automateSVG(file, startAndEnd.first.floorNum)
-            mapProcessor.readSVGFromString(newFile)
-            val svg: SVG = SVG.getFromString(mapProcessor
-                .getSVGStringFromDirections(Pair(startAndEnd.first.lID, startAndEnd.second.lID)))
-            setImage(svg)
-        }
-
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
             viewModel.consumeNavHandler()
         }
-
-        viewModel.navigationRepository?.getNavigationRoute()?.observe(viewLifecycleOwner, Observer {
-            if (it is OutdoorNavigationRoute) {
-                findNavController().navigate(R.id.map_fragment)
-            }
-        })
-
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            viewModel.navigationRepository?.stepBack()
-        }
+        doneButton.visibility = View.VISIBLE
+        val inputStream: InputStream = requireContext().assets.open(startAndEnd.first.floorMap)
+        val file: String = inputStream.bufferedReader().use { it.readText() }
+        val mapProcessor: ProcessMap = ProcessMap()
+        val newFile = mapProcessor.automateSVG(file, startAndEnd.first.floorNum)
+        mapProcessor.readSVGFromString(newFile)
+        val svg: SVG = SVG.getFromString(
+            mapProcessor
+                .getSVGStringFromDirections(Pair(startAndEnd.first.lID, startAndEnd.second.lID))
+        )
+        setImage(svg)
     }
 
     private fun initSearchBar() {
