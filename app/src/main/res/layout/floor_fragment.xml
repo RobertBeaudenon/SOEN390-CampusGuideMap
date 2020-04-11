@@ -13,13 +13,20 @@
         android:id="@+id/doneButtonFloor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="145dp"
+        android:background="@drawable/button_color"
+        android:baselineAligned="false"
+        android:paddingStart="15dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="5dp"
         android:text="I've arrived!"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/include2"
-        app:layout_constraintEnd_toEndOf="@+id/include2"
-        app:layout_constraintStart_toStartOf="@+id/include2"
-        app:layout_constraintTop_toBottomOf="@+id/floormap2" />
+        android:textAllCaps="false"
+        android:textColor="@color/quantum_white_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/floormap2"
