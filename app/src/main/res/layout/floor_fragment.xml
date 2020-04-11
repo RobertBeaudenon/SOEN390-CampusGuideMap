@@ -9,6 +9,18 @@
 
     <!--        app:srcCompat="@drawable/hall8"  -->
 
+    <Button
+        android:id="@+id/doneButtonFloor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="I've arrived!"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/include2"
+        app:layout_constraintEnd_toEndOf="@+id/include2"
+        app:layout_constraintStart_toStartOf="@+id/include2"
+        app:layout_constraintTop_toBottomOf="@+id/floormap2" />
+
     <ImageView
         android:id="@+id/floormap2"
         android:layout_width="412dp"
@@ -32,10 +44,10 @@
         app:horizontalPanEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="1.0"
         app:maxZoom="2.5"
         app:maxZoomType="zoom"
         app:minZoom="0.7"
@@ -57,14 +69,6 @@
     <include
         android:id="@+id/include2"
         layout="@layout/search_bar_layout" />
-
-    <Button
-        android:id="@+id/doneButtonFloor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="I've arrived!"
-        app:layout_constraintTop_toTopOf="@+id/floormap2"
-        tools:layout_editor_absoluteX="150dp" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

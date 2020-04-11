@@ -340,6 +340,22 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM S2.101
        d="m 379.88115,326.0486 34.28139,-5.11477 15.15229,101.01525"
        id="line"
        inkscape:connector-curvature="0" />
+
+    <!-- escalators (not really though) -->
+    <rect x="405" y="530" height="95" width="102" style="fill:none;stroke:none" />
+
+    <!-- stairs from MBS1/MB1 -->
+    <path d="M 390,430 430,425 400,205 363,205 Z" style="fill:none;stroke:none" />
+
+    <!-- wall to bottom area -->
+    <rect x="504" y="280" height="338" width="10" style="fill:none;stroke:none" />
+
+    <!-- subway exclusive -->
+    <rect x="404" y="5" height="90" width="28" style="fill:none;stroke:none" />
+
+    <path d="M 30,450 30,560 415,540 395,420 Z" style="fill:none;stroke:none" />
+
+
     <!-- Displaying icons on the map -->
 
     <!-- Displaying stairs icon on the map -->

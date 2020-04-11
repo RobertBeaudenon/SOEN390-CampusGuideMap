@@ -42,7 +42,8 @@ class PriorityQueue {
         queue.add(vertex)
     }
 
-    fun pop(): Vertex {
+    fun pop(): Vertex? {
+        if (queue.size == 0) return null
         return queue.removeAt(0)
     }
 
@@ -74,9 +75,9 @@ fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>
     val queue = PriorityQueue()
 
     // A* algorithm part
-    var poppedNode = startVertex
+    var poppedNode: Vertex? = startVertex
     while (poppedNode != endVertex) {
-        for (neighbor in poppedNode.neighbors) {
+        for (neighbor in poppedNode!!.neighbors) {
             if (neighbor.getValue() == null || poppedNode.getValue()!! < neighbor.getValue()!!) {
                 neighbor.setValue(getDistance(poppedNode.pos, neighbor.pos))
                 neighbor.prev = poppedNode
@@ -90,6 +91,9 @@ fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>
             }
         }
         poppedNode = queue.pop()
+        if (poppedNode == null) {
+            return A_Star(start, end, removeStartAndEnd(startVertex, endVertex, pathElements))
+        }
     }
 
     // converting path to string
@@ -113,4 +117,17 @@ fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>
     string.append(arrowHeadPaths[1])
 
     return string.toString()
+}
+
+fun removeStartAndEnd(start: Vertex, end: Vertex, list: MutableList<Vertex>): MutableList<Vertex> {
+    for (vertex in list) {
+        if (vertex == start || vertex == end) {
+            for (neighbor in vertex.neighbors) {
+                neighbor.removeFromNeighbors(vertex)
+            }
+        }
+    }
+    list.remove(start)
+    list.remove(end)
+    return list
 }
