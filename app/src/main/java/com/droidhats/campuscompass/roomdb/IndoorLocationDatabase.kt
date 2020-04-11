@@ -12,7 +12,7 @@ import com.droidhats.campuscompass.repositories.IndoorLocationDao
  * Entities: Indoor Locations
  */
 
-@Database(entities = [IndoorLocation::class], version = 1, exportSchema = true)
+@Database(entities = [IndoorLocation::class], version = 1, exportSchema = false)
 abstract class IndoorLocationDatabase : RoomDatabase() {
     abstract fun indoorLocationDao(): IndoorLocationDao
 
@@ -30,7 +30,8 @@ abstract class IndoorLocationDatabase : RoomDatabase() {
 
         // Create and pre-populate the database
         private fun buildDatabase(context: Context): IndoorLocationDatabase {
-            return Room.databaseBuilder(context, IndoorLocationDatabase::class.java, "IndoorLocationSchema.2db")
+            return Room.databaseBuilder(context, IndoorLocationDatabase::class.java, "IndoorLocationSchema.db")
+                    .fallbackToDestructiveMigration()
                     .build()
         }
     }
