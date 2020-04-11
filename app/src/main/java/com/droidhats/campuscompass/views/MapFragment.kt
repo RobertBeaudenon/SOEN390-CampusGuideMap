@@ -37,6 +37,7 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.FavoritePlace
+import com.droidhats.campuscompass.models.Explore_Place
 import com.droidhats.campuscompass.roomdb.FavoritesDatabase
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
@@ -84,7 +85,7 @@ import com.droidhats.campuscompass.models.Map as MapModel
  */
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, ExploreCategoryFragment.OnExplorePlaceClickListener, OnCameraIdleListener,
-    , FavoritesAdapter.OnFavoriteClickListener, Subject {
+    FavoritesAdapter.OnFavoriteClickListener, Subject {
 
     private var mapModel: MapModel? = null
     private var map: GoogleMap? = null
@@ -703,18 +704,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onFavoriteClick(item: FavoritePlace?) {
         if (item != null) {
-            val googlePlace : GooglePlace = GooglePlace(item.placeId, item.name?:"", item.address?:"", LatLng(item.latitude, item.longitude))
+            val googlePlace = GooglePlace(
+                item.placeId,
+                item.name ?: "",
+                item.address ?: "",
+                LatLng(item.latitude, item.longitude)
+            )
 
             findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch {
                 viewModel.navigationRepository.fetchPlace(googlePlace)
             }.invokeOnCompletion {
-                requireActivity().runOnUiThread{
+                requireActivity().runOnUiThread {
                     moveTo(LatLng(item.latitude, item.longitude), 17.0f)
                     populatePlaceInfoCard(googlePlace)
                 }
             }
         }
+    }
 
     override fun onExplorePlaceClick(item: Explore_Place?) {
         findNavController().popBackStack(R.id.map_fragment, false)
@@ -722,7 +729,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val exploreLocation = GooglePlace(
             item?.place_placeID!!,
             item.place_name!!,
-           item?.place_address!!,
+            item?.place_address!!,
             item!!.place_coordinate
         )
         Handler().postDelayed({
