@@ -177,7 +177,8 @@ class FloorFragment : Fragment() {
         } else {
             building = viewModelMapViewModel.getBuildings()[startAndEnd.first.buildingIndex]
         }
-        if (startAndEnd.first.lID == "" || startAndEnd.second.lID == "") {
+        if (startAndEnd.first.lID == "" || startAndEnd.second.lID == ""
+            || startAndEnd.first.floorNum != startAndEnd.second.floorNum) {
             canConsume = false
         }
 
@@ -212,12 +213,20 @@ class FloorFragment : Fragment() {
                             startAndEnd.second.floorNum,
                             goingUp
                         )
-                    } else {
+                    } else if (startAndEnd.second.lID == "") {
                         generateDirectionsOnFloor(
                             intermediateTransportID!!,
                             "entrance",
                             building.getIndoorInfo().second["1"]!!,
                             "1",
+                            goingUp
+                        )
+                    } else {
+                        generateDirectionsOnFloor(
+                            intermediateTransportID!!,
+                            startAndEnd.second.lID,
+                            startAndEnd.second.floorMap,
+                            startAndEnd.second.floorNum,
                             goingUp
                         )
                     }
@@ -232,6 +241,14 @@ class FloorFragment : Fragment() {
                 "", // intentionally left blank to find the nearest transportation method
                 building.getIndoorInfo().second["1"]!!,
                 "1",
+                goingUp
+            )
+        } else if (startAndEnd.first.floorNum != startAndEnd.second.floorNum) {
+            generateDirectionsOnFloor(
+                startAndEnd.first.lID,
+                "",
+                startAndEnd.first.floorMap,
+                startAndEnd.first.floorNum,
                 goingUp
             )
         } else {
