@@ -83,8 +83,8 @@ import com.droidhats.campuscompass.models.Map as MapModel
  * It displays all the UI components of the map and dynamically interacts with the user input.
  */
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, OnCameraIdleListener,
-    Subject, FavoritesAdapter.OnFavoriteClickListener {
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, ExploreCategoryFragment.OnExplorePlaceClickListener, OnCameraIdleListener,
+    , FavoritesAdapter.OnFavoriteClickListener, Subject {
 
     private var mapModel: MapModel? = null
     private var map: GoogleMap? = null
@@ -140,6 +140,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         CalendarFragment.onCalendarEventClickListener = this
         SearchFragment.onSearchResultClickListener = this
         MyPlacesFragment.onFavoriteClickListener = this
+        ExploreCategoryFragment.onExplorePlaceClickListener = this
 
         createLocationRequest()
         initBottomSheetBehavior()
@@ -573,7 +574,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         isCampusBuilding = true
                         handleBuildingClick(building)
                     }
-              focusLocation(item, isCampusBuilding)
+              focusLocation(item, isCampusBuilding, true)
             }        
         } else if (item is IndoorLocation) {
             val bundle: Bundle = Bundle()
@@ -582,9 +583,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    private fun focusLocation(location: GooglePlace, isCampusBuilding : Boolean){
+    private fun focusLocation(location: GooglePlace, isCampusBuilding : Boolean, isRequired : Boolean){
        GlobalScope.launch {
-           viewModel.navigationRepository.fetchPlace(location)
+           if(isRequired) {
+               viewModel.navigationRepository.fetchPlace(location)
+           }
        }.invokeOnCompletion {
            requireActivity().runOnUiThread{
                moveTo(location.coordinate, 17.0f)
@@ -618,7 +621,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val closeButton : ImageView = requireActivity().findViewById(R.id.place_card_close_button)
 
         placeName.text = location.name
-        placeCategory.text = location.place?.address
+        placeCategory.text = location.category
 
         val favoritesDb : FavoritesDatabase = viewModel.getFavoritesDb()
         val foundPlace : FavoritePlace? = favoritesDb.favoritePlacesDao().findPlaceById(location.placeID)
@@ -712,6 +715,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
         }
+
+    override fun onExplorePlaceClick(item: Explore_Place?) {
+        findNavController().popBackStack(R.id.map_fragment, false)
+
+        val exploreLocation = GooglePlace(
+            item?.place_placeID!!,
+            item.place_name!!,
+           item?.place_address!!,
+            item!!.place_coordinate
+        )
+        Handler().postDelayed({
+            focusLocation(exploreLocation, false, true)
+        }, 1000)
     }
 }
 
