@@ -719,6 +719,18 @@ class ProcessMap {
         }
         return null
     }
+
+    fun findNearestIndoorTransportation(pos: Pair<Double, Double>, goingUp: Boolean): String {
+        var closestTransport: MapElement? = null
+        for (transport in indoorTransportations) {
+            if (closestTransport == null
+                || getDistance(transport.getCenter(), pos) < getDistance(closestTransport.getCenter(), pos)) {
+                if (goingUp && !transport.id.contains("down")) closestTransport = transport
+                if (!goingUp && !transport.id.contains("up")) closestTransport = transport
+            }
+        }
+        return closestTransport!!.getID()
+    }
 }
 
 /**

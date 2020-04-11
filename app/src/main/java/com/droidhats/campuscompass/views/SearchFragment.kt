@@ -1,10 +1,8 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
-import android.content.ContentValues
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +15,6 @@ import android.widget.RadioGroup
 import android.widget.RadioButton
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,7 +28,6 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.OutdoorNavigationRoute
-import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
 import com.droidhats.mapprocessor.ProcessMap
@@ -40,11 +36,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.search_fragment.secondarySearchBar
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.io.InputStream
+import kotlin.math.abs
 
 class SearchFragment : Fragment()  {
 
@@ -416,16 +409,38 @@ class SearchFragment : Fragment()  {
         NavigationPoints[searchView.id] = location
 
         if (areRouteParametersSet()) {
-            if (NavigationPoints[mainBar.id]!! is IndoorLocation &&
-                    NavigationPoints[destinationBar.id]!! is IndoorLocation) {
+            val origin = NavigationPoints[mainBar.id]!!
+            val destination = NavigationPoints[destinationBar.id]!!
+
+            // both are indoor locations and are in the same building
+            if (
+                origin is IndoorLocation && destination is IndoorLocation
+                && origin.buildingIndex == destination.buildingIndex
+            ) {
                 val processMap = ProcessMap()
                 val inputStream: InputStream = requireContext().assets.open("hall8.svg")
                 val file: String = inputStream.bufferedReader().use { it.readText() }
                 processMap.readSVGFromString(file)
-                val distance = processMap.getTimeInSeconds(
-                        (NavigationPoints[mainBar.id]!! as IndoorLocation).lID,
-                        (NavigationPoints[destinationBar.id]!! as IndoorLocation).lID
-                )
+                var distance: Int = 0
+                if (origin.floorNum != destination.floorNum) {
+                    // taking into account the number of floors
+                    distance += 15 * abs(origin.getFloorNumber() - destination.getFloorNumber())
+                    val originPos = processMap.getPositionWithId(origin.lID)
+                    var transport: String = processMap
+                        .findNearestIndoorTransportation(
+                            originPos!!,
+                            origin.floorNum < destination.floorNum
+                        )
+                    // taking into account
+                    distance += processMap.getTimeInSeconds(origin.lID, transport) +
+                            processMap.getTimeInSeconds(transport, destination.lID)
+                } else {
+                    distance = processMap.getTimeInSeconds(
+                        origin.lID,
+                        destination.lID
+                    )
+                }
+
                 val walkingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_walking)
                 walkingRadioButton.text =  distance.toString() + "s"
                 walkingRadioButton.isChecked = true

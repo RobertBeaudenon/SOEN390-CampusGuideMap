@@ -30,8 +30,6 @@ import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.droidhats.campuscompass.viewmodels.MapViewModel
-import com.droidhats.mapprocessor.MapElement
-import com.droidhats.mapprocessor.getDistance
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.map_fragment.*
@@ -184,14 +182,13 @@ class FloorFragment : Fragment() {
 
         val goingUp: Boolean = when(true) {
             (startAndEnd.first.lID != "" && startAndEnd.second.lID != "") -> {
-                startAndEnd.first.floorNum.replace('s', '-').toInt() <
-                        startAndEnd.second.floorNum.replace('s', '-').toInt()
+                startAndEnd.first.getFloorNumber() < startAndEnd.second.getFloorNumber()
             }
             startAndEnd.first.lID == "" -> {
-                1 < startAndEnd.second.floorNum.replace('s', '-').toInt()
+                1 < startAndEnd.second.getFloorNumber()
             }
             else -> { // second.lID is an empty string
-                startAndEnd.first.floorNum.replace('s', '-').toInt() < 1
+                startAndEnd.first.getFloorNumber() < 1
             }
         }
 
@@ -263,18 +260,6 @@ class FloorFragment : Fragment() {
 
     }
 
-    fun findNearestIndoorTransportation(mapProcessor: ProcessMap, pos: Pair<Double, Double>, goingUp: Boolean): String {
-        var closestTransport: MapElement? = null
-        for (transport in mapProcessor.getIndoorTransportationMethods()) {
-            if (closestTransport == null
-                || getDistance(transport.getCenter(), pos) < getDistance(closestTransport.getCenter(), pos)) {
-                if (goingUp && !transport.id.contains("down")) closestTransport = transport
-                if (!goingUp && !transport.id.contains("up")) closestTransport = transport
-            }
-        }
-        return closestTransport!!.getID()
-    }
-
     fun generateDirectionsOnFloor(start: String, end: String, floorMap: String, floorNum: String, goingUp: Boolean) {
         val inputStream: InputStream = requireContext().assets.open(floorMap)
         val file: String = inputStream.bufferedReader().use { it.readText() }
@@ -286,7 +271,7 @@ class FloorFragment : Fragment() {
         if (start == "") {
             val pos = mapProcessor.getPositionWithId(endPos)
             if (pos != null) {
-                startPos = findNearestIndoorTransportation(mapProcessor, pos, goingUp)
+                startPos = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
                 if (goingUp) {
                     intermediateTransportID = startPos.replace("up", "down")
                 } else {
@@ -304,7 +289,7 @@ class FloorFragment : Fragment() {
         if (end == "") {
             val pos = mapProcessor.getPositionWithId(startPos)
             if (pos != null) {
-                endPos = findNearestIndoorTransportation(mapProcessor, pos, goingUp)
+                endPos = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
                 if (goingUp) {
                     intermediateTransportID = endPos.replace("up", "down")
                 } else {

@@ -24,4 +24,8 @@ data class IndoorLocation(
     override fun getNextDirections() : List<String> {
         return emptyList()
     }
+
+    fun getFloorNumber(): Int {
+        return floorNum.replace('s', '-').toInt()
+    }
 }
