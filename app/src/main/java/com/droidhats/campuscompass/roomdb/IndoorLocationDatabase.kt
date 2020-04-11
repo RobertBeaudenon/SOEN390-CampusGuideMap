@@ -12,7 +12,7 @@ import com.droidhats.campuscompass.repositories.IndoorLocationDao
  * Entities: Indoor Locations
  */
 
-@Database(entities = [IndoorLocation::class], version = 1)
+@Database(entities = [IndoorLocation::class], version = 1, exportSchema = false)
 abstract class IndoorLocationDatabase : RoomDatabase() {
     abstract fun indoorLocationDao(): IndoorLocationDao
 

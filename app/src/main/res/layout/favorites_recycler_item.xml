@@ -2,14 +2,13 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/calendar_card_view"
+    android:id="@+id/favorites_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
     app:cardElevation="4dp"
     app:contentPadding="3dp"
-    app:cardBackgroundColor="@color/quantum_vanillaredA700"
-    android:foreground="?android:attr/selectableItemBackground">
+    app:cardBackgroundColor="@color/quantum_vanillaredA700">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,41 +17,40 @@
         android:background="@android:color/white">
 
         <TextView
-            android:id="@+id/event_title_item"
+            android:id="@+id/favorites_title_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:paddingTop="10sp"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/event_date_item"
+            android:id="@+id/favorites_distance_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:textAppearance="?attr/textAppearanceListItemSecondary"
-            android:textSize="12sp"
-            android:maxWidth="@dimen/calendar_event_card_max_text_width"/>
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/event_location_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:drawableStart="@drawable/ic_location_on_black_24dp"
-                android:textAppearance="?attr/textAppearanceListItemSecondary"
-                android:maxWidth="@dimen/calendar_event_card_max_text_width"/>
+        <TextView
+            android:id="@+id/favorites_location_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="11dp"
+            android:drawableStart="@drawable/ic_location_on_black_24dp"
+            android:maxWidth="@dimen/calendar_event_card_max_text_width"
+            android:textAppearance="?attr/textAppearanceListItemSecondary" />
 
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/navigateFromEvent"
+        android:id="@+id/setNavigationPoint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_directions_60dp"
-        android:background="@android:color/white"
+        android:src="@drawable/ic_near_me_blue_32dp"
         android:layout_gravity="end|center_vertical"
-        android:contentDescription="@string/navigate"
+        android:contentDescription="@string/contentDescription_SetNavigation"
+        android:background="?selectableItemBackgroundBorderless"
         android:paddingEnd="15dp"
         tools:ignore="RtlSymmetry" />
 

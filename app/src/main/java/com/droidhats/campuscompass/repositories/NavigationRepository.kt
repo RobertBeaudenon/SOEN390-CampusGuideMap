@@ -28,6 +28,7 @@ import com.google.maps.android.PolyUtil
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.collections.ArrayList
+import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import com.droidhats.campuscompass.R
@@ -118,6 +119,8 @@ class NavigationRepository(private val application: Application) {
     suspend fun fetchPlace(location: Location): Unit = suspendCoroutine { cont ->
         if (location is GooglePlace) {
             val placeFields: List<Place.Field> = Place.Field.values().toList()
+            if (!Places.isInitialized())
+                Places.initialize(application.applicationContext, application.applicationContext.resources.getString(R.string.ApiKey), Locale.CANADA)
             val placesClient = Places.createClient(application.applicationContext)
             val request = FetchPlaceRequest.newInstance(location.placeID, placeFields)
 

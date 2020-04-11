@@ -9,6 +9,7 @@ import com.droidhats.campuscompass.models.*
 import com.droidhats.campuscompass.models.Map
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
+import com.droidhats.campuscompass.roomdb.FavoritesDatabase
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.Marker
 
@@ -26,13 +27,17 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
     internal val navigationRepository: NavigationRepository
     private var campuses: List<Campus>
     private var buildings: List<Building>
+    private val favoritesDb : FavoritesDatabase
 
     init {
         mapRepository = MapRepository.getInstance(context)
         navigationRepository = NavigationRepository.getInstance(getApplication())
         campuses = mapRepository.getCampuses()
         buildings = mapRepository.getBuildings()
+        favoritesDb = FavoritesDatabase.getInstance(context)
     }
+
+    fun getFavoritesDb() : FavoritesDatabase = favoritesDb
 
     /**
      * Returns a list of campus objects (SJW and Loyola).
