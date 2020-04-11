@@ -12,17 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.FavoritePlace
 import com.droidhats.campuscompass.viewmodels.FavoritesViewModel
-import com.droidhats.campuscompass.views.MyPlacesFragment
 import com.google.android.gms.maps.model.LatLng
 
 class FavoritesAdapter(
     private val items: List<FavoritePlace>,
     private val listener: OnFavoriteClickListener?,
-    private val fragment: MyPlacesFragment?
+    private val favoritesViewModel: FavoritesViewModel
 ) : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
 
     private var onClickListener: View.OnClickListener
-    private lateinit var viewModel: FavoritesViewModel
 
     init {
         onClickListener = View.OnClickListener { view ->
@@ -46,7 +44,7 @@ class FavoritesAdapter(
         holder.titleView.text = item.name
         holder.locationView.text = item.address?:"None"
 
-        val distanceToPlace : Double? = fragment?.favoritesViewModel?.haversineDist(LatLng(item.latitude, item.longitude))
+        val distanceToPlace : Double? = favoritesViewModel.haversineDist(LatLng(item.latitude, item.longitude))
         holder.distanceView.text = if (distanceToPlace != null) (String.format("%.2f km", distanceToPlace)) else ""
 
         with(holder) {

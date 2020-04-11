@@ -1,6 +1,5 @@
 package com.droidhats.campuscompass.views
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import android.widget.ImageButton
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,8 +16,6 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.FavoritesAdapter
 import com.droidhats.campuscompass.models.FavoritePlace
 import com.droidhats.campuscompass.viewmodels.FavoritesViewModel
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 
 class MyPlacesFragment : DialogFragment() {
     lateinit var favoritesViewModel: FavoritesViewModel
@@ -50,32 +48,23 @@ class MyPlacesFragment : DialogFragment() {
 
         recyclerView = root.findViewById(R.id.favorites_recycler_view)
 
-        updateRecyclerView()
-        recyclerView.adapter?.notifyDataSetChanged()
-        getCurrentLocation()
+        favoritesViewModel.getCurrentLocation()
+
+        favoritesViewModel.currentLocation.observe(viewLifecycleOwner, Observer {
+            updateRecyclerView()
+            recyclerView.adapter?.notifyDataSetChanged()
+        })
 
         return root
     }
 
     private fun updateRecyclerView() {
         val places : List<FavoritePlace> = favoritesViewModel.getFavorites()
-        val fragment : MyPlacesFragment = this
         with(recyclerView) {
             layoutManager = LinearLayoutManager(context)
-            adapter = FavoritesAdapter(places, onFavoriteClickListener, fragment)
+            adapter = FavoritesAdapter(places, onFavoriteClickListener, favoritesViewModel)
         }
     }
 
-    fun getCurrentLocation() {
-        var location : LatLng? = null
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
-        fusedLocationClient.lastLocation.addOnSuccessListener{
-            location = LatLng(it.latitude, it.longitude)
-        }
 
-        if (location == null) {
-            location = LatLng(45.4946, -73.5774)
-        }
-        favoritesViewModel.currentLocation = location
-    }
 }

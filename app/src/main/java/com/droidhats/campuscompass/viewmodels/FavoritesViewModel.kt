@@ -2,8 +2,10 @@ package com.droidhats.campuscompass.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import com.droidhats.campuscompass.models.FavoritePlace
 import com.droidhats.campuscompass.roomdb.FavoritesDatabase
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -19,7 +21,7 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val context = getApplication<Application>().applicationContext
     private val favoritesDb: FavoritesDatabase
-    var currentLocation: LatLng? = null
+    var currentLocation = MutableLiveData<LatLng>()
 
     init {
         favoritesDb = FavoritesDatabase.getInstance(context)
@@ -30,11 +32,10 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun haversineDist(destination: LatLng) : Double? {
-        if (currentLocation == null) return null
-        val diffLat = Math.toRadians(destination.latitude - currentLocation!!.latitude)
-        val diffLong = Math.toRadians(destination.longitude- currentLocation!!.longitude)
+        val diffLat = Math.toRadians(destination.latitude - currentLocation.value!!.latitude)
+        val diffLong = Math.toRadians(destination.longitude- currentLocation.value!!.longitude)
 
-        val lat = Math.toRadians(currentLocation!!.latitude)
+        val lat = Math.toRadians(currentLocation.value!!.latitude)
         val lat2 = Math.toRadians(destination.latitude)
 
         val rad = 6371.0
@@ -43,6 +44,14 @@ class FavoritesViewModel(application: Application) : AndroidViewModel(applicatio
                 cos(lat) * cos(lat2)
         val c = 2 * asin(sqrt(a))
         return rad * c
+    }
+
+    fun getCurrentLocation() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context.applicationContext)
+        fusedLocationClient.lastLocation.addOnSuccessListener{
+           currentLocation.value = LatLng(it.latitude, it.longitude)
+        }
+
     }
 }
 
