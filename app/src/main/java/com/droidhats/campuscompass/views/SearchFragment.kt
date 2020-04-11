@@ -98,21 +98,17 @@ class SearchFragment : Fragment()  {
                 destinationPlace.address!!,
                 destinationPlace.latLng!!)
             showNavigationView(googlePlace, true)
-            arguments?.clear()
         }
 
         val destinationBuilding = arguments?.getParcelable<Building>("destBuilding")
         if (destinationBuilding != null) {
             showNavigationView(destinationBuilding, true)
-            arguments?.clear()
         }
 
         val destinationEventLocation = arguments?.getString("destEventLocation")
         if (destinationEventLocation != null) {
             val calendarLocation = GooglePlace("",destinationEventLocation, "", LatLng(0.0,0.0) )
-
             showNavigationView(calendarLocation, true)
-            arguments?.clear()
         }
 
         val favPlaceArg = arguments?.getParcelable<FavoritePlace>("favPlace")
@@ -120,13 +116,13 @@ class SearchFragment : Fragment()  {
             showNavigationView(
                 GooglePlace(
                     favPlaceArg.placeId,
-                    favPlaceArg.name,
+                    favPlaceArg.name + ", " + favPlaceArg.address,
                     "",
                     LatLng(favPlaceArg.latitude, favPlaceArg.longitude)
                 ), true
             )
-            arguments?.clear()
         }
+        arguments?.clear()
     }
 
     private fun observeSearchSuggestions() {

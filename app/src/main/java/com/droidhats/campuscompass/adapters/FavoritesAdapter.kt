@@ -49,7 +49,7 @@ class FavoritesAdapter(
             view.tag = item
             navButton.setOnClickListener{
                 val bundle = Bundle()
-                bundle.putString("destEventLocation",item.address )
+                bundle.putParcelable("favPlace", item )
                 view.findNavController().popBackStack()
                 view.findNavController().navigate(R.id.search_fragment, bundle)
             }
