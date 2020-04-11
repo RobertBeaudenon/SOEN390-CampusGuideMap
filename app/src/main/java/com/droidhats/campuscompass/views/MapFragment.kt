@@ -79,7 +79,7 @@ import com.droidhats.campuscompass.models.Map as MapModel
  * It displays all the UI components of the map and dynamically interacts with the user input.
  */
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, OnCameraIdleListener,
+    GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, OnCameraIdleListener, FloorFragment.OnFloorFragmentBackClicked,
     Subject {
 
     private var mapModel: MapModel? = null
@@ -135,12 +135,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Event click callbacks
         CalendarFragment.onCalendarEventClickListener = this
         SearchFragment.onSearchResultClickListener = this
+        FloorFragment.OnFloorFragmentBackClicked = this
 
         createLocationRequest()
         initBottomSheetBehavior()
         initSearchBar()
         handleCampusSwitch()
-        handleClosingIndoorNav()
     }
 
     /**
@@ -184,12 +184,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     // Handle coming coming back to the map fragment from the floor fragment
-    private fun handleClosingIndoorNav(){
-        val isReturningFromIndoorNav = arguments?.getBoolean("isReturning")
-        if (isReturningFromIndoorNav != null){
-            currentOutdoorNavigationRoute = null
-            toggleInstructionsView(false)
-        }
+    override fun onFloorFragmentBackClicked(){
+        findNavController().popBackStack(R.id.map_fragment, false)
+        currentOutdoorNavigationRoute = null
     }
 
     private fun attachBuildingObservers(){

@@ -50,6 +50,10 @@ class FloorFragment : Fragment() {
         return root
     }
 
+    companion object{
+        var OnFloorFragmentBackClicked: OnFloorFragmentBackClicked? = null
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -109,12 +113,7 @@ class FloorFragment : Fragment() {
             
             // Clear current navigation
             viewModel.navigationRepository?.cancelNavigation()
-            
-            // Prepare a bundle to return to the map fragment
-            val bundle = Bundle()
-            bundle.putBoolean("isReturning", true)
-            findNavController().popBackStack()
-            findNavController().navigate(R.id.map_fragment, bundle)
+            OnFloorFragmentBackClicked?.onFloorFragmentBackClicked()
         }
 
         //performing cancel action
@@ -263,5 +262,9 @@ class FloorFragment : Fragment() {
             override fun onSearchConfirmed(text: CharSequence?) {
             }
         })
+    }
+
+    interface OnFloorFragmentBackClicked {
+        fun onFloorFragmentBackClicked()
     }
 }
