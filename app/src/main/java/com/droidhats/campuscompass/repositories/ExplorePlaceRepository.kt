@@ -19,7 +19,6 @@ import org.json.JSONObject
  */
 class ExplorePlaceRepository (private val application: Application)  {
 
-    private var list: ArrayList<Explore_Place> = ArrayList()
     internal  var placesList = MutableLiveData<ArrayList<Explore_Place>>()
 
     companion object {
@@ -35,7 +34,7 @@ class ExplorePlaceRepository (private val application: Application)  {
     }
 
     fun getPlaces(campus:String, type: String){
-        list.clear()
+        var list: ArrayList<Explore_Place> = ArrayList()
         val placesRequest = object : StringRequest(
             Method.GET,
             constructRequestURL(campus, type),

@@ -50,25 +50,26 @@ class ExploreFragment: Fragment() {
         //Event listners for button exploration categories
         val selectFoodButton: Button = root.findViewById(R.id.select_food_button)
         selectFoodButton.setOnClickListener {
-            showPointsOfInterests("Food", campus)
+            showPointsOfInterests("Food", "restaurant", campus)
         }
 
         val selectDrinksButton: Button = root.findViewById(R.id.select_drinks_button)
         selectDrinksButton.setOnClickListener {
-            showPointsOfInterests("Drinks", campus)
+            showPointsOfInterests("Drinks","bar", campus)
         }
 
         val selectStudyButton: Button = root.findViewById(R.id.select_study_button)
         selectStudyButton.setOnClickListener {
-            showPointsOfInterests("Study", campus)
+            showPointsOfInterests("Study","cafe", campus)
         }
         return root
     }
 
     //Navigates to appropriate fragment
-    fun showPointsOfInterests(category: String, campus: String){
+    fun showPointsOfInterests(category: String, type: String, campus: String){
         val bundle = Bundle()
         bundle.putString("name",category )
+        bundle.putString("type", type)
         bundle.putString("campus",campus )
         findNavController().navigate(R.id.explore_category_fragment, bundle)
     }
