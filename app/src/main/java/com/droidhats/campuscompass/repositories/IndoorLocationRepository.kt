@@ -70,6 +70,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
                     building.coordinate.latitude,
                     building.coordinate.longitude
                 )
+                println(newClass)
                 indoorLocationDao.insertIndoorLocation(newClass)
             }
         }

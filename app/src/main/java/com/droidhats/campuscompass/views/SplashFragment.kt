@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.droidhats.campuscompass.MainActivity
@@ -50,12 +52,11 @@ class SplashFragment : Fragment() {
     }
 
     fun navigateToMapFragment() {
-        GlobalScope.launch {
-            delay(2000)
-            requireActivity().runOnUiThread{
+        splashViewModel.initCode.observe(viewLifecycleOwner, Observer {
+            if (it) {
                 findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
             }
-        }
+        })
         //UnLock drawer
         val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
