@@ -28,7 +28,6 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     private lateinit var viewModel: ExplorePlaceViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var places: ArrayList<Explore_Place>
     private lateinit var type: String
     private lateinit var campus: String
     private var columnCount = 1
@@ -61,25 +60,29 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
         swipeRefreshLayout = root.findViewById(R.id.swipe_container)
         swipeRefreshLayout.isRefreshing = false;
         swipeRefreshLayout.isEnabled = false;
-
         recyclerView = root.findViewById(R.id.explore_recycler_view)
-        viewModel.getPlaces(campus, type).observe(viewLifecycleOwner, Observer {
-             places = ArrayList()
-             places = it
-            updateRecyclerView()
-            recyclerView.adapter!!.notifyDataSetChanged()
-        })
+
+        observePlaces()
+
         return root
     }
 
-    private fun updateRecyclerView() {
+    private fun observePlaces(){
+        viewModel.fetchPlaces(campus, type)
+        viewModel.getPlaces().observe(viewLifecycleOwner, Observer {
+            updateRecyclerView()
+            recyclerView.adapter!!.notifyDataSetChanged()
+        })
 
+    }
+
+    private fun updateRecyclerView() {
         with(recyclerView) {
             layoutManager = when {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = ExplorePlaceAdapter(places, onExplorePlaceClickListener)
+            adapter = ExplorePlaceAdapter(viewModel.getPlaces().value!!, onExplorePlaceClickListener)
         }
     }
 

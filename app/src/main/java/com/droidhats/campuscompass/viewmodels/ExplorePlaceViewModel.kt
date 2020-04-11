@@ -14,10 +14,14 @@ import com.droidhats.campuscompass.repositories.ExplorePlaceRepository
 class ExplorePlaceViewModel (application: Application) : AndroidViewModel(application){
 
     private var explorePlaceRepository: ExplorePlaceRepository = ExplorePlaceRepository.getInstance(getApplication())
-    private  var list: ArrayList<Explore_Place> = ArrayList()
+    private  var placesList = MutableLiveData<ArrayList<Explore_Place>>()
 
-    fun getPlaces(campus:String, type: String): MutableLiveData<ArrayList<Explore_Place>>{
+    fun fetchPlaces(campus:String, type: String){
         explorePlaceRepository.getPlaces(campus, type)
-        return explorePlaceRepository.placesList
+    }
+
+    fun getPlaces() : MutableLiveData<ArrayList<Explore_Place>> {
+        placesList = explorePlaceRepository.placesList
+        return  placesList
     }
 }
