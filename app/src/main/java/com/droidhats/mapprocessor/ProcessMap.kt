@@ -140,7 +140,7 @@ class ProcessMap {
             },
             fun(svg: String) {
                 val newSVG = createSVG(svg)
-                indoorTransportations.add(newSVG)
+                if (newSVG.transportationType != "") indoorTransportations.add(newSVG)
                 allElements.add(newSVG)
             }
         )
@@ -711,6 +711,13 @@ class ProcessMap {
     internal fun isWithinBounds(x: Double, y: Double): Boolean {
         if (firstElement!!.isWithin(x, y)) return true
         return false
+    }
+
+    fun getPositionWithId(id: String): Pair<Double, Double>? {
+        for (elmnt in allElements) {
+            if (elmnt.getID() == id) return elmnt.getCenter()
+        }
+        return null
     }
 }
 

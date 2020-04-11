@@ -30,8 +30,11 @@ import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.droidhats.campuscompass.viewmodels.MapViewModel
+import com.droidhats.mapprocessor.MapElement
+import com.droidhats.mapprocessor.getDistance
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
+import kotlinx.android.synthetic.main.map_fragment.*
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
 import java.io.InputStream
 
@@ -41,6 +44,8 @@ class FloorFragment : Fragment() {
     private lateinit var viewModel: FloorViewModel
     private lateinit var viewModelMapViewModel: MapViewModel
     private lateinit var root: View
+    private var canConsume: Boolean = true
+    private var intermediateTransportID: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -166,22 +171,108 @@ class FloorFragment : Fragment() {
 
     fun handleNavigation(startToEnd: Pair<IndoorLocation, IndoorLocation>) {
         var startAndEnd = startToEnd
+        var building: Building
         if (startAndEnd.first.lID == "") {
-            startAndEnd = Pair(startAndEnd.second, startAndEnd.second)
+            building = viewModelMapViewModel.getBuildings()[startAndEnd.second.buildingIndex]
+        } else {
+            building = viewModelMapViewModel.getBuildings()[startAndEnd.first.buildingIndex]
         }
+        if (startAndEnd.first.lID == "" || startAndEnd.second.lID == "") {
+            canConsume = false
+        }
+
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
-            viewModel.consumeNavHandler()
+            if (canConsume) {
+                viewModel.consumeNavHandler()
+            } else {
+                canConsume = true
+                if (intermediateTransportID != null) {
+                    if (startAndEnd.first.lID == "") {
+                        generateDirectionsOnFloor(
+                            intermediateTransportID!!,
+                            startAndEnd.second.lID,
+                            startAndEnd.second.floorMap,
+                            startAndEnd.second.floorNum
+                        )
+                    } else {
+                        generateDirectionsOnFloor(
+                            intermediateTransportID!!,
+                            startAndEnd.first.lID,
+                            startAndEnd.first.floorMap,
+                            startAndEnd.first.floorNum
+                        )
+                    }
+                }
+            }
         }
         doneButton.visibility = View.VISIBLE
-        val inputStream: InputStream = requireContext().assets.open(startAndEnd.first.floorMap)
+        if (startAndEnd.first.lID == "") {
+            generateDirectionsOnFloor(
+                startAndEnd.first.lID,
+                startAndEnd.second.lID,
+                startAndEnd.second.floorMap,
+                startAndEnd.second.floorNum
+            )
+        } else {
+            generateDirectionsOnFloor(
+                startAndEnd.first.lID,
+                startAndEnd.second.lID,
+                startAndEnd.first.floorMap,
+                startAndEnd.first.floorNum
+            )
+        }
+
+    }
+
+    fun findNearestIndoorTransportation(mapProcessor: ProcessMap, pos: Pair<Double, Double>): String {
+        var closestTransport: MapElement? = null
+        for (transport in mapProcessor.getIndoorTransportationMethods()) {
+            if (closestTransport == null
+                || getDistance(transport.getCenter(), pos) < getDistance(closestTransport.getCenter(), pos)) {
+                closestTransport = transport
+            }
+        }
+        return closestTransport!!.getID()
+    }
+
+    fun generateDirectionsOnFloor(start: String, end: String, floorMap: String, floorNum: String) {
+        val inputStream: InputStream = requireContext().assets.open(floorMap)
         val file: String = inputStream.bufferedReader().use { it.readText() }
         val mapProcessor: ProcessMap = ProcessMap()
-        val newFile = mapProcessor.automateSVG(file, startAndEnd.first.floorNum)
+        val newFile = mapProcessor.automateSVG(file, floorNum)
         mapProcessor.readSVGFromString(newFile)
+        var startPos = start
+        var endPos = end
+        if (start == "") {
+            val pos = mapProcessor.getPositionWithId(endPos)
+            if (pos != null) {
+                startPos = findNearestIndoorTransportation(mapProcessor, pos)
+                intermediateTransportID = startPos
+            } else {
+                Toast.makeText(
+                    context,
+                    "FAILED TO GENERATE DIRECTIONS, NO END POSITION WAS FOUND",
+                    Toast.LENGTH_LONG
+                )
+            }
+        }
+        if (end == "") {
+            val pos = mapProcessor.getPositionWithId(startPos)
+            if (pos != null) {
+                endPos = findNearestIndoorTransportation(mapProcessor, pos)
+                intermediateTransportID = endPos
+            } else {
+                Toast.makeText(
+                    context,
+                    "FAILED TO GENERATE DIRECTIONS, NO START POSITION WAS FOUND",
+                    Toast.LENGTH_LONG
+                )
+            }
+        }
         val svg: SVG = SVG.getFromString(
             mapProcessor
-                .getSVGStringFromDirections(Pair(startAndEnd.first.lID, startAndEnd.second.lID))
+                .getSVGStringFromDirections(Pair(startPos, endPos))
         )
         setImage(svg)
     }
