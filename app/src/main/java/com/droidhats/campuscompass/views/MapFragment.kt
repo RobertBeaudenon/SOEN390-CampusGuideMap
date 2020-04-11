@@ -56,6 +56,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
@@ -139,6 +140,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initBottomSheetBehavior()
         initSearchBar()
         handleCampusSwitch()
+        handleClosingIndoorNav()
     }
 
     /**
@@ -179,6 +181,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         observeNavigation()
         setNavigationButtons()
         attach(mapModel)
+    }
+
+    // Handle coming coming back to the map fragment from the floor fragment
+    private fun handleClosingIndoorNav(){
+        val isReturningFromIndoorNav = arguments?.getBoolean("isReturning")
+        if (isReturningFromIndoorNav != null){
+            currentOutdoorNavigationRoute = null
+            toggleInstructionsView(false)
+        }
     }
 
     private fun attachBuildingObservers(){

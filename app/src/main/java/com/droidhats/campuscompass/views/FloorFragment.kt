@@ -1,6 +1,7 @@
 package com.droidhats.campuscompass.views
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
@@ -34,7 +35,6 @@ import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
 import java.io.InputStream
-
 
 class FloorFragment : Fragment() {
 
@@ -71,8 +71,63 @@ class FloorFragment : Fragment() {
         })
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            viewModel.navigationRepository?.stepBack()
+            displayAlertMsg()
         }
+    }
+
+    private fun displayAlertMsg(){
+        val builder = AlertDialog.Builder(requireContext())
+
+        val alertTitle: String
+        val alertMsg: String
+        val exitMsg: String
+
+        // Use directions to check if the floor fragment is used to highlight a room or
+        // show directions between two rooms, and change the alert message accordingly.
+        val directions = viewModel.getDirections()
+
+        if (directions != null) {
+            alertTitle = "Close Navigation"
+            alertMsg = "Do you want to cancel the navigation?"
+            exitMsg = "Exiting Navigation"
+        } else {
+            alertTitle = "Return to Map"
+            alertMsg = "Do you want to return to the map?"
+            exitMsg = "Returning to Map"
+        }
+
+        //set title for alert dialog
+        builder.setTitle(alertTitle)
+
+        //set message for alert dialog
+        builder.setMessage(alertMsg)
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+        //performing positive action
+        builder.setPositiveButton("Yes"){dialogInterface, which ->
+            Toast.makeText(requireContext(), exitMsg, Toast.LENGTH_LONG).show()
+            
+            // Clear current navigation
+            viewModel.navigationRepository?.cancelNavigation()
+            
+            // Prepare a bundle to return to the map fragment
+            val bundle = Bundle()
+            bundle.putBoolean("isReturning", true)
+            findNavController().popBackStack()
+            findNavController().navigate(R.id.map_fragment, bundle)
+        }
+
+        //performing cancel action
+        builder.setNeutralButton("Cancel"){dialogInterface , which ->
+            Toast.makeText(requireContext(),"Clicked Cancel\nOperation Canceled", Toast.LENGTH_LONG).show()
+        }
+
+        // Create the AlertDialog
+        val alertDialog: AlertDialog = builder.create()
+
+        // Set other dialog properties
+        alertDialog.setCancelable(false)
+        alertDialog.show()
     }
 
     fun handleView() {
