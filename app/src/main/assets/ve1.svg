@@ -95,6 +95,10 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM 201-20
        id="rect4103"
        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <text x="693" y="185" font-family="Arial" font-size="8" fill="black" stroke-width="0"  > 103 </text>
+
+    <rect x="692" y="138" height="5" width="100" style="fill:none;stroke:none"/>
+    <rect x="692" y="165" height="5" width="100" style="fill:none;stroke:none"/>
+
     <!-- Displaying icons on the map -->
     <!-- Displaying stair icon on the map -->
     <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs1" x="708" y="140">
@@ -154,6 +158,8 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM 201-20
           d="M13.6419 17.9677C15.2934 17.9677 16.6322 18.7114 16.6322 19.6289C16.6322 20.5464 15.2934 21.2902 13.6419 21.2902C11.9904 21.2902 10.6516 20.5464 10.6516 19.6289C10.6516 18.7114 11.9904 17.9677 13.6419 17.9677Z"
           fill="#DA6736"
           stroke-width="0"/>
+    </svg>
+    <svg x="690" y="150" id="entrance">
     </svg>
   </g>
 </svg>

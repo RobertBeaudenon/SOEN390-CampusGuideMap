@@ -140,7 +140,7 @@ class ProcessMap {
             },
             fun(svg: String) {
                 val newSVG = createSVG(svg)
-                indoorTransportations.add(newSVG)
+                if (newSVG.transportationType != "") indoorTransportations.add(newSVG)
                 allElements.add(newSVG)
             }
         )
@@ -711,6 +711,25 @@ class ProcessMap {
     internal fun isWithinBounds(x: Double, y: Double): Boolean {
         if (firstElement!!.isWithin(x, y)) return true
         return false
+    }
+
+    fun getPositionWithId(id: String): Pair<Double, Double>? {
+        for (elmnt in allElements) {
+            if (elmnt.getID() == id) return elmnt.getCenter()
+        }
+        return null
+    }
+
+    fun findNearestIndoorTransportation(pos: Pair<Double, Double>, goingUp: Boolean): String {
+        var closestTransport: MapElement? = null
+        for (transport in indoorTransportations) {
+            if (closestTransport == null
+                || getDistance(transport.getCenter(), pos) < getDistance(closestTransport.getCenter(), pos)) {
+                if (goingUp && !transport.id.contains("down")) closestTransport = transport
+                if (!goingUp && !transport.id.contains("up")) closestTransport = transport
+            }
+        }
+        return closestTransport!!.getID()
     }
 }
 

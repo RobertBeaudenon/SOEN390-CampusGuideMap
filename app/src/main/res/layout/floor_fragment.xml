@@ -37,7 +37,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         app:layout_constraintVertical_bias="0.422" />
 
     <com.otaliastudios.zoom.ZoomImageView
@@ -73,44 +72,95 @@
 
     </com.otaliastudios.zoom.ZoomImageView>
 
+    <ProgressBar
+        android:id="@+id/progressFloor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="@+id/floormap"
+        app:layout_constraintStart_toStartOf="@+id/floormap"
+        app:layout_constraintTop_toBottomOf="@+id/include2" />
+
     <include
         android:id="@+id/include2"
         layout="@layout/search_bar_layout" />
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+    android:id="@+id/floorPickerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:background="#DCDCDC"
+    android:gravity="bottom"
+    android:orientation="horizontal"
+    android:visibility="gone"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/floormap2"
+    app:layout_constraintVertical_bias="1.0"
+    tools:layout_editor_absoluteX="0dp" >
+
+    <TextView
+        android:id="@+id/text_floor"
+        android:layout_width="170dp"
+        android:layout_height="match_parent"
+        android:background="#DCDCDC"
+        android:gravity="center"
+        android:paddingLeft="80dp"
+        android:text="Floor"
+        android:textColor="#070707"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <NumberPicker
+        android:id="@+id/floorPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:showDividers="middle"
+        android:textAlignment="center"
+        android:descendantFocusability="blocksDescendants" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/indoorInstructionsLayout"
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:background="#DCDCDC"
         android:gravity="bottom"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@+id/floormap2"
         app:layout_constraintVertical_bias="1.0"
         tools:layout_editor_absoluteX="0dp">
 
         <TextView
-            android:id="@+id/text_floor"
-            android:layout_width="170dp"
+            android:id="@+id/instructions_text"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:background="#DCDCDC"
             android:gravity="center"
-            android:paddingLeft="80dp"
-            android:text="Floor"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="This is the"
             android:textColor="#070707"
             android:textSize="12sp"
             android:textStyle="bold" />
 
-        <NumberPicker
-            android:id="@+id/floorPicker"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:scaleX="1"
-            android:scaleY="1"
-            android:showDividers="middle"
-            android:textAlignment="center" />
+        <ImageView
+            android:id="@+id/nextArrow"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/arrow_button"
+            android:tint="@color/colorPrimaryDark" />
 
     </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

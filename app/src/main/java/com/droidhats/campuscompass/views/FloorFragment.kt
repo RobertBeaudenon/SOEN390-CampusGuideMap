@@ -10,11 +10,12 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.Button
 import android.widget.NumberPicker
 import android.widget.Toast
 import android.widget.ToggleButton
+import android.widget.ProgressBar
+import android.widget.LinearLayout
 import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -34,6 +35,8 @@ import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.InputStream
 
 class FloorFragment : Fragment() {
@@ -41,6 +44,9 @@ class FloorFragment : Fragment() {
     private lateinit var viewModel: FloorViewModel
     private lateinit var viewModelMapViewModel: MapViewModel
     private lateinit var root: View
+    private lateinit var progressBar: ProgressBar
+    private var canConsume: Boolean = true
+    private var intermediateTransportID: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +65,7 @@ class FloorFragment : Fragment() {
 
         viewModel = ViewModelProvider(this).get(FloorViewModel::class.java)
         viewModelMapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        progressBar = root.findViewById(R.id.progressFloor)
 
         val startAndEnd = viewModel.getDirections()
         if (startAndEnd != null) {
@@ -134,6 +141,9 @@ class FloorFragment : Fragment() {
         var mapToDisplay: String = "hall8.svg" // default value
         val building : Building = arguments?.getParcelable("building")!!
         var floormap : String? = arguments?.getString("floormap")
+
+        val floorPickerLayout: LinearLayout = root.findViewById(R.id.floorPickerLayout)
+        floorPickerLayout.visibility = View.VISIBLE
 
         // handle case that you only want to view indoor map
         if (floorNum == null) {
@@ -219,25 +229,154 @@ class FloorFragment : Fragment() {
     }
 
     fun handleNavigation(startToEnd: Pair<IndoorLocation, IndoorLocation>) {
+
+        val indoorInstructionsLayout: LinearLayout = root.findViewById(R.id.indoorInstructionsLayout)
+        indoorInstructionsLayout.visibility = View.VISIBLE
+
         var startAndEnd = startToEnd
+        var building: Building
         if (startAndEnd.first.lID == "") {
-            startAndEnd = Pair(startAndEnd.second, startAndEnd.second)
+            building = viewModelMapViewModel.getBuildings()[startAndEnd.second.buildingIndex]
+        } else {
+            building = viewModelMapViewModel.getBuildings()[startAndEnd.first.buildingIndex]
         }
+        if (startAndEnd.first.lID == "" || startAndEnd.second.lID == ""
+            || startAndEnd.first.floorNum != startAndEnd.second.floorNum) {
+            canConsume = false
+        }
+
+        val goingUp: Boolean = when(true) {
+            (startAndEnd.first.lID != "" && startAndEnd.second.lID != "") -> {
+                startAndEnd.first.getFloorNumber() < startAndEnd.second.getFloorNumber()
+            }
+            startAndEnd.first.lID == "" -> {
+                1 < startAndEnd.second.getFloorNumber()
+            }
+            else -> { // second.lID is an empty string
+                startAndEnd.first.getFloorNumber() < 1
+            }
+        }
+
+
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
-            viewModel.consumeNavHandler()
+            if (canConsume) {
+                viewModel.consumeNavHandler()
+            } else {
+                canConsume = true
+                if (intermediateTransportID != null) {
+                    if (startAndEnd.first.lID == "") {
+                        generateDirectionsOnFloor(
+                            intermediateTransportID!!,
+                            startAndEnd.second.lID,
+                            startAndEnd.second.floorMap,
+                            startAndEnd.second.floorNum,
+                            goingUp
+                        )
+                    } else if (startAndEnd.second.lID == "") {
+                        generateDirectionsOnFloor(
+                            intermediateTransportID!!,
+                            "entrance",
+                            building.getIndoorInfo().second["1"]!!,
+                            "1",
+                            goingUp
+                        )
+                    } else {
+                        generateDirectionsOnFloor(
+                            intermediateTransportID!!,
+                            startAndEnd.second.lID,
+                            startAndEnd.second.floorMap,
+                            startAndEnd.second.floorNum,
+                            goingUp
+                        )
+                    }
+                }
+                intermediateTransportID = null
+            }
         }
         doneButton.visibility = View.VISIBLE
-        val inputStream: InputStream = requireContext().assets.open(startAndEnd.first.floorMap)
+        if (startAndEnd.first.lID == "") {
+            generateDirectionsOnFloor(
+                "entrance",
+                "", // intentionally left blank to find the nearest transportation method
+                building.getIndoorInfo().second["1"]!!,
+                "1",
+                goingUp
+            )
+        } else if (startAndEnd.first.floorNum != startAndEnd.second.floorNum) {
+            generateDirectionsOnFloor(
+                startAndEnd.first.lID,
+                "",
+                startAndEnd.first.floorMap,
+                startAndEnd.first.floorNum,
+                goingUp
+            )
+        } else {
+            generateDirectionsOnFloor(
+                startAndEnd.first.lID,
+                startAndEnd.second.lID,
+                startAndEnd.first.floorMap,
+                startAndEnd.first.floorNum,
+                goingUp
+            )
+        }
+
+    }
+
+    fun generateDirectionsOnFloor(start: String, end: String, floorMap: String, floorNum: String, goingUp: Boolean) {
+        val inputStream: InputStream = requireContext().assets.open(floorMap)
         val file: String = inputStream.bufferedReader().use { it.readText() }
         val mapProcessor: ProcessMap = ProcessMap()
-        val newFile = mapProcessor.automateSVG(file, startAndEnd.first.floorNum)
+        val newFile = mapProcessor.automateSVG(file, floorNum)
         mapProcessor.readSVGFromString(newFile)
-        val svg: SVG = SVG.getFromString(
-            mapProcessor
-                .getSVGStringFromDirections(Pair(startAndEnd.first.lID, startAndEnd.second.lID))
-        )
-        setImage(svg)
+        var startPos = start
+        var endPos = end
+        if (start == "") {
+            val pos = mapProcessor.getPositionWithId(endPos)
+            if (pos != null) {
+                startPos = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
+                if (goingUp) {
+                    intermediateTransportID = startPos.replace("up", "down")
+                } else {
+                    intermediateTransportID = startPos.replace("down", "up")
+                }
+
+            } else {
+                Toast.makeText(
+                    context,
+                    "FAILED TO GENERATE DIRECTIONS, NO END POSITION WAS FOUND",
+                    Toast.LENGTH_LONG
+                )
+            }
+        }
+        if (end == "") {
+            val pos = mapProcessor.getPositionWithId(startPos)
+            if (pos != null) {
+                endPos = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
+                if (goingUp) {
+                    intermediateTransportID = endPos.replace("up", "down")
+                } else {
+                    intermediateTransportID = endPos.replace("down", "up")
+                }
+            } else {
+                Toast.makeText(
+                    context,
+                    "FAILED TO GENERATE DIRECTIONS, NO START POSITION WAS FOUND",
+                    Toast.LENGTH_LONG
+                )
+            }
+        }
+        progressBar.visibility = View.VISIBLE
+        GlobalScope.launch {
+            val svg: SVG = SVG.getFromString(
+                mapProcessor
+                    .getSVGStringFromDirections(Pair(startPos, endPos))
+            )
+            requireActivity().runOnUiThread {
+                setImage(svg)
+                progressBar.visibility = View.GONE
+            }
+        }
     }
 
     private fun initSearchBar() {
