@@ -55,7 +55,7 @@ class CalendarFragment : DialogFragment(), DialogInterface.OnDismissListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-       val root = inflater.inflate(R.layout.calendar_fragment, container, false)
+        val root = inflater.inflate(R.layout.calendar_fragment, container, false)
         refresh()
         val textView: TextView = root.findViewById(R.id.text_info)
         calendarViewModel.info.observe(viewLifecycleOwner, Observer {

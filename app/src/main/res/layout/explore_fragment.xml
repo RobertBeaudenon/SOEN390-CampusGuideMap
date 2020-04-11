@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/explore_fragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/quantum_white_100"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageButton
+            android:id="@+id/button_menu_explore"
+            android:layout_width="100dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="10dp"
+            android:background="#FFFFFF"
+            android:contentDescription="menu button"
+            android:padding="30dp"
+            android:src="@drawable/icon_menu" />
+
+        <TextView
+            android:id="@+id/text_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/explore"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/text_info_food"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            />
+
+        <Button
+            android:id="@+id/select_food_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:text="Food"
+            android:textAllCaps="false"
+            android:textColor="@color/quantum_white_text"
+            android:background="@drawable/calendarbutton"
+            android:paddingStart="55dp"
+            android:paddingEnd="55dp"
+            android:paddingBottom="14dp"
+            android:paddingTop="12dp" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/text_info_drinks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            />
+
+        <Button
+            android:id="@+id/select_drinks_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:text="Drinks"
+            android:textAllCaps="false"
+            android:textColor="@color/quantum_white_text"
+            android:background="@drawable/calendarbutton"
+            android:paddingStart="55dp"
+            android:paddingEnd="55dp"
+            android:paddingBottom="14dp"
+            android:paddingTop="12dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp">
+
+        <TextView
+            android:id="@+id/text_info_study"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            />
+
+        <Button
+            android:id="@+id/select_study_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:text="Study"
+            android:textAllCaps="false"
+            android:textColor="@color/quantum_white_text"
+            android:background="@drawable/calendarbutton"
+            android:paddingStart="55dp"
+            android:paddingEnd="55dp"
+            android:paddingBottom="14dp"
+            android:paddingTop="12dp" />
+
+    </LinearLayout>
+
+    <ToggleButton
+        android:id="@+id/toggleButton2"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/mapFragSearchBar"
+        android:layout_gravity="center|bottom"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/toggle_switch"
+        android:elevation="0dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="@string/togglebutton"
+        android:textColor="#FFFFFF"
+        android:textOff="@string/sgw"
+        android:textOn="@string/loy"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+</LinearLayout>
