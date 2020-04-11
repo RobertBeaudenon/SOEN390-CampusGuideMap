@@ -159,5 +159,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM 201-20
           fill="#DA6736"
           stroke-width="0"/>
     </svg>
+    <svg x="690" y="150" id="entrance">
+    </svg>
   </g>
 </svg>

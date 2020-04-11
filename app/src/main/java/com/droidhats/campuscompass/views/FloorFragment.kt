@@ -198,21 +198,22 @@ class FloorFragment : Fragment() {
                     } else {
                         generateDirectionsOnFloor(
                             intermediateTransportID!!,
-                            startAndEnd.first.lID,
-                            startAndEnd.first.floorMap,
-                            startAndEnd.first.floorNum
+                            "entrance",
+                            building.getIndoorInfo().second["1"]!!,
+                            "1"
                         )
                     }
                 }
+                intermediateTransportID = null
             }
         }
         doneButton.visibility = View.VISIBLE
         if (startAndEnd.first.lID == "") {
             generateDirectionsOnFloor(
-                startAndEnd.first.lID,
-                startAndEnd.second.lID,
-                startAndEnd.second.floorMap,
-                startAndEnd.second.floorNum
+                "entrance",
+                "", // intentionally left blank to find the nearest transportation method
+                building.getIndoorInfo().second["1"]!!,
+                "1"
             )
         } else {
             generateDirectionsOnFloor(

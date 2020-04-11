@@ -677,5 +677,7 @@ ROOM 1.210 IS KNOW TO BE THE AMPHITHEATER AND HAS BEEN LABEL AS SUCH
           fill="#82CBEB"
           stroke-width="0"/>
     </svg>
+    <svg x="520" y="950" id="entrance">
+    </svg>
   </g>
 </svg>
