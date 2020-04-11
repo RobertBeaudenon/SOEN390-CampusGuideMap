@@ -231,7 +231,7 @@ class SearchFragment : Fragment()  {
                 currentLocation.isCurrentLocation = true
                 searchView.setQuery(currentLocation.name, false)
                 val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
-                searchText.setTextColor(Color.GREEN)
+                searchText.setTextColor(Color.parseColor("#fcba03"))
                 NavigationPoints[searchView.id] = currentLocation
                 Toast.makeText(context, "Current Location Set\n $coordinates", Toast.LENGTH_LONG).show()
 
@@ -239,7 +239,7 @@ class SearchFragment : Fragment()  {
                     viewModel.getRouteTimes(
                         NavigationPoints[R.id.mainSearchBar]!!,
                         NavigationPoints[R.id.secondarySearchBar]!!)
-                    toggleNavigationButtonColor(Color.GREEN)
+                    toggleNavigationButtonColor(Color.parseColor("#fcba03"))
                 }
             }
         }
@@ -405,7 +405,7 @@ class SearchFragment : Fragment()  {
 
         searchView.setQuery(location.name, submit)
         val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
-        searchText.setTextColor(Color.GREEN)
+        searchText.setTextColor(Color.parseColor("#fcba03"))
         NavigationPoints[searchView.id] = location
 
         if (areRouteParametersSet()) {
@@ -457,7 +457,7 @@ class SearchFragment : Fragment()  {
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_bicycle).visibility = View.VISIBLE
                 root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle).visibility = View.VISIBLE
             }
-                toggleNavigationButtonColor(Color.GREEN)
+                toggleNavigationButtonColor(Color.parseColor("#fcba03"))
         }
     }
 

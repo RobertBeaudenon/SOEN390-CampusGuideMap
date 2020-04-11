@@ -9,11 +9,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.Button
-import android.widget.NumberPicker
-import android.widget.Toast
-import android.widget.ToggleButton
+import android.widget.*
 import androidx.activity.addCallback
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -83,6 +79,9 @@ class FloorFragment : Fragment() {
         var mapToDisplay: String = "hall8.svg" // default value
         val building : Building = arguments?.getParcelable("building")!!
         var floormap : String? = arguments?.getString("floormap")
+
+        val floorPickerLayout: LinearLayout = root.findViewById(R.id.floorPickerLayout)
+        floorPickerLayout.visibility = View.VISIBLE
 
         // handle case that you only want to view indoor map
         if (floorNum == null) {
@@ -168,6 +167,10 @@ class FloorFragment : Fragment() {
     }
 
     fun handleNavigation(startToEnd: Pair<IndoorLocation, IndoorLocation>) {
+
+        val indoorInstructionsLayout: LinearLayout = root.findViewById(R.id.indoorInstructionsLayout)
+        indoorInstructionsLayout.visibility = View.VISIBLE
+
         var startAndEnd = startToEnd
         var building: Building
         if (startAndEnd.first.lID == "") {
