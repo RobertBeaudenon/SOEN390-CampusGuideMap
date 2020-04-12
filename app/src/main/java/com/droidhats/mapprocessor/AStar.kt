@@ -103,8 +103,12 @@ fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>
         string.append(Path.createPath(cur.pos!!, cur.prev!!.pos))
         cur = cur.prev
     }
-    string.append(Circle.getPoint(endVertex.pos.first, endVertex.pos.second))
-    string.append(Circle.getPoint(startVertex.pos.first, startVertex.pos.second))
+
+    // check if the start and end vertices are the same
+    if(endVertex != cur) {
+        string.append(Circle.getPoint(endVertex.pos.first, endVertex.pos.second))
+        string.append(Circle.getPoint(cur!!.pos.first, cur.pos.second))
+    }
 
     // Check if the path exists
     if(endVertex.prev != null) {
