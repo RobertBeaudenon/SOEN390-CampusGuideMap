@@ -124,7 +124,6 @@ class SettingsFragment : Fragment() {
         }
     }
 
-
     private fun settingOffArraySharedPref(valueToAddOrRemove: String, addingToArray: Boolean) {
         val settingOffArraySharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
         val editor = settingOffArraySharedPref.edit()
