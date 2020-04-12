@@ -379,19 +379,39 @@ ROOM 1.210 IS KNOW TO BE THE AMPHITHEATER AND HAS BEEN LABEL AS SUCH
     <!-- next to fire marker -->
     <rect y="98" x="420" height="50" width="100" style="fill:none;stroke:none" />
 
-    <!-- stairs to floor 2 -->
-    <rect y="240" x="514" height="270" width="50" style="fill:none;stroke:none"/>
+    <!-- stairs to floor 2+ -->
+    <rect y="240" x="514" height="270" width="50" style="fill:none;stroke:none" />
+    <rect
+        id="rect31.144"
+        x="520"
+        y="480"
+        height="30"
+        width="30"
+        style="fill:none;stroke:none" />
 
-    <!-- escalators with stairs to s1 -->
-    <path d="M 366,197 405,197 422,327 450,326 450,505 513,626 513,800 448,800 Z" style="fill:none;stroke:none"/>
+    <!-- stairs to s1 + escalators to s2 -->
+    <path d="M 366,197 405,197 422,327 450,326 450,505 513,626 513,800 448,800 Z" style="fill:none;stroke:none" />
+    <rect
+        id="rect31.155"
+        x="372"
+        y="200"
+        height="30"
+        width="30"
+        style="fill:none;stroke:none" />
+    <rect
+        id="rect31.166"
+        x="475"
+        y="770"
+        height="30"
+        width="30"
+        style="fill:none;stroke:none" />
 
     <!-- restricted area for plumbing -->
     <rect y="725" x="669" height="85" width="16" style="fill:none;stroke:none" />
+
     <!-- 1.124 and 1.125 -->
     <rect y="875" x="855" height="125" width="30" style="fill:none;stroke:none" />
-
     <rect y="245" x="760" height="50" width="70" style="fill:none;stroke:none" />
-
     <rect y="140" x="360" height="30" width="35" style="fill:none;stroke:none"  />
 
 

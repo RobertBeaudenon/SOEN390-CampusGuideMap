@@ -72,11 +72,6 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 101
         id="path4501"
         d="m 208.0918,17.888672 0,101.826168 -19.51953,0 0,51.42774 17.14257,0 0,161.42969 -18.57226,0 0,48.57031 12.85742,0 0,75.71484 -45.71484,0 0,55.71485 -51.42774,0 0,55.71289 -48.572264,0 0,61.42968 -22.857422,0 0,227.14258 28.572266,0 0,67.14258 -30,0 0,41.42773 325.71484,0 0,-41.42773 0,-67.14258 0,-51.05078 37.23438,0 0,20.20313 437.39648,0 21.43946,0 0,-259.86719 83.92968,0 12.5,0 27.5,0 0,-40.71485 -27.5,0 0,-174.64257 -12.5,0 0,-5.35743 -72.14257,0 0,-253.570308 -16.42969,0 0,30.714848 -16.79688,0 0,-104.683598 -474.63086,0 -147.62304,0 z"
         style="fill:#f7d6d6;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <rect x="130" y="680" height="150" width="120" style="fill:none;stroke:none;"/>
-    <rect x="280" y="540" height="180" width="150" style="fill:none;stroke:none;"/>
-    <path d="M 470,500 520,620 560,620 490,500 Z" style="fill:none;stroke:none" />
-    <path d="M 510,480 530,480 580,580 560,580 Z" style="fill:none;stroke:none" />
-    <rect x="600" y="570" height="120" width="120" style="fill:none;stroke:none;"/>
     <rect
         y="924"
         x="30"
@@ -579,12 +574,16 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 101
     <path d="M 520,490 478,500 500,570 535,610 600,635 600,590 550,520 Z" style="fill:none;stroke:none" />
     <rect x="510" y="520" width="50" height="90" style="fill:none;stroke:none" />
 
+    <!-- behind circle desk -->
+    <rect x="600" y="570" height="120" width="120" style="fill:none;stroke:none" />
+
     <!-- left stairs -->
     <rect x="207" y="19" width="35" height="370" style="fill:none;stroke:none" />
     <rect x="230" y="135" width="45" height="33" style="fill:none;stroke:none" />
 
     <!-- area that got removed from original maps -->
-    <rect x="845" y="90" width="20" height="293" style="fill:none;stroke:none" />
+    <rect x="825" y="90" width="151" height="477" style="fill:none;stroke:none" />
+    <rect x="825" y="15" width="20" height="110" style="fill:none;stroke:none" />
 
     <!-- fire escape left-bottom -->
     <rect x="60" y="855" width="40" height="70" style="fill:none;stroke:none" />
@@ -593,6 +592,15 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 101
     <!-- fire escape top-right -->
     <rect x="690" y="138" width="30" height="62" style="fill:none;stroke:none" />
     <rect x="735" y="165" width="90" height="5" style="fill:none;stroke:none" />
+
+    <!-- journals -->
+    <rect x="130" y="680" height="150" width="120" style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text x="160" y="755" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > Journals </text>
+    <rect x="278" y="720" height="20" width="154" style="fill:none;stroke:none" />
+
+    <rect x="280" y="540" height="180" width="155" style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text x="332" y="630" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > Journals </text>
+    <rect x="128" y="830" height="20" width="123" style="fill:none;stroke:none" />
 
     <!-- Displaying icons on the map -->
     <!-- Displaying washroom icon on the map -->
@@ -913,8 +921,6 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM VL 101
       <path
           d="M23 10V13.9844H11V10H23ZM23.2812 18.7188C23.4688 18.9062 23.7031 19 23.9844 19C24.2656 19 24.5 18.9062 24.6875 18.7188C24.9062 18.5312 25.0156 18.2969 25.0156 18.0156C25.0156 17.7344 24.9062 17.5 24.6875 17.3125C24.5 17.0938 24.2656 16.9844 23.9844 16.9844C23.7031 16.9844 23.4688 17.0938 23.2812 17.3125C23.0938 17.5 23 17.7344 23 18.0156C23 18.2969 23.0938 18.5312 23.2812 18.7188ZM20.9844 25.9844V21.0156H13.0156V25.9844H20.9844ZM23.9844 15.0156C24.7969 15.0156 25.5 15.3125 26.0938 15.9062C26.6875 16.5 26.9844 17.2031 26.9844 18.0156V24.0156H23V28H11V24.0156H7.01562V18.0156C7.01562 17.2031 7.3125 16.5 7.90625 15.9062C8.5 15.3125 9.20312 15.0156 10.0156 15.0156H23.9844Z"
           fill="#DA3636" stroke-width="0" />
-    </svg>
-    <svg x="950" y="550" id="entrance">
     </svg>
   </g>
 </svg>
