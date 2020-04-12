@@ -37,9 +37,6 @@ class Map(
         //updating map type we can choose between  4 types : MAP_TYPE_NORMAL, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN, MAP_TYPE_HYBRID
         googleMap.mapType = GoogleMap.MAP_TYPE_NORMAL
 
-        //enable the zoom controls on the map and declare MainActivity as the callback triggered when the user clicks a marker on this map
-        googleMap.uiSettings.isZoomControlsEnabled = true
-
         //enable indoor level picker
         googleMap.isIndoorEnabled = true
         googleMap.uiSettings.isIndoorLevelPickerEnabled = true
