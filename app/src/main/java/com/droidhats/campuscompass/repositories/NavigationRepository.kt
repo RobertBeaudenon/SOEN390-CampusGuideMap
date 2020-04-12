@@ -94,15 +94,14 @@ class NavigationRepository(private val application: Application) {
         this.navigationRoute.value = navigationRoute
     }
 
-    fun setNavigationHandler(navHandler: NavHandler) {
-        navHandler.getNavigationRoute()
+    fun setNavigationHandler(navHandler: NavHandler?) {
+        if (navHandler == null) navigationRoute.value = null
+        navHandler?.getNavigationRoute()
         this.navhandler = navHandler
     }
 
     fun consumeNavigationHandler(): NavHandler? {
-        if (navhandler != null && navhandler?.next != null) {
-            setNavigationHandler(navhandler!!.next!!)
-        }
+        setNavigationHandler(navhandler?.next)
         return navhandler
     }
 

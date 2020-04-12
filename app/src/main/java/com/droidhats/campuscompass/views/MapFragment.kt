@@ -238,6 +238,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 } else {
                     findNavController().navigate(R.id.floor_fragment)
                 }
+            } else if (it == null) {
+                cancelNavigation()
             }
         })
         trackerSteps = 0
@@ -246,10 +248,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         // The done button ("I've arrived") will initially be hidden
         doneButton.visibility = View.GONE
-        
-        doneButton.setOnClickListener {
-            viewModel.navigationRepository.consumeNavigationHandler()
-        }
 
     }
 
@@ -269,6 +267,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
         buttonCloseInstructions.setOnClickListener{
             cancelNavigation()
+            viewModel.navigationRepository.cancelNavigation()
         }
 
         if(currentOutdoorNavigationRoute != null) {
@@ -279,7 +278,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun cancelNavigation() {
         clearNavigationPath()
-        viewModel.navigationRepository.cancelNavigation()
         currentOutdoorNavigationRoute = null
         toggleInstructionsView(false)
 
@@ -438,13 +436,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         toggleButton.visibility = View.GONE
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
+        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
         if (viewModel.navigationRepository.isLastStep()) {
-            doneButtonMap.setOnClickListener{
-                cancelNavigation()
-            }
             doneButtonMap.text = "Finish!"
         } else {
             doneButtonMap.text = "Take me inside!"
+            doneButton.setOnClickListener {
+                viewModel.navigationRepository.consumeNavigationHandler()
+            }
         }
 
         nextArrow.setOnClickListener{
