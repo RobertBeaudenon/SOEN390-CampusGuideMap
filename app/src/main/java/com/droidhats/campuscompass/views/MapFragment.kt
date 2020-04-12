@@ -69,6 +69,7 @@ import kotlinx.android.synthetic.main.instructions_sheet_layout.prevArrow
 import kotlinx.android.synthetic.main.instructions_sheet_layout.nextArrow
 import kotlinx.android.synthetic.main.instructions_sheet_layout.doneButtonMap
 import kotlinx.android.synthetic.main.instructions_sheet_layout.arrayInstruction
+import kotlinx.android.synthetic.main.place_info_card.*
 import kotlinx.android.synthetic.main.search_bar_layout.buttonResumeNavigation
 import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
@@ -198,6 +199,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onFloorFragmentBackClicked(){
         findNavController().popBackStack(R.id.map_fragment, false)
         currentOutdoorNavigationRoute = null
+
     }
 
     private fun attachBuildingObservers(){
@@ -235,8 +237,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     Handler().postDelayed({
                         moveTo(it.origin!!.getLocation(), 19.0f)
                     }, 100)
-                } else {
-                    findNavController().navigate(R.id.floor_fragment)
                 }
             } else if (it == null) {
                 cancelNavigation()
@@ -439,10 +439,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
         if (viewModel.navigationRepository.isLastStep()) {
             doneButtonMap.text = "Finish!"
+            doneButton.setOnClickListener {
+                viewModel.navigationRepository.cancelNavigation()
+            }
         } else {
             doneButtonMap.text = "Take me inside!"
             doneButton.setOnClickListener {
                 viewModel.navigationRepository.consumeNavigationHandler()
+                findNavController().navigate(R.id.floor_fragment)
             }
         }
 
@@ -521,19 +525,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun toggleInstructionsView(isVisible: Boolean){
         val instructionsView : CardView = requireActivity().findViewById(R.id.instructionLayout)
-        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
-
         if(isVisible){
             instructionsView.visibility = View.VISIBLE
             buttonResumeNavigation.visibility = View.INVISIBLE
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, instructionsView.height+20)
-
-            // The done button ("I've arrived") will be displayed when the navigation instruction is displayed
-            // something good
-
-            doneButton.setOnClickListener {
-                viewModel.navigationRepository.consumeNavigationHandler()
-            }
         }
         else{
             instructionsView.visibility = View.INVISIBLE
@@ -697,6 +692,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun populatePlaceInfoCard(location: GooglePlace){
+        place_card_favorites_button.text = "HE::P"
         val saveButton : Button = requireActivity().findViewById(R.id.place_card_favorites_button)
         val placeName: TextView = requireActivity().findViewById(R.id.place_card_name)
         val placeCategory: TextView = requireActivity().findViewById(R.id.place_card_category)

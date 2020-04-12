@@ -5,7 +5,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.droidhats.campuscompass.MainActivity
-import com.droidhats.campuscompass.models.*
+import com.droidhats.campuscompass.models.Campus
+import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.models.Map
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
