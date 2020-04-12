@@ -23,7 +23,8 @@
      <string name="contentDescription_BackButton">Back</string>
      <string name="contentDescription_Navigate">Navigate</string>
      <string name="contentDescription_SetNavigation">SetNavigation</string>
-     <string name="contentDescription_CloseButton">The close button for place card</string>
+     <string name="contentDescription_CloseButton">The close button</string>
+     <string name="contentDescription_MinimizeButton">The minimize button</string>
      <string name="building">Building</string>
      <string name="address">Address</string>
      <string name="open_hours">Open hours:</string>
@@ -35,6 +36,7 @@
      <string name="select_calendars">select calendars</string>
      <string name="navigate">Navigate</string>
      <string name="x_button">X</string>
+     <string name="minimize_button">Minimize</string>
      <string name="instructions">Instructions</string>
      <string name="place_name">Place Name</string>
      <string name="secondaryinfo">SecondaryInfo</string>
@@ -46,4 +48,5 @@
      <string name="next_button">Next Button</string>
       <string name="previous_button">Previous Button</string>
       <string name="done">Done</string>
+     <string name="explore">Explore</string>
  </resources>

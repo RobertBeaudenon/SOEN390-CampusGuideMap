@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/my_places_fragment">
+
+
+<!--    TODO: Design the layout for My Places-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/quantum_white_100"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp">
+
+        <ImageButton
+            android:id="@+id/button_menu"
+            android:layout_width="100dp"
+            android:layout_height="51dp"
+            android:layout_marginTop="10dp"
+            android:background="#FFFFFF"
+            android:contentDescription="menu button"
+            android:padding="30dp"
+            android:src="@drawable/icon_menu" />
+
+        <TextView
+            android:id="@+id/text_my_places"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/Favorites_Feature_Name"
+            android:textAlignment="center"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/favorites_recycler_view"
+            android:name="FavoritesFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            app:layoutManager="LinearLayoutManager"
+            tools:context=".views.MyPlacesFragment"
+            tools:listitem="@layout/favorites_recycler_item" />
+
+</LinearLayout>

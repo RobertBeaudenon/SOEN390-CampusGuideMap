@@ -39,8 +39,8 @@ android {
         minSdkVersion 23
         targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        versionCode 2
-        versionName "2.0"
+        versionCode 3
+        versionName '3.0'
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -134,6 +134,10 @@ dependencies {
     implementation 'com.novoda:merlin:1.2.0'
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     testImplementation "org.robolectric:robolectric:4.3.1"
+    implementation "androidx.room:room-runtime:2.2.5"
+    implementation "androidx.room:room-ktx:2.2.5"
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
 
 sonarqube {

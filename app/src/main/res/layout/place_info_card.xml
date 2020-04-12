@@ -74,8 +74,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
-                android:drawableStart="@drawable/ic_favorite_grey_24dp"
+                android:drawableStart="@drawable/ic_favorites_heart_grey"
                 android:layout_margin="6dp"
+                android:padding="10dp"
                 android:textSize="12sp"
                 android:text="@string/save"
                 tools:ignore="ButtonStyle" />
