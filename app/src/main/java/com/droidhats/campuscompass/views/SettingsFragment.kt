@@ -13,7 +13,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.droidhats.campuscompass.R
 
-
 class SettingsFragment : Fragment() {
     private var totalCheck: Int = 0
     private val preferenceOff = ArrayList<String>()
@@ -115,7 +114,6 @@ class SettingsFragment : Fragment() {
             totalCheck++
         }
     }
-
 
     private fun populateSettingOffArray() {
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
