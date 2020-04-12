@@ -33,46 +33,46 @@ class SettingsFragment : Fragment() {
 
         populateSettingOffArray()
 
-        currentSwitchStatus(root.findViewById(R.id.switch_settings_stairs), true)
-        currentSwitchStatus(root.findViewById(R.id.switch_settings_escalators), true)
-        currentSwitchStatus(root.findViewById(R.id.switch_settings_elevators), true)
-        currentSwitchStatus(root.findViewById(R.id.switch_settings_washrooms), false)
-        currentSwitchStatus(root.findViewById(R.id.switch_settings_printers), false)
-        currentSwitchStatus(root.findViewById(R.id.switch_settings_fountains), false)
-        currentSwitchStatus(root.findViewById(R.id.switch_settings_fireEscape), false)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_stairs), "stairs", true)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_escalators), "escalators", true)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_elevators), "elevators", true)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_restrooms), "restrooms", false)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_printers), "printers", false)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_fountains), "fountains", false)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_fireEscape), "fire escape",false)
 
         root.findViewById<Switch>(R.id.switch_settings_stairs).setOnCheckedChangeListener { _, isChecked ->
-            performSwitchClick(root.findViewById(R.id.switch_settings_stairs), isChecked, true)
+            performSwitchClick(root.findViewById(R.id.switch_settings_stairs), isChecked, "stairs", true)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_escalators).setOnCheckedChangeListener { _, isChecked ->
-            performSwitchClick(root.findViewById(R.id.switch_settings_escalators), isChecked, true)
+            performSwitchClick(root.findViewById(R.id.switch_settings_escalators), isChecked, "escalators",true)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_elevators).setOnCheckedChangeListener { _, isChecked ->
-            performSwitchClick(root.findViewById(R.id.switch_settings_elevators), isChecked, true)
+            performSwitchClick(root.findViewById(R.id.switch_settings_elevators), isChecked, "elevators",true)
         }
 
-        root.findViewById<Switch>(R.id.switch_settings_washrooms).setOnCheckedChangeListener { _, isChecked ->
-            performSwitchClick(root.findViewById(R.id.switch_settings_washrooms), isChecked, false)
+        root.findViewById<Switch>(R.id.switch_settings_restrooms).setOnCheckedChangeListener { _, isChecked ->
+            performSwitchClick(root.findViewById(R.id.switch_settings_restrooms), isChecked, "restrooms", false)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_printers).setOnCheckedChangeListener { _, isChecked ->
-            performSwitchClick(root.findViewById(R.id.switch_settings_printers), isChecked, false)
+            performSwitchClick(root.findViewById(R.id.switch_settings_printers), isChecked, "printers",false)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_fountains).setOnCheckedChangeListener { _, isChecked ->
-            performSwitchClick(root.findViewById(R.id.switch_settings_fountains), isChecked, false)
+            performSwitchClick(root.findViewById(R.id.switch_settings_fountains), isChecked, "fountains",false)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_fireEscape).setOnCheckedChangeListener { _, isChecked ->
-            performSwitchClick(root.findViewById(R.id.switch_settings_fireEscape), isChecked, false)
+            performSwitchClick(root.findViewById(R.id.switch_settings_fireEscape), isChecked, "fire escape",false)
         }
 
         return root
     }
 
-    private fun performSwitchClick(switchButton: Switch, checked: Boolean, restriction: Boolean) {
+    private fun performSwitchClick(switchButton: Switch, checked: Boolean, buttonText: String, restriction: Boolean) {
         val settingSwitchSharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
         val editor = settingSwitchSharedPref.edit()
 
@@ -87,28 +87,28 @@ class SettingsFragment : Fragment() {
             alertDialog.show()
         } else if (restriction && !checked) {
             switchButton.isChecked = false
-            editor.putBoolean(switchButton.text.toString(), false).apply()
+            editor.putBoolean(buttonText, false).apply()
             totalCheck--
-            settingOffArraySharedPref(switchButton.text.toString(), true)
+            settingOffArraySharedPref(buttonText, true)
         } else if (restriction && checked) {
             switchButton.isChecked = true
-            editor.putBoolean(switchButton.text.toString(), true).apply()
+            editor.putBoolean(buttonText, true).apply()
             totalCheck++
-            settingOffArraySharedPref(switchButton.text.toString(), false)
+            settingOffArraySharedPref(buttonText, false)
         } else if (!checked) {
             switchButton.isChecked = false
-            editor.putBoolean(switchButton.text.toString(), false).apply()
-            settingOffArraySharedPref(switchButton.text.toString(), true)
+            editor.putBoolean(buttonText, false).apply()
+            settingOffArraySharedPref(buttonText, true)
         } else {
             switchButton.isChecked = true
-            editor.putBoolean(switchButton.text.toString(), true).apply()
-            settingOffArraySharedPref(switchButton.text.toString(), false)
+            editor.putBoolean(buttonText, true).apply()
+            settingOffArraySharedPref(buttonText, false)
         }
     }
 
-    private fun currentSwitchStatus(switchButton: Switch, restriction: Boolean) {
+    private fun currentSwitchStatus(switchButton: Switch, buttonText: String, restriction: Boolean) {
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val default: Boolean = sharedPref.getBoolean(switchButton.text.toString(), true)
+        val default: Boolean = sharedPref.getBoolean(buttonText, true)
         switchButton.isChecked = default
 
         if(restriction && switchButton.isChecked) {
@@ -142,5 +142,4 @@ class SettingsFragment : Fragment() {
         editor.putStringSet("settingOffArray", set)
         editor.apply()
     }
-
 }

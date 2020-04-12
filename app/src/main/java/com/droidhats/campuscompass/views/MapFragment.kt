@@ -745,28 +745,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val set = HashSet<String>()
         val settingInflatedView: View = layoutInflater.inflate(R.layout.settings_fragment, null)
 
-        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_stairs))
-        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_escalators))
-        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_elevators))
-        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_washrooms))
-        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_printers))
-        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fountains))
-        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fireEscape))
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_stairs), "stairs")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_escalators), "escalators")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_elevators), "elevators")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_restrooms), "restrooms")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_printers), "printers")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fountains), "fountains")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fireEscape), "fire escape")
 
         set.addAll(preferenceOff)
         editor.putStringSet("settingOffArray", set)
         editor.apply()
     }
 
-    private fun populateSettingOffArray(switchButton: Switch) {
+    private fun populateSettingOffArray(switchButton: Switch, buttonText: String) {
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val default: Boolean = sharedPref.getBoolean(switchButton.text.toString(), true)
+        val default: Boolean = sharedPref.getBoolean(buttonText, true)
         switchButton.isChecked = default
 
         if(!switchButton.isChecked) {
-            preferenceOff.add(switchButton.text.toString())
+            preferenceOff.add(buttonText)
         } else {
-            preferenceOff.remove(switchButton.text.toString())
+            preferenceOff.remove(buttonText)
         }
     }
 }

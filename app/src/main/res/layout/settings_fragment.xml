@@ -36,74 +36,195 @@
 
     </RelativeLayout>
 
-    <Switch
-        android:id="@+id/switch_settings_stairs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:checked="true"
-        android:switchPadding="55dp"
-        android:text="Stairs" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Switch
-        android:id="@+id/switch_settings_escalators"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:checked="true"
-        android:switchPadding="55dp"
-        android:text="Escalators" />
+        <ImageView
+            android:id="@+id/stairsIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:src="@drawable/ic_directions_60dp" />
 
-    <Switch
-        android:id="@+id/switch_settings_elevators"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:checked="true"
-        android:switchPadding="55dp"
-        android:text="Elevators" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@id/stairsIcon"
+            android:padding="32dp"
+            android:text="Stairs"
+            android:textStyle="bold" />
 
-    <Switch
-        android:id="@+id/switch_settings_washrooms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:checked="true"
-        android:switchPadding="55dp"
-        android:text="Washrooms" />
+        <Switch
+            android:id="@+id/switch_settings_stairs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:checked="true"
+            android:padding="32dp" />
 
-    <Switch
-        android:id="@+id/switch_settings_printers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:checked="true"
-        android:switchPadding="55dp"
-        android:text="Printers" />
+        <ImageView
+            android:id="@+id/escalatorsIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/stairsIcon"
+            android:padding="10dp"
+            android:src="@drawable/ic_directions_60dp" />
 
-    <Switch
-        android:id="@+id/switch_settings_fountains"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:checked="true"
-        android:switchPadding="55dp"
-        android:text="Fountains" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/stairsIcon"
+            android:layout_toEndOf="@id/escalatorsIcon"
+            android:padding="32dp"
+            android:text="Escalators"
+            android:textStyle="bold" />
 
-    <Switch
-        android:id="@+id/switch_settings_fireEscape"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:checked="true"
-        android:switchPadding="55dp"
-        android:text="Fire Escape" />
+        <Switch
+            android:id="@+id/switch_settings_escalators"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/stairsIcon"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/escalatorsIcon"
+            android:checked="true"
+            android:padding="32dp" />
+
+        <ImageView
+            android:id="@+id/elevatorsIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/escalatorsIcon"
+            android:padding="10dp"
+            android:src="@drawable/ic_directions_60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/escalatorsIcon"
+            android:layout_toEndOf="@id/elevatorsIcon"
+            android:padding="32dp"
+            android:text="Elevators"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/switch_settings_elevators"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/escalatorsIcon"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/elevatorsIcon"
+            android:checked="true"
+            android:padding="32dp" />
+
+        <ImageView
+            android:id="@+id/restroomsIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/elevatorsIcon"
+            android:padding="10dp"
+            android:src="@drawable/ic_directions_60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/elevatorsIcon"
+            android:layout_toEndOf="@id/restroomsIcon"
+            android:padding="32dp"
+            android:text="Restrooms"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/switch_settings_restrooms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/elevatorsIcon"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/restroomsIcon"
+            android:checked="true"
+            android:padding="32dp" />
+
+        <ImageView
+            android:id="@+id/printersIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/restroomsIcon"
+            android:padding="10dp"
+            android:src="@drawable/ic_directions_60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/restroomsIcon"
+            android:layout_toEndOf="@id/printersIcon"
+            android:padding="32dp"
+            android:text="Printers"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/switch_settings_printers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/restroomsIcon"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/printersIcon"
+            android:checked="true"
+            android:padding="32dp" />
+
+        <ImageView
+            android:id="@+id/fountainsIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/printersIcon"
+            android:padding="10dp"
+            android:src="@drawable/ic_directions_60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/printersIcon"
+            android:layout_toEndOf="@id/fountainsIcon"
+            android:padding="32dp"
+            android:text="Fountains"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/switch_settings_fountains"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/printersIcon"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/fountainsIcon"
+            android:checked="true"
+            android:padding="32dp" />
+
+        <ImageView
+            android:id="@+id/fireEscapeIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fountainsIcon"
+            android:padding="10dp"
+            android:src="@drawable/ic_directions_60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/fountainsIcon"
+            android:layout_toEndOf="@id/fireEscapeIcon"
+            android:padding="32dp"
+            android:text="Fire Escape"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/switch_settings_fireEscape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fountainsIcon"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@id/fireEscapeIcon"
+            android:checked="true"
+            android:padding="32dp" />
+
+    </RelativeLayout>
 
 </LinearLayout>
