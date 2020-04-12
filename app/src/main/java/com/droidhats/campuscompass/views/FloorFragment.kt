@@ -240,7 +240,8 @@ class FloorFragment : Fragment() {
         } else {
             building = viewModelMapViewModel.getBuildings()[startAndEnd.first.buildingIndex]
         }
-        if (startAndEnd.first.lID == "" || startAndEnd.second.lID == ""
+        if ((startAndEnd.first.lID == "" && startAndEnd.second.floorNum != "1")
+            || startAndEnd.second.lID == "" && startAndEnd.first.floorNum != "1"
             || startAndEnd.first.floorNum != startAndEnd.second.floorNum) {
             canConsume = false
         }
@@ -296,17 +297,25 @@ class FloorFragment : Fragment() {
         }
         doneButton.visibility = View.VISIBLE
         if (startAndEnd.first.lID == "") {
+            val end: String = when {
+                (startAndEnd.second.floorNum != "1") -> ""// intentionally left blank to find the nearest transportation method
+                else -> startAndEnd.second.lID
+            }
             generateDirectionsOnFloor(
                 "entrance",
-                "", // intentionally left blank to find the nearest transportation method
+                end,
                 building.getIndoorInfo().second["1"]!!,
                 "1",
                 goingUp
             )
         } else if (startAndEnd.first.floorNum != startAndEnd.second.floorNum) {
+            val end: String = when {
+                (startAndEnd.first.floorNum == "1") -> "entrance"
+                else -> ""
+            }
             generateDirectionsOnFloor(
                 startAndEnd.first.lID,
-                "",
+                end,
                 startAndEnd.first.floorMap,
                 startAndEnd.first.floorNum,
                 goingUp

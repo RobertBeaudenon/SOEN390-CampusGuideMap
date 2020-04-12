@@ -67,6 +67,7 @@ import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.instructions_sheet_layout.prevArrow
 import kotlinx.android.synthetic.main.instructions_sheet_layout.nextArrow
+import kotlinx.android.synthetic.main.instructions_sheet_layout.doneButtonMap
 import kotlinx.android.synthetic.main.instructions_sheet_layout.arrayInstruction
 import kotlinx.android.synthetic.main.search_bar_layout.buttonResumeNavigation
 import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
@@ -237,6 +238,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 } else {
                     findNavController().navigate(R.id.floor_fragment)
                 }
+            } else if (it == null) {
+                cancelNavigation()
             }
         })
         trackerSteps = 0
@@ -245,10 +248,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         // The done button ("I've arrived") will initially be hidden
         doneButton.visibility = View.GONE
-        
-        doneButton.setOnClickListener {
-            viewModel.navigationRepository.consumeNavigationHandler()
-        }
 
     }
 
@@ -267,21 +266,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         // The close button in the instruction sheet
         val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
         buttonCloseInstructions.setOnClickListener{
-            clearNavigationPath()
+            cancelNavigation()
             viewModel.navigationRepository.cancelNavigation()
-            currentOutdoorNavigationRoute = null
-            toggleInstructionsView(false)
-
-            // When the close button is clicked, we make the campus toggle button visible again
-            // We also add a listener to handle the campus switching
-            toggleButton.visibility = View.VISIBLE
-            handleCampusSwitch()
         }
 
         if(currentOutdoorNavigationRoute != null) {
             showInstructions(currentOutdoorNavigationRoute!!.instructions, currentOutdoorNavigationRoute!!.instructionsCoordinates)
             toggleInstructionsView(true)
         }
+    }
+
+    private fun cancelNavigation() {
+        clearNavigationPath()
+        currentOutdoorNavigationRoute = null
+        toggleInstructionsView(false)
+
+        // When the close button is clicked, we make the campus toggle button visible again
+        // We also add a listener to handle the campus switching
+        toggleButton.visibility = View.VISIBLE
+        handleCampusSwitch()
     }
 
     private fun createLocationRequest() {
@@ -433,6 +436,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         toggleButton.visibility = View.GONE
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
+        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
+        if (viewModel.navigationRepository.isLastStep()) {
+            doneButtonMap.text = "Finish!"
+        } else {
+            doneButtonMap.text = "Take me inside!"
+            doneButton.setOnClickListener {
+                viewModel.navigationRepository.consumeNavigationHandler()
+            }
+        }
 
         nextArrow.setOnClickListener{
             prevArrow.visibility = View.VISIBLE
@@ -454,14 +466,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         map!!.animateCamera(
                             CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
                     }
+                } else if (trackerSteps == instructions.size - 1) {
+                    nextArrow.visibility = View.INVISIBLE
+                    doneButtonMap.visibility = View.VISIBLE
+                    moveTo(instructionsCoordinates[instructions.size - 1], 20.0F)
                 }
-           else if (trackerSteps == instructions.size-1) {
-                nextArrow.visibility = View.INVISIBLE
-                moveTo(instructionsCoordinates[instructions.size-1], 20.0F)
-            }
         }
         prevArrow.setOnClickListener{
             nextArrow.visibility = View.VISIBLE
+            doneButtonMap.visibility = View.GONE
                 trackerSteps--
                 arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
             if (trackerSteps != 0) {
@@ -516,7 +529,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, instructionsView.height+20)
 
             // The done button ("I've arrived") will be displayed when the navigation instruction is displayed
-            doneButton.visibility = View.VISIBLE
+            // something good
 
             doneButton.setOnClickListener {
                 viewModel.navigationRepository.consumeNavigationHandler()
@@ -524,9 +537,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
         else{
             instructionsView.visibility = View.INVISIBLE
-
-            // The done button ("I've arrived") will be hidden when the navigation instruction is hidden
-            doneButton.visibility = View.GONE
 
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
             if(currentOutdoorNavigationRoute != null)

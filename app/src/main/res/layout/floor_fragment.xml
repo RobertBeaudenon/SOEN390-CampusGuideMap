@@ -9,25 +9,6 @@
 
     <!--        app:srcCompat="@drawable/hall8"  -->
 
-    <Button
-        android:id="@+id/doneButtonFloor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="145dp"
-        android:background="@drawable/button_color"
-        android:baselineAligned="false"
-        android:paddingStart="15dp"
-        android:paddingTop="5dp"
-        android:paddingEnd="15dp"
-        android:paddingBottom="5dp"
-        android:text="I've arrived!"
-        android:textAllCaps="false"
-        android:textColor="@color/quantum_white_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/floormap2"
         android:layout_width="412dp"
@@ -77,10 +58,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/floormap"
         app:layout_constraintEnd_toEndOf="@+id/floormap"
         app:layout_constraintStart_toStartOf="@+id/floormap"
-        app:layout_constraintTop_toBottomOf="@+id/include2" />
+        app:layout_constraintTop_toTopOf="@+id/floormap" />
 
     <include
         android:id="@+id/include2"
@@ -150,6 +131,25 @@
             android:textSize="12sp"
             android:textStyle="bold" />
 
+        <Button
+            android:id="@+id/doneButtonFloor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/button_color"
+            android:baselineAligned="false"
+            android:paddingStart="15dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="5dp"
+            android:text="I've arrived!"
+            android:textAllCaps="false"
+            android:textColor="@color/quantum_white_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/nextArrow"
             android:layout_width="35dp"
@@ -158,7 +158,8 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
             android:src="@drawable/arrow_button"
-            android:tint="@color/colorPrimaryDark" />
+            android:tint="@color/colorPrimaryDark"
+            android:visibility="gone" />
 
     </LinearLayout>
 

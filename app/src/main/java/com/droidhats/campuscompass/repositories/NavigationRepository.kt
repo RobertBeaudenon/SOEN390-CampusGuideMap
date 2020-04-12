@@ -10,6 +10,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.NavHandler.NavHandler
+import com.droidhats.campuscompass.NavHandler.OutdoorNavStep
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
 import com.droidhats.campuscompass.models.OutdoorNavigationRoute
@@ -93,15 +94,14 @@ class NavigationRepository(private val application: Application) {
         this.navigationRoute.value = navigationRoute
     }
 
-    fun setNavigationHandler(navHandler: NavHandler) {
-        navHandler.getNavigationRoute()
+    fun setNavigationHandler(navHandler: NavHandler?) {
+        if (navHandler == null) navigationRoute.value = null
+        navHandler?.getNavigationRoute()
         this.navhandler = navHandler
     }
 
     fun consumeNavigationHandler(): NavHandler? {
-        if (navhandler != null && navhandler?.next != null) {
-            setNavigationHandler(navhandler!!.next!!)
-        }
+        setNavigationHandler(navhandler?.next)
         return navhandler
     }
 
@@ -113,6 +113,14 @@ class NavigationRepository(private val application: Application) {
     fun stepBack() {
         if (navhandler?.prev != null) {
             setNavigationHandler(navhandler!!.prev!!)
+        }
+    }
+
+    fun isLastStep(): Boolean {
+        if (navhandler is OutdoorNavStep) {
+            return navhandler?.next is OutdoorNavStep && navhandler?.next?.next == null
+        } else {
+            return navhandler?.next !is OutdoorNavStep
         }
     }
 
