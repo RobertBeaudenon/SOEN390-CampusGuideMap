@@ -55,10 +55,11 @@ class SplashFragment : Fragment() {
         splashViewModel.initCode.observe(viewLifecycleOwner, Observer {
             if (it) {
                 findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
+                //UnLock drawer
+                val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             }
         })
-        //UnLock drawer
-        val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+
     }
 }
