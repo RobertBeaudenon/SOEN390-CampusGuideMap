@@ -14,7 +14,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Switch
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -29,22 +33,43 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.FavoritesAdapter
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.*
+import com.droidhats.campuscompass.models.Building
+import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.GooglePlace
+import com.droidhats.campuscompass.models.CalendarEvent
+import com.droidhats.campuscompass.models.IndoorLocation
+import com.droidhats.campuscompass.models.FavoritePlace
+import com.droidhats.campuscompass.models.Explore_Place
 import com.droidhats.campuscompass.roomdb.FavoritesDatabase
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.instructions_sheet_layout.*
-import kotlinx.android.synthetic.main.search_bar_layout.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
+import kotlinx.android.synthetic.main.instructions_sheet_layout.prevArrow
+import kotlinx.android.synthetic.main.instructions_sheet_layout.nextArrow
+import kotlinx.android.synthetic.main.instructions_sheet_layout.arrayInstruction
+import kotlinx.android.synthetic.main.search_bar_layout.buttonResumeNavigation
+import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
+import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -683,7 +708,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (item != null) {
             val googlePlace = GooglePlace(
                 item.placeId,
-                item.name ?: "",
+                item.name,
                 item.address ?: "",
                 LatLng(item.latitude, item.longitude)
             )
@@ -706,11 +731,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val exploreLocation = GooglePlace(
             item?.place_placeID!!,
             item.place_name!!,
-            item?.place_address!!,
-            item!!.place_coordinate
+            item.place_address!!,
+            item.place_coordinate
         )
         Handler().postDelayed({
-            focusLocation(exploreLocation, false, true)
+            focusLocation(exploreLocation, isCampusBuilding = false, isRequired = true)
         }, 1000)
     }
 
