@@ -116,6 +116,10 @@ class NavigationRepository(private val application: Application) {
         }
     }
 
+    fun getPrev(): NavHandler? {
+        return navhandler?.prev
+    }
+
     fun isLastStep(): Boolean {
         if (navhandler is OutdoorNavStep) {
             return navhandler?.next is OutdoorNavStep && navhandler?.next?.next == null

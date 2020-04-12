@@ -82,7 +82,13 @@ class FloorFragment : Fragment() {
         })
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            displayAlertMsg()
+
+            if (viewModel.navigationRepository != null
+                && viewModel.navigationRepository?.getPrev() == null) {
+                displayAlertMsg()
+            } else {
+                viewModel.navigationRepository?.stepBack()
+            }
         }
     }
 
