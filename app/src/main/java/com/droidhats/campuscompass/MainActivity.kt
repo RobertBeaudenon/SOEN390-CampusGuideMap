@@ -3,17 +3,21 @@ package com.droidhats.campuscompass
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.droidhats.campuscompass.views.CalendarFragment
 import com.droidhats.campuscompass.views.SplashFragment
 import com.google.android.material.navigation.NavigationView
 
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
+
+    private lateinit var navController : NavController
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -26,8 +30,8 @@ class MainActivity : AppCompatActivity(){
 
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        navView.setupWithNavController(navController)
+        navController = navHostFragment.navController
+        navView.setNavigationItemSelectedListener(this)
     }
 
     fun checkLocationPermission(): Boolean {
@@ -91,9 +95,29 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.nav_drawer_main_menu, menu)
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.my_places_fragment -> {
+                navController.popBackStack(R.id.map_fragment, false)
+                navController.navigate(R.id.my_places_fragment)
+            }
+            R.id.nav_schedule -> {
+                navController.popBackStack(R.id.map_fragment, false)
+                navController.navigate(R.id.nav_schedule)
+            }
+            R.id.nav_explore -> {
+                navController.popBackStack(R.id.map_fragment, false)
+                navController.navigate(R.id.nav_explore)
+            }
+            R.id.nav_shuttle -> {
+                navController.popBackStack(R.id.map_fragment, false)
+                navController.navigate(R.id.nav_shuttle)
+            }
+            R.id.map_fragment -> navController.popBackStack(R.id.map_fragment, false)
+        }
+
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 }
