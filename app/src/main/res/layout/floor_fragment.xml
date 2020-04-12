@@ -58,10 +58,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/floormap"
-        app:layout_constraintEnd_toEndOf="@+id/floormap"
-        app:layout_constraintStart_toStartOf="@+id/floormap"
-        app:layout_constraintTop_toTopOf="@+id/floormap" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/include2"
@@ -151,7 +151,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/nextArrow"
+            android:id="@+id/nextArrowFloor"
             android:layout_width="35dp"
             android:layout_height="wrap_content"
             android:layout_weight="0"

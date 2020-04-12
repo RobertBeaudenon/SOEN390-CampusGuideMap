@@ -441,7 +441,7 @@ class SearchFragment : Fragment()  {
                         .findNearestIndoorTransportation(
                             originPos!!,
                             origin.getFloorNumber() < destination.getFloorNumber()
-                        )
+                        ).getID()
                     distance += processMap.getTimeInSeconds(origin.lID, transport)
 
                     // taking into account different floor maps
