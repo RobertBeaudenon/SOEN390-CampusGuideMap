@@ -179,6 +179,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         // Move camera to SGW
         // TODO when navigation path is being shown, the camera should be moved to current location
         moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
+        toggleButton.setChecked(false)
 
         map!!.setOnMapClickListener {
             //Dismiss the bottom sheet when clicking anywhere on the map
