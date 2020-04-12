@@ -50,6 +50,10 @@ class FloorFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private var canConsume: Boolean = true
     private var intermediateTransportID: String? = null
+    private var hasTwoSteps: Boolean = false
+    private var cachedSVG: SVG? = null
+    private var prevSVG: SVG? = null
+    private var prevInstruction: String? = null
 
     var floorNum: String? = null
     var building : Building? = null
@@ -241,6 +245,8 @@ class FloorFragment : Fragment() {
         val canvas = Canvas(bitmap)
         canvas.drawARGB(0, 255, 255, 255)
         svg.renderToCanvas(canvas)
+        if (cachedSVG != null) prevSVG = cachedSVG
+        cachedSVG = svg
         imageView.visibility = View.VISIBLE
         imageView.setImageDrawable(BitmapDrawable(getResources(), bitmap))
     }
@@ -265,6 +271,7 @@ class FloorFragment : Fragment() {
                     && startAndEnd.second.lID != "" && startAndEnd.first.lID != "")
         ) {
             canConsume = false
+            hasTwoSteps = true
         }
 
         val goingUp: Boolean = when(true) {
@@ -298,41 +305,61 @@ class FloorFragment : Fragment() {
         }
 
         val nextArrowButton: ImageView = requireActivity().findViewById(R.id.nextArrowFloor)
+        val prevArrowButton: ImageView = requireActivity().findViewById(R.id.prevArrowFloor)
         nextArrowButton.setOnClickListener {
             canConsume = true
-            if (intermediateTransportID != null) {
-                if (startAndEnd.first.lID == "") {
-                    generateDirectionsOnFloor(
-                        intermediateTransportID!!,
-                        startAndEnd.second.lID,
-                        startAndEnd.second.floorMap,
-                        startAndEnd.second.floorNum,
-                        goingUp,
-                        Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
-                    )
-                } else if (startAndEnd.second.lID == "") {
-                    generateDirectionsOnFloor(
-                        intermediateTransportID!!,
-                        "entrance",
-                        building.getIndoorInfo().second["1"]!!,
-                        "1",
-                        goingUp,
-                        Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
-                    )
-                } else {
-                    generateDirectionsOnFloor(
-                        intermediateTransportID!!,
-                        startAndEnd.second.lID,
-                        startAndEnd.second.floorMap,
-                        startAndEnd.second.floorNum,
-                        goingUp,
-                        Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
-                    )
+            if (prevSVG != null) {
+                setImage(prevSVG!!)
+                val tmp = prevInstruction
+                prevInstruction = requireActivity().findViewById<TextView>(R.id.instructions_text).text.toString()
+                requireActivity().findViewById<TextView>(R.id.instructions_text).text = tmp
+            } else if (intermediateTransportID != null) {
+                if (prevSVG == null) {
+                    if (startAndEnd.first.lID == "") {
+                        generateDirectionsOnFloor(
+                            intermediateTransportID!!,
+                            startAndEnd.second.lID,
+                            startAndEnd.second.floorMap,
+                            startAndEnd.second.floorNum,
+                            goingUp,
+                            Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
+                        )
+                    } else if (startAndEnd.second.lID == "") {
+                        generateDirectionsOnFloor(
+                            intermediateTransportID!!,
+                            "entrance",
+                            building.getIndoorInfo().second["1"]!!,
+                            "1",
+                            goingUp,
+                            Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
+                        )
+                    } else {
+                        generateDirectionsOnFloor(
+                            intermediateTransportID!!,
+                            startAndEnd.second.lID,
+                            startAndEnd.second.floorMap,
+                            startAndEnd.second.floorNum,
+                            goingUp,
+                            Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
+                        )
+                    }
                 }
             }
             intermediateTransportID = null
             it.visibility = View.GONE
             doneButton.visibility = View.VISIBLE
+            prevArrowButton.visibility = View.VISIBLE
+        }
+        prevArrowButton.setOnClickListener {
+            nextArrowButton.visibility = View.VISIBLE
+            doneButton.visibility = View.GONE
+            it.visibility = View.GONE
+            if (prevSVG != null) {
+                setImage(prevSVG!!)
+                val tmp = prevInstruction
+                prevInstruction = requireActivity().findViewById<TextView>(R.id.instructions_text).text.toString()
+                requireActivity().findViewById<TextView>(R.id.instructions_text).text = tmp
+            }
         }
 
         if (startAndEnd.first.lID == "") {
@@ -443,10 +470,16 @@ class FloorFragment : Fragment() {
             "entrance" -> "Make your way to the entrance and go outside"
             else -> "Make your way to class ${classAndFloorDest.first}"
         }
+        if (prevInstruction == null) {
+            prevInstruction = message
+        }
         requireActivity().findViewById<TextView>(R.id.instructions_text).text = message
         if (!canConsume) {
             requireActivity().findViewById<Button>(R.id.doneButtonFloor).visibility = View.GONE
             requireActivity().findViewById<ImageView>(R.id.nextArrowFloor).visibility = View.VISIBLE
+        } else {
+            requireActivity().findViewById<Button>(R.id.doneButtonFloor).visibility = View.VISIBLE
+            requireActivity().findViewById<ImageView>(R.id.nextArrowFloor).visibility = View.GONE
         }
         progressBar.visibility = View.VISIBLE
         val imageView: ZoomImageView = root.findViewById(R.id.floormap)
