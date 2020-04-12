@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Switch
-import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -17,6 +16,7 @@ import com.droidhats.campuscompass.R
 
 class SettingsFragment : Fragment() {
     private var totalCheck: Int = 0
+    private val preferenceOff = ArrayList<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,78 +30,117 @@ class SettingsFragment : Fragment() {
             )
         }
         totalCheck = 0
-        switchChecked(root.findViewById(R.id.switch_settings_stairs))
-        switchChecked(root.findViewById(R.id.switch_settings_escalators))
-        switchChecked(root.findViewById(R.id.switch_settings_elevators))
-        switchChecked(root.findViewById(R.id.switch_settings_washrooms))
-        switchChecked(root.findViewById(R.id.switch_settings_printers))
-        switchChecked(root.findViewById(R.id.switch_settings_fountains))
-        switchChecked(root.findViewById(R.id.switch_settings_fireEscape))
+
+        populateSettingOffArray()
+
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_stairs), true)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_escalators), true)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_elevators), true)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_washrooms), false)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_printers), false)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_fountains), false)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_fireEscape), false)
 
         root.findViewById<Switch>(R.id.switch_settings_stairs).setOnCheckedChangeListener { _, isChecked ->
-            switchToggle(root.findViewById(R.id.switch_settings_stairs), isChecked)
+            performSwitchClick(root.findViewById(R.id.switch_settings_stairs), isChecked, true)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_escalators).setOnCheckedChangeListener { _, isChecked ->
-            switchToggle(root.findViewById(R.id.switch_settings_escalators), isChecked)
+            performSwitchClick(root.findViewById(R.id.switch_settings_escalators), isChecked, true)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_elevators).setOnCheckedChangeListener { _, isChecked ->
-            switchToggle(root.findViewById(R.id.switch_settings_elevators), isChecked)
+            performSwitchClick(root.findViewById(R.id.switch_settings_elevators), isChecked, true)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_washrooms).setOnCheckedChangeListener { _, isChecked ->
-            switchToggle(root.findViewById(R.id.switch_settings_washrooms), isChecked)
+            performSwitchClick(root.findViewById(R.id.switch_settings_washrooms), isChecked, false)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_printers).setOnCheckedChangeListener { _, isChecked ->
-            switchToggle(root.findViewById(R.id.switch_settings_printers), isChecked)
+            performSwitchClick(root.findViewById(R.id.switch_settings_printers), isChecked, false)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_fountains).setOnCheckedChangeListener { _, isChecked ->
-            switchToggle(root.findViewById(R.id.switch_settings_fountains), isChecked)
+            performSwitchClick(root.findViewById(R.id.switch_settings_fountains), isChecked, false)
         }
 
         root.findViewById<Switch>(R.id.switch_settings_fireEscape).setOnCheckedChangeListener { _, isChecked ->
-            switchToggle(root.findViewById(R.id.switch_settings_fireEscape), isChecked)
+            performSwitchClick(root.findViewById(R.id.switch_settings_fireEscape), isChecked, false)
         }
 
         return root
     }
 
-    private fun switchToggle(switchButton: Switch, checked: Boolean) {
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val editor = sharedPref.edit()
+    private fun performSwitchClick(switchButton: Switch, checked: Boolean, restriction: Boolean) {
+        val settingSwitchSharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val editor = settingSwitchSharedPref.edit()
 
-        if (totalCheck == 1 && !checked) {
+        if (restriction && totalCheck == 1 && !checked) {
             switchButton.isChecked = true
             val alertDialog = AlertDialog.Builder(activity)
             alertDialog.setIcon(R.mipmap.ic_launcher_round)
             alertDialog.setTitle("Error")
-            alertDialog.setMessage("Please ensure at least one option is selected at all time")
+            alertDialog.setMessage("Please ensure at least one of the following options is always selected: Stairs, Escalators, Elevators.")
             alertDialog.setPositiveButton("Ok") { _, _ ->
             }
             alertDialog.show()
+        } else if (restriction && !checked) {
+            switchButton.isChecked = false
+            editor.putBoolean(switchButton.text.toString(), false).apply()
+            totalCheck--
+            settingOffArraySharedPref(switchButton.text.toString(), true)
+        } else if (restriction && checked) {
+            switchButton.isChecked = true
+            editor.putBoolean(switchButton.text.toString(), true).apply()
+            totalCheck++
+            settingOffArraySharedPref(switchButton.text.toString(), false)
         } else if (!checked) {
             switchButton.isChecked = false
             editor.putBoolean(switchButton.text.toString(), false).apply()
-            Toast.makeText(context, "The " + switchButton.text + " is OFF", Toast.LENGTH_LONG).show()
-            totalCheck--
+            settingOffArraySharedPref(switchButton.text.toString(), true)
         } else {
             switchButton.isChecked = true
             editor.putBoolean(switchButton.text.toString(), true).apply()
-            Toast.makeText(context, "The " + switchButton.text + " is ON", Toast.LENGTH_LONG).show()
-            totalCheck++
+            settingOffArraySharedPref(switchButton.text.toString(), false)
         }
     }
 
-    private fun switchChecked(switchButton: Switch) {
+    private fun currentSwitchStatus(switchButton: Switch, restriction: Boolean) {
         val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
         val default: Boolean = sharedPref.getBoolean(switchButton.text.toString(), true)
         switchButton.isChecked = default
 
-        if(switchButton.isChecked) {
+        if(restriction && switchButton.isChecked) {
             totalCheck++
         }
     }
+
+
+    private fun populateSettingOffArray() {
+        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val set = sharedPref.getStringSet("settingOffArray", null)
+
+        for (element in set!!) {
+            preferenceOff.add(element)
+        }
+    }
+
+
+    private fun settingOffArraySharedPref(valueToAddOrRemove: String, addingToArray: Boolean) {
+        val settingOffArraySharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val editor = settingOffArraySharedPref.edit()
+
+        if (addingToArray) {
+            preferenceOff.add(valueToAddOrRemove)
+        } else {
+            preferenceOff.remove(valueToAddOrRemove)
+        }
+
+        val set = HashSet<String>()
+        set.addAll(preferenceOff)
+        editor.putStringSet("settingOffArray", set)
+        editor.apply()
+    }
+
 }

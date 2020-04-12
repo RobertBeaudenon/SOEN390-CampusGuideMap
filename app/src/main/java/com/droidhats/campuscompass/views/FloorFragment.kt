@@ -53,8 +53,6 @@ class FloorFragment : Fragment() {
             setImage(svg)
         }
 
-        checkPreferenceStatus()
-
         return root
     }
 
@@ -112,33 +110,5 @@ class FloorFragment : Fragment() {
             override fun onSearchConfirmed(text: CharSequence?) {
             }
         })
-    }
-
-    /*
-        TWEAK it to your need! Upon clicking on indoor map, this checkPreferenceStatus() function is called.
-        This function will call the switchCheck() function for each of the setting options that have been defined.
-        It will print either the button is ON or OFF but you can perform action based on your need.
-     */
-    private fun checkPreferenceStatus() {
-        val settingInflatedView: View = layoutInflater.inflate(R.layout.settings_fragment, null)
-        switchChecked(settingInflatedView.findViewById(R.id.switch_settings_stairs))
-        switchChecked(settingInflatedView.findViewById(R.id.switch_settings_escalators))
-        switchChecked(settingInflatedView.findViewById(R.id.switch_settings_elevators))
-        switchChecked(settingInflatedView.findViewById(R.id.switch_settings_washrooms))
-        switchChecked(settingInflatedView.findViewById(R.id.switch_settings_printers))
-        switchChecked(settingInflatedView.findViewById(R.id.switch_settings_fountains))
-        switchChecked(settingInflatedView.findViewById(R.id.switch_settings_fireEscape))
-    }
-
-    private fun switchChecked(switchButton: Switch) {
-        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
-        val default: Boolean = sharedPref.getBoolean(switchButton.text.toString(), true)
-        switchButton.isChecked = default
-
-        if(switchButton.isChecked) {
-            Toast.makeText(context, "The " + switchButton.text + " is ON", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "The " + switchButton.text + " is OFF", Toast.LENGTH_SHORT).show()
-        }
     }
 }

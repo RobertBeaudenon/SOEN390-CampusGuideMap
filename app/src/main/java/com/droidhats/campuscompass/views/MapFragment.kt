@@ -2,6 +2,7 @@ package com.droidhats.campuscompass.views
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.drawable.Drawable
@@ -13,10 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -31,52 +29,28 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.FavoritesAdapter
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
-import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.NavigationRoute
-import com.droidhats.campuscompass.models.GooglePlace
-import com.droidhats.campuscompass.models.CalendarEvent
-import com.droidhats.campuscompass.models.IndoorLocation
-import com.droidhats.campuscompass.models.FavoritePlace
-import com.droidhats.campuscompass.models.Explore_Place
+import com.droidhats.campuscompass.models.*
 import com.droidhats.campuscompass.roomdb.FavoritesDatabase
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.GoogleMap.OnCameraIdleListener
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.Polyline
-import com.google.android.gms.maps.model.Polygon
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
-import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
-import kotlinx.android.synthetic.main.instructions_sheet_layout.prevArrow
-import kotlinx.android.synthetic.main.instructions_sheet_layout.nextArrow
-import kotlinx.android.synthetic.main.instructions_sheet_layout.arrayInstruction
-import kotlinx.android.synthetic.main.search_bar_layout.buttonResumeNavigation
-import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
-import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.instructions_sheet_layout.*
+import kotlinx.android.synthetic.main.search_bar_layout.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.atan
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
-import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -95,6 +69,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var locationRequest: LocationRequest
     private val observerList = mutableListOf<ModifiedObserver?>()
     private val currentNavigationPath = arrayListOf<Polyline>()
+    private val preferenceOff = ArrayList<String>()
     private var locationUpdateState = false
 
     companion object {
@@ -149,6 +124,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         handleCampusSwitch()
         observeNavigation()
         setNavigationButtons()
+        preferenceOff.clear()
+        checkSettingOptions()
     }
 
     /**
@@ -735,6 +712,37 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         Handler().postDelayed({
             focusLocation(exploreLocation, false, true)
         }, 1000)
+    }
+
+    private fun checkSettingOptions() {
+        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        val set = HashSet<String>()
+        val settingInflatedView: View = layoutInflater.inflate(R.layout.settings_fragment, null)
+
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_stairs))
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_escalators))
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_elevators))
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_washrooms))
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_printers))
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fountains))
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fireEscape))
+
+        set.addAll(preferenceOff)
+        editor.putStringSet("settingOffArray", set)
+        editor.apply()
+    }
+
+    private fun populateSettingOffArray(switchButton: Switch) {
+        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val default: Boolean = sharedPref.getBoolean(switchButton.text.toString(), true)
+        switchButton.isChecked = default
+
+        if(!switchButton.isChecked) {
+            preferenceOff.add(switchButton.text.toString())
+        } else {
+            preferenceOff.remove(switchButton.text.toString())
+        }
     }
 }
 
