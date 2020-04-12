@@ -133,7 +133,7 @@ class FloorFragment : Fragment() {
 
         //set message for alert dialog
         builder.setMessage(alertMsg)
-        builder.setIcon(android.R.drawable.ic_dialog_alert)
+        builder.setIcon(R.drawable.ic_alert)
 
         //performing positive action
         builder.setPositiveButton("Yes"){dialogInterface, which ->
