@@ -145,7 +145,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM S2.101
        y="539.12677" />
     <rect
        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rects2.111"
+       id="rects31.112"
        width="40.406105"
        height="41.416248"
        x="655.58899"
@@ -175,7 +175,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM S2.101
     <text x="795" y="550" font-family="Arial" font-size="13" fill="black" stroke-width="0"  > s2.114 </text>
     <rect
        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rects2.115"
+       id="rect31.108"
        width="98.214287"
        height="41.42857"
        x="763.92859"
@@ -197,8 +197,8 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM S2.101
        x="696.78571"
        y="621.1424" />
     <rect
-       style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rects2.118"
+        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rects31.115"
        width="41.071419"
        height="36.071884"
        x="655.71429"
@@ -341,11 +341,25 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM S2.101
        id="line"
        inkscape:connector-curvature="0" />
 
-    <!-- escalators (not really though) -->
+    <!-- stairs to S1 and escalators -->
     <rect x="405" y="530" height="95" width="102" style="fill:none;stroke:none" />
+    <rect
+        id="rect31.166"
+        x="470"
+        y="530"
+        height="30"
+        width="30"
+        style="fill:none;stroke:none" />
 
-    <!-- stairs from MBS1/MB1 -->
+    <!-- stairs from S1/MB1 -->
     <path d="M 390,430 430,425 400,205 363,205 Z" style="fill:none;stroke:none" />
+    <rect
+        id="rect31.155"
+        x="390"
+        y="390"
+        height="30"
+        width="30"
+        style="fill:none;stroke:none" />
 
     <!-- wall to bottom area -->
     <rect x="504" y="280" height="338" width="10" style="fill:none;stroke:none" />
@@ -519,7 +533,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM S2.101
     </svg>
 
     <!-- Displaying escalator icon on the map -->
-    <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="escalator_up1" x="415" y="500">
+    <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="escalator_up1" x="465" y="490">
       <path
           d="M13.0369 22.7613C14.2897 23.9784 15.7774 24.587 17.5 24.587C19.2226 24.587 20.6711 23.9784 21.8456 22.7613C23.0984 21.4629 23.7248 19.9212 23.7248 18.136C23.7248 16.3508 23.0984 14.8496 21.8456 13.6324C20.6711 12.3341 19.2226 11.6849 17.5 11.6849C15.7774 11.6849 14.2897 12.3341 13.0369 13.6324C11.8624 14.8496 11.2752 16.3508 11.2752 18.136C11.2752 19.9212 11.8624 21.4629 13.0369 22.7613ZM5.05034 5.35559C8.49553 1.7852 12.6454 0 17.5 0C22.3546 0 26.4653 1.7852 29.8322 5.35559C33.2774 8.84484 35 13.105 35 18.136C35 20.6515 34.3736 23.5321 33.1208 26.778C31.9463 30.0238 30.4978 33.0667 28.7752 35.9068C27.0526 38.7469 25.33 41.4247 23.6074 43.9402C21.9631 46.3745 20.5537 48.322 19.3792 49.7826L17.5 51.8519C17.0302 51.2838 16.4038 50.5535 15.6208 49.6609C14.8378 48.6872 13.4284 46.8208 11.3926 44.0619C9.35682 41.2218 7.55593 38.5034 5.98993 35.9068C4.50224 33.229 3.13199 30.2266 1.87919 26.8997C0.626398 23.5727 0 20.6515 0 18.136C0 13.105 1.68344 8.84484 5.05034 5.35559Z"
           fill="#666666"

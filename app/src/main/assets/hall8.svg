@@ -435,7 +435,7 @@
                     width="36.428574"
                     id="rect3806.03"
                     style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-            <text x="343" y="430" font-family="Arial" font-size="10" fill="pink" stroke-width="0"  > 806.03 </text>
+            <text x="343" y="430" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 806.03 </text>
             <rect
                     y="387.00504"
                     x="339.28571"
@@ -443,7 +443,7 @@
                     width="36.428566"
                     id="rect3806.02"
                     style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-            <text x="343" y="403" font-family="Arial" font-size="10" fill="pink" stroke-width="0"  > 806.02 </text>
+            <text x="343" y="403" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 806.02 </text>
             <rect
                     y="360.57648"
                     x="339.28571"
@@ -451,7 +451,7 @@
                     width="36.428558"
                     id="rect306.01"
                     style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-            <text x="343" y="377" font-family="Arial" font-size="10" fill="pink" stroke-width="0"  > 806.01 </text>
+            <text x="343" y="377" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 806.01 </text>
             <rect
                     y="411.64789"
                     x="292.14285"
@@ -491,7 +491,7 @@
                     width="33.928566"
                     id="rect3862.04"
                     style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-            <text x="220" y="500" font-family="Arial" font-size="10" fill="pink" stroke-width="0"  > 862.04 </text>
+            <text x="220" y="500" font-family="Arial" font-size="10" fill="black" stroke-width="0"  > 862.04 </text>
             <rect
                     y="531.29077"
                     x="216.78572"
@@ -499,7 +499,7 @@
                     width="33.928558"
                     id="rect3862.06"
                     style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-            <text x="220" y="550" font-family="Arial" font-size="10" fill="pink" stroke-width="0" > 862.06 </text>
+            <text x="220" y="550" font-family="Arial" font-size="10" fill="black" stroke-width="0" > 862.06 </text>
             <rect
                     y="503.43362"
                     x="171.78572"
@@ -507,7 +507,7 @@
                     width="34.285713"
                     id="rect3862.03"
                     style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-            <text x="174" y="518" font-family="Arial" font-size="10" fill="pink" stroke-width="0" > 862.03 </text>
+            <text x="174" y="518" font-family="Arial" font-size="10" fill="black" stroke-width="0" > 862.03 </text>
             <rect
                     y="474.14789"
                     x="171.78572"
@@ -515,14 +515,14 @@
                     width="34.28574"
                     id="rect362.01"
                     style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-            <text x="174" y="492" font-family="Arial" font-size="10" fill="pink" stroke-width="0" > 862.01 </text>
+            <text x="174" y="492" font-family="Arial" font-size="10" fill="black" stroke-width="0" > 862.01 </text>
             <path
                     sodipodi:nodetypes="ccccccc"
                     inkscape:connector-curvature="0"
                     id="path3862.05"
                     d="m 216.78572,562.54076 0,-19.46429 -10.35715,0 -0.35714,-11.7857 -34.28571,0 0,31.24999 z"
                     style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:1.36025514;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-            <text x="174" y="550" font-family="Arial" font-size="10" fill="pink" stroke-width="0" > 862.05 </text>
+            <text x="174" y="550" font-family="Arial" font-size="10" fill="black" stroke-width="0" > 862.05 </text>
             <rect
                     y="643.07648"
                     x="215.71428"
@@ -745,6 +745,25 @@
             <rect y="529" x="205" height="15" width="12" style="fill:none;stroke:none"/>
             <rect y="204" x="25" height="15" width="695" style="fill:none;stroke:none"/>
             <rect y="179" x="710" height="695" width="15" style="fill:none;stroke:none"/>
+            <rect y="222" x="377" height="90" width="54" style="fill:none;stroke:none" />
+            <rect y="749" x="377" height="100" width="54" style="fill:none;stroke:none"/>
+            <rect y="677" x="315" height="30" width="50" style="fill:none;stroke:none" />
+            <rect y="350" x="428" height="206" width="20" style="fill:none;stroke:none" />
+
+            <rect
+                x="342"
+                y="480"
+                height="30"
+                width="30"
+                id="upescalators"
+                style="fill:none;stroke:none" />
+            <rect
+                x="342"
+                y="595"
+                height="30"
+                width="30"
+                id="downescalators"
+                style="fill:none;stroke:none" />
 
 
             <!-- Displaying icons on the map -->

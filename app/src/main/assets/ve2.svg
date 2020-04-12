@@ -182,7 +182,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM 201-23
        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <text x="714" y="300" font-family="Arial" font-size="15" fill="black" stroke-width="0"  > 213 </text>
     <path
-       id="path4214.1"
+       id="rect4102"
        d="m 794.28516,49 0,73.57227 0,16.28125 33.53515,0 0,-16.28125 2.52539,0 0,-73.57227 -2.52539,0 -33.53515,0 z"
        style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        inkscape:connector-curvature="0" />

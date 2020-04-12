@@ -391,7 +391,7 @@
           x="696.50018"
           height="96.974648"
           width="53.53809"
-          id="rect4975"
+          id="rect3890"
           style="display:inline;fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <text x="705" y="270" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 975 </text>
       <rect
@@ -559,7 +559,7 @@
           x="281.42856"
           height="96.428596"
           width="52.5"
-          id="rect4985"
+          id="rect3802"
           style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <text x="290" y="280" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 985 </text>
       <rect
@@ -636,7 +636,7 @@
           x="278.29703"
           height="131.3125"
           width="52.022858"
-          id="rect4990"
+          id="rect3875"
           style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <text x="290" y="700" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 990 </text>
       <rect
@@ -805,7 +805,7 @@
           x="730.34027"
           height="96.469597"
           width="54.043182"
-          id="rect4998"
+          id="rect3885"
           style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <text x="740" y="730" font-family="Arial" font-size="20" fill="black" stroke-width="0" > 998 </text>
       <rect
@@ -820,7 +820,7 @@
           x="634.88086"
           height="28.881376"
           width="60.609104"
-          id="rect4458"
+          id="elevatorroom1"
           style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <rect
           y="644.18262"
@@ -889,6 +889,21 @@
       <rect y="682" x="565" height="14" width="165" style="fill:none;stroke:none"/>
       <rect y="280" x="420" height="16" width="115" style="fill:none;stroke:none"/>
       <rect y="370" x="240" height="20" width="140" style="fill:#da3636;fill-opacity:1;stroke:#000000;stroke-width:2.00000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
+
+      <rect
+          x="520"
+          y="430"
+          height="30"
+          width="30"
+          id="upescalators"
+          style="fill:none;stroke:none" />
+      <rect
+          x="532"
+          y="575"
+          height="30"
+          width="30"
+          id="downescalators"
+          style="fill:none;stroke:none" />
 
       <!-- Displaying icons on the map -->
 
