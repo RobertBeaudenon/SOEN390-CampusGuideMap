@@ -40,18 +40,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Indoor Navigation"
+            android:paddingLeft="15dp"
+            android:paddingTop="10dp"
+            android:textSize="18sp" />
+
         <ImageView
             android:id="@+id/stairsIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="45dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp"
             android:src="@drawable/ic_directions_60dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toEndOf="@id/stairsIcon"
-            android:padding="32dp"
+            android:paddingLeft="32dp"
+            android:paddingTop="65dp"
+            android:paddingRight="32dp"
+            android:paddingBottom="32dp"
             android:text="Stairs"
             android:textStyle="bold" />
 
@@ -61,7 +75,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:checked="true"
-            android:padding="32dp" />
+            android:paddingLeft="32dp"
+            android:paddingTop="65dp"
+            android:paddingRight="32dp"
+            android:paddingBottom="32dp" />
 
         <ImageView
             android:id="@+id/escalatorsIcon"
