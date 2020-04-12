@@ -76,9 +76,6 @@ class NavigationDrawerTest {
         //Checking if My places menu item is displayed
         onView(withText("My Places")).check(matches(isDisplayed()))
 
-        //Checking if Resources menu item is displayed
-        onView(withText("Resources")).check(matches(isDisplayed()))
-
         //Checking if Explore menu item is displayed
         onView(withText("Explore")).check(matches(isDisplayed()))
 

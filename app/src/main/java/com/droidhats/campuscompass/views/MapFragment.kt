@@ -2,6 +2,7 @@ package com.droidhats.campuscompass.views
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.drawable.Drawable
@@ -17,6 +18,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Switch
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -74,9 +76,6 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.atan
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
-import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -95,6 +94,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var locationRequest: LocationRequest
     private val observerList = mutableListOf<ModifiedObserver?>()
     private val currentNavigationPath = arrayListOf<Polyline>()
+    private val preferenceOff = ArrayList<String>()
     private var locationUpdateState = false
 
     companion object {
@@ -149,6 +149,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         handleCampusSwitch()
         observeNavigation()
         setNavigationButtons()
+        preferenceOff.clear()
+        checkSettingOptions()
     }
 
     /**
@@ -707,7 +709,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (item != null) {
             val googlePlace = GooglePlace(
                 item.placeId,
-                item.name ?: "",
+                item.name,
                 item.address ?: "",
                 LatLng(item.latitude, item.longitude)
             )
@@ -730,12 +732,43 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val exploreLocation = GooglePlace(
             item?.place_placeID!!,
             item.place_name!!,
-            item?.place_address!!,
-            item!!.place_coordinate
+            item.place_address!!,
+            item.place_coordinate
         )
         Handler().postDelayed({
-            focusLocation(exploreLocation, false, true)
+            focusLocation(exploreLocation, isCampusBuilding = false, isRequired = true)
         }, 1000)
+    }
+
+    private fun checkSettingOptions() {
+        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        val set = HashSet<String>()
+        val settingInflatedView: View = layoutInflater.inflate(R.layout.settings_fragment, null)
+
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_stairs), "stairs")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_escalators), "escalators")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_elevators), "elevators")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_restrooms), "restrooms")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_printers), "printers")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fountains), "fountains")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fireEscape), "fire escape")
+
+        set.addAll(preferenceOff)
+        editor.putStringSet("settingOffArray", set)
+        editor.apply()
+    }
+
+    private fun populateSettingOffArray(switchButton: Switch, buttonText: String) {
+        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val default: Boolean = sharedPref.getBoolean(buttonText, true)
+        switchButton.isChecked = default
+
+        if(!switchButton.isChecked) {
+            preferenceOff.add(buttonText)
+        } else {
+            preferenceOff.remove(buttonText)
+        }
     }
 }
 

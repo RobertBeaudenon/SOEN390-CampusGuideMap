@@ -7,9 +7,9 @@
      <string name="cc_uni">Concordia University</string>
      <string name="Favorites_Feature_Name">My Places</string>
      <string name="Calendar_Feature_Name">Schedule</string>
-     <string name="Resources_Feature_Name">Resources</string>
      <string name="Explore_Feature_Name">Explore</string>
      <string name="Shuttle_Feature_Name">Shuttle Bus</string>
+      <string name="Settings_Feature_Name">Settings</string>
      <string name="Map_Feature_Name">Map</string>
      <string name="Settings">Settings</string>
      <string name="sgw">SGW</string>
