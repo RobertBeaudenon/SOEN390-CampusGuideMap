@@ -744,25 +744,28 @@
             <rect y="179" x="25" height="695" width="15" style="fill:none;stroke:none"/>
             <rect y="529" x="205" height="15" width="12" style="fill:none;stroke:none"/>
             <rect y="204" x="25" height="15" width="695" style="fill:none;stroke:none"/>
-            <rect y="179" x="710" height="695" width="15" style="fill:none;stroke:none"/>
-            <rect y="222" x="377" height="90" width="54" style="fill:none;stroke:none" />
+            <rect y="179" x="615" height="695" width="106" style="fill:none;stroke:none" />
+            <rect y="222" x="377" height="85" width="54" style="fill:none;stroke:none" />
             <rect y="749" x="377" height="100" width="54" style="fill:none;stroke:none"/>
             <rect y="677" x="315" height="30" width="50" style="fill:none;stroke:none" />
-            <rect y="350" x="428" height="206" width="20" style="fill:none;stroke:none" />
+            <rect y="360" x="428" height="286" width="20" style="fill:none;stroke:none" />
+            <rect y="440" x="515" height="116" width="65" style="fill:none;stroke:none" />
+            <rect x="330" y="460" height="160" width="54" style="fill:none;stroke:none" />
+            <rect x="330" y="460" height="250" width="55" style="fill:none;stroke:none" />
 
             <rect
                 x="342"
                 y="480"
                 height="30"
                 width="30"
-                id="upescalators"
+                id="downescalators"
                 style="fill:none;stroke:none" />
             <rect
                 x="342"
                 y="595"
                 height="30"
                 width="30"
-                id="downescalators"
+                id="upescalators"
                 style="fill:none;stroke:none" />
 
 
