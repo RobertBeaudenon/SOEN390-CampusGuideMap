@@ -152,7 +152,6 @@ class CalendarFragment : DialogFragment(), DialogInterface.OnDismissListener {
         val sharedPreferences = activity?.getPreferences(Context.MODE_PRIVATE)
         val editor = sharedPreferences?.edit()
 
-
         for (i in checkedArr.indices) {
             editor?.putBoolean(i.toString(), checkedArr[i])
         }
