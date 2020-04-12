@@ -2,7 +2,10 @@ package com.droidhats.campuscompass
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.novoda.merlin.*
+import com.novoda.merlin.Connectable
+import com.novoda.merlin.Disconnectable
+import com.novoda.merlin.Bindable
+import com.novoda.merlin.Merlin
 
 /**
  * This class has the objective of outlining the required methods for using the Merlin library
@@ -10,12 +13,12 @@ import com.novoda.merlin.*
  */
 abstract class MerlinActivity : AppCompatActivity() {
 
-    protected var merlin: Merlin? = null
+    private var merlin: Merlin? = null
 
     /**
      * Overrides the activity's OnCreate method to attach the Merlin object
      *
-     * @param Bundle: the saved state of the application to pass between default Android methods
+     * @param savedInstanceState: the saved state of the application to pass between default Android methods
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

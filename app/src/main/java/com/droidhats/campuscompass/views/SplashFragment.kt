@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
@@ -29,7 +29,7 @@ class SplashFragment : Fragment() {
      *
      * @param inflater: inflates the splash_fragment layout XML file into the View object
      * @param container: the parent ViewGroup (in activity's layout) in which the fragment layout will be inserted
-     * @param Bundle: the saved state of the application to pass between default Android methods
+     * @param savedInstanceState: the saved state of the application to pass between default Android methods
      */
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,15 +49,15 @@ class SplashFragment : Fragment() {
     /**
      * Overrides the fragments onActivityCreated method to initialize the application and check the permissions
      *
-     * @param Bundle: the saved state of the application to pass between default Android methods
+     * @param savedInstanceState: the saved state of the application to pass between default Android methods
      */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        splashViewModel = ViewModelProviders.of(this).get(SplashViewModel::class.java)
+        splashViewModel = ViewModelProvider(this).get(SplashViewModel::class.java)
         splashViewModel.init()
 
         //this structure will change based on refactoring our app
-        //for now, it lets MainActiivty manage the navigation if no permissions were given
+        //for now, it lets MainActivity manage the navigation if no permissions were given
         if(!(activity as MainActivity).checkLocationPermission()) {
             (activity as MainActivity).requestLocationPermission()
         } else {
@@ -76,7 +76,7 @@ class SplashFragment : Fragment() {
                 findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
             }
         }
-        //UnLock drawer
+        //Unlock drawer
         val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
