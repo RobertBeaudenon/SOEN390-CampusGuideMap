@@ -89,46 +89,74 @@ class NavigationRepository(private val application: Application) {
         return sgwShuttleTimes
     }
 
+    /**
+     * Sets the navigation route, should only be used by the indoor nav step
+     * @param navigationRoute
+     */
     fun setNavigationRoute(navigationRoute: NavigationRoute) {
         this.navigationRoute.value = navigationRoute
     }
 
+    /**
+     * Sets the navigation handler, and handles getting the next navigation route
+     * @param navHandler
+     */
     fun setNavigationHandler(navHandler: NavHandler?) {
         if (navHandler == null) navigationRoute.value = null
         navHandler?.getNavigationRoute()
         this.navHandler = navHandler
     }
 
+    /**
+     * Sets the current navhandler as the next one. This is how we iterate.
+     * @return the new navhandler
+     */
     fun consumeNavigationHandler(): NavHandler? {
         setNavigationHandler(navHandler?.next)
         return navHandler
     }
 
+    /**
+     * Sets all related variables to navigations to null
+     */
     fun cancelNavigation() {
         navHandler = null
         navigationRoute.value = null
     }
 
+    /**
+     * Sets the current navhandler to the previous one. This is how we iterate backwards
+     */
     fun stepBack() {
         if (navHandler?.prev != null) {
             setNavigationHandler(navHandler!!.prev!!)
         }
     }
 
+    /**
+     * Returns the previous handler
+     * @return previous navhandler
+     */
     fun getPrev(): NavHandler? {
         return navHandler?.prev
     }
 
+    /**
+     * Returns whether this is the last step in the navigation
+     * @return boolean whether it is the last step
+     */
     fun isLastStep(): Boolean {
         return if (navHandler is OutdoorNavStep) {
             navHandler?.next is OutdoorNavStep && navHandler?.next?.next == null
         } else {
-            println("navhandler: $navHandler")
-            println("next: ${navHandler?.next}")
             navHandler?.next !is OutdoorNavStep
         }
     }
 
+    /**
+     * Fetches the selected place.
+     * @param location
+     */
     suspend fun fetchPlace(location: Location): Unit = suspendCoroutine { cont ->
         if (location is GooglePlace) {
             val placeFields: List<Place.Field> = Place.Field.values().toList()
@@ -241,6 +269,15 @@ class NavigationRepository(private val application: Application) {
         requestQueue.add(directionsRequest)
     }
 
+    /**
+     * Parses the directions to be able to set a Navigation Route
+     * @param jsonResponse the object to parse
+     * @param origin
+     * @param destination
+     * @param mode the mode of transportation
+     * @param waypoints the way points to the desination
+     * @return NavigationRoute
+     */
     private fun parseDirections(jsonResponse: JSONObject, origin: Location, destination: Location, mode: String,  waypoints: String?) : NavigationRoute {
         val path: MutableList<List<LatLng>> = ArrayList()
         val instructions = arrayListOf<String>()
@@ -254,27 +291,41 @@ class NavigationRepository(private val application: Application) {
 
             for (leg in 0 until legsArray.length()) {
                 val stepsArray = legsArray.getJSONObject(leg).getJSONArray("steps")
-                    for (i in 0 until stepsArray.length()) {
-                        try {
-                            path.add(PolyUtil.decode(stepsArray.getJSONObject(i)
-                                .getJSONObject("polyline").getString("points")))
+                for (i in 0 until stepsArray.length()) {
+                    try {
+                        path.add(
+                            PolyUtil.decode(
+                                stepsArray.getJSONObject(i)
+                                    .getJSONObject("polyline").getString("points")
+                            )
+                        )
 
-                            if (leg != 1) {
-                                instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
-                                intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
-                                if (stepsArray.getJSONObject(i).has("steps")) {
-                                    for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
-                                        instructions.add(
-                                            parseInstructions(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), mode))
-                                        intCoordinates.add(
-                                        parseCoordinates(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), true))
-                                    }
+                        if (leg != 1) {
+                            instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
+                            intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
+                            if (stepsArray.getJSONObject(i).has("steps")) {
+                                for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
+                                    instructions.add(
+                                        parseInstructions(
+                                            stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
+                                                j
+                                            ), mode
+                                        )
+                                    )
+                                    intCoordinates.add(
+                                        parseCoordinates(
+                                            stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
+                                                j
+                                            ), true
+                                        )
+                                    )
                                 }
                             }
-                        } catch (e: org.json.JSONException) {
-                            Log.e("JSONException", e.message.toString())
                         }
+                    } catch (e: org.json.JSONException) {
+                        Log.e("JSONException", e.message.toString())
                     }
+                }
 
                 if (leg == 0 && mode == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string) {
                     if (waypoints == SGW_TO_LOY_WAYPOINT) {
@@ -296,6 +347,12 @@ class NavigationRepository(private val application: Application) {
         return OutdoorNavigationRoute(origin, destination, path, instructions, intCoordinates)
     }
 
+    /**
+     * Parses the instructions into a String
+     * @param jsonObject of the instructions to parse
+     * @param transportationMethod
+     * @return string
+     */
     private fun parseInstructions(jsonObject: JSONObject, transportationMethod: String): String {
         var instruction = jsonObject.getString("html_instructions")
 
@@ -322,7 +379,13 @@ class NavigationRepository(private val application: Application) {
         return instruction
     }
 
-    private fun parseCoordinates(jsonObject: JSONObject, isStartLocation : Boolean) : LatLng{
+    /**
+     * Returns the position of the json object as a latlng
+     * @param jsonObject
+     * @param isStartLocation
+     * @return latlng
+     */
+    private fun parseCoordinates(jsonObject: JSONObject, isStartLocation : Boolean) : LatLng {
         val name = if(isStartLocation) "start_location" else "end_location"
 
         val lat =
@@ -335,6 +398,14 @@ class NavigationRepository(private val application: Application) {
         return LatLng(lat,lng)
     }
 
+    /**
+     * Constructs a url into a string given these parameters.
+     * @param origin
+     * @param destination
+     * @param transportationMethod
+     * @param waypoints
+     * @return String
+     */
     private fun constructRequestURL(
         origin: Location,
         destination: Location,

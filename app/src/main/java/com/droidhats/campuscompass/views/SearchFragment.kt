@@ -193,7 +193,6 @@ class SearchFragment : Fragment()  {
                             bundle.putString("floornum", origin.floorNum)
                             val buildingInitial = origin.name.split('-')[0]
                             val building = viewModelMapViewModel.findBuildingByInitial(buildingInitial)
-                            println("building1: $building")
                             bundle.putParcelable("building", building)
                             findNavController().navigate(R.id.floor_fragment, bundle)
                         } else {

@@ -198,13 +198,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         attach(mapModel)
     }
 
-    // Handle coming coming back to the map fragment from the floor fragment
+
+    /**
+     * Handle coming coming back to the map fragment from the floor fragment.
+     * This method pops the stack back to the map fragment and resets the current navigation path
+     */
     override fun onFloorFragmentBackClicked(){
         findNavController().popBackStack(R.id.map_fragment, false)
         currentOutdoorNavigationRoute = null
-
     }
 
+    /**
+     * Attaches all Concordia's buildings that have initial markers to the map so that they are
+     * observing the changes in the map zoom level.
+     */
     private fun attachBuildingObservers(){
         // Attach all observer buildings with initial markers
         for (building in viewModel.getBuildings()) {
@@ -214,6 +221,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Detaches all Concordia's buildings that were observing the map from the observer list.
+     */
     private fun detachBuildingObservers(){
         // Detach all observer buildings with initial markers
         for (building in viewModel.getBuildings()) {
@@ -223,6 +233,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Allows the map to observe the navigation route using the viewModel.
+     * Different actions are taken depending on the observed navigation route. The handled cases
+     * are related to whether the outdoor and indoor navigation routes have been initialized.
+     */
     private fun observeNavigation() {
         viewModel.getNavigationRoute().observe(viewLifecycleOwner, Observer {
             // The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
@@ -258,6 +273,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     }
 
+    /**
+     * This function sets the navigation button on the instruction sheet that appears when there is
+     * an outdoor navigation. It will also toggle the instruction view depending on whether the
+     * current outdoor navigation is set to null.
+     */
     private fun setNavigationButtons() {
         val buttonMinimizeInstructions : ImageButton = requireActivity().findViewById(R.id.buttonMinimizeInstructions)
         buttonMinimizeInstructions.setOnClickListener{
@@ -283,6 +303,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * This will cancel the current navigation by clearing the current drawn path, resetting the
+     * current outdoor navigation route and hiding the instruction sheet.
+     */
     private fun cancelNavigation() {
         clearNavigationPath()
         currentOutdoorNavigationRoute = null
@@ -294,6 +318,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         handleCampusSwitch()
     }
 
+    /**
+     * Creates a request for the location. This method will first set up a location request and then
+     * send it and handle the returned value. The location request is an API call to Google services
+     */
     private fun createLocationRequest() {
         // 1 create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
         locationRequest = LocationRequest()
@@ -334,7 +362,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    //get real time updates of current location
+    /**
+     * Get real time updates of current location.
+     */
     private fun startLocationUpdates() {
         //requests for location updates.
         fusedLocationClient.requestLocationUpdates(
@@ -344,7 +374,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         )
     }
 
-    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
+    /**
+     *  Override AppCompatActivity’s onActivityResult() method and start the update request if it
+     *  has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
+     *
+     *  @param requestCode checks if the user has allowed access to current location
+     *  @param resultCode checks the result of the request check
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
@@ -354,14 +390,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    // 2 Override onPause() to stop location update request
+    /**
+     * Override onPause() to stop location update request
+     */
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
         dismissBottomSheet()
     }
 
-    // 3 Override onResume() to restart the location update request.
+    /**
+     * Override onResume() to restart the location update request.
+     */
     override fun onResume() {
         super.onResume()
         if (!locationUpdateState) {
@@ -369,13 +409,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Override onDestroy() to detach all of concordia's buildings from the observer list of the map.
+     * It will then detach the mapModel from the observers.
+     */
     override fun onDestroy(){
         super.onDestroy()
         detachBuildingObservers()
         detach(mapModel)
     }
 
-    //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+    /**
+     * Implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+     * This will be used to listen to the clicks on the polygons that are set for the map. Each of
+     * the drawn buildings on the map is represented by a polygon!
+     *
+     * @param p Is the building polygon that was clicked
+     */
     override fun onPolygonClick(p: Polygon) {
         val selectedBuilding : Building = viewModel.findBuildingByPolygonTag(p.tag.toString())
             ?: return
@@ -383,7 +433,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         handleBuildingClick(selectedBuilding)
     }
 
-    //implements methods of interface   GoogleMap.OnMarkerClickListener
+
+    /**
+     * implements methods of interface GoogleMap.OnMarkerClickListener
+     * This will be used to listen to the clicks on the markers  that are set for the map. Some of
+     * the drawn buildings on the map have a corresponding markers. We can handle the building click
+     * by behaviour by listening to clicks on the buildings markers.
+     *
+     * @param marker Is the building marker that was clicked
+     */
     override fun onMarkerClick(marker: Marker?): Boolean {
         val selectedBuilding: Building? = viewModel.findBuildingByMarkerTitle(marker)
         //There is a building associated with the marker that was clicked
@@ -394,6 +452,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return false
     }
 
+    /**
+     * Handles the map behaviour when a click on one of the drawn buildings is detected.
+     * This will expand the bottom sheet that is populated by the building information.
+     * This will also initialize the buttons that appear on the buildings info sheet and set up
+     * their on click listeners.
+     *
+     * @param building Is the building object that was clicked
+     */
     private fun handleBuildingClick(building: Building) {
         expandBottomSheet()
         updateAdditionalInfoBottomSheet(building.getPolygon())
@@ -422,7 +488,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    //Handle the switching views between the two campuses. Should probably move from here later
+    /**
+     * Handle the switching views between the two campuses.
+     * This method will move the focus of the map camera to the designated lat and lang coordiantes
+     * of each of concordia's campuses upon a click on the toggle button.
+     */
     private fun handleCampusSwitch() {
         var campusView: LatLng
 
@@ -439,6 +509,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Shows the outdoor navigation route instructions.
+     * This method will handle the displaying of the instruction sheet, and setting and initializing
+     * the list of instructions for the navigation route. It will also handle the buttons for clicking
+     * on the next and previous buttons on the instructions. This will also move the camera at each
+     * instruction to allow the user to dynamically navigate on the map.
+     *
+     * @param instructions is a list of instructions for the navigation route
+     * @param instructionsCoordinates is the coordinates the corresponds for each of the instructions
+     * in the instructions list. Its used to move the camera focus to the coordinates of the instruction.
+     */
     private fun showInstructions(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>){
         toggleButton.visibility = View.GONE
         toggleInstructionsView(true)
@@ -513,6 +594,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Used to routate the camera on the map depending on where the user is looking at.
+     * It will allow the camera to return back the default setting of pointing North.
+     *
+     * @param startLat Latitude coordinate for the start point
+     * @param startLong Longitude coordinate for the start point
+     * @param endLat Latitude coordinate for the end point
+     * @param endLong Longitude coordinate for the end point
+     */
     private fun getBearing(startLat: Double, startLong: Double, endLat: Double, endLong: Double): Float {
         val lat = abs(startLat - endLat)
         val lng = abs(startLong - endLong)
@@ -529,6 +619,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return (-1).toFloat()
     }
 
+    /**
+     * Toggles the instruction sheet for the outdoor navigation instructions on and off.
+     * This will check if the instruction sheet if visible and hide it in that case. If the
+     * instruction sheet, a resume navigation button is displayed.
+     *
+     * @param isVisible checks if the instruction sheet is currently visible
+     */
     private fun toggleInstructionsView(isVisible: Boolean){
         val instructionsView : CardView = requireActivity().findViewById(R.id.instructionLayout)
         if(isVisible){
@@ -546,6 +643,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * This method will draw the polylines for the outdoor navigation route on the map.
+     *
+     * @param path A list of LatLang coordinates that ccorrespondto the outdoor navigation route's
+     * polyline positions on the map.
+     */
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
         clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
@@ -555,7 +658,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             currentNavigationPath.add(polyline)
         }
     }
-
+    
     private fun clearNavigationPath() {
         for ( polyline in currentNavigationPath){
             polyline.remove()

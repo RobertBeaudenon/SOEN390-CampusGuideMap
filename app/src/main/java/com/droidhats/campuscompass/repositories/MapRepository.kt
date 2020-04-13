@@ -28,18 +28,6 @@ class MapRepository(applicationContext: Context) {
     fun getCampuses(): List<Campus> = campuses
 
     /**
-     * Iterate over buildings
-     * @param apply Lambda function for doing stuff in the for loop
-     */
-    fun forEachBuilding(apply: (building: Building) -> Unit) {
-        for (campus in campuses) {
-            for (building in campus.getBuildings()) {
-                apply(building)
-            }
-        }
-    }
-
-    /**
      * Returns a list of all buildings.
      * @return list of buildings
      */
