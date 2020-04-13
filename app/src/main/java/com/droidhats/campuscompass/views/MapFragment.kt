@@ -171,8 +171,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Add custom style to map
         try {
             val success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            context, R.raw.map_style))
+                MapStyleOptions.loadRawResourceStyle(
+                    context, R.raw.map_style))
             if (!success) {
                 Log.e("MapStyle", "Style parsing failed.")
             }
@@ -460,33 +460,33 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             prevArrow.visibility = View.VISIBLE
             trackerSteps++
             arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
-                if (trackerSteps < instructions.size -1) {
-                    val bearingValue = getBearing(
-                        instructionsCoordinates[trackerSteps].latitude,
-                        instructionsCoordinates[trackerSteps].longitude,
-                        instructionsCoordinates[trackerSteps+1].latitude,
-                        instructionsCoordinates[trackerSteps+1].longitude
-                    )
-                    if (!bearingValue.isNaN()) {
-                        val cameraPosition: CameraPosition = CameraPosition.Builder().target(
-                                LatLng(
-                                    instructionsCoordinates[trackerSteps].latitude,
-                                    instructionsCoordinates[trackerSteps].longitude)
-                            ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
-                        map!!.animateCamera(
-                            CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
-                    }
-                } else if (trackerSteps == instructions.size - 1) {
-                    nextArrow.visibility = View.INVISIBLE
-                    doneButtonMap.visibility = View.VISIBLE
-                    moveTo(instructionsCoordinates[instructions.size - 1], 20.0F)
+            if (trackerSteps < instructions.size -1) {
+                val bearingValue = getBearing(
+                    instructionsCoordinates[trackerSteps].latitude,
+                    instructionsCoordinates[trackerSteps].longitude,
+                    instructionsCoordinates[trackerSteps+1].latitude,
+                    instructionsCoordinates[trackerSteps+1].longitude
+                )
+                if (!bearingValue.isNaN()) {
+                    val cameraPosition: CameraPosition = CameraPosition.Builder().target(
+                        LatLng(
+                            instructionsCoordinates[trackerSteps].latitude,
+                            instructionsCoordinates[trackerSteps].longitude)
+                    ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
+                    map!!.animateCamera(
+                        CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
                 }
+            } else if (trackerSteps == instructions.size - 1) {
+                nextArrow.visibility = View.INVISIBLE
+                doneButtonMap.visibility = View.VISIBLE
+                moveTo(instructionsCoordinates[instructions.size - 1], 20.0F)
+            }
         }
         prevArrow.setOnClickListener{
             nextArrow.visibility = View.VISIBLE
             doneButtonMap.visibility = View.GONE
-                trackerSteps--
-                arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
+            trackerSteps--
+            arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
             if (trackerSteps != 0) {
                 if (trackerSteps < instructions.size -1) {
                     val bearingValue = getBearing(
@@ -547,11 +547,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
-      clearNavigationPath()  //Clear existing path to show only one path at a time
+        clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
-         val polyline= map!!.addPolyline(context?.let { ContextCompat.getColor(it, R.color.colorPrimaryDark) }?.let {
-             PolylineOptions().addAll(path[i]).width(10F).color(it)
-         })
+            val polyline= map!!.addPolyline(context?.let { ContextCompat.getColor(it, R.color.colorPrimaryDark) }?.let {
+                PolylineOptions().addAll(path[i]).width(10F).color(it)
+            })
             currentNavigationPath.add(polyline)
         }
     }
@@ -574,11 +574,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
             override fun onSearchStateChanged(enabled: Boolean) {
-                  if (enabled) {
-                      dismissBottomSheet()
-                      findNavController().navigate(R.id.search_fragment)
-                      mapFragSearchBar.closeSearch()
-                  }
+                if (enabled) {
+                    dismissBottomSheet()
+                    findNavController().navigate(R.id.search_fragment)
+                    mapFragSearchBar.closeSearch()
+                }
             }
             override fun onSearchConfirmed(text: CharSequence?) {
             }
@@ -593,7 +593,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-           }
+            }
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
@@ -646,15 +646,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         currentOutdoorNavigationRoute = null
         viewModel.navigationRepository.cancelNavigation()
         if (item is GooglePlace) {
- 			findNavController().popBackStack(R.id.map_fragment, false)
+            findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch(Dispatchers.Main) {
                 for (building in viewModel.getBuildings())
                     if (building.getPlaceId() == item.placeID) { //Check if location is a concordia building
                         isCampusBuilding = true
                         handleBuildingClick(building)
                     }
-              focusLocation(item, isCampusBuilding, true)
-            }        
+                focusLocation(item, isCampusBuilding, true)
+            }
         } else if (item is IndoorLocation) {
             val bundle: Bundle = Bundle()
             bundle.putString("id", item.lID)
@@ -668,17 +668,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun focusLocation(location: GooglePlace, isCampusBuilding : Boolean, isRequired : Boolean){
-       GlobalScope.launch {
-           if(isRequired) {
-               viewModel.navigationRepository.fetchPlace(location)
-           }
-       }.invokeOnCompletion {
-           requireActivity().runOnUiThread{
-               moveTo(location.coordinate, 17.0f)
-               if (!isCampusBuilding)
-               populatePlaceInfoCard(location)
-           }
-       }
+        GlobalScope.launch {
+            if(isRequired) {
+                viewModel.navigationRepository.fetchPlace(location)
+            }
+        }.invokeOnCompletion {
+            requireActivity().runOnUiThread{
+                moveTo(location.coordinate, 17.0f)
+                if (!isCampusBuilding)
+                    populatePlaceInfoCard(location)
+            }
+        }
     }
 
     private fun moveTo(coordinates: LatLng, zoomLevel: Float) {
@@ -850,6 +850,3 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 }
-
-
-

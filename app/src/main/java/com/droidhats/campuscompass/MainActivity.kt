@@ -170,18 +170,18 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable, Na
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     //If the user allowed the READ_CALENDAR permission, refresh the calendar fragment
                     //Note: This assumes the permission request was launched from CalendarFragment !
-                      val calendarFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as CalendarFragment
-                        calendarFragment.showDialog()
-                        calendarFragment.refresh()
+                    val calendarFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as CalendarFragment
+                    calendarFragment.showDialog()
+                    calendarFragment.refresh()
                 }
                 return
             }
             LOCATION_PERMISSION_REQUEST_CODE -> {
                 //If the user granted, denied, or cancelled the location permission, load the map
                 //since splash isn't initializing components yet, it will perform normal navigation to MapFragment
-                    val splashFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as SplashFragment
-                    splashFragment.navigateToMapFragment()
-                    return
+                val splashFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as SplashFragment
+                splashFragment.navigateToMapFragment()
+                return
             }
         }
     }
