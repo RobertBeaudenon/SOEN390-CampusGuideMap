@@ -58,9 +58,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
             mapProcessor.readSVGFromString(file)
             val classes = mapProcessor.getClasses()
 
-            // todo: Use index of for loop to determine floor instead of using map name
             var floorValue: String = floorMap.value.split(building.getIndoorInfo().first)[1].split(".svg")[0]
-
             for ((x, classRoom) in classes.withIndex()) {
                 if (classRoom.getID() == "") continue
                 if (!classRoom.getID().contains(floorValue)) {
