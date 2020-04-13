@@ -1,5 +1,8 @@
 package com.droidhats.mapprocessor
 
+/**
+ * Main data structure that we use to hold the vertices in the graph
+ */
 class Vertex(circle: Circle, endPoint: Pair<Double, Double>) {
     val pos: Pair<Double, Double> = Pair(circle.cx, circle.cy)
     val heuristic: Double = getDistance(pos, endPoint)
@@ -8,12 +11,31 @@ class Vertex(circle: Circle, endPoint: Pair<Double, Double>) {
     private var sum: Double? = null
     val neighbors: MutableList<Vertex> = mutableListOf()
 
+    /**
+     * set the value of this vertex and update its sum based on the heuristic function
+     * @param value to update
+     */
     fun setValue(value: Double) {
         this.value = value
         sum = heuristic
     }
+
+    /**
+     * Return the value of this vertex
+     * @return value
+     */
     fun getValue(): Double? = value
+
+    /**
+     * Return the sum
+     * @return sum
+     */
     fun getSum(): Double? = sum
+
+    /**
+     * Remove popped node from the neighbors of this vertex
+     * @param poppedNode
+     */
     fun removeFromNeighbors(poppedNode: Vertex) {
         for (neighborInd in neighbors.indices) {
             if (neighbors[neighborInd] == poppedNode) {
@@ -30,6 +52,11 @@ class Vertex(circle: Circle, endPoint: Pair<Double, Double>) {
  */
 class PriorityQueue {
     private val queue: MutableList<Vertex> = mutableListOf()
+
+    /**
+     * Inserts the vertex at the proper position
+     * @param vertex to insert
+     */
     fun insert(vertex: Vertex) {
         for (indVertex in queue.indices) {
             if (vertex.getSum()!! < queue[indVertex].getSum()!!) {
@@ -42,20 +69,39 @@ class PriorityQueue {
         queue.add(vertex)
     }
 
+    /**
+     * Returns the first vertex in the list
+     * @return vertex
+     */
     fun pop(): Vertex? {
         if (queue.size == 0) return null
         return queue.removeAt(0)
     }
 
+    /**
+     * Determine whether the vertex is within the queue
+     * @param vertex to check
+     * @return whether it is not within the queue
+     */
     fun isNotWithin(vertex: Vertex): Boolean {
         return vertex !in queue
     }
 
+    /**
+     * Remove the vertex in the queue
+     * @param vertex to remove
+     */
     fun removeVertex(vertex: Vertex) {
         queue.remove(vertex)
     }
 }
 
+/**
+ * Find the nearest vertex to the given map element
+ * @param mapElement
+ * @param pathElements to search for the nearest point in
+ * @return nearest vertex
+ */
 fun findNearestPoint(mapElement: MapElement, pathElements: List<Vertex>): Vertex {
     var nearestNode: Vertex = pathElements[0]
     var smallestDistance: Double = getDistance(mapElement.getCenter(), nearestNode.pos)
@@ -69,6 +115,13 @@ fun findNearestPoint(mapElement: MapElement, pathElements: List<Vertex>): Vertex
     return nearestNode
 }
 
+/**
+ * Takes 2 map elements and returns the shortest path in between them given the list of path elements
+ * @param start element
+ * @param end element
+ * @param list of vertices
+ * @return string
+ */
 fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>): String {
     val startVertex = findNearestPoint(start, pathElements)
     val endVertex = findNearestPoint(end, pathElements)
@@ -128,6 +181,13 @@ fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>
     return string.toString()
 }
 
+/**
+ * Removes the found start and end vertices from the inputted list and returns it.
+ * @param start vertex
+ * @param end vertex
+ * @param list of vertices
+ * @return new list of vertices
+ */
 fun removeStartAndEnd(start: Vertex, end: Vertex, list: MutableList<Vertex>): MutableList<Vertex> {
     for (vertex in list) {
         if (vertex == start || vertex == end) {
