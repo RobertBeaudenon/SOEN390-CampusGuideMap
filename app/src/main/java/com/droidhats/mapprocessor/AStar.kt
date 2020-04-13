@@ -10,7 +10,7 @@ class Vertex(circle: Circle, endPoint: Pair<Double, Double>) {
 
     fun setValue(value: Double) {
         this.value = value
-        sum = value + heuristic
+        sum = heuristic
     }
     fun getValue(): Double? = value
     fun getSum(): Double? = sum
