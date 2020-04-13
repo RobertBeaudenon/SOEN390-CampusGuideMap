@@ -27,7 +27,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import com.droidhats.mapprocessor.ProcessMap
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
@@ -38,12 +37,14 @@ import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.material.navigation.NavigationView
 import com.droidhats.mapprocessor.SVG as internalSVG
+import com.droidhats.mapprocessor.ProcessMap
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.InputStream
+
 
 class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener{
 
@@ -194,6 +195,10 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             R.id.nav_shuttle -> {
                 findNavController().popBackStack(R.id.map_fragment, false)
                 findNavController().navigate(R.id.nav_shuttle)
+            }
+            R.id.nav_settings -> {
+                findNavController().popBackStack(R.id.map_fragment, false)
+                findNavController().navigate(R.id.nav_settings)
             }
             R.id.map_fragment -> findNavController().popBackStack(R.id.map_fragment, false)
         }
