@@ -9,14 +9,17 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.droidhats.campuscompass.models.Campus
+import com.droidhats.campuscompass.NavHandler.NavHandler
+import com.droidhats.campuscompass.NavHandler.OutdoorNavStep
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Location
+import com.droidhats.campuscompass.models.OutdoorNavigationRoute
+import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
+import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
+import com.droidhats.campuscompass.models.Campus
 import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.roomdb.ShuttleBusDAO
 import com.droidhats.campuscompass.roomdb.ShuttleBusDB
-import com.droidhats.campuscompass.roomdb.ShuttleBusLoyolaEntity
-import com.droidhats.campuscompass.roomdb.ShuttleBusSGWEntity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -26,7 +29,7 @@ import com.google.maps.android.PolyUtil
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.collections.ArrayList
-import java.util.*
+import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import com.droidhats.campuscompass.R
@@ -43,7 +46,7 @@ class NavigationRepository(private val application: Application) {
     private var sgwShuttleTimes: LiveData<List<ShuttleBusSGWEntity>>
     private var navigationRoute = MutableLiveData<NavigationRoute>()
     var routeTimes = MutableLiveData<MutableMap<String, String>>()
-
+    var navHandler: NavHandler? = null
 
     companion object {
         // Singleton instantiation
@@ -55,6 +58,9 @@ class NavigationRepository(private val application: Application) {
                     instance
                         ?: NavigationRepository(application).also { instance = it }
                 }
+
+        // may return null
+        fun getInstance() = instance
 
         var SGW_TO_LOY_WAYPOINT = "&waypoints=${Campus.SGW_SHUTTLE_STOP.latitude}%2C${Campus.SGW_SHUTTLE_STOP.longitude}|" +
                 "${Campus.LOY_SHUTTLE_STOP.latitude}%2C${Campus.LOY_SHUTTLE_STOP.longitude}"
@@ -83,6 +89,74 @@ class NavigationRepository(private val application: Application) {
         return sgwShuttleTimes
     }
 
+    /**
+     * Sets the navigation route, should only be used by the indoor nav step
+     * @param navigationRoute
+     */
+    fun setNavigationRoute(navigationRoute: NavigationRoute) {
+        this.navigationRoute.value = navigationRoute
+    }
+
+    /**
+     * Sets the navigation handler, and handles getting the next navigation route
+     * @param navHandler
+     */
+    fun setNavigationHandler(navHandler: NavHandler?) {
+        if (navHandler == null) navigationRoute.value = null
+        navHandler?.getNavigationRoute()
+        this.navHandler = navHandler
+    }
+
+    /**
+     * Sets the current navhandler as the next one. This is how we iterate.
+     * @return the new navhandler
+     */
+    fun consumeNavigationHandler(): NavHandler? {
+        setNavigationHandler(navHandler?.next)
+        return navHandler
+    }
+
+    /**
+     * Sets all related variables to navigations to null
+     */
+    fun cancelNavigation() {
+        navHandler = null
+        navigationRoute.value = null
+    }
+
+    /**
+     * Sets the current navhandler to the previous one. This is how we iterate backwards
+     */
+    fun stepBack() {
+        if (navHandler?.prev != null) {
+            setNavigationHandler(navHandler!!.prev!!)
+        }
+    }
+
+    /**
+     * Returns the previous handler
+     * @return previous navhandler
+     */
+    fun getPrev(): NavHandler? {
+        return navHandler?.prev
+    }
+
+    /**
+     * Returns whether this is the last step in the navigation
+     * @return boolean whether it is the last step
+     */
+    fun isLastStep(): Boolean {
+        return if (navHandler is OutdoorNavStep) {
+            navHandler?.next is OutdoorNavStep && navHandler?.next?.next == null
+        } else {
+            navHandler?.next !is OutdoorNavStep
+        }
+    }
+
+    /**
+     * Fetches the selected place.
+     * @param location
+     */
     suspend fun fetchPlace(location: Location): Unit = suspendCoroutine { cont ->
         if (location is GooglePlace) {
             val placeFields: List<Place.Field> = Place.Field.values().toList()
@@ -112,9 +186,9 @@ class NavigationRepository(private val application: Application) {
      */
     fun fetchRouteTimes(origin: Location, destination: Location, waypoints: String?) {
         val times = mutableMapOf<String, String>()
-        for (method in NavigationRoute.TransportationMethods.values()) {
+        for (method in OutdoorNavigationRoute.TransportationMethods.values()) {
             var shuttleWaypoints = waypoints
-            if (method.string != NavigationRoute.TransportationMethods.SHUTTLE.string)
+            if (method.string != OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string)
                 shuttleWaypoints = ""
             val directionRequest = StringRequest(
                 Request.Method.GET,
@@ -130,7 +204,7 @@ class NavigationRepository(private val application: Application) {
                         val legsArray: JSONArray = routes.getJSONArray("legs")
                         val legs: JSONObject = legsArray.getJSONObject(0)
 
-                        if (method.string == NavigationRoute.TransportationMethods.SHUTTLE.string && legsArray.length() > 1) {
+                        if (method.string == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string && legsArray.length() > 1) {
                             val totalDurationInSec = legs.getJSONObject("duration").getString("value").toInt() +
                             legsArray.getJSONObject(1).getJSONObject("duration").getString("value").toInt() +
                             legsArray.getJSONObject(2).getJSONObject("duration").getString("value").toInt()
@@ -149,7 +223,7 @@ class NavigationRepository(private val application: Application) {
                         times[method.string] = "N/A"
                     }
                     //Set only after all the times have been retrieved (to display them all at the same time)
-                    if (times.size == NavigationRoute.TransportationMethods.values().size)
+                    if (times.size == OutdoorNavigationRoute.TransportationMethods.values().size)
                         routeTimes.value = times
                 },
                 Response.ErrorListener {
@@ -174,8 +248,8 @@ class NavigationRepository(private val application: Application) {
             return
         var transportationMethod = mode
         //If the mode is shuttle, we want to show walking instructions towards the bus stop
-        if (mode == NavigationRoute.TransportationMethods.SHUTTLE.string)
-            transportationMethod = NavigationRoute.TransportationMethods.WALKING.string
+        if (mode == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string)
+            transportationMethod = OutdoorNavigationRoute.TransportationMethods.WALKING.string
 
         val directionsRequest = object : StringRequest(
             Method.GET,
@@ -195,6 +269,15 @@ class NavigationRepository(private val application: Application) {
         requestQueue.add(directionsRequest)
     }
 
+    /**
+     * Parses the directions to be able to set a Navigation Route
+     * @param jsonResponse the object to parse
+     * @param origin
+     * @param destination
+     * @param mode the mode of transportation
+     * @param waypoints the way points to the desination
+     * @return NavigationRoute
+     */
     private fun parseDirections(jsonResponse: JSONObject, origin: Location, destination: Location, mode: String,  waypoints: String?) : NavigationRoute {
         val path: MutableList<List<LatLng>> = ArrayList()
         val instructions = arrayListOf<String>()
@@ -208,28 +291,43 @@ class NavigationRepository(private val application: Application) {
 
             for (leg in 0 until legsArray.length()) {
                 val stepsArray = legsArray.getJSONObject(leg).getJSONArray("steps")
-                    for (i in 0 until stepsArray.length()) {
-                        try {
-                            path.add(PolyUtil.decode(stepsArray.getJSONObject(i)
-                                .getJSONObject("polyline").getString("points")))
+                for (i in 0 until stepsArray.length()) {
+                    try {
+                        path.add(
+                            PolyUtil.decode(
+                                stepsArray.getJSONObject(i)
+                                    .getJSONObject("polyline").getString("points")
+                            )
+                        )
 
-                            if (leg != 1) {
-                                instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
-                                intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
-                                if (stepsArray.getJSONObject(i).has("steps")) {
-                                    for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
-                                        instructions.add(
-                                            parseInstructions(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), mode))
-                                        intCoordinates.add(
-                                        parseCoordinates(stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(j), true))
-                                    }
+                        if (leg != 1) {
+                            instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
+                            intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
+                            if (stepsArray.getJSONObject(i).has("steps")) {
+                                for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
+                                    instructions.add(
+                                        parseInstructions(
+                                            stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
+                                                j
+                                            ), mode
+                                        )
+                                    )
+                                    intCoordinates.add(
+                                        parseCoordinates(
+                                            stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
+                                                j
+                                            ), true
+                                        )
+                                    )
                                 }
                             }
-                        } catch (e: org.json.JSONException) {
-                            Log.e("JSONException", e.message.toString())
                         }
+                    } catch (e: org.json.JSONException) {
+                        Log.e("JSONException", e.message.toString())
                     }
-                if (leg == 0 && mode == NavigationRoute.TransportationMethods.SHUTTLE.string) {
+                }
+
+                if (leg == 0 && mode == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string) {
                     if (waypoints == SGW_TO_LOY_WAYPOINT) {
                         intCoordinates.add(Campus.SGW_SHUTTLE_STOP)
                         instructions.add("Take the Shuttle Bus to Loyola Campus")
@@ -246,15 +344,21 @@ class NavigationRepository(private val application: Application) {
                 }
             }
         }
-        return NavigationRoute(origin, destination, mode, path, instructions, intCoordinates)
+        return OutdoorNavigationRoute(origin, destination, path, instructions, intCoordinates)
     }
 
+    /**
+     * Parses the instructions into a String
+     * @param jsonObject of the instructions to parse
+     * @param transportationMethod
+     * @return string
+     */
     private fun parseInstructions(jsonObject: JSONObject, transportationMethod: String): String {
         var instruction = jsonObject.getString("html_instructions")
 
-        if (transportationMethod == NavigationRoute.TransportationMethods.TRANSIT.string ||
-            transportationMethod == NavigationRoute.TransportationMethods.WALKING.string  ||
-            transportationMethod == NavigationRoute.TransportationMethods.SHUTTLE.string) {
+        if (transportationMethod == OutdoorNavigationRoute.TransportationMethods.TRANSIT.string ||
+            transportationMethod == OutdoorNavigationRoute.TransportationMethods.WALKING.string  ||
+            transportationMethod == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string) {
             instruction += "<br>Distance: " +
                  jsonObject.getJSONObject("distance")
                     .getString("text") + "<br>Duration: " +
@@ -275,7 +379,13 @@ class NavigationRepository(private val application: Application) {
         return instruction
     }
 
-    private fun parseCoordinates(jsonObject: JSONObject, isStartLocation : Boolean) : LatLng{
+    /**
+     * Returns the position of the json object as a latlng
+     * @param jsonObject
+     * @param isStartLocation
+     * @return latlng
+     */
+    private fun parseCoordinates(jsonObject: JSONObject, isStartLocation : Boolean) : LatLng {
         val name = if(isStartLocation) "start_location" else "end_location"
 
         val lat =
@@ -288,6 +398,14 @@ class NavigationRepository(private val application: Application) {
         return LatLng(lat,lng)
     }
 
+    /**
+     * Constructs a url into a string given these parameters.
+     * @param origin
+     * @param destination
+     * @param transportationMethod
+     * @param waypoints
+     * @return String
+     */
     private fun constructRequestURL(
         origin: Location,
         destination: Location,

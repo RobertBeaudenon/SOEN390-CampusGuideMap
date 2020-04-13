@@ -4,11 +4,14 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.Menu
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.droidhats.campuscompass.views.CalendarFragment
 import com.droidhats.campuscompass.views.SplashFragment
 import com.google.android.material.navigation.NavigationView
@@ -19,13 +22,15 @@ import com.novoda.merlin.*
  * This class has the objective of defining the commonly accessible attributes.
  * All fragments utilize the class for navigation, permission requests, and network connectivity purposes
  */
-class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
+class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable, NavigationView.OnNavigationItemSelectedListener {
+
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
         private const val READ_CALENDAR_PERMISSION_REQUEST_CODE = 2
     }
     private lateinit var snackbar: Snackbar
+    private lateinit var navController : NavController
 
     /**
      * Overrides the activity's OnCreate method to instantiate the navigation component
@@ -38,8 +43,9 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
 
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        navView.setupWithNavController(navController)
+
+        navController = navHostFragment.navController
+        navView.setNavigationItemSelectedListener(this)
         snackbar = Snackbar.make(findViewById(android.R.id.content), "No internet found. Please check your network connection.", Snackbar.LENGTH_INDEFINITE)
     }
 
@@ -164,20 +170,50 @@ class MainActivity : MerlinActivity(), Connectable, Disconnectable, Bindable {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     //If the user allowed the READ_CALENDAR permission, refresh the calendar fragment
                     //Note: This assumes the permission request was launched from CalendarFragment !
-                      val calendarFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as CalendarFragment
-                        calendarFragment.showDialog()
-                        calendarFragment.refresh()
+                    val calendarFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as CalendarFragment
+                    calendarFragment.showDialog()
+                    calendarFragment.refresh()
                 }
                 return
             }
             LOCATION_PERMISSION_REQUEST_CODE -> {
                 //If the user granted, denied, or cancelled the location permission, load the map
                 //since splash isn't initializing components yet, it will perform normal navigation to MapFragment
-                    val splashFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as SplashFragment
-                    splashFragment.navigateToMapFragment()
-                    return
+                val splashFragment  = navHostFragment?.childFragmentManager!!.fragments[0] as SplashFragment
+                splashFragment.navigateToMapFragment()
+                return
             }
         }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.my_places_fragment -> {
+                navController.popBackStack(R.id.map_fragment, false)
+                navController.navigate(R.id.my_places_fragment)
+            }
+            R.id.nav_schedule -> {
+                navController.popBackStack(R.id.map_fragment, false)
+                navController.navigate(R.id.nav_schedule)
+            }
+            R.id.nav_explore -> {
+                navController.popBackStack(R.id.map_fragment, false)
+                navController.navigate(R.id.nav_explore)
+            }
+            R.id.nav_shuttle -> {
+                navController.popBackStack(R.id.map_fragment, false)
+                navController.navigate(R.id.nav_shuttle)
+            }
+            R.id.nav_settings -> {
+                navController.popBackStack(R.id.map_fragment, false)
+                navController.navigate(R.id.nav_settings)
+            }
+            R.id.map_fragment -> navController.popBackStack(R.id.map_fragment, false)
+        }
+
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
 
     /**

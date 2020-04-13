@@ -17,6 +17,7 @@ import com.droidhats.campuscompass.viewmodels.ShuttleViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
+
 class ShuttleFragment : Fragment() {
 
     private lateinit var shuttleAdapter: ShuttleAdapter

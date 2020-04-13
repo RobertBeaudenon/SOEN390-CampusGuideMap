@@ -28,18 +28,6 @@ class MapRepository(applicationContext: Context) {
     fun getCampuses(): List<Campus> = campuses
 
     /**
-     * Iterate over buildings
-     * @param apply Lambda function for doing stuff in the for loop
-     */
-    fun forEachBuilding(apply: (building: Building) -> Unit) {
-        for (campus in campuses) {
-            for (building in campus.getBuildings()) {
-                apply(building)
-            }
-        }
-    }
-
-    /**
      * Returns a list of all buildings.
      * @return list of buildings
      */
@@ -135,9 +123,12 @@ class MapRepository(applicationContext: Context) {
                 val initial: String = buildingsArray.getJSONObject(i).get("initial").toString()
                 val floorMapArray: JSONArray = buildingsArray.getJSONObject(i)
                     .getJSONArray("floor_maps")
-                var floorMaps: MutableList<String> = mutableListOf()
+                var floorMaps: MutableMap<String, String> = mutableMapOf()
                 for (x in 0 until floorMapArray.length()) {
-                    floorMaps.add(floorMapArray.getString(x))
+                    val keys = floorMapArray.getJSONObject(x).keys()
+                    for (key in keys) {
+                        floorMaps.put(key, floorMapArray.getJSONObject(x).getString(key))
+                    }
                 }
 
                 val buildingLocation = LatLng(

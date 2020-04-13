@@ -19,13 +19,13 @@ class SplashViewModel(application: Application) : AndroidViewModel(application) 
     val initCode: LiveData<Boolean> = mutableLiveData
 
     fun init() {
-        mutableLiveData.value = true //hard coded to show successful API connection
         val context = getApplication<Application>().applicationContext
         val indoorInitializer = IndoorLocationRepository.getInstance(
             IndoorLocationDatabase.getInstance(context).indoorLocationDao())
         val mapInitializer = MapRepository.getInstance(context)
         GlobalScope.launch {
             indoorInitializer.initializeIndoorLocations(context, mapInitializer)
+            mutableLiveData.postValue(true) //hard coded to show successful API connection
         }
 
     }

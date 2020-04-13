@@ -18,6 +18,8 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.addCallback
 import android.widget.Switch
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -34,7 +36,7 @@ import com.droidhats.campuscompass.adapters.FavoritesAdapter
 import com.droidhats.campuscompass.adapters.SearchAdapter
 import com.droidhats.campuscompass.helpers.Subject
 import com.droidhats.campuscompass.models.Building
-import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.models.IndoorLocation
@@ -66,6 +68,7 @@ import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
 import kotlinx.android.synthetic.main.instructions_sheet_layout.prevArrow
 import kotlinx.android.synthetic.main.instructions_sheet_layout.nextArrow
+import kotlinx.android.synthetic.main.instructions_sheet_layout.doneButtonMap
 import kotlinx.android.synthetic.main.instructions_sheet_layout.arrayInstruction
 import kotlinx.android.synthetic.main.search_bar_layout.buttonResumeNavigation
 import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
@@ -84,7 +87,7 @@ import com.droidhats.campuscompass.models.Map as MapModel
  */
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnPolygonClickListener, CalendarFragment.OnCalendarEventClickListener, SearchAdapter.OnSearchResultClickListener, ExploreCategoryFragment.OnExplorePlaceClickListener, OnCameraIdleListener,
-    FavoritesAdapter.OnFavoriteClickListener, Subject {
+    FavoritesAdapter.OnFavoriteClickListener, FloorFragment.OnFloorFragmentBackClicked, Subject {
 
     private var mapModel: MapModel? = null
     private var map: GoogleMap? = null
@@ -102,7 +105,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         private const val MAP_PADDING_TOP = 200
         private const val MAP_PADDING_RIGHT = 15
         private var trackerSteps = 0
-        private var currentNavigationRoute : NavigationRoute? = null
+        private var currentOutdoorNavigationRoute : OutdoorNavigationRoute? = null
     }
 
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
@@ -142,13 +145,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         SearchFragment.onSearchResultClickListener = this
         MyPlacesFragment.onFavoriteClickListener = this
         ExploreCategoryFragment.onExplorePlaceClickListener = this
+        FloorFragment.OnFloorFragmentBackClicked = this
 
         createLocationRequest()
         initBottomSheetBehavior()
         initSearchBar()
         handleCampusSwitch()
-        observeNavigation()
-        setNavigationButtons()
         preferenceOff.clear()
         checkSettingOptions()
     }
@@ -169,8 +171,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Add custom style to map
         try {
             val success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            context, R.raw.map_style))
+                MapStyleOptions.loadRawResourceStyle(
+                    context, R.raw.map_style))
             if (!success) {
                 Log.e("MapStyle", "Style parsing failed.")
             }
@@ -188,11 +190,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             dismissBottomSheet()
         }
 
+        if (currentOutdoorNavigationRoute != null) drawPathPolyline(currentOutdoorNavigationRoute!!.polyLinePath)
+
         attachBuildingObservers()
+        observeNavigation()
+        setNavigationButtons()
         attach(mapModel)
-        if (currentNavigationRoute != null) drawPathPolyline(currentNavigationRoute!!.polyLinePath)
     }
 
+
+    /**
+     * Handle coming coming back to the map fragment from the floor fragment.
+     * This method pops the stack back to the map fragment and resets the current navigation path
+     */
+    override fun onFloorFragmentBackClicked(){
+        findNavController().popBackStack(R.id.map_fragment, false)
+        currentOutdoorNavigationRoute = null
+    }
+
+    /**
+     * Attaches all Concordia's buildings that have initial markers to the map so that they are
+     * observing the changes in the map zoom level.
+     */
     private fun attachBuildingObservers(){
         // Attach all observer buildings with initial markers
         for (building in viewModel.getBuildings()) {
@@ -202,6 +221,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Detaches all Concordia's buildings that were observing the map from the observer list.
+     */
     private fun detachBuildingObservers(){
         // Detach all observer buildings with initial markers
         for (building in viewModel.getBuildings()) {
@@ -211,40 +233,95 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Allows the map to observe the navigation route using the viewModel.
+     * Different actions are taken depending on the observed navigation route. The handled cases
+     * are related to whether the outdoor and indoor navigation routes have been initialized.
+     */
     private fun observeNavigation() {
         viewModel.getNavigationRoute().observe(viewLifecycleOwner, Observer {
             // The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
             // Remove the condition check to keep the path drawn on the screen even after changing activities
             // If the condition is removed though, camera movement must be handled properly not to override other movement
-            if ( it != null && it != currentNavigationRoute) {
-                currentNavigationRoute = it
-                drawPathPolyline(it.polyLinePath)
-                showInstructions(it.instructions, it.instructionsCoordinates)
-                Handler().postDelayed({
-                    moveTo(it.origin!!.getLocation(), 19.0f)
-                }, 100)
+            if ( it != null && it != currentOutdoorNavigationRoute ) {
+                if (it is OutdoorNavigationRoute) {
+                    requireActivity().onBackPressedDispatcher.addCallback(this) {
+                        viewModel.navigationRepository?.stepBack()
+                    }
+                    currentOutdoorNavigationRoute = it
+                    drawPathPolyline(it.polyLinePath)
+                    showInstructions(it.instructions, it.instructionsCoordinates)
+                    Handler().postDelayed({
+                        moveTo(it.origin!!.getLocation(), 19.0f)
+                    }, 100)
+                } else {
+                    findNavController().navigate(R.id.floor_fragment)
+                }
+            } else if (it == null) {
+                cancelNavigation()
+                requireActivity().onBackPressedDispatcher.addCallback{
+                    requireActivity().finishAffinity()
+                }
             }
         })
         trackerSteps = 0
+
+        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
+
+        // The done button ("I've arrived") will initially be hidden
+        doneButton.visibility = View.GONE
+
     }
 
+    /**
+     * This function sets the navigation button on the instruction sheet that appears when there is
+     * an outdoor navigation. It will also toggle the instruction view depending on whether the
+     * current outdoor navigation is set to null.
+     */
     private fun setNavigationButtons() {
-        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonMinimizeInstructions)
-        buttonCloseInstructions.setOnClickListener{
+        val buttonMinimizeInstructions : ImageButton = requireActivity().findViewById(R.id.buttonMinimizeInstructions)
+        buttonMinimizeInstructions.setOnClickListener{
             toggleInstructionsView(false)
         }
+
         val buttonResumeNavigation : Button = requireActivity().findViewById(R.id.buttonResumeNavigation)
         buttonResumeNavigation.setOnClickListener{
             dismissBottomSheet()
             toggleInstructionsView(true)
         }
 
-        if(currentNavigationRoute != null) {
-            showInstructions(currentNavigationRoute!!.instructions, currentNavigationRoute!!.instructionsCoordinates)
-            toggleInstructionsView(false)
+        // The close button in the instruction sheet
+        val buttonCloseInstructions : ImageButton = requireActivity().findViewById(R.id.buttonCloseInstructions)
+        buttonCloseInstructions.setOnClickListener{
+            cancelNavigation()
+            viewModel.navigationRepository.cancelNavigation()
+        }
+
+        if(currentOutdoorNavigationRoute != null) {
+            showInstructions(currentOutdoorNavigationRoute!!.instructions, currentOutdoorNavigationRoute!!.instructionsCoordinates)
+            toggleInstructionsView(true)
         }
     }
 
+    /**
+     * This will cancel the current navigation by clearing the current drawn path, resetting the
+     * current outdoor navigation route and hiding the instruction sheet.
+     */
+    private fun cancelNavigation() {
+        clearNavigationPath()
+        currentOutdoorNavigationRoute = null
+        toggleInstructionsView(false)
+
+        // When the close button is clicked, we make the campus toggle button visible again
+        // We also add a listener to handle the campus switching
+        toggleButton.visibility = View.VISIBLE
+        handleCampusSwitch()
+    }
+
+    /**
+     * Creates a request for the location. This method will first set up a location request and then
+     * send it and handle the returned value. The location request is an API call to Google services
+     */
     private fun createLocationRequest() {
         // 1 create an instance of LocationRequest, add it to an instance of LocationSettingsRequest.Builder and retrieve and handle any changes to be made based on the current state of the user’s location settings.
         locationRequest = LocationRequest()
@@ -285,7 +362,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    //get real time updates of current location
+    /**
+     * Get real time updates of current location.
+     */
     private fun startLocationUpdates() {
         //requests for location updates.
         fusedLocationClient.requestLocationUpdates(
@@ -295,7 +374,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         )
     }
 
-    // 1 Override AppCompatActivity’s onActivityResult() method and start the update request if it has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
+    /**
+     *  Override AppCompatActivity’s onActivityResult() method and start the update request if it
+     *  has a RESULT_OK result for a REQUEST_CHECK_SETTINGS request.
+     *
+     *  @param requestCode checks if the user has allowed access to current location
+     *  @param resultCode checks the result of the request check
+     */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CHECK_SETTINGS) {
             if (resultCode == RESULT_OK) {
@@ -305,14 +390,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    // 2 Override onPause() to stop location update request
+    /**
+     * Override onPause() to stop location update request
+     */
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
         dismissBottomSheet()
     }
 
-    // 3 Override onResume() to restart the location update request.
+    /**
+     * Override onResume() to restart the location update request.
+     */
     override fun onResume() {
         super.onResume()
         if (!locationUpdateState) {
@@ -320,13 +409,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Override onDestroy() to detach all of concordia's buildings from the observer list of the map.
+     * It will then detach the mapModel from the observers.
+     */
     override fun onDestroy(){
         super.onDestroy()
         detachBuildingObservers()
         detach(mapModel)
     }
 
-    //implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+    /**
+     * Implements methods of interface GoogleMap.GoogleMap.OnPolygonClickListener
+     * This will be used to listen to the clicks on the polygons that are set for the map. Each of
+     * the drawn buildings on the map is represented by a polygon!
+     *
+     * @param p Is the building polygon that was clicked
+     */
     override fun onPolygonClick(p: Polygon) {
         val selectedBuilding : Building = viewModel.findBuildingByPolygonTag(p.tag.toString())
             ?: return
@@ -334,7 +433,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         handleBuildingClick(selectedBuilding)
     }
 
-    //implements methods of interface   GoogleMap.OnMarkerClickListener
+
+    /**
+     * implements methods of interface GoogleMap.OnMarkerClickListener
+     * This will be used to listen to the clicks on the markers  that are set for the map. Some of
+     * the drawn buildings on the map have a corresponding markers. We can handle the building click
+     * by behaviour by listening to clicks on the buildings markers.
+     *
+     * @param marker Is the building marker that was clicked
+     */
     override fun onMarkerClick(marker: Marker?): Boolean {
         val selectedBuilding: Building? = viewModel.findBuildingByMarkerTitle(marker)
         //There is a building associated with the marker that was clicked
@@ -345,6 +452,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return false
     }
 
+    /**
+     * Handles the map behaviour when a click on one of the drawn buildings is detected.
+     * This will expand the bottom sheet that is populated by the building information.
+     * This will also initialize the buttons that appear on the buildings info sheet and set up
+     * their on click listeners.
+     *
+     * @param building Is the building object that was clicked
+     */
     private fun handleBuildingClick(building: Building) {
         expandBottomSheet()
         updateAdditionalInfoBottomSheet(building.getPolygon())
@@ -356,9 +471,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             bundle.putParcelable("destBuilding", building)
             findNavController().navigate(R.id.search_fragment, bundle)
         }
+
+        val indoorMapsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_floor_map_button)
+        indoorMapsButton.setOnClickListener {
+            if (building.getIndoorInfo().second.isEmpty()) {
+                Toast.makeText(
+                    context,
+                    "This building doesn't have a floor map",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                val bundle: Bundle = Bundle()
+                bundle.putParcelable("building", building)
+                findNavController().navigate(R.id.floor_fragment, bundle)
+            }
+        }
     }
 
-    //Handle the switching views between the two campuses. Should probably move from here later
+    /**
+     * Handle the switching views between the two campuses.
+     * This method will move the focus of the map camera to the designated lat and lang coordiantes
+     * of each of concordia's campuses upon a click on the toggle button.
+     */
     private fun handleCampusSwitch() {
         var campusView: LatLng
 
@@ -375,41 +509,65 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Shows the outdoor navigation route instructions.
+     * This method will handle the displaying of the instruction sheet, and setting and initializing
+     * the list of instructions for the navigation route. It will also handle the buttons for clicking
+     * on the next and previous buttons on the instructions. This will also move the camera at each
+     * instruction to allow the user to dynamically navigate on the map.
+     *
+     * @param instructions is a list of instructions for the navigation route
+     * @param instructionsCoordinates is the coordinates the corresponds for each of the instructions
+     * in the instructions list. Its used to move the camera focus to the coordinates of the instruction.
+     */
     private fun showInstructions(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>){
         toggleButton.visibility = View.GONE
         toggleInstructionsView(true)
         arrayInstruction.text = Html.fromHtml(instructions[0]).toString()
+        val doneButton: Button = requireActivity().findViewById(R.id.doneButtonMap)
+        if (viewModel.navigationRepository.isLastStep()) {
+            doneButtonMap.text = "Finish!"
+            doneButton.setOnClickListener {
+                viewModel.navigationRepository.cancelNavigation()
+            }
+        } else {
+            doneButtonMap.text = "Take me inside!"
+            doneButton.setOnClickListener {
+                viewModel.navigationRepository.consumeNavigationHandler()
+            }
+        }
 
         nextArrow.setOnClickListener{
             prevArrow.visibility = View.VISIBLE
             trackerSteps++
             arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
-                if (trackerSteps < instructions.size -1) {
-                    val bearingValue = getBearing(
-                        instructionsCoordinates[trackerSteps].latitude,
-                        instructionsCoordinates[trackerSteps].longitude,
-                        instructionsCoordinates[trackerSteps+1].latitude,
-                        instructionsCoordinates[trackerSteps+1].longitude
-                    )
-                    if (!bearingValue.isNaN()) {
-                        val cameraPosition: CameraPosition = CameraPosition.Builder().target(
-                                LatLng(
-                                    instructionsCoordinates[trackerSteps].latitude,
-                                    instructionsCoordinates[trackerSteps].longitude)
-                            ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
-                        map!!.animateCamera(
-                            CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
-                    }
+            if (trackerSteps < instructions.size -1) {
+                val bearingValue = getBearing(
+                    instructionsCoordinates[trackerSteps].latitude,
+                    instructionsCoordinates[trackerSteps].longitude,
+                    instructionsCoordinates[trackerSteps+1].latitude,
+                    instructionsCoordinates[trackerSteps+1].longitude
+                )
+                if (!bearingValue.isNaN()) {
+                    val cameraPosition: CameraPosition = CameraPosition.Builder().target(
+                        LatLng(
+                            instructionsCoordinates[trackerSteps].latitude,
+                            instructionsCoordinates[trackerSteps].longitude)
+                    ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
+                    map!!.animateCamera(
+                        CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
                 }
-           else if (trackerSteps == instructions.size-1) {
+            } else if (trackerSteps == instructions.size - 1) {
                 nextArrow.visibility = View.INVISIBLE
-                moveTo(instructionsCoordinates[instructions.size-1], 20.0F)
+                doneButtonMap.visibility = View.VISIBLE
+                moveTo(instructionsCoordinates[instructions.size - 1], 20.0F)
             }
         }
         prevArrow.setOnClickListener{
             nextArrow.visibility = View.VISIBLE
-                trackerSteps--
-                arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
+            doneButtonMap.visibility = View.GONE
+            trackerSteps--
+            arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
             if (trackerSteps != 0) {
                 if (trackerSteps < instructions.size -1) {
                     val bearingValue = getBearing(
@@ -436,6 +594,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
+    /**
+     * Used to routate the camera on the map depending on where the user is looking at.
+     * It will allow the camera to return back the default setting of pointing North.
+     *
+     * @param startLat Latitude coordinate for the start point
+     * @param startLong Longitude coordinate for the start point
+     * @param endLat Latitude coordinate for the end point
+     * @param endLong Longitude coordinate for the end point
+     */
     private fun getBearing(startLat: Double, startLong: Double, endLat: Double, endLong: Double): Float {
         val lat = abs(startLat - endLat)
         val lng = abs(startLong - endLong)
@@ -452,31 +619,46 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return (-1).toFloat()
     }
 
+    /**
+     * Toggles the instruction sheet for the outdoor navigation instructions on and off.
+     * This will check if the instruction sheet if visible and hide it in that case. If the
+     * instruction sheet, a resume navigation button is displayed.
+     *
+     * @param isVisible checks if the instruction sheet is currently visible
+     */
     private fun toggleInstructionsView(isVisible: Boolean){
         val instructionsView : CardView = requireActivity().findViewById(R.id.instructionLayout)
         if(isVisible){
+            togglePlaceCard(false)
             instructionsView.visibility = View.VISIBLE
             buttonResumeNavigation.visibility = View.INVISIBLE
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, instructionsView.height+20)
         }
         else{
             instructionsView.visibility = View.INVISIBLE
+
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, 0)
-            if(currentNavigationRoute != null)
+            if(currentOutdoorNavigationRoute != null)
                 buttonResumeNavigation.visibility = View.VISIBLE
         }
     }
 
+    /**
+     * This method will draw the polylines for the outdoor navigation route on the map.
+     *
+     * @param path A list of LatLang coordinates that ccorrespondto the outdoor navigation route's
+     * polyline positions on the map.
+     */
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
-      clearNavigationPath()  //Clear existing path to show only one path at a time
+        clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
-         val polyline= map!!.addPolyline(context?.let { ContextCompat.getColor(it, R.color.colorPrimaryDark) }?.let {
-             PolylineOptions().addAll(path[i]).width(10F).color(it)
-         })
+            val polyline= map!!.addPolyline(context?.let { ContextCompat.getColor(it, R.color.colorPrimaryDark) }?.let {
+                PolylineOptions().addAll(path[i]).width(10F).color(it)
+            })
             currentNavigationPath.add(polyline)
         }
     }
-
+    
     private fun clearNavigationPath() {
         for ( polyline in currentNavigationPath){
             polyline.remove()
@@ -495,11 +677,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
             override fun onSearchStateChanged(enabled: Boolean) {
-                  if (enabled) {
-                      dismissBottomSheet()
-                      findNavController().navigate(R.id.search_fragment)
-                      mapFragSearchBar.closeSearch()
-                  }
+                if (enabled) {
+                    dismissBottomSheet()
+                    findNavController().navigate(R.id.search_fragment)
+                    mapFragSearchBar.closeSearch()
+                }
             }
             override fun onSearchConfirmed(text: CharSequence?) {
             }
@@ -514,19 +696,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-           }
+            }
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
                 map!!.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, (slideOffset * root.findViewById<NestedScrollView>(R.id.bottom_sheet).height).toInt())
             }
         })
-
-        val indoorMapsButton: Button = requireActivity().findViewById(R.id.bottom_sheet_floor_map_button)
-        indoorMapsButton.setOnClickListener {
-
-            findNavController().navigate(R.id.floor_fragment)
-        }
     }
 
     private fun dismissBottomSheet() {
@@ -570,35 +746,42 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         var isCampusBuilding = false
+        currentOutdoorNavigationRoute = null
+        viewModel.navigationRepository.cancelNavigation()
         if (item is GooglePlace) {
- 			findNavController().popBackStack(R.id.map_fragment, false)
+            findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch(Dispatchers.Main) {
                 for (building in viewModel.getBuildings())
                     if (building.getPlaceId() == item.placeID) { //Check if location is a concordia building
                         isCampusBuilding = true
                         handleBuildingClick(building)
                     }
-              focusLocation(item, isCampusBuilding, true)
-            }        
+                focusLocation(item, isCampusBuilding, true)
+            }
         } else if (item is IndoorLocation) {
             val bundle: Bundle = Bundle()
-            bundle.putString("id", (item as IndoorLocation).lID)
+            bundle.putString("id", item.lID)
+            val buildingInitial = item.name.split('-')[0]
+            bundle.putString("floornum", item.floorNum)
+            bundle.putString("floormap", item.floorMap)
+            val building = viewModel.findBuildingByInitial(buildingInitial)
+            bundle.putParcelable("building", building)
             findNavController().navigate(R.id.floor_fragment, bundle)
         }
     }
 
     private fun focusLocation(location: GooglePlace, isCampusBuilding : Boolean, isRequired : Boolean){
-       GlobalScope.launch {
-           if(isRequired) {
-               viewModel.navigationRepository.fetchPlace(location)
-           }
-       }.invokeOnCompletion {
-           requireActivity().runOnUiThread{
-               moveTo(location.coordinate, 17.0f)
-               if (!isCampusBuilding)
-               populatePlaceInfoCard(location)
-           }
-       }
+        GlobalScope.launch {
+            if(isRequired) {
+                viewModel.navigationRepository.fetchPlace(location)
+            }
+        }.invokeOnCompletion {
+            requireActivity().runOnUiThread{
+                moveTo(location.coordinate, 17.0f)
+                if (!isCampusBuilding)
+                    populatePlaceInfoCard(location)
+            }
+        }
     }
 
     private fun moveTo(coordinates: LatLng, zoomLevel: Float) {
@@ -623,6 +806,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val placeName: TextView = requireActivity().findViewById(R.id.place_card_name)
         val placeCategory: TextView = requireActivity().findViewById(R.id.place_card_category)
         val closeButton : ImageView = requireActivity().findViewById(R.id.place_card_close_button)
+        toggleInstructionsView(false)
 
         placeName.text = location.name
         placeCategory.text = location.category
@@ -713,7 +897,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 item.address ?: "",
                 LatLng(item.latitude, item.longitude)
             )
-
             findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch {
                 viewModel.navigationRepository.fetchPlace(googlePlace)
@@ -728,7 +911,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onExplorePlaceClick(item: Explore_Place?) {
         findNavController().popBackStack(R.id.map_fragment, false)
-
         val exploreLocation = GooglePlace(
             item?.place_placeID!!,
             item.place_name!!,
@@ -736,8 +918,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             item.place_coordinate
         )
         Handler().postDelayed({
-            focusLocation(exploreLocation, isCampusBuilding = false, isRequired = true)
-        }, 1000)
+            focusLocation(exploreLocation, false, true)
+        }, 500)
     }
 
     private fun checkSettingOptions() {
@@ -771,6 +953,3 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 }
-
-
-

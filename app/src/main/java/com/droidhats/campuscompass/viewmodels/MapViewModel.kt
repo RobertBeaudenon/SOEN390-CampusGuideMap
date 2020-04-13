@@ -5,10 +5,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.droidhats.campuscompass.MainActivity
-import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.Campus
-import com.droidhats.campuscompass.models.Map
+import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.NavigationRoute
+import com.droidhats.campuscompass.models.Map
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.droidhats.campuscompass.roomdb.FavoritesDatabase
@@ -114,6 +114,21 @@ class  MapViewModel(application: Application) : AndroidViewModel(application) {
             if (marker != null && building.name == marker.title) {
                     selectedBuilding = building
             }
+        }
+        return selectedBuilding
+    }
+
+    /**
+     * Searches and returns the building object that matches the initial
+     */
+    fun findBuildingByInitial(initial: String): Building?
+    {
+        var selectedBuilding : Building? = null
+
+        //Iterate through all buildings in both campuses until the initial matches the building initial
+        for (building in this.buildings) {
+            if (initial == building.getIndoorInfo().first)
+                selectedBuilding = building
         }
         return selectedBuilding
     }

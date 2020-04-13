@@ -6,7 +6,7 @@ import org.junit.Assert
 class TestSVGClasses {
 
     @Test
-    fun TestRect() {
+    fun testRect() {
         val testRect = Rect("id", 0.0, 0.0, 20.0, 20.0, "style")
 
         Assert.assertEquals("id", testRect.getID())
@@ -27,7 +27,7 @@ class TestSVGClasses {
     }
 
     @Test
-    fun TestPath() {
+    fun testPath() {
         val testPath = Path("id", "m 0,0 20,0 0,20 -20,0 Z", "", "style", true)
 
         Assert.assertEquals(testPath.vertices[0], Pair(0.0, 0.0))
@@ -79,7 +79,7 @@ class TestSVGClasses {
     }
 
     @Test
-    fun TestCircle() {
+    fun testCircle() {
         val testCircle = Circle(0.0, 0.0, 5.0)
 
         Assert.assertNotNull(testCircle.getID())
@@ -90,10 +90,8 @@ class TestSVGClasses {
         Assert.assertEquals(testGetPoint.cy, 5.0, 0.1)
         Assert.assertEquals(testGetPoint.r, 5.0, 0.1)
 
-        Assert.assertFalse(testCircle.isWithin(0.0, 0.0))
+        Assert.assertFalse(testCircle.isWithin(0.0, 0.0, 1.0))
 
-        Assert.assertEquals(testCircle.getWidth(), Pair(0.0, 0.0))
-        Assert.assertEquals(testCircle.getHeight(), Pair(0.0, 0.0))
         Assert.assertEquals(testGetPoint.getCenter(), Pair(5.0, 5.0))
         Assert.assertFalse(testCircle.equals(testGetPoint))
         Assert.assertTrue(testCircle.equals(Circle(0.0, 0.0, 0.0)))

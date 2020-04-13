@@ -68,6 +68,9 @@ class DirectionsTest {
 
     @Test
     fun testDirectionsButton() {
+
+        Thread.sleep(1000) //allow NavigationFragment to load
+
         val device = UiDevice.getInstance(getInstrumentation())
 
         //Click Hall building marker to trigger bottom sheet
@@ -77,7 +80,7 @@ class DirectionsTest {
         val bottomSheet = device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet"))
 
         //Expand bottom sheet
-        bottomSheet.swipe(Direction.UP, 1.0f)
+        //bottomSheet.swipe(Direction.UP, 1.0f)
 
         //Click directions button
         device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet_directions_button"))
@@ -113,10 +116,16 @@ class DirectionsTest {
         //Press previous arrow for coverage
         device.findObject(By.res("com.droidhats.campuscompass:id/nextArrow"))
             .click()
+
+        //Click close instructions button button
+        device.findObject(By.res("com.droidhats.campuscompass:id/buttonCloseInstructions"))
+            .click()
     }
 
     @Test
     fun testDirectionsButtonByWalkingMode() {
+        Thread.sleep(1000) //allow NavigationFragment to load
+
         val device = UiDevice.getInstance(getInstrumentation())
 
         //Click Hall building marker to trigger bottom sheet
@@ -150,10 +159,15 @@ class DirectionsTest {
         do {
             nextArrow.perform(ViewActions.click())
         } while (nextArrowIsDisplayed())
+
+        //Click close instructions button button
+        device.findObject(By.res("com.droidhats.campuscompass:id/buttonCloseInstructions"))
+            .click()
     }
 
     @Test
     fun testDirectionsButtonByTransitMode() {
+        Thread.sleep(1000) //allow NavigationFragment to load
 
         val device = UiDevice.getInstance(getInstrumentation())
 
@@ -187,6 +201,10 @@ class DirectionsTest {
         do {
             nextArrow.perform(ViewActions.click())
         } while (nextArrowIsDisplayed())
+
+        //Click close instructions button button
+        device.findObject(By.res("com.droidhats.campuscompass:id/buttonCloseInstructions"))
+            .click()
 
     }
 

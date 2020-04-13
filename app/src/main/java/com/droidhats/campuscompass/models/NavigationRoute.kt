@@ -2,15 +2,15 @@ package com.droidhats.campuscompass.models
 
 import com.google.android.gms.maps.model.LatLng
 
-class NavigationRoute(
-    var origin: Location?,
-    var destination: Location?,
-    var transportationMode: String?,
+open class NavigationRoute(open var origin: Location?, open var destination: Location?)
+
+class OutdoorNavigationRoute(
+    override var origin: Location?,
+    override var destination: Location?,
     var polyLinePath: MutableList<List<LatLng>>,
     var instructions: ArrayList<String>,
     var instructionsCoordinates: ArrayList<LatLng>
-) {
-    var routeTime: String? = null
+) : NavigationRoute(origin, destination) {
     enum class TransportationMethods(val string: String) {
         WALKING("walking"),
         DRIVING("driving"),

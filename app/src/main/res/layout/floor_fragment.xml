@@ -12,17 +12,17 @@
     <ImageView
         android:id="@+id/floormap2"
         android:layout_width="412dp"
-        android:layout_height="444dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="166dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.422" />
 
     <com.otaliastudios.zoom.ZoomImageView
         android:id="@+id/floormap"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:scrollbars="vertical|horizontal"
         app:alignment="center"
@@ -30,7 +30,11 @@
         app:flingEnabled="true"
         app:horizontalPanEnabled="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:maxZoom="2.5"
         app:maxZoomType="zoom"
         app:minZoom="0.7"
@@ -45,10 +49,132 @@
         app:transformationGravity="auto"
         app:twoFingersScrollEnabled="true"
         app:verticalPanEnabled="true"
-        app:zoomEnabled="true"
-        tools:layout_editor_absoluteX="-3dp">
+        app:zoomEnabled="true">
 
     </com.otaliastudios.zoom.ZoomImageView>
-    <include layout="@layout/search_bar_layout"/>
+
+    <ProgressBar
+        android:id="@+id/progressFloor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/include2"
+        layout="@layout/search_bar_layout" />
+
+    <LinearLayout
+    android:id="@+id/floorPickerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:background="#DCDCDC"
+    android:gravity="bottom"
+    android:orientation="horizontal"
+    android:visibility="gone"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toTopOf="@+id/floormap2"
+    app:layout_constraintVertical_bias="1.0"
+    tools:layout_editor_absoluteX="0dp" >
+
+    <TextView
+        android:id="@+id/text_floor"
+        android:layout_width="170dp"
+        android:layout_height="match_parent"
+        android:background="#DCDCDC"
+        android:gravity="center"
+        android:paddingLeft="80dp"
+        android:text="Floor"
+        android:textColor="#070707"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <NumberPicker
+        android:id="@+id/floorPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:showDividers="middle"
+        android:textAlignment="center"
+        android:descendantFocusability="blocksDescendants" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/indoorInstructionsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:background="#DCDCDC"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/floormap2"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="0dp">
+
+        <ImageView
+            android:id="@+id/prevArrowFloor"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:rotation="180"
+            android:src="@drawable/arrow_button"
+            android:tint="@color/colorPrimaryDark"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/instructions_text"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:background="#DCDCDC"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text=""
+            android:textColor="#070707"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/doneButtonFloor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/button_color"
+            android:baselineAligned="false"
+            android:paddingStart="15dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="5dp"
+            android:text="I've arrived!"
+            android:textAllCaps="false"
+            android:textColor="@color/quantum_white_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/nextArrowFloor"
+            android:layout_width="35dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/arrow_button"
+            android:tint="@color/colorPrimaryDark"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

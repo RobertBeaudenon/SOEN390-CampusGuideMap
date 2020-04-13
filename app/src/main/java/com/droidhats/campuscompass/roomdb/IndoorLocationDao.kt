@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass.repositories
+package com.droidhats.campuscompass.roomdb
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

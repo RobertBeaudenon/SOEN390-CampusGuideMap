@@ -7,14 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.SplashViewModel
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
  * This class has the objective of displaying an introductory view to the user while initializing components of the application.
@@ -70,14 +68,13 @@ class SplashFragment : Fragment() {
      * Performs the navigation to the MapFragment after a 2 second delay and unlocks the side menu for use
      */
     fun navigateToMapFragment() {
-        GlobalScope.launch {
-            delay(2000)
-            requireActivity().runOnUiThread{
+        splashViewModel.initCode.observe(viewLifecycleOwner, Observer {
+            if (it) {
                 findNavController().navigate(R.id.action_splashFragment_to_mapsActivity)
+                //UnLock drawer
+                val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             }
-        }
-        //Unlock drawer
-        val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
-        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        })
     }
 }

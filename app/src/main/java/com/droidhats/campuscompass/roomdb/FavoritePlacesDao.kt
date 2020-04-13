@@ -1,4 +1,4 @@
-package com.droidhats.campuscompass.repositories
+package com.droidhats.campuscompass.roomdb
 
 import androidx.room.Dao
 import androidx.room.Delete

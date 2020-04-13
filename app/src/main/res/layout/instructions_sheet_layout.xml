@@ -91,6 +91,24 @@
                 android:src="@drawable/arrow_button"
                 android:tint="@color/colorPrimaryDark" />
 
+            <Button
+                android:id="@+id/doneButtonMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:adjustViewBounds="true"
+                android:maxWidth="60dp"
+                android:maxHeight="60dp"
+                android:background="@drawable/button_color"
+                android:paddingStart="15dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="5dp"
+                android:text="Finish!"
+                android:textAllCaps="false"
+                android:textColor="@color/quantum_white_text"
+                android:visibility="invisible"/>
+
         </RelativeLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

@@ -14,7 +14,6 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.repositories.IndoorLocationRepository
-import com.droidhats.campuscompass.repositories.IndoorNavigationRepository
 import com.droidhats.campuscompass.repositories.MapRepository
 import com.droidhats.campuscompass.repositories.NavigationRepository
 import com.droidhats.campuscompass.roomdb.IndoorLocationDatabase
@@ -141,9 +140,6 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun setIndoorDirections(startAndEnd: Pair<String, String>) {
-        IndoorNavigationRepository.getInstance().setStartAndEnd(startAndEnd)
-    }
 
     /**
      * Method to find the closest Concordia shuttle bus stop from a given coordinate
