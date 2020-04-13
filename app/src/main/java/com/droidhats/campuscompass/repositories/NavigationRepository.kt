@@ -29,7 +29,7 @@ import com.google.maps.android.PolyUtil
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlin.collections.ArrayList
-import java.util.*
+import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import com.droidhats.campuscompass.R
@@ -46,8 +46,7 @@ class NavigationRepository(private val application: Application) {
     private var sgwShuttleTimes: LiveData<List<ShuttleBusSGWEntity>>
     private var navigationRoute = MutableLiveData<NavigationRoute>()
     var routeTimes = MutableLiveData<MutableMap<String, String>>()
-    var navhandler: NavHandler? = null
-
+    var navHandler: NavHandler? = null
 
     companion object {
         // Singleton instantiation
@@ -97,36 +96,36 @@ class NavigationRepository(private val application: Application) {
     fun setNavigationHandler(navHandler: NavHandler?) {
         if (navHandler == null) navigationRoute.value = null
         navHandler?.getNavigationRoute()
-        this.navhandler = navHandler
+        this.navHandler = navHandler
     }
 
     fun consumeNavigationHandler(): NavHandler? {
-        setNavigationHandler(navhandler?.next)
-        return navhandler
+        setNavigationHandler(navHandler?.next)
+        return navHandler
     }
 
     fun cancelNavigation() {
-        navhandler = null
+        navHandler = null
         navigationRoute.value = null
     }
 
     fun stepBack() {
-        if (navhandler?.prev != null) {
-            setNavigationHandler(navhandler!!.prev!!)
+        if (navHandler?.prev != null) {
+            setNavigationHandler(navHandler!!.prev!!)
         }
     }
 
     fun getPrev(): NavHandler? {
-        return navhandler?.prev
+        return navHandler?.prev
     }
 
     fun isLastStep(): Boolean {
-        if (navhandler is OutdoorNavStep) {
-            return navhandler?.next is OutdoorNavStep && navhandler?.next?.next == null
+        return if (navHandler is OutdoorNavStep) {
+            navHandler?.next is OutdoorNavStep && navHandler?.next?.next == null
         } else {
-            println("navhandler: $navhandler")
-            println("next: ${navhandler?.next}")
-            return navhandler?.next !is OutdoorNavStep
+            println("navhandler: $navHandler")
+            println("next: ${navHandler?.next}")
+            navHandler?.next !is OutdoorNavStep
         }
     }
 
@@ -294,7 +293,7 @@ class NavigationRepository(private val application: Application) {
                 }
             }
         }
-        return OutdoorNavigationRoute(origin, destination, mode, path, instructions, intCoordinates)
+        return OutdoorNavigationRoute(origin, destination, path, instructions, intCoordinates)
     }
 
     private fun parseInstructions(jsonObject: JSONObject, transportationMethod: String): String {

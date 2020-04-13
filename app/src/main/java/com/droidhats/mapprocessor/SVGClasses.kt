@@ -1,5 +1,7 @@
 package com.droidhats.mapprocessor
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.lang.Double.max
 import java.lang.Double.min
 import java.util.Random
@@ -69,15 +71,15 @@ class Rect (val id: String, val x: Double, val y: Double, val height: Double, va
     }
 
     override fun getWidth(): Pair<Double, Double> {
-        return Pair<Double,Double> (x, x + width)
+        return Pair(x, x + width)
     }
 
     override fun getHeight(): Pair<Double, Double> {
-        return Pair<Double,Double> (y, y + height)
+        return Pair(y, y + height)
     }
 
     override fun getCenter(): Pair<Double, Double> {
-        return Pair<Double, Double> (x + width/2, y + height/2)
+        return Pair(x + width/2, y + height/2)
     }
 
 }
@@ -100,7 +102,7 @@ class Path(val id: String, val d: String, var transform: String, var style: Stri
         if (d.isNotEmpty() && isClosed) {
             // Parsing path
             val anArray = d.substring(2, d.length - 2).split(" ")
-            var prevVertex = Pair<Double, Double>(0.0, 0.0)
+            var prevVertex = Pair(0.0, 0.0)
             var c = 0 // if there is a c variable, this will count the number of skips
             var diffMode = true
             if (d[0] == 'M') diffMode = false
@@ -126,14 +128,14 @@ class Path(val id: String, val d: String, var transform: String, var style: Stri
                     continue
                 }
                 val element = it.split(",")
-                if (diffMode) {
-                    val vert = Pair<Double, Double>(element[0].toDouble() + prevVertex.first, element[1].toDouble() + prevVertex.second)
+                prevVertex = if (diffMode) {
+                    val vert = Pair(element[0].toDouble() + prevVertex.first, element[1].toDouble() + prevVertex.second)
                     vertices.add(vert)
-                    prevVertex = vert
+                    vert
                 } else {
-                    val vert = Pair<Double, Double>(element[0].toDouble(), element[1].toDouble())
+                    val vert = Pair(element[0].toDouble(), element[1].toDouble())
                     vertices.add(vert)
-                    prevVertex = vert
+                    vert
                 }
             }
 
@@ -209,6 +211,7 @@ class Path(val id: String, val d: String, var transform: String, var style: Stri
         return "<path id=\"$id\" d=\"$d\" style=\"$style\" transform=\"$transform\"/>"
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun isWithin(x: Double, y: Double): Boolean {
         var intersections = 0
         for (it in 0 until vertices.size - 1) {
@@ -230,20 +233,20 @@ class Path(val id: String, val d: String, var transform: String, var style: Stri
     }
 
     override fun getWidth(): Pair<Double, Double> {
-        return Pair<Double,Double> (xMin, xMax)
+        return Pair(xMin, xMax)
     }
 
     override fun getHeight(): Pair<Double, Double> {
-        return Pair<Double,Double> (yMin,yMax)
+        return Pair(yMin,yMax)
     }
 
     override fun getCenter(): Pair<Double, Double> {
         return theCenter
     }
 
-    fun findCenter(): Pair<Double, Double> {
-        var xSum: Double = 0.0
-        var ySum: Double = 0.0
+    private fun findCenter(): Pair<Double, Double> {
+        var xSum = 0.0
+        var ySum = 0.0
         for (vertex in vertices) {
             xSum += vertex.first
             ySum += vertex.second
@@ -306,13 +309,11 @@ class Circle(val cx: Double, val cy: Double, val r: Double) : MapElement() {
     }
 
     override fun getCenter(): Pair<Double, Double> {
-        return Pair<Double, Double>(cx, cy)
+        return Pair(cx, cy)
     }
 
     fun isWithin(x: Double, y: Double, range: Double): Boolean {
-        //val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
-
-        return (cx.roundToInt() == x.roundToInt() && abs(y - cy) < range) || (cy.roundToInt() == y.roundToInt() && abs(cx - x) < range)//distance < range
+        return (cx.roundToInt() == x.roundToInt() && abs(y - cy) < range) || (cy.roundToInt() == y.roundToInt() && abs(cx - x) < range) //distance < range
     }
     fun isWithinRange(x: Double, y: Double, range: Double): Boolean {
         val distance: Double = sqrt(abs(cx - x).pow(2.0) + abs(cy - y).pow(2.0))
@@ -328,7 +329,6 @@ class Circle(val cx: Double, val cy: Double, val r: Double) : MapElement() {
     fun equals(circle: Circle): Boolean {
         return cx == circle.cx && cy == circle.cy
     }
-
 }
 
 /**

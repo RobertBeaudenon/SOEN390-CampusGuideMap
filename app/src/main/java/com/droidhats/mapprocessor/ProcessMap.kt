@@ -5,7 +5,6 @@ import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-
 /**
  * Class ProcessMap is where all the parsing of the svg formatted map, and interacts with the other
  * components to generate a path on the map
@@ -13,14 +12,17 @@ import kotlin.math.sqrt
 class ProcessMap {
     // list of classrooms
     private var classes: MutableList<ClassRoom> = mutableListOf()
+
     fun getClasses() = classes
 
     // list of indoor transportation modes
     private val indoorTransportations: MutableList<SVG> = mutableListOf()
+
     fun getIndoorTransportationMethods(): List<SVG> = indoorTransportations
 
     // list of all elements
     private val allElements: MutableList<MapElement> = mutableListOf()
+
     fun getAllElements(): List<MapElement> = allElements
 
     // first element in the map (holds all the other elements within its dimensions
@@ -101,11 +103,16 @@ class ProcessMap {
         }
     }
 
-    private fun collectElement(it: Int, onSvgElement: (String) -> Unit, onEachLine: (String) -> Unit, endString:String): Int {
+    private fun collectElement(
+        it: Int,
+        onSvgElement: (String) -> Unit,
+        onEachLine: (String) -> Unit,
+        endString: String
+    ): Int {
         var iterator = it
         val stringBuilder: StringBuilder = StringBuilder()
         var retrievedOne: Boolean = false
-        while(!stringArray[iterator].contains(endString)) {
+        while (!stringArray[iterator].contains(endString)) {
             stringBuilder.append(stringArray[iterator])
             onEachLine(stringArray[iterator])
             if (stringArray[iterator].contains(">") && !retrievedOne) {
@@ -125,7 +132,7 @@ class ProcessMap {
      */
     fun readSVGFromString(svgFile: String) {
         readSVG(svgFile,
-            fun (str: String) {},
+            fun(str: String) {},
             fun(rect: String) {
                 val newRect = createRect(rect)
                 classes.add(newRect)
@@ -154,14 +161,14 @@ class ProcessMap {
         var newFileStr = ""
 
         val patternText = Regex("<text")
-        val patternDocName = Regex ("docname=")
+        val patternDocName = Regex("docname=")
         val originalSVG: List<String> = svg.split("\n")
         var svgArray = mutableListOf<String>()
 
-        if(floorNumber==numBuilding){
+        if (floorNumber == numBuilding) {
             newFileStr = svg
         }
-        if(floorNumber!=numBuilding) {
+        if (floorNumber != numBuilding) {
             //Add all of the svg in the
             for (line in originalSVG) {
                 svgArray.add(line)
@@ -187,14 +194,16 @@ class ProcessMap {
                         )}"
                     newFileStr += newTextTag + "\n"
                 }
-                if(resultDocName){
+                if (resultDocName) {
                     var textArray = i.split("-")
                     var str = textArray[1].split(".")
                     var docNum = str[0]
                     var docNumRegex = Regex(numBuilding)
                     var newDocNum = docNumRegex.replaceFirst(docNum, floorNumber)
-                    var newDocTag = "${textArray.elementAt(0)}" + "-" + "$newDocNum" + "." + "${str.elementAt(
-                        1)}"
+                    var newDocTag =
+                        "${textArray.elementAt(0)}" + "-" + "$newDocNum" + "." + "${str.elementAt(
+                            1
+                        )}"
                     newFileStr += newDocTag + "\n"
                 }
             }
@@ -202,6 +211,7 @@ class ProcessMap {
 
         return newFileStr
     }
+
     /**
      * This method takes as input the svg file string and searches for an element with a matching
      * id. Once found, it will add another element right on top with a different colour to
@@ -215,8 +225,8 @@ class ProcessMap {
         val highlightedColor: String = "#bca878"
 
         readSVG(svg,
-            fun (line) {highlightedSVG.append(line).append("\n")},
-            fun (rect) {
+            fun(line) { highlightedSVG.append(line).append("\n") },
+            fun(rect) {
                 val rectangle = createRect(rect)
                 if (rectangle.getID().equals(id)) {
                     rectangle.style = "fill:$highlightedColor;fill-opacity:1;stroke:#000000;" +
@@ -225,7 +235,7 @@ class ProcessMap {
                     highlightedSVG.append(rectangle.toString()).append("\n")
                 }
             },
-            fun (path) {
+            fun(path) {
                 val thePath = createPath(path)
                 if (thePath.getID().equals(id)) {
                     thePath.style = "fill:$highlightedColor;fill-opacity:1;stroke:#000000;" +
@@ -300,9 +310,9 @@ class ProcessMap {
         var startExtractingString: Boolean = false
         var inAttrString: Boolean = false
         var value: String = ""
-        for (i in line.indices){
+        for (i in line.indices) {
 
-            if (line[i+1] == '"' && line[i] != '\\') {
+            if (line[i + 1] == '"' && line[i] != '\\') {
 
                 inString = !inString
                 if (startExtractingString) {
@@ -312,12 +322,18 @@ class ProcessMap {
                 continue
             }
 
-            if ((i + string.length) < line.length && string.equals(line.substring(i, i + string.length)) && !inString) {
+            if ((i + string.length) < line.length && string.equals(
+                    line.substring(
+                        i,
+                        i + string.length
+                    )
+                ) && !inString
+            ) {
                 startExtractingString = true
             }
 
             if (startExtractingString && inString) {
-                value += line[i+1]
+                value += line[i + 1]
             }
         }
         return value
@@ -338,7 +354,7 @@ class ProcessMap {
         val topLeft = Pair(firstElement!!.getWidth().first, firstElement!!.getHeight().first)
         val bottomRight = Pair(firstElement!!.getWidth().second, firstElement!!.getHeight().second)
         val maxDistance = getDistance(topLeft, bottomRight)
-        val scale = 150/maxDistance // seconds/unit distance
+        val scale = 150 / maxDistance // seconds/unit distance
         return (getDistance(startClass.getCenter(), endClass.getCenter()) * scale).toInt()
     }
 
@@ -361,7 +377,7 @@ class ProcessMap {
             if (aClass.getID().equals(startAndEnd.first)) {
                 startInt = x
             }
-            if(aClass.getID().equals(startAndEnd.second)) {
+            if (aClass.getID().equals(startAndEnd.second)) {
                 endInt = x
             }
 
@@ -391,7 +407,13 @@ class ProcessMap {
 
             if (it.contains("<!-- Displaying icons on the map -->")) {
                 //string.append(Dijkstra(allElements[startInt], allElements[endInt], createPaths(list)) + "\n")
-                string.append(A_Star(allElements[startInt], allElements[endInt], createPaths(list, allElements[endInt])) + "\n")
+                string.append(
+                    A_Star(
+                        allElements[startInt],
+                        allElements[endInt],
+                        createPaths(list, allElements[endInt])
+                    ) + "\n"
+                )
             }
             string.append(it + "\n")
         }
@@ -425,17 +447,27 @@ class ProcessMap {
         var averageDistance: Double = 0.0
         var totalPoints: Int = 0
         findNearestPointToClasses() { closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>> ->
-            pathPoints.add(Circle((closestPoint.first.first + closestPoint.second.first)/2,
-                (closestPoint.first.second + closestPoint.second.second)/2, 5.0))
+            pathPoints.add(
+                Circle(
+                    (closestPoint.first.first + closestPoint.second.first) / 2,
+                    (closestPoint.first.second + closestPoint.second.second) / 2, 5.0
+                )
+            )
             averageDistance += getDistance(closestPoint.first, closestPoint.second)
             totalPoints++
         }
         averageDistance /= totalPoints
 
         // scatter points in missing spots, using average distance as a scale for step size
-        for (i in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step (averageDistance/2).toInt()) {
-            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step (averageDistance/2).toInt()) {
-                if (inPath(i.toDouble(), y.toDouble()) && notInRange(pathPoints, i.toDouble(), y.toDouble(), averageDistance)) {
+        for (i in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step (averageDistance / 2).toInt()) {
+            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step (averageDistance / 2).toInt()) {
+                if (inPath(i.toDouble(), y.toDouble()) && notInRange(
+                        pathPoints,
+                        i.toDouble(),
+                        y.toDouble(),
+                        averageDistance
+                    )
+                ) {
                     pathPoints.add(Circle(i.toDouble(), y.toDouble(), 5.0))
                 }
             }
@@ -451,7 +483,12 @@ class ProcessMap {
             y = 0
             while (y < pathPointsSize) {
                 var circle: Circle = pathPoints[y]
-                if (circle1.isWithinRange(circle.cx, circle.cy, 20.0) && circle1.cx != circle.cx && circle.cy != circle1.cy) {
+                if (circle1.isWithinRange(
+                        circle.cx,
+                        circle.cy,
+                        20.0
+                    ) && circle1.cx != circle.cx && circle.cy != circle1.cy
+                ) {
                     if (x > y) x = y
                     pathPoints.removeAt(y)
                     pathPointsSize--
@@ -464,7 +501,12 @@ class ProcessMap {
         return pathPoints
     }
 
-    fun notInRange(pathPoints: MutableList<Circle>, x: Double, y: Double, averageDistance: Double):Boolean {
+    fun notInRange(
+        pathPoints: MutableList<Circle>,
+        x: Double,
+        y: Double,
+        averageDistance: Double
+    ): Boolean {
         for (circle in pathPoints) {
             if (circle.isWithin(x, y, averageDistance)) return false
         }
@@ -474,21 +516,22 @@ class ProcessMap {
     fun findNearestPointToClasses(doForClosestPoint: (Pair<Pair<Double, Double>, Pair<Double, Double>>) -> Unit) {
 
         val stepSize: Double = 2.0
-        classes.forEach{ it ->
+        classes.forEach { it ->
             val center = it.getCenter()
             var closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
 
             // draw a line in 8 directions (top, left, up, down, top-left, top-right, bottom-left, bottom-right)
             // and get the nearest point and furthest point of the path, if it traverses the path
-            var nearestPoints: MutableList<Pair<Pair<Double, Double>, Pair<Double, Double>>?> = mutableListOf()
+            var nearestPoints: MutableList<Pair<Pair<Double, Double>, Pair<Double, Double>>?> =
+                mutableListOf()
             nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, true, false))
             nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, true, true))
             nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, false, true))
             nearestPoints.add(getNearestPathPoint(center, stepSize, -stepSize, true, true))
             nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize, true, false))
-            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize,true, true))
-            nearestPoints.add(getNearestPathPoint(center, -stepSize, stepSize,true, true))
-            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize,false, true))
+            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize, true, true))
+            nearestPoints.add(getNearestPathPoint(center, -stepSize, stepSize, true, true))
+            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize, false, true))
 
             // find the closests point our of all the nearest points
             for (point in nearestPoints) {
@@ -498,17 +541,18 @@ class ProcessMap {
             }
 
             // if a closest point was found do stuff
-            if(closestPoint != null) {
+            if (closestPoint != null) {
                 doForClosestPoint(closestPoint)
             }
         }
     }
 
-    fun getNearestPathPoint(center: Pair<Double, Double>,
-                            stepSizeX: Double,
-                            stepSizeY: Double,
-                            applyX: Boolean,
-                            applyY: Boolean
+    fun getNearestPathPoint(
+        center: Pair<Double, Double>,
+        stepSizeX: Double,
+        stepSizeY: Double,
+        applyX: Boolean,
+        applyY: Boolean
     ): Pair<Pair<Double, Double>, Pair<Double, Double>>? {
         var navPointX = center.first
         var navPointY = center.second
@@ -516,7 +560,7 @@ class ProcessMap {
         var points: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
         var pathFound: Boolean = false
 
-        while(isWithinBounds(navPointX, navPointY)) {
+        while (isWithinBounds(navPointX, navPointY)) {
             //take step in direction
             if (applyX) navPointX += stepSizeX
             if (applyY) navPointY += stepSizeY
@@ -551,20 +595,11 @@ class ProcessMap {
     internal fun createPaths(pathPoints: MutableList<Circle>): MutableList<Node> {
         val nodeList: MutableList<Node> = mutableListOf()
 
-        val num: Int = pathPoints.size/8
+        val num: Int = pathPoints.size / 8
         val threads: MutableList<Thread> = mutableListOf()
 
-        for(point in pathPoints) {
+        for (point in pathPoints) {
             nodeList.add(Node(point, mutableListOf()))
-        }
-
-        for (i in 0..7) {
-            println(i)
-            threads.add(
-                thread(start = true){
-                    connectNeighbours(nodeList.subList(i*num, (i+1)*num), nodeList)
-                }
-            )
         }
 
         for (thread in threads) {
@@ -580,21 +615,24 @@ class ProcessMap {
         return nodeList
     }
 
-    internal fun createPaths(pathPoints: MutableList<Circle>, endPoint: MapElement): MutableList<Vertex> {
+    internal fun createPaths(
+        pathPoints: MutableList<Circle>,
+        endPoint: MapElement
+    ): MutableList<Vertex> {
         val vertices: MutableList<Vertex> = mutableListOf()
 
-        val num: Int = pathPoints.size/8
+        val num: Int = pathPoints.size / 8
         val threads: MutableList<Thread> = mutableListOf()
 
-        for(point in pathPoints) {
+        for (point in pathPoints) {
             vertices.add(Vertex(point, endPoint.getCenter()))
         }
 
         for (i in 0..7) {
             println(i)
             threads.add(
-                thread(start = true){
-                    connectNeighboursA(vertices.subList(i*num, (i+1)*num), vertices)
+                thread(start = true) {
+                    connectNeighboursA(vertices.subList(i * num, (i + 1) * num), vertices)
                 }
             )
         }
@@ -618,10 +656,17 @@ class ProcessMap {
      * @param nodeList total list of nodes (used with all the threads but not mutated)
      * @return subsection with neighbors added
      */
-    fun connectNeighbours(subsection: MutableList<Node>, nodeList: MutableList<Node>): MutableList<Node> {
+    fun connectNeighbours(
+        subsection: MutableList<Node>,
+        nodeList: MutableList<Node>
+    ): MutableList<Node> {
         for (pointA in subsection) {
             for (pointB in nodeList) {
-                if (checkPath(pointA.circle, pointB.circle) && !pointA.circle.equals(pointB.circle)) {
+                if (checkPath(
+                        pointA.circle,
+                        pointB.circle
+                    ) && !pointA.circle.equals(pointB.circle)
+                ) {
                     pointA.neighbors.add(pointB)
                 }
             }
@@ -629,7 +674,10 @@ class ProcessMap {
         return subsection
     }
 
-    fun connectNeighboursA(subsection: MutableList<Vertex>, nodeList: MutableList<Vertex>): MutableList<Vertex> {
+    fun connectNeighboursA(
+        subsection: MutableList<Vertex>,
+        nodeList: MutableList<Vertex>
+    ): MutableList<Vertex> {
         for (pointA in subsection) {
             for (pointB in nodeList) {
                 if (
@@ -655,24 +703,24 @@ class ProcessMap {
     internal fun checkPath(pointA: Circle, pointB: Circle): Boolean {
         if (getDistance(pointA.getCenter(), pointB.getCenter()) > 110.0) return false
         // making line equation y = mx + b
-        val m: Double = (pointA.cy - pointB.cy)/(pointA.cx - pointB.cx)
-        val b: Double = pointA.cy - (m*pointA.cx)
+        val m: Double = (pointA.cy - pointB.cy) / (pointA.cx - pointB.cx)
+        val b: Double = pointA.cy - (m * pointA.cx)
 
-        if (abs(pointA.cx - pointB.cx) > abs (pointA.cy - pointB.cy)) {
+        if (abs(pointA.cx - pointB.cx) > abs(pointA.cy - pointB.cy)) {
 
             val x: Double = if (pointA.cx < pointB.cx) pointA.cx else pointB.cx
             for (step in 10 until abs(pointB.cx - pointA.cx).toInt() step 15) {
                 val newX: Double = x + step
-                if (!inPath(newX, (m*newX) + b)) {
+                if (!inPath(newX, (m * newX) + b)) {
                     return false
                 }
             }
-        } else if (abs(pointA.cx - pointB.cx) > 1.0){
+        } else if (abs(pointA.cx - pointB.cx) > 1.0) {
 
             val y: Double = if (pointA.cy < pointB.cy) pointA.cy else pointB.cy
             for (step in 10 until abs(pointB.cy - pointA.cy).toInt() step 15) {
                 val newY: Double = y + step
-                if (!inPath((newY-b)/m, newY)) {
+                if (!inPath((newY - b) / m, newY)) {
                     return false
                 }
             }
@@ -696,7 +744,7 @@ class ProcessMap {
      * @return return whether the point is in the path (true) or within a classroom (false)
      */
     internal fun inPath(x: Double, y: Double): Boolean {
-        classes.forEach{ it ->
+        classes.forEach { it ->
             if (it.isWithin(x, y)) return false
         }
         return isWithinBounds(x, y)
@@ -724,7 +772,11 @@ class ProcessMap {
         var closestTransport: SVG? = null
         for (transport in indoorTransportations) {
             if (closestTransport == null
-                || getDistance(transport.getCenter(), pos) < getDistance(closestTransport.getCenter(), pos)) {
+                || getDistance(
+                    transport.getCenter(),
+                    pos
+                ) < getDistance(closestTransport.getCenter(), pos)
+            ) {
                 if (goingUp && !transport.id.contains("down")) closestTransport = transport
                 if (!goingUp && !transport.id.contains("up")) closestTransport = transport
             }

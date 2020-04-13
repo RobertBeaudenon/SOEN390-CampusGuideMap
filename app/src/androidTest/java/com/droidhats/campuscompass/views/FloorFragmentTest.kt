@@ -3,12 +3,16 @@ package com.droidhats.campuscompass.views
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.*
+import androidx.test.espresso.action.GeneralLocation
+import androidx.test.espresso.action.GeneralSwipeAction
+import androidx.test.espresso.action.Swipe
+import androidx.test.espresso.action.Press
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -40,13 +44,15 @@ class FloorFragmentTest {
     @Before
     fun setUp() {
         navController = TestNavHostController(
-            ApplicationProvider.getApplicationContext())
+            ApplicationProvider.getApplicationContext()
+        )
         //needs to be here to see which fragment is being opened
         navController.setGraph(R.navigation.navigation)
         Thread.sleep(3000)
     }
 
-    val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+    private val device: UiDevice =
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @Test
     fun navigationFromBuildingTest() {
@@ -60,13 +66,13 @@ class FloorFragmentTest {
 
         //Checking if the direction button is displayed and named Directions
         onView(withId(R.id.bottom_sheet_directions_button))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(ViewMatchers.withText("Directions")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("Directions")))
 
         //Checking if the direction button is displayed and named Directions
         onView(withId(R.id.bottom_sheet_floor_map_button))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(ViewMatchers.withText("Indoor Maps")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("Indoor Maps")))
 
         //Expand bottom sheet fully to show buttons
         bottomSheet.swipe(Direction.UP, 1.0f)
@@ -80,22 +86,28 @@ class FloorFragmentTest {
 
         //check if FloorFragment is in view
         onView(withId(R.id.frameLayout)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
+            matches(
+                isDisplayed()
             )
         )
 
         //check if Floor Fragment is in view
         onView(withId(R.id.text_floor))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
 
         //check if floor picker is in view
         onView(withId(R.id.floorPicker))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
 
         //swipe the floor picker to change floor map
-        onView(withId(R.id.floorPicker)).perform(GeneralSwipeAction(Swipe.FAST, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
-
+        onView(withId(R.id.floorPicker)).perform(
+            GeneralSwipeAction(
+                Swipe.FAST,
+                GeneralLocation.BOTTOM_CENTER,
+                GeneralLocation.TOP_CENTER,
+                Press.FINGER
+            )
+        )
     }
 
     @Test
@@ -106,22 +118,22 @@ class FloorFragmentTest {
 
         // check if search bar exists and clicks on it
         onView(withId(R.id.mapFragSearchBar)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
+            matches(
+                isDisplayed()
             )
         ).perform(click())
 
         //Checking if action id indeed took you to the correct fragment
         onView(withId(R.id.search_fragment)).check(
-            ViewAssertions.matches(
-                ViewMatchers.isDisplayed()
+            matches(
+                isDisplayed()
             )
         )
 
         //search a Hall room by starting search with 'h'
         onView(
             Matchers.allOf(
-                withId(R.id.search_src_text), ViewMatchers.isDisplayed()
+                withId(R.id.search_src_text), isDisplayed()
             )
         ).perform(ViewActions.typeText("h"), ViewActions.closeSoftKeyboard())
 
@@ -145,15 +157,20 @@ class FloorFragmentTest {
 
         //check if Floor Fragment is in view
         onView(withId(R.id.text_floor))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
 
         //check if floor picker is in view
         onView(withId(R.id.floorPicker))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
 
         //swipe the floor picker to change floor map
-        onView(withId(R.id.floorPicker)).perform(GeneralSwipeAction(Swipe.FAST, GeneralLocation.BOTTOM_CENTER, GeneralLocation.TOP_CENTER, Press.FINGER))
-
+        onView(withId(R.id.floorPicker)).perform(
+            GeneralSwipeAction(
+                Swipe.FAST,
+                GeneralLocation.BOTTOM_CENTER,
+                GeneralLocation.TOP_CENTER,
+                Press.FINGER
+            )
+        )
     }
-
 }

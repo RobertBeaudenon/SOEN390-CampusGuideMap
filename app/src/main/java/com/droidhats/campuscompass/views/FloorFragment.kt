@@ -25,7 +25,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.caverock.androidsvg.SVG
 import com.droidhats.campuscompass.MainActivity
@@ -45,8 +44,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.InputStream
 
-
-class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener{
+class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var viewModel: FloorViewModel
     private lateinit var viewModelMapViewModel: MapViewModel
@@ -58,11 +56,11 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
     private var cachedSVG: SVG? = null
     private var prevSVG: SVG? = null
     private var prevInstruction: String? = null
-    private lateinit  var navView : NavigationView
+    private lateinit var navView: NavigationView
 
-    var floorNum: String? = null
-    var building : Building? = null
-    var floormap : String? = null
+    private var floorNum: String? = null
+    var building: Building? = null
+    private var floorMap: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,7 +72,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         return root
     }
 
-    companion object{
+    companion object {
         var OnFloorFragmentBackClicked: OnFloorFragmentBackClicked? = null
     }
 
@@ -82,18 +80,18 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProvider(this).get(FloorViewModel::class.java)
-        viewModelMapViewModel = ViewModelProviders.of(this).get(MapViewModel::class.java)
+        viewModelMapViewModel = ViewModelProvider(this).get(MapViewModel::class.java)
         progressBar = root.findViewById(R.id.progressFloor)
 
         floorNum = arguments?.getString("floornum")
         building = arguments?.getParcelable("building")
-        floormap = arguments?.getString("floormap")
+        floorMap = arguments?.getString("floormap")
 
         val startAndEnd = viewModel.getDirections()
         if (startAndEnd != null) {
             handleNavigation(startAndEnd)
         } else {
-            handleView(floorNum, building!!, floormap)
+            handleView(floorNum, building!!, floorMap)
         }
 
         initSearchBar()
@@ -106,7 +104,8 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         requireActivity().onBackPressedDispatcher.addCallback(this) {
 
             if (viewModel.navigationRepository != null
-                && viewModel.navigationRepository?.getPrev() == null) {
+                && viewModel.navigationRepository?.getPrev() == null
+            ) {
                 displayAlertMsg(0)
             } else {
                 viewModel.navigationRepository?.stepBack()
@@ -178,8 +177,8 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         alertDialog.show()
     }
 
-    private fun navigateOut(resId : Int){
-        when(resId){
+    private fun navigateOut(resId: Int) {
+        when (resId) {
             R.id.my_places_fragment -> {
                 findNavController().popBackStack(R.id.map_fragment, false)
                 findNavController().navigate(R.id.my_places_fragment)
@@ -205,9 +204,9 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
     }
 
 
-    fun handleView(floornum: String?, building: Building, floorMap: String?) {
-        var mapToDisplay: String = "hall8.svg" // default value
-        var floorNum = floornum
+    private fun handleView(floorNum: String?, building: Building, floorMap: String?) {
+        var mapToDisplay = "hall8.svg" // default value
+        var floorNum = floorNum
         var floormap = floorMap
 
         val floorPickerLayout: LinearLayout = root.findViewById(R.id.floorPickerLayout)
@@ -220,15 +219,14 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         if (floormap == null) {
             floormap = building.getIndoorInfo().second[floorNum]
         }
-        if(!floormap.isNullOrBlank()) {
+        if (!floormap.isNullOrBlank()) {
             mapToDisplay = floormap
         }
 
         val inputStream: InputStream = requireContext().assets.open(mapToDisplay)
-        val mapProcessor: ProcessMap = ProcessMap()
+        val mapProcessor = ProcessMap()
         var file: String = inputStream.bufferedReader().use { it.readText() }
         file = mapProcessor.automateSVG(file, floorNum)
-
         val classRoomToHighlight: String? = arguments?.getString("id")
 
         if (classRoomToHighlight == null) {
@@ -242,10 +240,10 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         setNumberPicker(building, floorNum)
     }
 
-    fun setNumberPicker(building: Building, floorNum: String?) {
+    private fun setNumberPicker(building: Building, floorNum: String?) {
         val mapProcessor = ProcessMap()
         // number picker stuff
-        val maps : MutableList<String> = mutableListOf()
+        val maps: MutableList<String> = mutableListOf()
         val keys: Array<String> = Array(building.getIndoorInfo().second.size) { "" }
         var index = 0
         for (map in building.getIndoorInfo().second) {
@@ -258,7 +256,6 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         numberPicker.minValue = 0
         numberPicker.maxValue = keys.size - 1
         numberPicker.wrapSelectorWheel = false
-
         numberPicker.displayedValues = keys
 
         if (floorNum != null) {
@@ -268,7 +265,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         }
 
         numberPicker.setOnScrollListener(NumberPicker.OnScrollListener { picker, scrollState ->
-            if(scrollState == 0){
+            if (scrollState == 0) {
                 val newVal = numberPicker.value
                 val newFloorNum = building!!.getIndoorInfo().second.keys.elementAt(newVal)
 
@@ -281,35 +278,40 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         })
     }
 
-    fun setImage(svg: SVG) {
+    private fun setImage(svg: SVG) {
         val imageView: ZoomImageView = root.findViewById(R.id.floormap)
         val displayMetrics = DisplayMetrics()
         (context as Activity?)!!.windowManager
             .defaultDisplay
             .getMetrics(displayMetrics)
 
-        svg.setDocumentWidth(displayMetrics.widthPixels.toFloat())
-        val bitmap = Bitmap.createBitmap(displayMetrics.widthPixels, displayMetrics.widthPixels, Bitmap.Config.ARGB_8888)
+        svg.documentWidth = displayMetrics.widthPixels.toFloat()
+        val bitmap = Bitmap.createBitmap(
+            displayMetrics.widthPixels,
+            displayMetrics.widthPixels,
+            Bitmap.Config.ARGB_8888
+        )
         val canvas = Canvas(bitmap)
         canvas.drawARGB(0, 255, 255, 255)
         svg.renderToCanvas(canvas)
         if (cachedSVG != null) prevSVG = cachedSVG
         cachedSVG = svg
         imageView.visibility = View.VISIBLE
-        imageView.setImageDrawable(BitmapDrawable(getResources(), bitmap))
+        imageView.setImageDrawable(BitmapDrawable(resources, bitmap))
     }
 
-    fun handleNavigation(startToEnd: Pair<IndoorLocation, IndoorLocation>) {
+    private fun handleNavigation(startToEnd: Pair<IndoorLocation, IndoorLocation>) {
 
-        val indoorInstructionsLayout: LinearLayout = root.findViewById(R.id.indoorInstructionsLayout)
+        val indoorInstructionsLayout: LinearLayout =
+            root.findViewById(R.id.indoorInstructionsLayout)
         indoorInstructionsLayout.visibility = View.VISIBLE
 
         var startAndEnd = startToEnd
         var building: Building
-        if (startAndEnd.first.lID == "") {
-            building = viewModelMapViewModel.getBuildings()[startAndEnd.second.buildingIndex]
+        building = if (startAndEnd.first.lID == "") {
+            viewModelMapViewModel.getBuildings()[startAndEnd.second.buildingIndex]
         } else {
-            building = viewModelMapViewModel.getBuildings()[startAndEnd.first.buildingIndex]
+            viewModelMapViewModel.getBuildings()[startAndEnd.first.buildingIndex]
         }
 
         if (
@@ -322,7 +324,8 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             hasTwoSteps = true
         }
 
-        val goingUp: Boolean = when(true) {
+        // determining whether the user will be going up or down the building during the nav
+        val goingUp: Boolean = when (true) {
             (startAndEnd.first.lID != "" && startAndEnd.second.lID != "") -> {
                 startAndEnd.first.getFloorNumber() < startAndEnd.second.getFloorNumber()
             }
@@ -334,12 +337,13 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             }
         }
 
-
+        // adding the appropriate functionality to the done button
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
             if (canConsume) {
                 if (viewModel.navigationRepository != null
-                    && viewModel.navigationRepository!!.isLastStep()) {
+                    && viewModel.navigationRepository!!.isLastStep()
+                ) {
                     indoorInstructionsLayout.visibility = View.GONE
                     handleView(
                         startAndEnd.second.floorNum,
@@ -355,12 +359,17 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
         val nextArrowButton: ImageView = requireActivity().findViewById(R.id.nextArrowFloor)
         val prevArrowButton: ImageView = requireActivity().findViewById(R.id.prevArrowFloor)
+
+        /** the functionality for this is to launch the appropriate directions to generate the next
+         * step.
+         */
         nextArrowButton.setOnClickListener {
             canConsume = true
             if (prevSVG != null) {
                 setImage(prevSVG!!)
                 val tmp = prevInstruction
-                prevInstruction = requireActivity().findViewById<TextView>(R.id.instructions_text).text.toString()
+                prevInstruction =
+                    requireActivity().findViewById<TextView>(R.id.instructions_text).text.toString()
                 requireActivity().findViewById<TextView>(R.id.instructions_text).text = tmp
             } else if (intermediateTransportID != null) {
                 if (prevSVG == null) {
@@ -399,6 +408,11 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             doneButton.visibility = View.VISIBLE
             prevArrowButton.visibility = View.VISIBLE
         }
+
+        /**
+         * The previous arrow button is to bring back the old svg if it's cached and set the
+         * proper visibility of the buttons
+         */
         prevArrowButton.setOnClickListener {
             nextArrowButton.visibility = View.VISIBLE
             doneButton.visibility = View.GONE
@@ -406,52 +420,67 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             if (prevSVG != null) {
                 setImage(prevSVG!!)
                 val tmp = prevInstruction
-                prevInstruction = requireActivity().findViewById<TextView>(R.id.instructions_text).text.toString()
+                prevInstruction =
+                    requireActivity().findViewById<TextView>(R.id.instructions_text).text.toString()
                 requireActivity().findViewById<TextView>(R.id.instructions_text).text = tmp
             }
         }
 
-        if (startAndEnd.first.lID == "") {
-            val end: String = when {
-                (startAndEnd.second.floorNum != "1") -> ""// intentionally left blank to find the nearest transportation method
-                else -> startAndEnd.second.lID
+        /**
+         * Generate the directions for the first step.
+         */
+        when {
+            startAndEnd.first.lID == "" -> {
+                val end: String = when {
+                    // intentionally left blank to find the nearest transportation method
+                    (startAndEnd.second.floorNum != "1") -> ""
+                    else -> startAndEnd.second.lID
+                }
+                generateDirectionsOnFloor(
+                    "entrance",
+                    end,
+                    building.getIndoorInfo().second["1"]!!,
+                    "1",
+                    goingUp,
+                    Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
+                )
             }
-            generateDirectionsOnFloor(
-                "entrance",
-                end,
-                building.getIndoorInfo().second["1"]!!,
-                "1",
-                goingUp,
-                Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
-            )
-        } else if (startAndEnd.first.floorNum != startAndEnd.second.floorNum) {
-            val end : String = when {
-                (startAndEnd.second.lID == "" && startAndEnd.first.floorNum == "1") -> "entrance"
-                else -> ""
-            }
-            val floorNum: String =
-                if (startAndEnd.second.lID == ""){ "1" }
-                else { startAndEnd.second.floorNum}
+            startAndEnd.first.floorNum != startAndEnd.second.floorNum -> {
+                // to bring to the entrance or the transportation method
+                val end: String = when {
+                    (startAndEnd.second.lID == "" && startAndEnd.first.floorNum == "1") -> "entrance"
+                    else -> ""
+                }
 
-            generateDirectionsOnFloor(
-                startAndEnd.first.lID,
-                end,
-                startAndEnd.first.floorMap,
-                startAndEnd.first.floorNum,
-                goingUp,
-                Pair(startAndEnd.second.name, floorNum)
-            )
-        } else {
-            generateDirectionsOnFloor(
-                startAndEnd.first.lID,
-                startAndEnd.second.lID,
-                startAndEnd.first.floorMap,
-                startAndEnd.first.floorNum,
-                goingUp,
-                Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
-            )
+                val floorNum: String =
+                    if (startAndEnd.second.lID == "") {
+                        "1"
+                    } else {
+                        startAndEnd.second.floorNum
+                    }
+
+                generateDirectionsOnFloor(
+                    startAndEnd.first.lID,
+                    end,
+                    startAndEnd.first.floorMap,
+                    startAndEnd.first.floorNum,
+                    goingUp,
+                    Pair(startAndEnd.second.name, floorNum)
+                )
+            }
+            else -> {
+                generateDirectionsOnFloor(
+                    startAndEnd.first.lID,
+                    startAndEnd.second.lID,
+                    startAndEnd.first.floorMap,
+                    startAndEnd.first.floorNum,
+                    goingUp,
+                    Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
+                )
+            }
         }
 
+        // setting the proper text for the done button.
         if (startAndEnd.second.lID == "") {
             requireActivity().findViewById<Button>(R.id.doneButtonFloor).text = "Outside"
         } else {
@@ -460,7 +489,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     }
 
-    fun generateDirectionsOnFloor(
+    private fun generateDirectionsOnFloor(
         start: String,
         end: String,
         floorMap: String,
@@ -468,51 +497,59 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         goingUp: Boolean,
         classAndFloorDest: Pair<String, String>
     ) {
+        // initializing variables for the whole method to use
         val inputStream: InputStream = requireContext().assets.open(floorMap)
         val file: String = inputStream.bufferedReader().use { it.readText() }
-        val mapProcessor: ProcessMap = ProcessMap()
+        val mapProcessor = ProcessMap()
         val newFile = mapProcessor.automateSVG(file, floorNum)
         mapProcessor.readSVGFromString(newFile)
         var startPos = start
         var endPos = end
-        var transportationMethod: internalSVG = internalSVG("", "", 0.0, 0.0)
+        var transportationMethod = internalSVG("", "", 0.0, 0.0)
+
+        // handle when there are is no start position
         if (start == "") {
             val pos = mapProcessor.getPositionWithId(endPos)
             if (pos != null) {
                 transportationMethod = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
                 startPos = transportationMethod.id
-                if (goingUp) {
-                    intermediateTransportID = startPos.replace("up", "down")
+                intermediateTransportID = if (goingUp) {
+                    startPos.replace("up", "down")
                 } else {
-                    intermediateTransportID = startPos.replace("down", "up")
+                    startPos.replace("down", "up")
                 }
 
             } else {
                 Toast.makeText(
                     context,
-                    "FAILED TO GENERATE DIRECTIONS, NO END POSITION WAS FOUND",
+                    "Failed to generate directions, could not find transportation method " +
+                            "to reach next floor",
                     Toast.LENGTH_LONG
-                )
+                ).show()
             }
         }
+
+        // handle when there are is no end position
         if (end == "") {
             val pos = mapProcessor.getPositionWithId(startPos)
             if (pos != null) {
                 transportationMethod = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
                 endPos = transportationMethod.id
-                if (goingUp) {
-                    intermediateTransportID = endPos.replace("up", "down")
+                intermediateTransportID = if (goingUp) {
+                    endPos.replace("up", "down")
                 } else {
-                    intermediateTransportID = endPos.replace("down", "up")
+                    endPos.replace("down", "up")
                 }
             } else {
                 Toast.makeText(
                     context,
-                    "FAILED TO GENERATE DIRECTIONS, NO START POSITION WAS FOUND",
+                    "Failed to generate directions, no transportation method was found.",
                     Toast.LENGTH_LONG
-                )
+                ).show()
             }
         }
+
+        // setting proper instruction
         val message: String = when (end) {
             "" -> "Take the ${transportationMethod.transportationType} until you reach floor " +
                     "${classAndFloorDest.second}"
@@ -522,6 +559,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         if (prevInstruction == null) {
             prevInstruction = message
         }
+
         requireActivity().findViewById<TextView>(R.id.instructions_text).text = message
         if (!canConsume) {
             requireActivity().findViewById<Button>(R.id.doneButtonFloor).visibility = View.GONE
@@ -530,9 +568,13 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             requireActivity().findViewById<Button>(R.id.doneButtonFloor).visibility = View.VISIBLE
             requireActivity().findViewById<ImageView>(R.id.nextArrowFloor).visibility = View.GONE
         }
+
         progressBar.visibility = View.VISIBLE
         val imageView: ZoomImageView = root.findViewById(R.id.floormap)
         imageView.visibility = View.GONE
+
+        // launching the directions in a coroutine so that it does not freeze the screen while
+        // the progress bar animates and the user can still interact with the app.
         GlobalScope.launch {
             val svg: SVG = SVG.getFromString(
                 mapProcessor
@@ -549,21 +591,25 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         var toggleButton = root.findViewById<ToggleButton>(R.id.toggleButton)
         toggleButton.visibility = View.GONE
 
-        mapFragSearchBar.setOnSearchActionListener(object : MaterialSearchBar.OnSearchActionListener{
+        mapFragSearchBar.setOnSearchActionListener(object :
+            MaterialSearchBar.OnSearchActionListener {
 
             override fun onButtonClicked(buttonCode: Int) {
-                when(buttonCode) {
+                when (buttonCode) {
                     //Open the Nav Bar
-                    MaterialSearchBar.BUTTON_NAVIGATION -> requireActivity().
-                        findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(GravityCompat.START)
+                    MaterialSearchBar.BUTTON_NAVIGATION -> requireActivity().findViewById<DrawerLayout>(
+                        R.id.drawer_layout
+                    ).openDrawer(GravityCompat.START)
                 }
             }
+
             override fun onSearchStateChanged(enabled: Boolean) {
                 if (enabled) {
                     findNavController().navigate(R.id.search_fragment)
                     mapFragSearchBar.closeSearch()
                 }
             }
+
             override fun onSearchConfirmed(text: CharSequence?) {
             }
         })

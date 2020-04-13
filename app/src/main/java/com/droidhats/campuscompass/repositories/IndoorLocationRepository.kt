@@ -54,7 +54,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
         for (floorMap in building.getIndoorInfo().second) {
             val inputStream: InputStream = context.assets.open(floorMap.value)
             val file: String = inputStream.bufferedReader().use { it.readText() }
-            val mapProcessor: ProcessMap = ProcessMap()
+            val mapProcessor = ProcessMap()
             mapProcessor.readSVGFromString(file)
             val classes = mapProcessor.getClasses()
 
@@ -91,7 +91,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
      * @param floorNumber This is the number of the floor within the building
      * @return returns the string of the generated room name
      */
-    fun convertIDToName(id: String, buildingName: String, floorNumber: String): String {
+    private fun convertIDToName(id: String, buildingName: String, floorNumber: String): String {
         return buildingName + "-" + floorNumber + id.substring(6, id.length)
     }
 }
