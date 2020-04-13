@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.droidhats.campuscompass.models.IndoorLocation
-import com.droidhats.campuscompass.repositories.IndoorLocationDao
 
 /**
  * The Room database for this app

@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.droidhats.campuscompass.models.FavoritePlace
-import com.droidhats.campuscompass.repositories.FavoritePlacesDao
 
 @Database(entities = [FavoritePlace::class], version = 3, exportSchema = false)
 abstract class FavoritesDatabase : RoomDatabase() {
