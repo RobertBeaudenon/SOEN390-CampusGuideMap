@@ -43,6 +43,8 @@ class NavigationDrawerTest {
 
     @Test
     fun test_isNavigationCorrect() {
+        //let the app load pass the loading screen
+        Thread.sleep(3000)
 
         //Opening side menu by clicking on menu  button
         onView(withId(R.id.mt_nav)).check(matches(isDisplayed())).perform(click())
@@ -63,6 +65,9 @@ class NavigationDrawerTest {
 
     @Test
     fun test_isSideMenuListElementsInView() {
+
+        //let the app load pass the loading screen
+        Thread.sleep(3000)
 
         //Opening side menu by clicking on menu  button
         onView(withId(R.id.mt_nav)).check(matches(isDisplayed())).perform(click())
@@ -91,6 +96,9 @@ class NavigationDrawerTest {
 
     @Test
     fun test_isMapNavigationCorrect() {
+
+        //let the app load pass the loading screen
+        Thread.sleep(3000)
 
         //Opening side menu by clicking on menu  button
         onView(withId(R.id.mt_nav)).check(matches(isDisplayed())).perform(click())

@@ -18,6 +18,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
+import junit.framework.TestCase
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
@@ -49,9 +50,10 @@ class FloorFragmentTest {
 
     @Test
     fun navigationFromBuildingTest() {
-        Thread.sleep(1000)
 
-        device.findObject(UiSelector().descriptionContains("Henry F. Hall")).click()
+        Thread.sleep(5000)
+
+        device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. ")).click()
 
         //Retrieve bottom sheet once it is in the view
         val bottomSheet = device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet"))
@@ -76,7 +78,7 @@ class FloorFragmentTest {
 
         Thread.sleep(2000)
 
-        //check if Map Fragment is in view
+        //check if FloorFragment is in view
         onView(withId(R.id.frameLayout)).check(
             ViewAssertions.matches(
                 ViewMatchers.isDisplayed()
@@ -99,6 +101,9 @@ class FloorFragmentTest {
     @Test
     fun navigationFromSearch() {
 
+        //let the app load past the splash screen
+        Thread.sleep(3000)
+
         // check if search bar exists and clicks on it
         onView(withId(R.id.mapFragSearchBar)).check(
             ViewAssertions.matches(
@@ -113,7 +118,7 @@ class FloorFragmentTest {
             )
         )
 
-        //search for H-803
+        //search a Hall room by starting search with 'h'
         onView(
             Matchers.allOf(
                 withId(R.id.search_src_text), ViewMatchers.isDisplayed()
@@ -121,7 +126,7 @@ class FloorFragmentTest {
         ).perform(ViewActions.typeText("h"), ViewActions.closeSoftKeyboard())
 
         //allow suggestions to load
-        Thread.sleep(2000)
+        Thread.sleep(1000)
 
         //click on the hall-167 suggestion from list
         onView(
@@ -131,8 +136,8 @@ class FloorFragmentTest {
             )
         ).perform(click())
 
-        //check if Map Fragment is in view
-        onView(withId(R.id.frameLayout)).check(
+       //check if FloorFragment is in view
+        onView(withId(R.id.floormap)).check(
             matches(
                 isDisplayed()
             )
