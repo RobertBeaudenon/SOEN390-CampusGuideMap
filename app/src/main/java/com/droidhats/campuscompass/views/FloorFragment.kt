@@ -333,7 +333,6 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
             if (canConsume) {
-                viewModel.consumeNavHandler()
                 if (viewModel.navigationRepository != null
                     && viewModel.navigationRepository!!.isLastStep()) {
                     indoorInstructionsLayout.visibility = View.GONE
@@ -345,6 +344,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                     Toast.makeText(requireContext(), "Finished Navigation", Toast.LENGTH_LONG)
                     viewModel.navigationRepository?.cancelNavigation()
                 }
+                viewModel.consumeNavHandler()
             }
         }
 

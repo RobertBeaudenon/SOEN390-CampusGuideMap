@@ -225,7 +225,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             // The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
             // Remove the condition check to keep the path drawn on the screen even after changing activities
             // If the condition is removed though, camera movement must be handled properly not to override other movement
-
             if ( it != null && it != currentOutdoorNavigationRoute ) {
                 if (it is OutdoorNavigationRoute) {
                     requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -237,9 +236,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     Handler().postDelayed({
                         moveTo(it.origin!!.getLocation(), 19.0f)
                     }, 100)
+                } else {
+                    findNavController().navigate(R.id.floor_fragment)
                 }
             } else if (it == null) {
                 cancelNavigation()
+                requireActivity().onBackPressedDispatcher.addCallback{
+                    requireActivity().finishAffinity()
+                }
             }
         })
         trackerSteps = 0
@@ -446,7 +450,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             doneButtonMap.text = "Take me inside!"
             doneButton.setOnClickListener {
                 viewModel.navigationRepository.consumeNavigationHandler()
-                findNavController().navigate(R.id.floor_fragment)
             }
         }
 
