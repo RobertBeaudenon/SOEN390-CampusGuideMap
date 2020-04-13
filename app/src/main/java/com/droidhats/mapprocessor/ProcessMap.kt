@@ -103,6 +103,14 @@ class ProcessMap {
         }
     }
 
+    /**
+     * Collects an svg element and returns the iterator at the next iteration
+     * @param it current iterator
+     * @param onSvgElement function to call on the string of svg attributes
+     * @param onEachLine function to call on each line of the svg file
+     * @param endString string to define the end of the element
+     * @return next iteration after the collected element
+     */
     private fun collectElement(
         it: Int,
         onSvgElement: (String) -> Unit,
@@ -153,6 +161,11 @@ class ProcessMap {
         )
     }
 
+    /**
+     * Automate changing the floor number for the class in the svg file
+     * @param svg to update
+     * @return svg as string (updated with new floor numbers)
+     */
     fun automateSVG(svg: String, floorNumber: String): String {
         val prepreBuilding = svg.split("docname=\"")
         val preBuilding = prepreBuilding[1].split("-")
@@ -439,6 +452,11 @@ class ProcessMap {
         return pathPoints
     }
 
+    /**
+     * Generates points using a technique where we add points surrounding the class room if they
+     * are within the path
+     * @return list of generated points
+     */
     fun generatePoints(): MutableList<Circle> {
 
         var pathPoints: MutableList<Circle> = mutableListOf()
@@ -501,6 +519,14 @@ class ProcessMap {
         return pathPoints
     }
 
+    /**
+     * Determine whether a point is within range of any of the path points
+     * @param pathPoints to check in
+     * @param x coordinate
+     * @param y coordinate
+     * @param averageDistance to the point
+     * @return Boolean whether it is not in range
+     */
     fun notInRange(
         pathPoints: MutableList<Circle>,
         x: Double,
@@ -513,6 +539,10 @@ class ProcessMap {
         return true
     }
 
+    /**
+     * Find the nearest point to the classes
+     * @param doForClosestPoint runs a method on the closest point
+     */
     fun findNearestPointToClasses(doForClosestPoint: (Pair<Pair<Double, Double>, Pair<Double, Double>>) -> Unit) {
 
         val stepSize: Double = 2.0
@@ -547,6 +577,14 @@ class ProcessMap {
         }
     }
 
+    /**
+     * Get the nearest path point to a center in a certain direction given by the parameters.
+     * @param center to find nearest point to
+     * @param stepSizeX step size in the x directions
+     * @param stepSizeY step size in the y directions
+     * @param applyX whether to apply x or not
+     * @param applyY whether to apply y or not
+     */
     fun getNearestPathPoint(
         center: Pair<Double, Double>,
         stepSizeX: Double,
@@ -589,6 +627,8 @@ class ProcessMap {
      * This method takes as input the points in a path and creates paths between them in a Node data structure.
      * It creates these paths in between nodes first by checking to make sure that this path won't go through any
      * classes
+     * this is used for the dijkstra method
+     *
      * @param pathPoints list of points in a path
      * @return list of Node elements linked together to form a graph
      */
@@ -600,6 +640,14 @@ class ProcessMap {
 
         for (point in pathPoints) {
             nodeList.add(Node(point, mutableListOf()))
+        }
+
+        for (i in 0..7) {
+            threads.add(
+                thread(start = true) {
+                    connectNeighbours(nodeList.subList(i * num, (i + 1) * num), nodeList)
+                }
+            )
         }
 
         for (thread in threads) {
@@ -615,6 +663,15 @@ class ProcessMap {
         return nodeList
     }
 
+    /**
+     * This method takes as input the points in a path and creates paths between them in a Node data structure.
+     * It creates these paths in between nodes first by checking to make sure that this path won't go through any
+     * classes.
+     * This particular method is used for the A* algorithm
+     *
+     * @param pathPoints circles to make into vertices
+     * @param endPoint to calculate the heuristic function
+     */
     internal fun createPaths(
         pathPoints: MutableList<Circle>,
         endPoint: MapElement
@@ -629,7 +686,6 @@ class ProcessMap {
         }
 
         for (i in 0..7) {
-            println(i)
             threads.add(
                 thread(start = true) {
                     connectNeighboursA(vertices.subList(i * num, (i + 1) * num), vertices)
@@ -674,6 +730,12 @@ class ProcessMap {
         return subsection
     }
 
+    /**
+     * Connect the neighbors for the A* algorithm
+     * @param subsection of the list
+     * @param whole list to find neighbors for
+     * @return list of connected vertices
+     */
     fun connectNeighboursA(
         subsection: MutableList<Vertex>,
         nodeList: MutableList<Vertex>
@@ -761,6 +823,11 @@ class ProcessMap {
         return false
     }
 
+    /**
+     * Get the position on the map given the element's id
+     * @param id to find center for
+     * @return position on the map given an x and y
+     */
     fun getPositionWithId(id: String): Pair<Double, Double>? {
         for (elmnt in allElements) {
             if (elmnt.getID() == id) return elmnt.getCenter()
@@ -768,6 +835,12 @@ class ProcessMap {
         return null
     }
 
+    /**
+     * Given a position, find the nearest transportation method while taking into account
+     * @param pos x and y coordinates
+     * @param goingUp boolean whether the user will be going up
+     * @return SVG element as indoor transportation method
+     */
     fun findNearestIndoorTransportation(pos: Pair<Double, Double>, goingUp: Boolean): SVG {
         var closestTransport: SVG? = null
         for (transport in indoorTransportations) {
