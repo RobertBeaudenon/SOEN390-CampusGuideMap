@@ -44,6 +44,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.InputStream
 
+/**
+ * This is the fragment that handles everything relating to displaying the maps on the indoors
+ */
 class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var viewModel: FloorViewModel
@@ -62,6 +65,13 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
     var building: Building? = null
     private var floorMap: String? = null
 
+    /**
+     * On creation of the view, this method is called
+     * @param inflater for inflating the proper layout
+     * @param savedInstanceState
+     * @param container
+     * @return inflater with proper layout inflated
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,6 +86,10 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         var OnFloorFragmentBackClicked: OnFloorFragmentBackClicked? = null
     }
 
+    /**
+     * Method that gets called when the activity for the view is created
+     * @param savedInstanceState
+     */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -113,16 +127,26 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         }
     }
 
+    /**
+     * Method that gets called when the view is paused
+     */
     override fun onPause() {
         super.onPause()
         navView.setNavigationItemSelectedListener(activity as MainActivity)
     }
 
+    /**
+     * Method that gets called when the view is resumed
+     */
     override fun onResume() {
         super.onResume()
         navView.setNavigationItemSelectedListener(this)
     }
 
+    /**
+     * This method displays the alert message appropriate for the selected layout
+     * @param resourceID of the given layout
+     */
     private fun displayAlertMsg(resourceID: Int) {
         val builder = AlertDialog.Builder(requireContext())
 
@@ -177,6 +201,10 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         alertDialog.show()
     }
 
+    /**
+     * Navigate out method that navigates to the proper fragment given the id of the given layout
+     * @param resId of the layout
+     */
     private fun navigateOut(resId: Int) {
         when (resId) {
             R.id.my_places_fragment -> {
@@ -203,7 +231,12 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         }
     }
 
-
+    /**
+     * Handles the functionality related to looking at the floor maps
+     * @param floorNum string of the floor number
+     * @param building building to who's floor maps to look at
+     * @param floorMap to look at
+     */
     private fun handleView(floorNum: String?, building: Building, floorMap: String?) {
         var mapToDisplay = "hall8.svg" // default value
         var floorNum = floorNum
@@ -227,8 +260,8 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         val mapProcessor = ProcessMap()
         var file: String = inputStream.bufferedReader().use { it.readText() }
         file = mapProcessor.automateSVG(file, floorNum)
-        val classRoomToHighlight: String? = arguments?.getString("id")
 
+        val classRoomToHighlight: String? = arguments?.getString("id")
         if (classRoomToHighlight == null) {
             val svg: SVG = SVG.getFromString(file)
             setImage(svg)
@@ -240,6 +273,11 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         setNumberPicker(building, floorNum)
     }
 
+    /**
+     * This does all the proper initialization of the number picker given the following parameters
+     * @param building building object to examine
+     * @param floorNum number of current floor number
+     */
     private fun setNumberPicker(building: Building, floorNum: String?) {
         val mapProcessor = ProcessMap()
         // number picker stuff
@@ -278,6 +316,10 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         })
     }
 
+    /**
+     * Sets the given svg object to the Image View
+     * @param svg object
+     */
     private fun setImage(svg: SVG) {
         val imageView: ZoomImageView = root.findViewById(R.id.floormap)
         val displayMetrics = DisplayMetrics()
@@ -300,6 +342,10 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         imageView.setImageDrawable(BitmapDrawable(resources, bitmap))
     }
 
+    /**
+     * Handle the navigation between a start location to an end
+     * @param startToEnd pair of start to end locations
+     */
     private fun handleNavigation(startToEnd: Pair<IndoorLocation, IndoorLocation>) {
 
         val indoorInstructionsLayout: LinearLayout =
@@ -360,7 +406,8 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         val nextArrowButton: ImageView = requireActivity().findViewById(R.id.nextArrowFloor)
         val prevArrowButton: ImageView = requireActivity().findViewById(R.id.prevArrowFloor)
 
-        /** the functionality for this is to launch the appropriate directions to generate the next
+        /**
+         * the functionality for this is to launch the appropriate directions to generate the next
          * step.
          */
         nextArrowButton.setOnClickListener {
@@ -489,6 +536,15 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     }
 
+    /**
+     * Given the parameters, generate a floor map with directions on it and display it to the view
+     * @param start id of the start element
+     * @param end id of the end element
+     * @param floorMap to display
+     * @param floorNum to give the classrooms proper room numbers
+     * @param goingUp whether the user will be going up
+     * @param classAndFloorDest class and floor destinations for the instructions
+     */
     private fun generateDirectionsOnFloor(
         start: String,
         end: String,
@@ -587,6 +643,9 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         }
     }
 
+    /**
+     * Initialize the search bar functionality
+     */
     private fun initSearchBar() {
         var toggleButton = root.findViewById<ToggleButton>(R.id.toggleButton)
         toggleButton.visibility = View.GONE
@@ -594,6 +653,10 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         mapFragSearchBar.setOnSearchActionListener(object :
             MaterialSearchBar.OnSearchActionListener {
 
+            /**
+             * Method to be called when the search bar's hamburger button is clicked
+             * @param buttonCode
+             */
             override fun onButtonClicked(buttonCode: Int) {
                 when (buttonCode) {
                     //Open the Nav Bar
@@ -603,6 +666,10 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                 }
             }
 
+            /**
+             * Method to be called when the search state has changed
+             * @param enabled
+             */
             override fun onSearchStateChanged(enabled: Boolean) {
                 if (enabled) {
                     findNavController().navigate(R.id.search_fragment)
@@ -619,6 +686,10 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         fun onFloorFragmentBackClicked()
     }
 
+    /**
+     * When a navigation item is selected, this method gets called to close the drawer
+     * and display an alert message to stop the user from navigating away.
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val drawerLayout: DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
