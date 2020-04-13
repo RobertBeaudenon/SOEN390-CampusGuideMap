@@ -365,6 +365,12 @@ class MapFragmentTest {
         //allow map to readjust view
         Thread.sleep(1500)
 
+        //check that favorites button is displayed and click it
+        onView(withId(R.id.place_card_favorites_button)).check(matches(isDisplayed())).perform(click())
+
+        //Ensuring the text of the favorites button is Saved
+        onView(withId(R.id.place_card_favorites_button)).check(matches(withText("Saved")))
+
         //click on directions button
         onView(withId(R.id.place_card_directions_button)).perform(click())
 

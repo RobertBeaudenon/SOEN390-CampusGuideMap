@@ -124,6 +124,8 @@ class NavigationRepository(private val application: Application) {
         if (navhandler is OutdoorNavStep) {
             return navhandler?.next is OutdoorNavStep && navhandler?.next?.next == null
         } else {
+            println("navhandler: $navhandler")
+            println("next: ${navhandler?.next}")
             return navhandler?.next !is OutdoorNavStep
         }
     }

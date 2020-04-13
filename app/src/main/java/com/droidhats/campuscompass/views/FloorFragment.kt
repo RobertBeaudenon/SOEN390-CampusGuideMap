@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -26,15 +27,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
-import com.droidhats.mapprocessor.ProcessMap
 import com.caverock.androidsvg.SVG
+import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.OutdoorNavigationRoute
 import com.droidhats.campuscompass.viewmodels.FloorViewModel
 import com.droidhats.campuscompass.viewmodels.MapViewModel
+import com.google.android.material.navigation.NavigationView
 import com.droidhats.mapprocessor.SVG as internalSVG
+import com.droidhats.mapprocessor.ProcessMap
 import com.mancj.materialsearchbar.MaterialSearchBar
 import com.otaliastudios.zoom.ZoomImageView
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
@@ -42,7 +45,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.InputStream
 
-class FloorFragment : Fragment() {
+
+class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener{
 
     private lateinit var viewModel: FloorViewModel
     private lateinit var viewModelMapViewModel: MapViewModel
@@ -54,6 +58,7 @@ class FloorFragment : Fragment() {
     private var cachedSVG: SVG? = null
     private var prevSVG: SVG? = null
     private var prevInstruction: String? = null
+    private lateinit  var navView : NavigationView
 
     var floorNum: String? = null
     var building : Building? = null
@@ -64,6 +69,8 @@ class FloorFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         root = inflater.inflate(R.layout.floor_fragment, container, false)
+        navView = requireActivity().findViewById(R.id.nav_view)
+        navView.setNavigationItemSelectedListener(this)
         return root
     }
 
@@ -100,32 +107,37 @@ class FloorFragment : Fragment() {
 
             if (viewModel.navigationRepository != null
                 && viewModel.navigationRepository?.getPrev() == null) {
-                displayAlertMsg()
+                displayAlertMsg(0)
             } else {
                 viewModel.navigationRepository?.stepBack()
             }
         }
     }
 
-    private fun displayAlertMsg(){
+    override fun onPause() {
+        super.onPause()
+        navView.setNavigationItemSelectedListener(activity as MainActivity)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        navView.setNavigationItemSelectedListener(this)
+    }
+
+    private fun displayAlertMsg(resourceID: Int) {
         val builder = AlertDialog.Builder(requireContext())
 
-        val alertTitle: String
-        val alertMsg: String
-        val exitMsg: String
+        val alertTitle = "Close Navigation"
+        val alertMsg = "Do you want to cancel the navigation?"
+        val exitMsg = "Exiting Navigation"
 
         // Use directions to check if the floor fragment is used to highlight a room or
         // show directions between two rooms, and change the alert message accordingly.
         val directions = viewModel.getDirections()
 
-        if (directions != null) {
-            alertTitle = "Close Navigation"
-            alertMsg = "Do you want to cancel the navigation?"
-            exitMsg = "Exiting Navigation"
-        } else {
-            alertTitle = "Return to Map"
-            alertMsg = "Do you want to return to the map?"
-            exitMsg = "Returning to Map"
+        if (directions == null) {
+            navigateOut(resourceID)
+            return
         }
 
         //set title for alert dialog
@@ -136,17 +148,26 @@ class FloorFragment : Fragment() {
         builder.setIcon(R.drawable.ic_alert)
 
         //performing positive action
-        builder.setPositiveButton("Yes"){dialogInterface, which ->
+        builder.setPositiveButton("Yes") { dialogInterface, which ->
             Toast.makeText(requireContext(), exitMsg, Toast.LENGTH_LONG).show()
-            
+
             // Clear current navigation
             viewModel.navigationRepository?.cancelNavigation()
-            OnFloorFragmentBackClicked?.onFloorFragmentBackClicked()
-        }
 
+            if (resourceID == 0) {
+                OnFloorFragmentBackClicked?.onFloorFragmentBackClicked()
+            } else {
+                navigateOut(resourceID)
+            }
+            navView.setNavigationItemSelectedListener(activity as MainActivity)
+        }
         //performing cancel action
-        builder.setNeutralButton("Cancel"){dialogInterface , which ->
-            Toast.makeText(requireContext(),"Clicked Cancel\nOperation Canceled", Toast.LENGTH_LONG).show()
+        builder.setNeutralButton("Cancel") { dialogInterface, which ->
+            Toast.makeText(
+                requireContext(),
+                "Clicked Cancel\nOperation Canceled",
+                Toast.LENGTH_LONG
+            ).show()
         }
 
         // Create the AlertDialog
@@ -156,6 +177,33 @@ class FloorFragment : Fragment() {
         alertDialog.setCancelable(false)
         alertDialog.show()
     }
+
+    private fun navigateOut(resId : Int){
+        when(resId){
+            R.id.my_places_fragment -> {
+                findNavController().popBackStack(R.id.map_fragment, false)
+                findNavController().navigate(R.id.my_places_fragment)
+            }
+            R.id.nav_schedule -> {
+                findNavController().popBackStack(R.id.map_fragment, false)
+                findNavController().navigate(R.id.nav_schedule)
+            }
+            R.id.nav_explore -> {
+                findNavController().popBackStack(R.id.map_fragment, false)
+                findNavController().navigate(R.id.nav_explore)
+            }
+            R.id.nav_shuttle -> {
+                findNavController().popBackStack(R.id.map_fragment, false)
+                findNavController().navigate(R.id.nav_shuttle)
+            }
+            R.id.nav_settings -> {
+                findNavController().popBackStack(R.id.map_fragment, false)
+                findNavController().navigate(R.id.nav_settings)
+            }
+            R.id.map_fragment -> findNavController().popBackStack(R.id.map_fragment, false)
+        }
+    }
+
 
     fun handleView(floornum: String?, building: Building, floorMap: String?) {
         var mapToDisplay: String = "hall8.svg" // default value
@@ -290,7 +338,6 @@ class FloorFragment : Fragment() {
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
             if (canConsume) {
-                viewModel.consumeNavHandler()
                 if (viewModel.navigationRepository != null
                     && viewModel.navigationRepository!!.isLastStep()) {
                     indoorInstructionsLayout.visibility = View.GONE
@@ -300,7 +347,9 @@ class FloorFragment : Fragment() {
                         startAndEnd.second.floorMap
                     )
                     Toast.makeText(requireContext(), "Finished Navigation", Toast.LENGTH_LONG)
+                    viewModel.navigationRepository?.cancelNavigation()
                 }
+                viewModel.consumeNavHandler()
             }
         }
 
@@ -522,5 +571,12 @@ class FloorFragment : Fragment() {
 
     interface OnFloorFragmentBackClicked {
         fun onFloorFragmentBackClicked()
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val drawerLayout: DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+        drawerLayout.closeDrawer(GravityCompat.START)
+        displayAlertMsg(item.itemId)
+        return true
     }
 }

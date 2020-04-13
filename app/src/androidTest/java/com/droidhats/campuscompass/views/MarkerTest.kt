@@ -66,7 +66,6 @@ class MarkerTest {
     @Test
     fun testBuildingMarkers(){
         val device = UiDevice.getInstance(getInstrumentation())
-        val googleMap = device.findObject(UiSelector().descriptionContains("Google Map"))
 
         //Allow downtown map to fully load
         Thread.sleep(2000)

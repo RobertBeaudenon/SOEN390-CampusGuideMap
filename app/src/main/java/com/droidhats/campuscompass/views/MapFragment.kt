@@ -2,6 +2,7 @@ package com.droidhats.campuscompass.views
 
 import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.graphics.drawable.Drawable
@@ -19,6 +20,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
+import android.widget.Switch
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -61,7 +63,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
@@ -69,7 +70,6 @@ import kotlinx.android.synthetic.main.instructions_sheet_layout.prevArrow
 import kotlinx.android.synthetic.main.instructions_sheet_layout.nextArrow
 import kotlinx.android.synthetic.main.instructions_sheet_layout.doneButtonMap
 import kotlinx.android.synthetic.main.instructions_sheet_layout.arrayInstruction
-import kotlinx.android.synthetic.main.place_info_card.*
 import kotlinx.android.synthetic.main.search_bar_layout.buttonResumeNavigation
 import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
@@ -79,9 +79,6 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.atan
 import com.droidhats.campuscompass.helpers.Observer as ModifiedObserver
-import kotlin.collections.ArrayList
-import kotlin.collections.List
-import kotlin.collections.MutableList
 import com.droidhats.campuscompass.models.Map as MapModel
 
 /**
@@ -100,6 +97,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var locationRequest: LocationRequest
     private val observerList = mutableListOf<ModifiedObserver?>()
     private val currentNavigationPath = arrayListOf<Polyline>()
+    private val preferenceOff = ArrayList<String>()
     private var locationUpdateState = false
 
     companion object {
@@ -153,6 +151,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         initBottomSheetBehavior()
         initSearchBar()
         handleCampusSwitch()
+        preferenceOff.clear()
+        checkSettingOptions()
     }
 
     /**
@@ -171,8 +171,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         //Add custom style to map
         try {
             val success = googleMap.setMapStyle(
-                    MapStyleOptions.loadRawResourceStyle(
-                            context, R.raw.map_style))
+                MapStyleOptions.loadRawResourceStyle(
+                    context, R.raw.map_style))
             if (!success) {
                 Log.e("MapStyle", "Style parsing failed.")
             }
@@ -183,11 +183,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         // Move camera to SGW
         // TODO when navigation path is being shown, the camera should be moved to current location
         moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
+        toggleButton.setChecked(false)
 
         map!!.setOnMapClickListener {
             //Dismiss the bottom sheet when clicking anywhere on the map
             dismissBottomSheet()
         }
+
+        if (currentOutdoorNavigationRoute != null) drawPathPolyline(currentOutdoorNavigationRoute!!.polyLinePath)
 
         attachBuildingObservers()
         observeNavigation()
@@ -225,7 +228,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             // The observer's OnChange is called when the Fragment gets pushed back even when the object didn't change
             // Remove the condition check to keep the path drawn on the screen even after changing activities
             // If the condition is removed though, camera movement must be handled properly not to override other movement
-
             if ( it != null && it != currentOutdoorNavigationRoute ) {
                 if (it is OutdoorNavigationRoute) {
                     requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -237,9 +239,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     Handler().postDelayed({
                         moveTo(it.origin!!.getLocation(), 19.0f)
                     }, 100)
+                } else {
+                    findNavController().navigate(R.id.floor_fragment)
                 }
             } else if (it == null) {
                 cancelNavigation()
+                requireActivity().onBackPressedDispatcher.addCallback{
+                    requireActivity().finishAffinity()
+                }
             }
         })
         trackerSteps = 0
@@ -446,7 +453,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             doneButtonMap.text = "Take me inside!"
             doneButton.setOnClickListener {
                 viewModel.navigationRepository.consumeNavigationHandler()
-                findNavController().navigate(R.id.floor_fragment)
             }
         }
 
@@ -454,33 +460,33 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             prevArrow.visibility = View.VISIBLE
             trackerSteps++
             arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
-                if (trackerSteps < instructions.size -1) {
-                    val bearingValue = getBearing(
-                        instructionsCoordinates[trackerSteps].latitude,
-                        instructionsCoordinates[trackerSteps].longitude,
-                        instructionsCoordinates[trackerSteps+1].latitude,
-                        instructionsCoordinates[trackerSteps+1].longitude
-                    )
-                    if (!bearingValue.isNaN()) {
-                        val cameraPosition: CameraPosition = CameraPosition.Builder().target(
-                                LatLng(
-                                    instructionsCoordinates[trackerSteps].latitude,
-                                    instructionsCoordinates[trackerSteps].longitude)
-                            ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
-                        map!!.animateCamera(
-                            CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
-                    }
-                } else if (trackerSteps == instructions.size - 1) {
-                    nextArrow.visibility = View.INVISIBLE
-                    doneButtonMap.visibility = View.VISIBLE
-                    moveTo(instructionsCoordinates[instructions.size - 1], 20.0F)
+            if (trackerSteps < instructions.size -1) {
+                val bearingValue = getBearing(
+                    instructionsCoordinates[trackerSteps].latitude,
+                    instructionsCoordinates[trackerSteps].longitude,
+                    instructionsCoordinates[trackerSteps+1].latitude,
+                    instructionsCoordinates[trackerSteps+1].longitude
+                )
+                if (!bearingValue.isNaN()) {
+                    val cameraPosition: CameraPosition = CameraPosition.Builder().target(
+                        LatLng(
+                            instructionsCoordinates[trackerSteps].latitude,
+                            instructionsCoordinates[trackerSteps].longitude)
+                    ).zoom(20.0F).bearing(bearingValue).tilt(0F).build()
+                    map!!.animateCamera(
+                        CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, null)
                 }
+            } else if (trackerSteps == instructions.size - 1) {
+                nextArrow.visibility = View.INVISIBLE
+                doneButtonMap.visibility = View.VISIBLE
+                moveTo(instructionsCoordinates[instructions.size - 1], 20.0F)
+            }
         }
         prevArrow.setOnClickListener{
             nextArrow.visibility = View.VISIBLE
             doneButtonMap.visibility = View.GONE
-                trackerSteps--
-                arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
+            trackerSteps--
+            arrayInstruction.text = Html.fromHtml(instructions[trackerSteps]).toString()
             if (trackerSteps != 0) {
                 if (trackerSteps < instructions.size -1) {
                     val bearingValue = getBearing(
@@ -526,6 +532,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun toggleInstructionsView(isVisible: Boolean){
         val instructionsView : CardView = requireActivity().findViewById(R.id.instructionLayout)
         if(isVisible){
+            togglePlaceCard(false)
             instructionsView.visibility = View.VISIBLE
             buttonResumeNavigation.visibility = View.INVISIBLE
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, instructionsView.height+20)
@@ -540,11 +547,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun drawPathPolyline(path : MutableList<List<LatLng>>) {
-      clearNavigationPath()  //Clear existing path to show only one path at a time
+        clearNavigationPath()  //Clear existing path to show only one path at a time
         for (i in 0 until path.size) {
-         val polyline= map!!.addPolyline(context?.let { ContextCompat.getColor(it, R.color.colorPrimaryDark) }?.let {
-             PolylineOptions().addAll(path[i]).width(10F).color(it)
-         })
+            val polyline= map!!.addPolyline(context?.let { ContextCompat.getColor(it, R.color.colorPrimaryDark) }?.let {
+                PolylineOptions().addAll(path[i]).width(10F).color(it)
+            })
             currentNavigationPath.add(polyline)
         }
     }
@@ -567,11 +574,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
             override fun onSearchStateChanged(enabled: Boolean) {
-                  if (enabled) {
-                      dismissBottomSheet()
-                      findNavController().navigate(R.id.search_fragment)
-                      mapFragSearchBar.closeSearch()
-                  }
+                if (enabled) {
+                    dismissBottomSheet()
+                    findNavController().navigate(R.id.search_fragment)
+                    mapFragSearchBar.closeSearch()
+                }
             }
             override fun onSearchConfirmed(text: CharSequence?) {
             }
@@ -586,7 +593,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // React to state change
                 // The following code can be used if we want to do certain actions related
                 // to the change of state of the bottom sheet
-           }
+            }
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 // Adjusting the google zoom buttons to stay on top of the bottom sheet
                 //Multiply the bottom sheet height by the offset to get the effect of them being anchored to the top of the sheet
@@ -639,15 +646,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         currentOutdoorNavigationRoute = null
         viewModel.navigationRepository.cancelNavigation()
         if (item is GooglePlace) {
- 			findNavController().popBackStack(R.id.map_fragment, false)
+            findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch(Dispatchers.Main) {
                 for (building in viewModel.getBuildings())
                     if (building.getPlaceId() == item.placeID) { //Check if location is a concordia building
                         isCampusBuilding = true
                         handleBuildingClick(building)
                     }
-              focusLocation(item, isCampusBuilding, true)
-            }        
+                focusLocation(item, isCampusBuilding, true)
+            }
         } else if (item is IndoorLocation) {
             val bundle: Bundle = Bundle()
             bundle.putString("id", item.lID)
@@ -661,17 +668,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun focusLocation(location: GooglePlace, isCampusBuilding : Boolean, isRequired : Boolean){
-       GlobalScope.launch {
-           if(isRequired) {
-               viewModel.navigationRepository.fetchPlace(location)
-           }
-       }.invokeOnCompletion {
-           requireActivity().runOnUiThread{
-               moveTo(location.coordinate, 17.0f)
-               if (!isCampusBuilding)
-               populatePlaceInfoCard(location)
-           }
-       }
+        GlobalScope.launch {
+            if(isRequired) {
+                viewModel.navigationRepository.fetchPlace(location)
+            }
+        }.invokeOnCompletion {
+            requireActivity().runOnUiThread{
+                moveTo(location.coordinate, 17.0f)
+                if (!isCampusBuilding)
+                    populatePlaceInfoCard(location)
+            }
+        }
     }
 
     private fun moveTo(coordinates: LatLng, zoomLevel: Float) {
@@ -692,11 +699,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun populatePlaceInfoCard(location: GooglePlace){
-        place_card_favorites_button.text = "HE::P"
         val saveButton : Button = requireActivity().findViewById(R.id.place_card_favorites_button)
         val placeName: TextView = requireActivity().findViewById(R.id.place_card_name)
         val placeCategory: TextView = requireActivity().findViewById(R.id.place_card_category)
         val closeButton : ImageView = requireActivity().findViewById(R.id.place_card_close_button)
+        toggleInstructionsView(false)
 
         placeName.text = location.name
         placeCategory.text = location.category
@@ -783,11 +790,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (item != null) {
             val googlePlace = GooglePlace(
                 item.placeId,
-                item.name ?: "",
+                item.name,
                 item.address ?: "",
                 LatLng(item.latitude, item.longitude)
             )
-
             findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch {
                 viewModel.navigationRepository.fetchPlace(googlePlace)
@@ -802,18 +808,45 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onExplorePlaceClick(item: Explore_Place?) {
         findNavController().popBackStack(R.id.map_fragment, false)
-
         val exploreLocation = GooglePlace(
             item?.place_placeID!!,
             item.place_name!!,
-            item?.place_address!!,
-            item!!.place_coordinate
+            item.place_address!!,
+            item.place_coordinate
         )
         Handler().postDelayed({
             focusLocation(exploreLocation, false, true)
-        }, 1000)
+        }, 500)
+    }
+
+    private fun checkSettingOptions() {
+        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        val set = HashSet<String>()
+        val settingInflatedView: View = layoutInflater.inflate(R.layout.settings_fragment, null)
+
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_stairs), "stairs")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_escalators), "escalators")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_elevators), "elevators")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_restrooms), "restrooms")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_printers), "printers")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fountains), "fountains")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fireEscape), "fire escape")
+
+        set.addAll(preferenceOff)
+        editor.putStringSet("settingOffArray", set)
+        editor.apply()
+    }
+
+    private fun populateSettingOffArray(switchButton: Switch, buttonText: String) {
+        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val default: Boolean = sharedPref.getBoolean(buttonText, true)
+        switchButton.isChecked = default
+
+        if(!switchButton.isChecked) {
+            preferenceOff.add(buttonText)
+        } else {
+            preferenceOff.remove(buttonText)
+        }
     }
 }
-
-
-

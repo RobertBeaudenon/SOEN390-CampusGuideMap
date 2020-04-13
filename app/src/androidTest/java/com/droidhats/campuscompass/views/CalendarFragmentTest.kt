@@ -160,7 +160,7 @@ class CalendarFragmentTest {
                     allOf(
                         withId(R.id.design_navigation_view),
                         childAtPosition(withId(R.id.nav_view), 0)
-                    ), 2
+                    ), 3
                 )
             )
         ).check(matches(isDisplayed())).perform(click())
