@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.RadioButton
 import androidx.appcompat.widget.SearchView
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
@@ -67,6 +68,11 @@ class SearchFragment : Fragment()  {
         savedInstanceState: Bundle?
     ): View? {
         root = inflater.inflate(R.layout.search_fragment, container, false)
+
+        // Lock the side menu so that it can't be opened
+        val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
         recyclerView = root.findViewById(R.id.search_suggestions_recycler_view)
         return root
     }

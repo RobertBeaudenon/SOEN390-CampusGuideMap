@@ -61,7 +61,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.MapStyleOptions
-import com.google.android.libraries.places.api.model.Place
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mancj.materialsearchbar.MaterialSearchBar
 import kotlinx.android.synthetic.main.bottom_sheet_layout.bottom_sheet
@@ -69,7 +68,6 @@ import kotlinx.android.synthetic.main.instructions_sheet_layout.prevArrow
 import kotlinx.android.synthetic.main.instructions_sheet_layout.nextArrow
 import kotlinx.android.synthetic.main.instructions_sheet_layout.doneButtonMap
 import kotlinx.android.synthetic.main.instructions_sheet_layout.arrayInstruction
-import kotlinx.android.synthetic.main.place_info_card.*
 import kotlinx.android.synthetic.main.search_bar_layout.buttonResumeNavigation
 import kotlinx.android.synthetic.main.search_bar_layout.toggleButton
 import kotlinx.android.synthetic.main.search_bar_layout.mapFragSearchBar
@@ -188,6 +186,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             //Dismiss the bottom sheet when clicking anywhere on the map
             dismissBottomSheet()
         }
+
+        if (currentOutdoorNavigationRoute != null) drawPathPolyline(currentOutdoorNavigationRoute!!.polyLinePath)
 
         attachBuildingObservers()
         observeNavigation()
@@ -526,6 +526,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun toggleInstructionsView(isVisible: Boolean){
         val instructionsView : CardView = requireActivity().findViewById(R.id.instructionLayout)
         if(isVisible){
+            togglePlaceCard(false)
             instructionsView.visibility = View.VISIBLE
             buttonResumeNavigation.visibility = View.INVISIBLE
             map?.setPadding(0, MAP_PADDING_TOP, MAP_PADDING_RIGHT, instructionsView.height+20)
@@ -692,11 +693,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun populatePlaceInfoCard(location: GooglePlace){
-        place_card_favorites_button.text = "HE::P"
         val saveButton : Button = requireActivity().findViewById(R.id.place_card_favorites_button)
         val placeName: TextView = requireActivity().findViewById(R.id.place_card_name)
         val placeCategory: TextView = requireActivity().findViewById(R.id.place_card_category)
         val closeButton : ImageView = requireActivity().findViewById(R.id.place_card_close_button)
+        toggleInstructionsView(false)
 
         placeName.text = location.name
         placeCategory.text = location.category
@@ -787,7 +788,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 item.address ?: "",
                 LatLng(item.latitude, item.longitude)
             )
-
             findNavController().popBackStack(R.id.map_fragment, false)
             GlobalScope.launch {
                 viewModel.navigationRepository.fetchPlace(googlePlace)
@@ -802,7 +802,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onExplorePlaceClick(item: Explore_Place?) {
         findNavController().popBackStack(R.id.map_fragment, false)
-
         val exploreLocation = GooglePlace(
             item?.place_placeID!!,
             item.place_name!!,
@@ -811,7 +810,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         )
         Handler().postDelayed({
             focusLocation(exploreLocation, false, true)
-        }, 1000)
+        }, 500)
     }
 }
 
