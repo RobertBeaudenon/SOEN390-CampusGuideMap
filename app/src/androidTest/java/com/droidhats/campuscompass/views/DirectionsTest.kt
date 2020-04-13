@@ -69,8 +69,7 @@ class DirectionsTest {
     @Test
     fun testDirectionsButton() {
 
-        //Waiting 5 seconds for splash screen to load
-        Thread.sleep(1500)
+        Thread.sleep(1000) //allow NavigationFragment to load
 
         val device = UiDevice.getInstance(getInstrumentation())
 
@@ -125,6 +124,8 @@ class DirectionsTest {
 
     @Test
     fun testDirectionsButtonByWalkingMode() {
+        Thread.sleep(1000) //allow NavigationFragment to load
+
         val device = UiDevice.getInstance(getInstrumentation())
 
         //Click Hall building marker to trigger bottom sheet
@@ -166,6 +167,7 @@ class DirectionsTest {
 
     @Test
     fun testDirectionsButtonByTransitMode() {
+        Thread.sleep(1000) //allow NavigationFragment to load
 
         val device = UiDevice.getInstance(getInstrumentation())
 
