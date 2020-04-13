@@ -46,7 +46,7 @@ class NavigationDrawerTest {
         //let the app load pass the loading screen
         Thread.sleep(3000)
 
-        //Opening side menu by clicking on menu  button
+        //Opening side menu by clicking on menu button
         onView(withId(R.id.mt_nav)).check(matches(isDisplayed())).perform(click())
 
         //checking if side menu is opened

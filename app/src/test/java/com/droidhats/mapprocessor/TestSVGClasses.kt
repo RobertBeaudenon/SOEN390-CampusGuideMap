@@ -60,21 +60,20 @@ class TestSVGClasses {
         Assert.assertEquals(testPath.toString(),
                 "<path id=\"id\" d=\"m 0,0 20,0 0,20 -20,0 Z\" style=\"style\" " +
                         "transform=\"sevenc2.0,2.0,2.0,2.0,2.0,2.0\"/>")
-
-        Assert.assertTrue(testPath.isWithin(-4.0, -4.0))
-        Assert.assertTrue(testPath.isWithin(24.0, 24.0))
+        Assert.assertFalse(testPath.isWithin(-4.0, -4.0))
+        Assert.assertFalse(testPath.isWithin(24.0, 24.0))
         Assert.assertFalse(testPath.isWithin(30.0, 15.0))
-        Assert.assertFalse(testPath.isWithin(15.0, 30.0))
+        Assert.assertTrue(testPath.isWithin(15.0, 30.0))
         Assert.assertFalse(testPath.isWithin(30.0, 30.0))
 
-        Assert.assertEquals(testPath.getWidth(), Pair(20.0, 0.0))
-        Assert.assertEquals(testPath.getHeight(), Pair(20.0, 0.0))
+        Assert.assertEquals(testPath.getWidth(), Pair(0.0, 20.0))
+        Assert.assertEquals(testPath.getHeight(), Pair(0.0, 20.0))
 
         val createdPath = Path.createPath(Pair(0.0, 0.0), Pair(20.0, 20.0))
         Assert.assertEquals(createdPath.id, "")
         Assert.assertEquals(createdPath.d, "m 0.0,0.0 20.0,20.0")
         Assert.assertEquals(createdPath.transform, "")
-        Assert.assertEquals(createdPath.style, "")
+        Assert.assertEquals(createdPath.style, "stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1")
         Assert.assertFalse(createdPath.isClosed)
     }
 
@@ -89,8 +88,6 @@ class TestSVGClasses {
         Assert.assertEquals(testGetPoint.cx, 5.0, 0.1)
         Assert.assertEquals(testGetPoint.cy, 5.0, 0.1)
         Assert.assertEquals(testGetPoint.r, 5.0, 0.1)
-
-        Assert.assertFalse(testCircle.isWithin(0.0, 0.0, 1.0))
 
         Assert.assertEquals(testGetPoint.getCenter(), Pair(5.0, 5.0))
         Assert.assertFalse(testCircle.equals(testGetPoint))

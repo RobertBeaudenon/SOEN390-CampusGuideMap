@@ -18,7 +18,7 @@ class TestProcessMap {
     private lateinit var map: ProcessMap
 
     @Before
-    fun BeforeStuff() {
+    fun beforeStuff() {
         map = ProcessMap()
         val file = RuntimeEnvironment.application.applicationContext.assets.open("test-file.svg")
         val svg: String = file.bufferedReader().use { it.readText() }
@@ -26,7 +26,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestGetDistance() {
+    fun testGetDistance() {
         val x = Pair(0.0, 0.0)
         val y = Pair(3.0, 4.0)
         Assert.assertEquals(5.0, getDistance(x, y), 0.0001)
@@ -36,7 +36,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestIsWithinBounds() {
+    fun testIsWithinBounds() {
         Assert.assertFalse(map.isWithinBounds(0.0, 0.0))
         Assert.assertFalse(map.isWithinBounds(0.0, 250.0))
         Assert.assertFalse(map.isWithinBounds(50.0, 0.0))
@@ -45,25 +45,12 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestInPath() {
+    fun testInPath() {
         Assert.assertTrue(map.inPath(400.0, 350.0))
-
-        for (classRoom in map.getClasses()) {
-            val center = classRoom.getCenter()
-            val top = classRoom.getHeight().first
-            val bottom = classRoom.getHeight().second
-            val left = classRoom.getWidth().first
-            val right = classRoom.getWidth().second
-            Assert.assertFalse(map.inPath(center.first, center.second))
-            Assert.assertFalse(map.inPath(left, top))
-            Assert.assertFalse(map.inPath(right, top))
-            Assert.assertFalse(map.inPath(left, bottom))
-            Assert.assertFalse(map.inPath(right, bottom))
-        }
     }
 
     @Test
-    fun TestCheckPath() {
+    fun testCheckPath() {
         Assert.assertFalse(map.checkPath(Circle(189.0, 129.0, 5.0), Circle(129.0, 230.0, 5.0)))
         Assert.assertFalse(map.checkPath(Circle(150.0, 530.0, 5.0), Circle(189.0, 330.0, 5.0)))
         Assert.assertFalse(map.checkPath(Circle(189.0, 730.0, 5.0), Circle(189.0, 330.0, 5.0)))
@@ -71,7 +58,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestCreatePaths() {
+    fun testCreatePaths() {
         val nodeList = map.createPaths(map.generatePointsAcrossMap())
 
         // sanity check
@@ -84,7 +71,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestGeneratePointsAcrossMap() {
+    fun testGeneratePointsAcrossMap() {
         val circleList = map.generatePointsAcrossMap()
 
         // sanity check
@@ -95,20 +82,15 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestGetSVGStringFromDirections() {
-        val svg = map.getSVGStringFromDirections(Pair("rect3803", "rect3805"))
-        val stringArray = svg.split("\n")
-        var lastPath = ""
-        for (string in 10 until stringArray.size) {
-            if (stringArray[string].contains("<path")) lastPath = stringArray[string]
-        }
+    fun testGetSVGStringFromDirections() {
+        val expectedLastPath = "<path id=\"\" d=\"m 465.0,320.0 54.0,0.0\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><path id=\"\" d=\"m 519.0,320.0 -17.67500000000001,17.67500000000001\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><path id=\"\" d=\"m 519.0,320.0 -17.67500000000001,-17.67500000000001\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><circle cx=\"465.0\" cy=\"320.0\" r=\"5.0\" /><circle cx=\"519.0\" cy=\"320.0\" r=\"5.0\" />"
         var startClass: MapElement? = null
         var endClass: MapElement? = null
         for (aClass in map.getClasses()) {
             if (aClass.getID().contains("3803")) startClass = aClass
             if (aClass.getID().contains("3805")) endClass = aClass
         }
-        Assert.assertEquals(lastPath, Dijkstra(startClass!!, endClass!!, map.createPaths(map.generatePointsAcrossMap())))
+        Assert.assertEquals(expectedLastPath, Dijkstra(startClass!!, endClass!!, map.createPaths(map.generatePointsAcrossMap())))
 
         Assert.assertEquals(map.getSVGStringFromDirections(Pair("1111", "3805")), "")
         Assert.assertEquals(map.getSVGStringFromDirections(Pair("3803", "1111")), "")
@@ -116,7 +98,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestExtractAttr() {
+    fun testExtractAttr() {
         val testPath: String = "<path id=\"123\" d=\"Some path\" style=\"testStyle\" />"
 
         Assert.assertEquals(map.extractAttr("id", testPath), "123")
@@ -135,7 +117,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestCreatePath() {
+    fun testCreatePath() {
         val testPath: String = "<path id=\"123\" d=\"m 0,0 20,20 z\" style=\"testStyle\" />"
         val resultPath: Path = map.createPath(testPath)
         Assert.assertEquals(resultPath.getID(), "123")
@@ -147,7 +129,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestCreateRect() {
+    fun testCreateRect() {
         val testRect: String = "<rect x=\"20\" y=\"20\" width=\"20\" height=\"20\" id=\"123\" style=\"testStyle\" />"
         val resultRect: Rect = map.createRect(testRect)
 
@@ -160,7 +142,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestReadSVGFromString() {
+    fun testReadSVGFromString() {
         val testSVG: String = " <rect\n" +
                 "         y=\"220.21933\"\n" +
                 "         x=\"33.57143\"\n" +
@@ -251,7 +233,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestGetTimeInSeconds() {
+    fun testGetTimeInSeconds() {
         val processMap: ProcessMap = ProcessMap()
         val file = RuntimeEnvironment.application.applicationContext.assets.open("test-file.svg")
         val string = file.bufferedReader().use { it.readText() }
@@ -278,7 +260,7 @@ class TestProcessMap {
     }
 
     @Test
-    fun TestHighlightClassRoom() {
+    fun testHighlightClassRoom() {
         val processMap: ProcessMap = ProcessMap()
         val file = RuntimeEnvironment.application.applicationContext.assets.open("test-file.svg")
         val string = file.bufferedReader().use { it.readText() }
