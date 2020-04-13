@@ -6,8 +6,8 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import com.droidhats.mapprocessor.ProcessMap
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
+import com.droidhats.campuscompass.roomdb.IndoorLocationDao
 import org.json.JSONObject
-import java.io.File
 import java.io.InputStream
 
 class IndoorLocationRepository private constructor(private val indoorLocationDao: IndoorLocationDao) {
@@ -18,7 +18,7 @@ class IndoorLocationRepository private constructor(private val indoorLocationDao
         // Singleton instantiation
         private var instance: IndoorLocationRepository? = null
 
-        fun getInstance(indoorLocationDao : IndoorLocationDao ) =
+        fun getInstance(indoorLocationDao : IndoorLocationDao) =
             instance
                 ?: synchronized(this) {
                     instance
