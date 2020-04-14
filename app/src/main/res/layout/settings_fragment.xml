@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/indoorNavigationText"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:src="@drawable/ic_fire" />
 
             <TextView
@@ -85,8 +85,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stairsIcon"
-                android:padding="20dp"
-                android:src="@drawable/ic_escalator_up" />
+                android:padding="10dp"
+                android:src="@drawable/ic_escalator" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -112,7 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/escalatorsIcon"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:src="@drawable/ic_elavator" />
 
             <TextView
@@ -139,8 +139,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/elevatorsIcon"
-                android:padding="20dp"
-                android:src="@drawable/ic_restroom_m" />
+                android:padding="10dp"
+                android:src="@drawable/ic_restroom" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -166,7 +166,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/restroomsIcon"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:src="@drawable/ic_printer" />
 
             <TextView
@@ -193,7 +193,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/printersIcon"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:src="@drawable/ic_water" />
 
             <TextView
@@ -220,7 +220,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/fountainsIcon"
-                android:padding="20dp"
+                android:padding="10dp"
                 android:src="@drawable/ic_study_room" />
 
             <TextView

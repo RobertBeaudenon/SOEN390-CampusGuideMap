@@ -352,7 +352,7 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM S2.101
         style="fill:none;stroke:none" />
 
     <!-- stairs from S1/MB1 -->
-    <path d="M 390,430 430,425 400,205 363,205 Z" style="fill:none;stroke:none" />
+    <path d="M 390,430 430,425 405,205 363,205 Z" style="fill:none;stroke:none" />
     <rect
         id="rect31.155"
         x="390"
@@ -626,5 +626,6 @@ DUE TO MISSING FLOOR PLANS WITH ROOM NUMBERS, THE ROOMS HAVE BEEN ID FROM S2.101
           fill="#DA3636"
           stroke-width="0"/>
     </svg>
+    <!-- PATH ARROW HERE  -->
   </g>
 </svg>

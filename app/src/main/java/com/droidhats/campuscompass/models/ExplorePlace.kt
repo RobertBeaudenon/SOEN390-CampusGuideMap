@@ -3,7 +3,7 @@ package com.droidhats.campuscompass.models
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.model.Place
 
-class Explore_Place(
+class ExplorePlace(
     name: String,
     address: String,
     rating: String,
@@ -11,7 +11,7 @@ class Explore_Place(
     image: String,
     coordinate: LatLng
 ) {
-    var place_name: String? = name
+    var placeName: String? = name
     var place_address: String? = address
     var place_rating: String? = rating
     var  place_placeID: String? = placeID
@@ -21,7 +21,7 @@ class Explore_Place(
 
     override fun toString(): String {
 
-        return "Name: $place_name" +
+        return "Name: $placeName" +
                 "\nAddress: $place_address" +
                 "\nRating: $place_rating" +
                 "\nID: $place_placeID" +

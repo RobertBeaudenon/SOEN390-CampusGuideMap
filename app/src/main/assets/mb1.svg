@@ -374,7 +374,7 @@ ROOM 1.210 IS KNOW TO BE THE AMPHITHEATER AND HAS BEEN LABEL AS SUCH
 
 
     <!-- information desk, doors, and side  -->
-    <path d="M 460,881 457,853 508,853 537,960 735,960 735,992 506,992 477,881 Z" style="fill:none;stroke:none"/>
+    <path d="M 460,881 457,853 508,853 537,960 735,960 735,992 506,992 477,881 Z" style="fill:none;stroke:none" />
 
     <!-- next to fire marker -->
     <rect y="98" x="420" height="50" width="100" style="fill:none;stroke:none" />
@@ -391,6 +391,7 @@ ROOM 1.210 IS KNOW TO BE THE AMPHITHEATER AND HAS BEEN LABEL AS SUCH
 
     <!-- stairs to s1 + escalators to s2 -->
     <path d="M 366,197 405,197 422,327 450,326 450,505 513,626 513,800 448,800 Z" style="fill:none;stroke:none" />
+
     <rect
         id="rect31.155"
         x="372"
@@ -401,7 +402,7 @@ ROOM 1.210 IS KNOW TO BE THE AMPHITHEATER AND HAS BEEN LABEL AS SUCH
     <rect
         id="rect31.166"
         x="475"
-        y="770"
+        y="800"
         height="30"
         width="30"
         style="fill:none;stroke:none" />
@@ -699,5 +700,6 @@ ROOM 1.210 IS KNOW TO BE THE AMPHITHEATER AND HAS BEEN LABEL AS SUCH
     </svg>
     <svg x="520" y="950" id="entrance">
     </svg>
+    <!-- PATH ARROW HERE  -->
   </g>
 </svg>

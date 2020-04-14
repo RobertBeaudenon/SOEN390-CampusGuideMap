@@ -1,5 +1,7 @@
 package com.droidhats.campuscompass.views
 
+import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
@@ -9,24 +11,22 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiSelector
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import org.hamcrest.Matchers
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
+import org.hamcrest.TypeSafeMatcher
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class MapFragmentTest {
@@ -289,31 +289,31 @@ class MapFragmentTest {
         onView(withId(R.id.radio_transport_mode_bicycle)).perform(click()).check(matches(isChecked()))
     }
 
+    //function that searches for restaurant Ganadara
+    private fun searchOutdoorLocation() {
+
+        // check if search bar exists and clicks on it
+        onView(withId(R.id.mapFragSearchBar)).check(matches(isDisplayed())).perform(click())
+
+        //Checking if action id indeed took you to the correct fragment
+        onView(withId(R.id.search_fragment)).check(matches(isDisplayed()))
+
+        //search for restaurant Ganadara
+        onView(
+            allOf(
+                withId(R.id.search_src_text), isDisplayed()
+            )
+        ).perform(ViewActions.typeText("ganadara"), ViewActions.closeSoftKeyboard())
+
+        //allow suggestions to load
+        Thread.sleep(2000)
+
+        //click on the Ganadara restaurant suggestion from list
+        onView(allOf(withId(R.id.search_suggestion), withText("Ganadara"))).perform(click())
+    }
+
     @Test
     fun test_PlaceInfoCard() {
-
-        //function that searches for restaurant Ganadara
-        fun searchOutdoorLocation() {
-
-            // check if search bar exists and clicks on it
-            onView(withId(R.id.mapFragSearchBar)).check(matches(isDisplayed())).perform(click())
-
-            //Checking if action id indeed took you to the correct fragment
-            onView(withId(R.id.search_fragment)).check(matches(isDisplayed()))
-
-            //search for restaurant Ganadara
-            onView(
-                allOf(
-                    withId(R.id.search_src_text), isDisplayed()
-                )
-            ).perform(ViewActions.typeText("ganadara"), ViewActions.closeSoftKeyboard())
-
-            //allow suggestions to load
-            Thread.sleep(2000)
-
-            //click on the Ganadara restaurant suggestion from list
-            onView(allOf(withId(R.id.search_suggestion), withText("Ganadara"))).perform(click())
-        }
 
         searchOutdoorLocation()
 
@@ -379,6 +379,158 @@ class MapFragmentTest {
     }
 
     @Test
+    fun test_myPlaces(){
+        //search for restaurant Ganadara
+        searchOutdoorLocation()
+
+        //allow map to readjust view
+        Thread.sleep(1500)
+
+        //check that favorites button is displayed and click it
+        onView(withId(R.id.place_card_favorites_button)).check(matches(isDisplayed())).perform(click())
+
+        //Clicks the navbar
+        onView(
+            allOf(
+                withId(R.id.mt_nav),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.root),
+                        childAtPosition(
+                            withId(R.id.mt_container),
+                            0
+                        )
+                    ),
+                    3
+                ),
+                isDisplayed())).perform(click())
+        //checks that the my places option is visible in the nav bar and clicks it
+        onView(
+            allOf(
+                childAtPosition(
+                    allOf(
+                        withId(R.id.design_navigation_view),
+                        childAtPosition(
+                            withId(R.id.nav_view),
+                            0
+                        )
+                    ),
+                    2
+                ),
+                isDisplayed())).perform(click())
+        Thread.sleep(2000)
+
+        //Click on favorites location item
+        onView(withId(R.id.favorites_location_item)).perform(click())
+
+        //Clicks the navbar
+        onView(
+            allOf(
+                withId(R.id.mt_nav),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.root),
+                        childAtPosition(
+                            withId(R.id.mt_container),
+                            0
+                        )
+                    ),
+                    3
+                ),
+                isDisplayed())).perform(click())
+        //checks that the my places option is visible in the nav bar and clicks it
+        onView(
+            allOf(
+                childAtPosition(
+                    allOf(
+                        withId(R.id.design_navigation_view),
+                        childAtPosition(
+                            withId(R.id.nav_view),
+                            0
+                        )
+                    ),
+                    2
+                ),
+                isDisplayed())).perform(click())
+        Thread.sleep(2000)
+
+        //click on navigation button
+        onView(withId(R.id.setNavigationPoint)).perform(click())
+
+        //click on start navigation button
+        onView(withId(R.id.startNavigationButton)).perform(click())
+
+        //allow navigation to load
+        Thread.sleep(2000)
+
+        //close instructions
+        onView(withId(R.id.buttonCloseInstructions)).perform(click())
+
+        //repeat search for restaurant Ganadara in order to test navigation from the place info card
+        searchOutdoorLocation()
+
+        //allow map to readjust view
+        Thread.sleep(1500)
+
+        //check that favorites button is displayed and click it
+        onView(withId(R.id.place_card_favorites_button)).check(matches(isDisplayed())).perform(click())
+    }
+
+    @Test
+    fun test_explore(){
+        //Clicks the navbar
+        onView(
+            allOf(
+                withId(R.id.mt_nav),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.root),
+                        childAtPosition(
+                            withId(R.id.mt_container),
+                            0
+                        )
+                    ),
+                    3
+                ),
+                isDisplayed())).perform(click())
+        //checks that the explore option is visible in the nav bar and clicks it
+        onView(
+            allOf(
+                childAtPosition(
+                    allOf(
+                        withId(R.id.design_navigation_view),
+                        childAtPosition(
+                            withId(R.id.nav_view),
+                            0
+                        )
+                    ),
+                    4
+                ),
+                isDisplayed())).perform(click())
+        Thread.sleep(2000)
+
+        //click on food button
+        onView(withId(R.id.select_food_button)).perform(click())
+
+        Thread.sleep(2000)
+        //click on button menu explore
+        onView(withId(R.id.button_explore)).perform(click())
+
+        //click on drinks button
+        onView(withId(R.id.select_drinks_button)).perform(click())
+
+        Thread.sleep(2000)
+        //click on button menu explore
+        onView(withId(R.id.button_explore)).perform(click())
+
+        //click on toggle button to switch campus
+        onView(withId(R.id.toggleButton2)).perform(click())
+
+        //click on toggle button to switch campus
+        onView(withId(R.id.select_study_button)).perform(click())
+    }
+
+    @Test
     fun test_SwitchToggle() {
 
         //Checking if toggle button is displayed
@@ -434,4 +586,21 @@ class MapFragmentTest {
             .check(matches(withText("Directions")))
     }
 
+    private fun childAtPosition(
+        parentMatcher: Matcher<View>, position: Int
+    ): Matcher<View> {
+
+        return object : TypeSafeMatcher<View>() {
+            override fun describeTo(description: Description) {
+                description.appendText("Child at position $position in parent ")
+                parentMatcher.describeTo(description)
+            }
+
+            public override fun matchesSafely(view: View): Boolean {
+                val parent = view.parent
+                return parent is ViewGroup && parentMatcher.matches(parent)
+                        && view == parent.getChildAt(position)
+            }
+        }
+    }
 }

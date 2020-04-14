@@ -33,7 +33,7 @@
             android:layout_marginBottom="20dp"
             android:text="@string/Calendar_Feature_Name"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
     </RelativeLayout>
 
@@ -41,23 +41,22 @@
         android:id="@+id/swipe_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
+        android:layout_weight="1">
 
-    <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/calendar_recycler_view"
-        android:name="com.droidhats.campuscompass.CalendarFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layoutManager="LinearLayoutManager"
-        tools:context=".views.CalendarFragment"
-        tools:listitem="@layout/calendar_recycler_item"
-        android:scrollbars="vertical"
-        android:scrollbarStyle="insideInset"
-        />
+        <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/calendar_recycler_view"
+            android:name="com.droidhats.campuscompass.CalendarFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            app:layoutManager="LinearLayoutManager"
+            tools:context=".views.CalendarFragment"
+            tools:listitem="@layout/calendar_recycler_item" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

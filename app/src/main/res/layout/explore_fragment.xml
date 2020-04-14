@@ -6,18 +6,20 @@
     android:orientation="vertical"
     android:id="@+id/explore_fragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/quantum_white_100"
         android:paddingTop="15dp"
-        android:paddingBottom="15dp">
+        android:paddingBottom="15dp"
+        android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/button_menu_explore"
             android:layout_width="100dp"
             android:layout_height="51dp"
             android:layout_marginTop="10dp"
+            android:layout_weight="0"
             android:background="#FFFFFF"
             android:contentDescription="menu button"
             android:padding="30dp"
@@ -25,17 +27,35 @@
 
         <TextView
             android:id="@+id/text_calendar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="20dp"
             android:text="@string/explore"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
-    </RelativeLayout>
+        <ToggleButton
+            android:id="@+id/toggleButton2"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:layout_gravity="center|bottom"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/toggle_switch"
+            android:elevation="0dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/togglebutton"
+            android:textColor="#FFFFFF"
+            android:textOff="@string/sgw"
+            android:textOn="@string/loy"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,10 +77,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
             android:text="Food"
+            android:textSize="24dp"
             android:textAllCaps="false"
             android:textColor="@color/quantum_white_text"
-            android:background="@drawable/calendarbutton"
+            android:background="@drawable/button_food"
             android:paddingStart="55dp"
             android:paddingEnd="55dp"
             android:paddingBottom="14dp"
@@ -88,14 +111,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-            android:text="Drinks"
-            android:textAllCaps="false"
-            android:textColor="@color/quantum_white_text"
-            android:background="@drawable/calendarbutton"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/button_drinks"
             android:paddingStart="55dp"
+            android:paddingTop="12dp"
             android:paddingEnd="55dp"
             android:paddingBottom="14dp"
-            android:paddingTop="12dp" />
+            android:text="Drinks"
+            android:textSize="24dp"
+            android:textAllCaps="false"
+            android:textColor="@color/quantum_white_text" />
 
     </LinearLayout>
 
@@ -120,32 +145,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-            android:text="Study"
-            android:textAllCaps="false"
-            android:textColor="@color/quantum_white_text"
-            android:background="@drawable/calendarbutton"
+            android:background="@drawable/button_study"
             android:paddingStart="55dp"
+            android:paddingTop="12dp"
             android:paddingEnd="55dp"
             android:paddingBottom="14dp"
-            android:paddingTop="12dp" />
+            android:text="Study"
+            android:textSize="24dp"
+            android:textAllCaps="false"
+            android:textColor="@color/quantum_white_text" />
 
     </LinearLayout>
 
-    <ToggleButton
-        android:id="@+id/toggleButton2"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_below="@+id/mapFragSearchBar"
-        android:layout_gravity="center|bottom"
-        android:layout_marginTop="50dp"
-        android:background="@drawable/toggle_switch"
-        android:elevation="0dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:text="@string/togglebutton"
-        android:textColor="#FFFFFF"
-        android:textOff="@string/sgw"
-        android:textOn="@string/loy"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+
 </LinearLayout>

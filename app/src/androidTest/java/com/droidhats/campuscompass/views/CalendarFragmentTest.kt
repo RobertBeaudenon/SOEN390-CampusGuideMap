@@ -170,7 +170,7 @@ class CalendarFragmentTest {
             .check(matches(isDisplayed()))
 
         //Checks if there exists a button with text select calendars and performs a click on it
-        onView(allOf(withId(R.id.select_calendar_button), withText("select calendars")))
+        onView(allOf(withId(R.id.select_calendar_button), withText("Select Calendars")))
             .check(matches(isDisplayed())).perform(click())
 
         //Checks if there exists "select your Calendars" on the calendar selection widget
