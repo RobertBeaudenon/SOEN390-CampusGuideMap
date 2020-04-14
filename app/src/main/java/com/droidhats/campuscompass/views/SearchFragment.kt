@@ -220,12 +220,6 @@ class SearchFragment : Fragment()  {
 
         //Make sure BOTH coordinates are set before generating directions
         if (!(origin?.getLocation() == LatLng(0.0, 0.0) || destination?.getLocation() == LatLng(0.0, 0.0))) {
-            Toast.makeText(
-                context, "Starting Navigation\n" +
-                        "From: ${origin?.name}\n" +
-                        "To: ${destination?.name}\n",
-                Toast.LENGTH_LONG
-            ).show()
 
             val navHandler: NavHandler = NavHandler.initializeChain(
                 origin!!,
@@ -270,8 +264,7 @@ class SearchFragment : Fragment()  {
                 val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
                 searchText.setTextColor(Color.parseColor("#fcba03"))
                 NavigationPoints[searchView.id] = currentLocation
-                Toast.makeText(context, "Current Location Set\n $coordinates", Toast.LENGTH_LONG).show()
-
+                
                 if (areRouteParametersSet()) {
                     viewModel.getRouteTimes(
                         NavigationPoints[R.id.mainSearchBar]!!,
