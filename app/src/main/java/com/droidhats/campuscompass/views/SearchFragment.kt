@@ -48,6 +48,7 @@ class SearchFragment : Fragment()  {
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var root: View
+    private lateinit var drawer : DrawerLayout
     private var columnCount = 1
     private lateinit var selectedTransportationMethod : String
     
@@ -69,7 +70,7 @@ class SearchFragment : Fragment()  {
         root = inflater.inflate(R.layout.search_fragment, container, false)
 
         // Lock the side menu so that it can't be opened
-        val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+        drawer = requireActivity().findViewById(R.id.drawer_layout)
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         recyclerView = root.findViewById(R.id.search_suggestions_recycler_view)
@@ -414,6 +415,7 @@ class SearchFragment : Fragment()  {
     private fun reset(){
         isNavigationViewOpen = false
         NavigationPoints = mutableMapOf(R.id.mainSearchBar to null, R.id.secondarySearchBar to null)
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
     /**

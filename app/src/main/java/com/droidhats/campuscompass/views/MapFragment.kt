@@ -259,8 +259,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             } else if (it == null) {
                 cancelNavigation()
-                requireActivity().onBackPressedDispatcher.addCallback{
-                    requireActivity().finishAffinity()
+                requireActivity().onBackPressedDispatcher.addCallback {
+                    if (findNavController().currentDestination?.id == R.id.map_fragment)
+                        requireActivity().finishAffinity()
+                    else
+                        findNavController().navigateUp()
                 }
             }
         })
