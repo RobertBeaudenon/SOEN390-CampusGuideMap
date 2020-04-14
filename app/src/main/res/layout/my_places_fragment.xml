@@ -6,8 +6,6 @@
     android:orientation="vertical"
     android:id="@+id/my_places_fragment">
 
-
-<!--    TODO: Design the layout for My Places-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +33,7 @@
             android:layout_marginBottom="20dp"
             android:text="@string/Favorites_Feature_Name"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
     </RelativeLayout>
 
@@ -53,5 +51,4 @@
             app:layoutManager="LinearLayoutManager"
             tools:context=".views.MyPlacesFragment"
             tools:listitem="@layout/favorites_recycler_item" />
-
 </LinearLayout>

@@ -10,9 +10,12 @@ import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.hasSibling
+import androidx.test.espresso.matcher.ViewMatchers.withHint
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -22,7 +25,6 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
-import junit.framework.TestCase
 import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
@@ -155,7 +157,7 @@ class FloorFragmentTest {
             )
         )
 
-        //check if Floor Fragment is in view
+        //check if Floor text is in view
         onView(withId(R.id.text_floor))
             .check(matches(isDisplayed()))
 
@@ -172,5 +174,107 @@ class FloorFragmentTest {
                 Press.FINGER
             )
         )
+    }
+
+    @Test
+    fun floorToFloorNavigation() {
+        //let the app load past the splash screen
+        Thread.sleep(3000)
+
+        // check if search bar exists and clicks on it
+        onView(withId(R.id.mapFragSearchBar)).check(
+            matches(
+                isDisplayed()
+            )
+        ).perform(click())
+
+        //Checking if action id indeed took you to the correct fragment
+        onView(withId(R.id.search_fragment)).check(
+            matches(
+                isDisplayed()
+            )
+        )
+
+        //search a Hall 8th floor room by starting search with 'h'
+        onView(
+            Matchers.allOf(
+                withId(R.id.search_src_text), isDisplayed()
+            )
+        ).perform(ViewActions.typeText("hall-8"), ViewActions.closeSoftKeyboard())
+
+        //allow suggestions to load
+        Thread.sleep(1000)
+
+        //Performs click on the Set Navigation Button
+        onView(
+            Matchers.allOf(
+                withId(R.id.setNavigationPoint),
+                ViewMatchers.withContentDescription("SetNavigation"),
+                ViewMatchers.hasSibling(
+                    Matchers.allOf(
+                        withId(R.id.relative_layout1),
+                        ViewMatchers.withChild(
+                            Matchers.allOf(
+                                withId(R.id.search_suggestion),
+                                withText("hall-867")
+                            )
+                        )
+                    )
+                ),
+                isDisplayed()
+            )
+        ).perform(click())
+
+        //Checks if Clear button for main (from) searchbar is displayed
+        onView(Matchers.allOf(withId(R.id.search_close_btn),hasSibling(withText("Your Current Location")))).check(matches(isDisplayed())).perform(click())
+
+        //search a Hall 9th floor room by starting search with 'hall-9'
+        onView(
+            Matchers.allOf(
+                withId(R.id.search_src_text), withHint("From"), isDisplayed()
+            )
+        ).perform(ViewActions.typeText("hall-9"), ViewActions.closeSoftKeyboard())
+
+        //allow suggestions to load
+        Thread.sleep(1000)
+
+        //click on the hall-167 suggestion from list
+        onView(
+            Matchers.allOf(
+                withId(R.id.search_suggestion),
+                withText("hall-927.1")
+            )
+        ).perform(click())
+
+        //allow suggestions to be inserted into from bar
+        Thread.sleep(1000)
+
+        //Performs click on the Set Navigation Button
+        onView(withId(R.id.startNavigationButton)).perform(click())
+
+        //click on back button for coverage
+        onView(withId(R.id.progressFloor))
+            .check(matches(isDisplayed()))
+
+        //allow floor fragment to load
+        Thread.sleep(5000)
+
+        //check if Floor Fragment is in view
+        onView(withId(R.id.floormap))
+            .check(matches(isDisplayed()))
+
+        //check if instructions is in view
+        onView(withId(R.id.instructions_text))
+            .check(matches(isDisplayed()))
+
+        //click on next button
+        onView(withId(R.id.nextArrowFloor))
+            .check(matches(isDisplayed())).perform(click())
+
+        Thread.sleep(1000)
+
+        //click on done button
+        onView(withId(R.id.doneButtonFloor))
+            .check(matches(isDisplayed())).perform(click())
     }
 }
