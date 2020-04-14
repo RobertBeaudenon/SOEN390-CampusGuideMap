@@ -163,7 +163,9 @@ class ProcessMap {
     }
 
     /**
-     * Automate changing the floor number for the class in the svg file
+     * Automate changing the floor number for the class in the svg file. This also takes into
+     * consideration whether the options under settings are enable or disabled in order to
+     * properly handle the icon being shown on the floor map.
      * @param svg to update
      * @return svg as string (updated with new floor numbers)
      */
@@ -179,58 +181,48 @@ class ProcessMap {
         val originalSVG: List<String> = svg.split("\n")
         var svgArray = mutableListOf<String>()
 
-        if (floorNumber == numBuilding) {
-            newFileStr = svg
-        }
-        if (floorNumber != numBuilding) {
-            //Add all of the svg in the
-            for (line in originalSVG) {
-                if (FloorFragment.settingsOff.isNotEmpty()) {
-                    if (line.contains("id=\"") && checkArrayForLine(FloorFragment.settingsOff, line)) {
-                            svgArray.add(line.replace(">", "display=\"none\">"))
-                    } else {
-                        svgArray.add(line)
-                    }
-                } else  {
+        //Add all of the svg in the
+        for (line in originalSVG) {
+            if (FloorFragment.settingsOff.isNotEmpty()) {
+                if (line.contains("id=\"") && checkArrayForLine(FloorFragment.settingsOff, line)) {
+                    svgArray.add(line.replace(">", "display=\"none\">"))
+                } else {
                     svgArray.add(line)
                 }
-            }
-
-            for (i in svgArray) {
-                var resultText = patternText.containsMatchIn(i)
-                var resultDocName = patternDocName.containsMatchIn(i)
-
-                if (!resultText && !resultDocName) {
-                    newFileStr += i + "\n"
-                    continue
-                }
-                if (resultText) {
-                    var textArray = i.split("> ")
-                    var str = textArray[1].split(" </")
-                    var roomNum = str[0]
-                    var roomNumRegex = Regex(numBuilding)
-                    var newFloor = roomNumRegex.replaceFirst(roomNum, floorNumber)
-                    var newTextTag =
-                        "${textArray.elementAt(0)}" + "> " + "$newFloor" + " </" + "${str.elementAt(
-                            1
-                        )}"
-                    newFileStr += newTextTag + "\n"
-                }
-                if (resultDocName) {
-                    var textArray = i.split("-")
-                    var str = textArray[1].split(".")
-                    var docNum = str[0]
-                    var docNumRegex = Regex(numBuilding)
-                    var newDocNum = docNumRegex.replaceFirst(docNum, floorNumber)
-                    var newDocTag =
-                        "${textArray.elementAt(0)}" + "-" + "$newDocNum" + "." + "${str.elementAt(
-                            1
-                        )}"
-                    newFileStr += newDocTag + "\n"
-                }
+            } else  {
+                svgArray.add(line)
             }
         }
 
+        for (i in svgArray) {
+            val resultText = patternText.containsMatchIn(i)
+            val resultDocName = patternDocName.containsMatchIn(i)
+
+            if (!resultText && !resultDocName) {
+                newFileStr += i + "\n"
+                continue
+            }
+            if (resultText) {
+                val textArray = i.split("> ")
+                val str = textArray[1].split(" </")
+                val roomNum = str[0]
+                val roomNumRegex = Regex(numBuilding)
+                val newFloor = roomNumRegex.replaceFirst(roomNum, floorNumber)
+                val newTextTag =
+                    textArray.elementAt(0) + "> " + "$newFloor" + " </" + str.elementAt(1)
+                newFileStr += newTextTag + "\n"
+            }
+            if (resultDocName) {
+                val textArray = i.split("-")
+                val str = textArray[1].split(".")
+                val docNum = str[0]
+                val docNumRegex = Regex(numBuilding)
+                val newDocNum = docNumRegex.replaceFirst(docNum, floorNumber)
+                val newDocTag =
+                    textArray.elementAt(0) + "-" + "$newDocNum" + "." + str.elementAt(1)
+                newFileStr += newDocTag + "\n"
+            }
+        }
         return newFileStr
     }
 
