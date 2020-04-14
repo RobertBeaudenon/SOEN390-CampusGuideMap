@@ -2,6 +2,7 @@ package com.droidhats.campuscompass.views
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
@@ -79,11 +80,13 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         root = inflater.inflate(R.layout.floor_fragment, container, false)
         navView = requireActivity().findViewById(R.id.nav_view)
         navView.setNavigationItemSelectedListener(this)
+        settingsSharedPrefRetrieve()
         return root
     }
 
     companion object {
         var OnFloorFragmentBackClicked: OnFloorFragmentBackClicked? = null
+        val settingsOff = ArrayList<String>()
     }
 
     /**
@@ -697,5 +700,15 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         drawerLayout.closeDrawer(GravityCompat.START)
         displayAlertMsg(item.itemId)
         return true
+    }
+
+    private fun settingsSharedPrefRetrieve() {
+        settingsOff.clear()
+        val sharedPref = requireActivity().getPreferences(Context.MODE_PRIVATE)
+        val set = sharedPref.getStringSet("settingOffArray", null)
+
+        for (element in set!!) {
+            settingsOff.add(element)
+        }
     }
 }

@@ -38,7 +38,7 @@ class SettingsFragment : Fragment() {
         currentSwitchStatus(root.findViewById(R.id.switch_settings_restrooms), "restrooms", false)
         currentSwitchStatus(root.findViewById(R.id.switch_settings_printers), "printers", false)
         currentSwitchStatus(root.findViewById(R.id.switch_settings_fountains), "fountains", false)
-        currentSwitchStatus(root.findViewById(R.id.switch_settings_fireEscape), "fire escape",false)
+        currentSwitchStatus(root.findViewById(R.id.switch_settings_studyRooms), "study",false)
 
         root.findViewById<Switch>(R.id.switch_settings_stairs).setOnCheckedChangeListener { _, isChecked ->
             performSwitchClick(root.findViewById(R.id.switch_settings_stairs), isChecked, "stairs", true)
@@ -64,8 +64,8 @@ class SettingsFragment : Fragment() {
             performSwitchClick(root.findViewById(R.id.switch_settings_fountains), isChecked, "fountains",false)
         }
 
-        root.findViewById<Switch>(R.id.switch_settings_fireEscape).setOnCheckedChangeListener { _, isChecked ->
-            performSwitchClick(root.findViewById(R.id.switch_settings_fireEscape), isChecked, "fire escape",false)
+        root.findViewById<Switch>(R.id.switch_settings_studyRooms).setOnCheckedChangeListener { _, isChecked ->
+            performSwitchClick(root.findViewById(R.id.switch_settings_studyRooms), isChecked, "study",false)
         }
 
         return root
