@@ -235,7 +235,7 @@ class ProcessMap {
     }
 
     /**
-     * Automate changing the floor number for the class in the svg file
+     * Compares the id in line with the content of the array to see if there is a match.
      * @param settingArray which contains all the settings options that are turned off
      * @param lineToModify the line that might need to be modified
      * @return true if the line needs modification else false
