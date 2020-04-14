@@ -181,7 +181,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         // Move camera to SGW
-        // TODO when navigation path is being shown, the camera should be moved to current location
         moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
         toggleButton.setChecked(false)
 
@@ -385,11 +384,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      *  @param resultCode checks the result of the request check
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
-            if (resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
                 locationUpdateState = true
                 startLocationUpdates()
-            }
         }
     }
 
@@ -540,6 +537,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
+        setNavigationNextArrow(instructions, instructionsCoordinates)
+        setNavigationBackArrow(instructions, instructionsCoordinates)
+    }
+
+    /**
+     * Sets the functionality to the navigation arrows when navigating
+     * @param instructions set
+     * @param instructionsCoordinates
+     */
+    private fun setNavigationNextArrow(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>) {
         nextArrow.setOnClickListener{
             prevArrow.visibility = View.VISIBLE
             trackerSteps++
@@ -566,6 +573,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 moveTo(instructionsCoordinates[instructions.size - 1], 20.0F)
             }
         }
+    }
+
+    private fun setNavigationBackArrow(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>) {
         prevArrow.setOnClickListener{
             nextArrow.visibility = View.VISIBLE
             doneButtonMap.visibility = View.GONE
@@ -687,6 +697,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
             override fun onSearchConfirmed(text: CharSequence?) {
+                // not being used
             }
         })
     }
@@ -740,12 +751,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 buildingServices.text = building.getServices()
                 buildingDepartments.text = building.getDepartments()
                 buildingImage.setImageResource(building.getImageResId())
-                //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
             }
         }
     }
 
-    override fun onCalendarEventClick(item: CalendarEvent?) {}
+    override fun onCalendarEventClick(item: CalendarEvent?) {
+        // add no functionality for this overridden function
+    }
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         var isCampusBuilding = false
@@ -937,7 +949,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_restrooms), "restrooms")
         populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_printers), "printers")
         populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fountains), "fountains")
-        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fireEscape), "fire escape")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_studyRooms), "study")
 
         set.addAll(preferenceOff)
         editor.putStringSet("settingOffArray", set)
