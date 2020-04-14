@@ -44,7 +44,6 @@
             android:maxWidth="@dimen/calendar_event_card_max_text_width"
             android:textAppearance="?attr/textAppearanceListItemSecondary"
             android:textColor="@color/white" />
-
     </LinearLayout>
 
     <ImageButton
@@ -57,8 +56,6 @@
         android:paddingEnd="15dp"
         android:src="@drawable/ic_near_me_blue_32dp"
         tools:ignore="RtlSymmetry" />
-
-
 </androidx.cardview.widget.CardView>
 
 
