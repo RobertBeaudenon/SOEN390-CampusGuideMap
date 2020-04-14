@@ -4,17 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-        <androidx.core.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TableLayout
+            android:id="@+id/shuttleTimesTable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
-
-            <TableLayout
-                android:id="@+id/shuttleTimesTable"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:nestedScrollingEnabled="true"
-                android:stretchColumns="0,1" />
-        </androidx.core.widget.NestedScrollView>
+            android:layout_gravity="center_horizontal"
+            android:nestedScrollingEnabled="true"
+            android:stretchColumns="0,1" />
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

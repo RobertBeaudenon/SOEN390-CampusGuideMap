@@ -1,13 +1,18 @@
 package com.droidhats.campuscompass.views
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -16,7 +21,6 @@ import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.viewmodels.ShuttleViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-
 
 class ShuttleFragment : Fragment() {
 
@@ -28,7 +32,14 @@ class ShuttleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.shuttle_fragment, container, false)
+        val root = inflater.inflate(R.layout.shuttle_fragment, container, false)
+        val sideDrawerButton: ImageButton = root.findViewById(R.id.button_menu)
+        sideDrawerButton.setOnClickListener {
+            requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout).openDrawer(
+                GravityCompat.START
+            )
+        }
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,6 +113,13 @@ class CampusTabFragment : Fragment() {
                 val timeText = TextView(root.context)
                 timeText.text = dataRow.shuttle_time
 
+                dayText.gravity = Gravity.CENTER_HORIZONTAL
+                dayText.typeface = Typeface.DEFAULT_BOLD
+                timeText.gravity = Gravity.CENTER_HORIZONTAL
+                timeText.typeface = Typeface.DEFAULT_BOLD
+                tableRow.setPadding(0, 25, 0,25)
+                timeText.setBackgroundResource(R.color.colorShuttleFirstRow)
+
                 tableRow.addView(dayText)
                 tableRow.addView(timeText)
                 table.addView(tableRow)
@@ -114,11 +132,20 @@ class CampusTabFragment : Fragment() {
             val table = root.findViewById<TableLayout>(R.id.shuttleTimesTable)
             for (dataRow in loyShuttleTimes) {
                 val tableRow = TableRow(root.context)
+
                 val dayText = TextView(root.context)
                 dayText.text = dataRow.shuttle_day
 
                 val timeText = TextView(root.context)
                 timeText.text = dataRow.shuttle_time
+
+                dayText.gravity = Gravity.CENTER_HORIZONTAL
+                dayText.typeface = Typeface.DEFAULT_BOLD
+                timeText.gravity = Gravity.CENTER_HORIZONTAL
+                timeText.typeface = Typeface.DEFAULT_BOLD
+                tableRow.setPadding(0, 25, 0,25)
+                timeText.setBackgroundResource(R.color.colorShuttleFirstRow)
+
                 tableRow.addView(dayText)
                 tableRow.addView(timeText)
                 table.addView(tableRow)

@@ -1,5 +1,6 @@
 package com.droidhats.mapprocessor
 
+import com.droidhats.campuscompass.views.FloorFragment
 import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.pow
@@ -184,7 +185,15 @@ class ProcessMap {
         if (floorNumber != numBuilding) {
             //Add all of the svg in the
             for (line in originalSVG) {
-                svgArray.add(line)
+                if (FloorFragment.settingsOff.isNotEmpty()) {
+                    if (line.contains("id=\"") && checkArrayForLine(FloorFragment.settingsOff, line)) {
+                            svgArray.add(line.replace(">", "display=\"none\">"))
+                    } else {
+                        svgArray.add(line)
+                    }
+                } else  {
+                    svgArray.add(line)
+                }
             }
 
             for (i in svgArray) {
@@ -223,6 +232,23 @@ class ProcessMap {
         }
 
         return newFileStr
+    }
+
+    /**
+     * Automate changing the floor number for the class in the svg file
+     * @param settingArray which contains all the settings options that are turned off
+     * @param lineToModify the line that might need to be modified
+     * @return true if the line needs modification else false
+     */
+    private fun checkArrayForLine(settingArray: ArrayList<String>, lineToModify: String): Boolean {
+        var check = false
+
+        for (element in settingArray) {
+            if (lineToModify.contains(element)) {
+                check = true
+            }
+        }
+        return check
     }
 
     /**
