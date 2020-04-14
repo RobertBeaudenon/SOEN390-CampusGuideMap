@@ -374,22 +374,13 @@ class ProcessMap {
     fun getStartAndEnd(startAndEnd: Pair<String, String>): Pair<Int?, Int?> {
         var startInt: Int? = null
         var endInt: Int? = null
-        var x = 0
-        for (aClass in allElements) {
-            // todo: I have no idea what this section of code does (up to 4 lines below)
-            var start = startAndEnd.first
-            if (start[start.length - 1] == '0' && start[start.length - 2] == '.') {
-                start = start.substring(0, start.length - 1)
-            }
-
+        for ((x, aClass) in allElements.withIndex()) {
             if (aClass.getID().equals(startAndEnd.first)) {
                 startInt = x
             }
             if (aClass.getID().equals(startAndEnd.second)) {
                 endInt = x
             }
-
-            x++
         }
         return Pair(startInt, endInt)
     }
