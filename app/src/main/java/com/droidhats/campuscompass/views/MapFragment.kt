@@ -181,7 +181,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         // Move camera to SGW
-        // TODO when navigation path is being shown, the camera should be moved to current location
         moveTo(viewModel.getCampuses()[0].getLocation(), 16f)
         toggleButton.setChecked(false)
 
@@ -752,7 +751,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 buildingServices.text = building.getServices()
                 buildingDepartments.text = building.getDepartments()
                 buildingImage.setImageResource(building.getImageResId())
-                //TODO: Leaving events empty for now as the data is not loaded from json. Need to figure out in future how to implement
             }
         }
     }
