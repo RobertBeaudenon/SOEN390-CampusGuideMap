@@ -138,7 +138,9 @@ class ProcessMap {
      */
     fun readSVGFromString(svgFile: String) {
         readSVG(svgFile,
-            fun(str: String) {},
+            fun(str: String) {
+                // do nothing for each line
+            },
             fun(rect: String) {
                 val newRect = createRect(rect)
                 classes.add(newRect)
@@ -256,7 +258,9 @@ class ProcessMap {
                     highlightedSVG.append(thePath.toString()).append("\n")
                 }
             },
-            fun(svg) {}
+            fun(svg) {
+                // do nothing for svg elements, because we don't highlight them
+            }
         )
         return highlightedSVG.toString()
     }
