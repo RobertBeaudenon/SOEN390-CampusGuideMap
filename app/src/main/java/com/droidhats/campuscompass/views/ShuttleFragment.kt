@@ -118,7 +118,7 @@ class CampusTabFragment : Fragment() {
                 timeText.gravity = Gravity.CENTER_HORIZONTAL
                 timeText.typeface = Typeface.DEFAULT_BOLD
                 tableRow.setPadding(0, 25, 0,25)
-                timeText.setBackgroundResource(R.color.colorShuttleFirstRow)
+                timeText.setBackgroundResource(R.color.colorShuttleRow)
 
                 tableRow.addView(dayText)
                 tableRow.addView(timeText)
@@ -144,7 +144,7 @@ class CampusTabFragment : Fragment() {
                 timeText.gravity = Gravity.CENTER_HORIZONTAL
                 timeText.typeface = Typeface.DEFAULT_BOLD
                 tableRow.setPadding(0, 25, 0,25)
-                timeText.setBackgroundResource(R.color.colorShuttleFirstRow)
+                timeText.setBackgroundResource(R.color.colorShuttleRow)
 
                 tableRow.addView(dayText)
                 tableRow.addView(timeText)
