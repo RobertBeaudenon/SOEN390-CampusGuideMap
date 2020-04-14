@@ -319,39 +319,32 @@ class ProcessMap {
      */
     internal fun extractAttr(attribute: String, line: String): String {
         val string: String = " $attribute="
-        if (!line.contains(string)) return ""
 
-        var inString: Boolean = false
-        var startExtractingString: Boolean = false
-        var inAttrString: Boolean = false
-        var value: String = ""
         for (i in line.indices) {
-
-            if (line[i + 1] == '"' && line[i] != '\\') {
-
-                inString = !inString
-                if (startExtractingString) {
-                    if (inAttrString) break
-                    inAttrString = true
-                }
-                continue
-            }
-
-            if ((i + string.length) < line.length && string.equals(
-                    line.substring(
-                        i,
-                        i + string.length
-                    )
-                ) && !inString
+            if (
+                (i + string.length) < line.length
+                && string == line.substring(i, i + string.length)
             ) {
-                startExtractingString = true
-            }
-
-            if (startExtractingString && inString) {
-                value += line[i + 1]
+                return extractString(i + string.length + 1, line)
             }
         }
-        return value
+        return ""
+    }
+
+    /**
+     * This method will extract the portion of a string up until a quote
+     * @param iteration start of extraction point
+     * @param line to extract from
+     * @return extracted string
+     */
+    private fun extractString(iteration: Int, line: String): String {
+        var it = iteration
+        val string = StringBuilder()
+        while(line[it] != '"') {
+            string.append(line[it])
+            it++
+        }
+        return string.toString()
     }
 
     /**
