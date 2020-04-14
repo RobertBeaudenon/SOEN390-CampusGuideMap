@@ -603,5 +603,4 @@ class MapFragmentTest {
             }
         }
     }
-
 }

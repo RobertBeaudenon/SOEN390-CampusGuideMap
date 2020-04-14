@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.views.ExploreCategoryFragment
 import kotlinx.android.synthetic.main.explore_recycler_item.view.*
-import com.droidhats.campuscompass.models.Explore_Place
+import com.droidhats.campuscompass.models.ExplorePlace
 import com.squareup.picasso.Picasso;
 
 /**
@@ -20,14 +20,14 @@ import com.squareup.picasso.Picasso;
  * @param items
  * @param listener
  */
-class ExplorePlaceAdapter(private val items: ArrayList<Explore_Place>, private val listener: ExploreCategoryFragment.OnExplorePlaceClickListener?):
+class ExplorePlaceAdapter(private val items: ArrayList<ExplorePlace>, private val listener: ExploreCategoryFragment.OnExplorePlaceClickListener?):
     RecyclerView.Adapter<ExplorePlaceAdapter.ViewHolder>() {
 
     private val onClickListener: View.OnClickListener
 
     init {
         onClickListener = View.OnClickListener { view ->
-            val item = view.tag as Explore_Place?
+            val item = view.tag as ExplorePlace?
             listener?.onExplorePlaceClick(item)
         }
     }
@@ -40,7 +40,7 @@ class ExplorePlaceAdapter(private val items: ArrayList<Explore_Place>, private v
     override fun onBindViewHolder(holder: ExplorePlaceAdapter.ViewHolder, position: Int) {
         val item = items[position]
 
-        holder.titleView.text = item.place_name
+        holder.titleView.text = item.placeName
         holder.rateView.text = item.place_rating
         var rate: Double = item.place_rating!!.toDouble()
         holder.rateStars.rating = rate.toFloat()

@@ -9,7 +9,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class ExplorePlaceTest {
 
-    private val testExplorePlace: Explore_Place = Explore_Place(
+    private val testExplorePlace: ExplorePlace = ExplorePlace(
         "Home",
         "3450 Drummond",
         "4.5",
@@ -20,7 +20,7 @@ class ExplorePlaceTest {
     // Testing the constructor
     @Test
     fun testConstructor() {
-        Assert.assertEquals(testExplorePlace.place_name, "Home")
+        Assert.assertEquals(testExplorePlace.placeName, "Home")
         Assert.assertEquals(testExplorePlace.place_address, "3450 Drummond")
         Assert.assertEquals(testExplorePlace.place_rating, "4.5")
         Assert.assertEquals(testExplorePlace.place_placeID, "1234")
@@ -37,7 +37,8 @@ class ExplorePlaceTest {
                     "\nAddress: 3450 Drummond" +
                     "\nRating: 4.5" +
                     "\nID: 1234" +
-                    "\nImage: image"
+                    "\nImage: image" +
+                    "\nCoordinate: lat/lng: (90.0,154.0)"
         )
     }
 

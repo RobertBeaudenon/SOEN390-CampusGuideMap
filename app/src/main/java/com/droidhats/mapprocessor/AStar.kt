@@ -153,7 +153,7 @@ fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>
     var cur: Vertex? = endVertex
     val string: StringBuilder = StringBuilder()
     while (cur?.prev != null) {
-        string.append(Path.createPath(cur.pos!!, cur.prev!!.pos))
+        string.append(Path.createPath(cur.pos, cur.prev!!.pos))
         cur = cur.prev
     }
 

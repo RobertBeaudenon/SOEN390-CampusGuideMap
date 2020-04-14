@@ -7,7 +7,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.droidhats.campuscompass.R
-import com.droidhats.campuscompass.models.Explore_Place
+import com.droidhats.campuscompass.models.ExplorePlace
 import com.google.android.gms.maps.model.LatLng
 import org.json.JSONException
 import org.json.JSONObject
@@ -19,7 +19,7 @@ import org.json.JSONObject
  */
 class ExplorePlaceRepository (private val application: Application)  {
 
-    internal  var placesList = MutableLiveData<ArrayList<Explore_Place>>()
+    internal  var placesList = MutableLiveData<ArrayList<ExplorePlace>>()
 
     companion object {
         // Singleton instantiation
@@ -34,7 +34,7 @@ class ExplorePlaceRepository (private val application: Application)  {
     }
 
     fun getPlaces(campus:String, type: String){
-        var list: ArrayList<Explore_Place> = ArrayList()
+        var list: ArrayList<ExplorePlace> = ArrayList()
         val placesRequest = object : StringRequest(
             Method.GET,
             constructRequestURL(campus, type),
@@ -54,7 +54,7 @@ class ExplorePlaceRepository (private val application: Application)  {
                             var photo: JSONObject = photos.getJSONObject(0)
                             var imageURL: String =
                                 constructImageURL(photo.getString("photo_reference"))
-                            var explorePlace = Explore_Place(
+                            var explorePlace = ExplorePlace(
                                 item_detail.getString("name"),
                                 item_detail.getString("vicinity"),
                                 item_detail.getString("rating"),
