@@ -82,22 +82,6 @@ class TestProcessMap {
     }
 
     @Test
-    fun testGetSVGStringFromDirections() {
-        val expectedLastPath = "<path id=\"\" d=\"m 465.0,320.0 54.0,0.0\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><path id=\"\" d=\"m 519.0,320.0 -17.67500000000001,17.67500000000001\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><path id=\"\" d=\"m 519.0,320.0 -17.67500000000001,-17.67500000000001\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><circle cx=\"465.0\" cy=\"320.0\" r=\"5.0\" /><circle cx=\"519.0\" cy=\"320.0\" r=\"5.0\" />"
-        var startClass: MapElement? = null
-        var endClass: MapElement? = null
-        for (aClass in map.getClasses()) {
-            if (aClass.getID().contains("3803")) startClass = aClass
-            if (aClass.getID().contains("3805")) endClass = aClass
-        }
-        Assert.assertEquals(expectedLastPath, Dijkstra(startClass!!, endClass!!, map.createPaths(map.generatePointsAcrossMap())))
-
-        Assert.assertEquals(map.getSVGStringFromDirections(Pair("1111", "3805")), "")
-        Assert.assertEquals(map.getSVGStringFromDirections(Pair("3803", "1111")), "")
-        Assert.assertEquals(map.getSVGStringFromDirections(Pair("1111", "1111")), "")
-    }
-
-    @Test
     fun testExtractAttr() {
         val testPath: String = "<path id=\"123\" d=\"Some path\" style=\"testStyle\" />"
 
