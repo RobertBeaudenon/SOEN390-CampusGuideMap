@@ -937,7 +937,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_restrooms), "restrooms")
         populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_printers), "printers")
         populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fountains), "fountains")
-        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_fireEscape), "fire escape")
+        populateSettingOffArray(settingInflatedView.findViewById(R.id.switch_settings_studyRooms), "study")
 
         set.addAll(preferenceOff)
         editor.putStringSet("settingOffArray", set)
