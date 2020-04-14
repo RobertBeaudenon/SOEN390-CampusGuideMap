@@ -487,22 +487,30 @@ class SearchFragment : Fragment()  {
                     // taking into account the number of floors
                     distance += 15 * abs(origin.getFloorNumber() - destination.getFloorNumber())
                     val originPos = processMap.getPositionWithId(origin.lID)
-                    var transport: String = processMap
-                        .findNearestIndoorTransportation(
-                            originPos!!,
-                            origin.getFloorNumber() < destination.getFloorNumber()
-                        ).getID()
-                    distance += processMap.getTimeInSeconds(origin.lID, transport)
-
-                    // taking into account different floor maps
-                    if (origin.floorMap != destination.floorMap) {
-                        val destinationProcessMap = ProcessMap()
-                        val inputStreamDest: InputStream = requireContext().assets.open(origin.floorMap)
-                        val fileDest: String = inputStreamDest.bufferedReader().use { it.readText() }
-                        destinationProcessMap.readSVGFromString(fileDest)
-                        distance += destinationProcessMap.getTimeInSeconds(transport, destination.lID)
-                    } else {
-                        distance += processMap.getTimeInSeconds(transport, destination.lID)
+                    try {
+                        var transport: String = processMap
+                            .findNearestIndoorTransportation(
+                                originPos!!,
+                                origin.getFloorNumber() < destination.getFloorNumber()
+                            ).getID()
+                        distance += processMap.getTimeInSeconds(origin.lID, transport)
+                        // taking into account different floor maps
+                        if (origin.floorMap != destination.floorMap) {
+                            val destinationProcessMap = ProcessMap()
+                            val inputStreamDest: InputStream = requireContext().assets.open(origin.floorMap)
+                            val fileDest: String = inputStreamDest.bufferedReader().use { it.readText() }
+                            destinationProcessMap.readSVGFromString(fileDest)
+                            distance += destinationProcessMap.getTimeInSeconds(transport, destination.lID)
+                        } else {
+                            distance += processMap.getTimeInSeconds(transport, destination.lID)
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            context,
+                            "Failed to generate directions, could not find transportation method " +
+                                    "to reach next floor",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 } else {
                     distance = processMap.getTimeInSeconds(

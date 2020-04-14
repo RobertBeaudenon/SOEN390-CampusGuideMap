@@ -187,7 +187,10 @@ class ProcessMap {
         for (line in originalSVG) {
             if (FloorFragment.settingsOff.isNotEmpty()) {
                 if (line.contains("id=\"") && checkArrayForLine(FloorFragment.settingsOff, line)) {
-                    svgArray.add(line.replace(">", "display=\"none\">"))
+                    svgArray.add(line
+                        .replace(">", "display=\"none\">")
+                        .replace(Regex("id=\"\\w*\""), "id=\"nothing\"")
+                    )
                 } else {
                     svgArray.add(line)
                 }
@@ -225,6 +228,13 @@ class ProcessMap {
                 newFileStr += newDocTag + "\n"
             }
         }
+        var array = newFileStr.split("\n")
+        var x = 0
+        for (line in array) {
+            if (x > 100) println(line)
+            x++
+        }
+
         return newFileStr
     }
 

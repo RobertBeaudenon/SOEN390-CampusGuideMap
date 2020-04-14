@@ -669,16 +669,25 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         mapProcessor: ProcessMap,
         goingUp: Boolean
     ): internalSVG {
-        var transportationMethod = internalSVG("", "", 0.0, 0.0)
+        var transportationMethod: internalSVG = internalSVG("", "", 0.0, 0.0)
         if (pos != null) {
-            transportationMethod = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
-            val position = transportationMethod.id
-            intermediateTransportID = if (goingUp) {
-                position.replace("up", "down")
-            } else {
-                position.replace("down", "up")
+            try {
+                transportationMethod = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
+                val position = transportationMethod.id
+                intermediateTransportID = if (goingUp) {
+                    position.replace("up", "down")
+                } else {
+                    position.replace("down", "up")
+                }
             }
-
+            catch (e: Exception) {
+                Toast.makeText(
+                    context,
+                    "Failed to generate directions, could not find transportation method " +
+                            "to reach next floor",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         } else {
             Toast.makeText(
                 context,
