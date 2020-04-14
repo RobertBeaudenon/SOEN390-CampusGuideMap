@@ -18,7 +18,7 @@ class TestProcessMap {
     private lateinit var map: ProcessMap
 
     @Before
-    fun beforeStuff() {
+    fun initializeProcessMap() {
         map = ProcessMap()
         val file = RuntimeEnvironment.application.applicationContext.assets.open("test-file.svg")
         val svg: String = file.bufferedReader().use { it.readText() }
