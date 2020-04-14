@@ -48,59 +48,57 @@ class ProcessMap {
         onPathElement: (String) -> Unit,
         onSvgElement: (String) -> Unit
     ) {
-        var element: StringBuilder = StringBuilder()
-        var inRect: Boolean = false
-        var inPath: Boolean = false
-        var firstElement: Boolean = true
-
         stringArray = svgFile.split("\n")
         var it = 0
+
         while (it < stringArray.size) {
 
 
-            if (stringArray[it].contains("<svg") && !firstElement) {
+            if (stringArray[it].contains("<svg") && this.firstElement != null) {
                 it = collectElement(it, onSvgElement, onEachLine, "</svg>")
             }
 
             onEachLine(stringArray[it])
 
             if (stringArray[it].contains("<rect")) {
-                inRect = true
-            }
-            if (inRect) {
-                element.append(stringArray[it])
-            }
-
-            if (stringArray[it].contains("/>") && inRect) {
-                if (firstElement) {
-                    this.firstElement = createRect(element.toString())
-                    firstElement = false
-                } else {
-                    onRectElement(element.toString())
+                it = collectClassroom(it, onRectElement) {
+                    createRect(it)
                 }
-                inRect = false
-                element = StringBuilder()
             }
 
             if (stringArray[it].contains("<path")) {
-                inPath = true
-            }
-            if (inPath) {
-                element.append(stringArray[it])
-            }
-
-            if (stringArray[it].contains("/>") && inPath) {
-                if (firstElement) {
-                    this.firstElement = createPath(element.toString())
-                    firstElement = false
-                } else {
-                    onPathElement(element.toString())
+                it = collectClassroom(it, onPathElement) {
+                    createPath(it)
                 }
-                inPath = false
-                element = StringBuilder()
             }
             it++
         }
+    }
+
+    /**
+     * Collect a classroom element and return the iteration after it
+     * @param iteration current iteration
+     * @param onElement lambda function to call on element
+     * @param onFirstElement lambda function to call on the first element
+     */
+    private fun collectClassroom(
+        iteration: Int,
+        onElement: (String) -> Unit,
+        onFirstElement: (String) -> ClassRoom
+    ): Int {
+        var it = iteration
+        val element = StringBuilder()
+        while (!stringArray[it].contains("/>")) {
+            element.append(stringArray[it])
+            it++
+        }
+        element.append(stringArray[it])
+        if (this.firstElement == null) {
+            this.firstElement = onFirstElement(element.toString())
+        } else {
+            onElement(element.toString())
+        }
+        return it
     }
 
     /**
