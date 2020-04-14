@@ -756,7 +756,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     override fun onCalendarEventClick(item: CalendarEvent?) {
-        // add no functionality for this overidden function
+        // add no functionality for this overridden function
     }
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {

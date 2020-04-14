@@ -358,7 +358,7 @@ class NavigationRepository(private val application: Application) {
      * @param intCoordinates list of coordinates along the path
      * @param mode of transportation
      */
-    fun addMainInstructions(
+    private fun addMainInstructions(
         stepsArray: JSONArray,
         i: Int,
         instructions: ArrayList<String>,
@@ -390,10 +390,10 @@ class NavigationRepository(private val application: Application) {
      * @param leg
      * @param mode of transportation
      * @param waypoints
-     * @param instructions
      * @param intCoordinates
+     * @param instructions
      */
-    fun addShuttleInstructions(
+    private fun addShuttleInstructions(
         leg: Int,
         mode: String,
         waypoints: String?,
@@ -420,7 +420,7 @@ class NavigationRepository(private val application: Application) {
      * @param intCoordinates
      * @param stepsArray
      */
-    fun addEndInstruction(
+    private fun addEndInstruction(
         leg: Int,
         legsArray: JSONArray,
         intCoordinates: ArrayList<LatLng>,
