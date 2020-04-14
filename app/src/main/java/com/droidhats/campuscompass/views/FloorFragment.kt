@@ -348,32 +348,56 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
      * Handle the navigation between a start location to an end
      * @param startToEnd pair of start to end locations
      */
-    private fun handleNavigation(startToEnd: Pair<IndoorLocation, IndoorLocation>) {
+    private fun handleNavigation(startAndEnd: Pair<IndoorLocation, IndoorLocation>) {
 
-        val indoorInstructionsLayout: LinearLayout =
-            root.findViewById(R.id.indoorInstructionsLayout)
-        indoorInstructionsLayout.visibility = View.VISIBLE
-
-        var startAndEnd = startToEnd
-        var building: Building
-        building = if (startAndEnd.first.lID == "") {
+        var building: Building = if (startAndEnd.first.lID == "") {
             viewModelMapViewModel.getBuildings()[startAndEnd.second.buildingIndex]
         } else {
             viewModelMapViewModel.getBuildings()[startAndEnd.first.buildingIndex]
         }
 
-        if (
-            (startAndEnd.first.lID == "" && startAndEnd.second.floorNum != "1")
-            || (startAndEnd.second.lID == "" && startAndEnd.first.floorNum != "1")
-            || (startAndEnd.first.floorNum != startAndEnd.second.floorNum
-                    && startAndEnd.second.lID != "" && startAndEnd.first.lID != "")
-        ) {
+        if (twoStepsInPath(startAndEnd)) {
             canConsume = false
             hasTwoSteps = true
         }
 
         // determining whether the user will be going up or down the building during the nav
-        val goingUp: Boolean = when (true) {
+        val goingUp: Boolean = isGoingUp(startAndEnd)
+
+        // initialize navigation buttons
+        val prevArrowButton: ImageView = requireActivity().findViewById(R.id.prevArrowFloor)
+        val doneButton = initializeDoneButton(startAndEnd)
+        val nextArrowButton = initializeNextArrowButton(
+            startAndEnd, goingUp, building, doneButton, prevArrowButton
+        )
+        initializePrevButton(prevArrowButton, doneButton, nextArrowButton)
+
+        // Generate the first set of directions
+        generateFirstStep(startAndEnd, goingUp, building)
+    }
+
+    /**
+     * Given the start and end points, returns whether the path will need 2 floors to reach their
+     * destination
+     *
+     * @param startAndEnd start and end indoor location
+     * @return whether there will be 2 steps
+     */
+    private fun twoStepsInPath(startAndEnd: Pair<IndoorLocation, IndoorLocation>): Boolean {
+        return (startAndEnd.first.lID == "" && startAndEnd.second.floorNum != "1")
+                || (startAndEnd.second.lID == "" && startAndEnd.first.floorNum != "1")
+                || (startAndEnd.first.floorNum != startAndEnd.second.floorNum
+                && startAndEnd.second.lID != "" && startAndEnd.first.lID != "")
+    }
+
+    /**
+     * Determine given the start and end whether the user will have to go up or down the floors
+     *
+     * @param startAndEnd start and end indoor location
+     * @return whether it is going up (true if yes)
+     */
+    private fun isGoingUp(startAndEnd: Pair<IndoorLocation, IndoorLocation>): Boolean {
+        return when (true) {
             (startAndEnd.first.lID != "" && startAndEnd.second.lID != "") -> {
                 startAndEnd.first.getFloorNumber() < startAndEnd.second.getFloorNumber()
             }
@@ -384,34 +408,59 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                 startAndEnd.first.getFloorNumber() < 1
             }
         }
+    }
 
+    /**
+     * Initialize the functionality of the done button
+     *
+     * @param startAndEnd
+     */
+    private fun initializeDoneButton(startAndEnd: Pair<IndoorLocation, IndoorLocation>): Button {
+        val indoorInstructionsLayout: LinearLayout = root.findViewById(R.id.indoorInstructionsLayout)
+        indoorInstructionsLayout.visibility = View.VISIBLE
         // adding the appropriate functionality to the done button
         val doneButton: Button = requireActivity().findViewById(R.id.doneButtonFloor)
         doneButton.setOnClickListener {
-            if (canConsume) {
-                if (viewModel.navigationRepository != null
-                    && viewModel.navigationRepository!!.isLastStep()
-                ) {
-                    indoorInstructionsLayout.visibility = View.GONE
-                    handleView(
-                        startAndEnd.second.floorNum,
-                        viewModelMapViewModel.getBuildings()[startAndEnd.second.buildingIndex],
-                        startAndEnd.second.floorMap
-                    )
-                    Toast.makeText(requireContext(), "Finished Navigation", Toast.LENGTH_LONG)
-                    viewModel.navigationRepository?.cancelNavigation()
-                }
-                viewModel.consumeNavHandler()
+            if (viewModel.navigationRepository != null
+                && viewModel.navigationRepository!!.isLastStep()
+            ) {
+                indoorInstructionsLayout.visibility = View.GONE
+                handleView(
+                    startAndEnd.second.floorNum,
+                    viewModelMapViewModel.getBuildings()[startAndEnd.second.buildingIndex],
+                    startAndEnd.second.floorMap
+                )
+                viewModel.navigationRepository?.cancelNavigation()
             }
+            viewModel.consumeNavHandler()
         }
+        // setting the proper text for the done button.
+        if (startAndEnd.second.lID == "") {
+            requireActivity().findViewById<Button>(R.id.doneButtonFloor).text = "Outside"
+        } else {
+            requireActivity().findViewById<Button>(R.id.doneButtonFloor).text = "Finished!"
+        }
+        return doneButton
+    }
 
+    /**
+     * The functionality for this is to launch the appropriate directions to generate the next
+     * step.
+     *
+     * @param startAndEnd
+     * @param goingUp
+     * @param building
+     * @param doneButton
+     * @param prevArrowButton
+     */
+    private fun initializeNextArrowButton(
+        startAndEnd: Pair<IndoorLocation, IndoorLocation>,
+        goingUp: Boolean,
+        building: Building,
+        doneButton: Button,
+        prevArrowButton: ImageView
+    ): ImageView {
         val nextArrowButton: ImageView = requireActivity().findViewById(R.id.nextArrowFloor)
-        val prevArrowButton: ImageView = requireActivity().findViewById(R.id.prevArrowFloor)
-
-        /**
-         * the functionality for this is to launch the appropriate directions to generate the next
-         * step.
-         */
         nextArrowButton.setOnClickListener {
             canConsume = true
             if (prevSVG != null) {
@@ -420,48 +469,29 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                 prevInstruction =
                     requireActivity().findViewById<TextView>(R.id.instructions_text).text.toString()
                 requireActivity().findViewById<TextView>(R.id.instructions_text).text = tmp
-            } else if (intermediateTransportID != null) {
-                if (prevSVG == null) {
-                    if (startAndEnd.first.lID == "") {
-                        generateDirectionsOnFloor(
-                            intermediateTransportID!!,
-                            startAndEnd.second.lID,
-                            startAndEnd.second.floorMap,
-                            startAndEnd.second.floorNum,
-                            goingUp,
-                            Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
-                        )
-                    } else if (startAndEnd.second.lID == "") {
-                        generateDirectionsOnFloor(
-                            intermediateTransportID!!,
-                            "entrance",
-                            building.getIndoorInfo().second["1"]!!,
-                            "1",
-                            goingUp,
-                            Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
-                        )
-                    } else {
-                        generateDirectionsOnFloor(
-                            intermediateTransportID!!,
-                            startAndEnd.second.lID,
-                            startAndEnd.second.floorMap,
-                            startAndEnd.second.floorNum,
-                            goingUp,
-                            Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
-                        )
-                    }
-                }
+            } else if (intermediateTransportID != null && prevSVG == null) {
+                generateSecondStep(startAndEnd, goingUp, building)
             }
             intermediateTransportID = null
             it.visibility = View.GONE
             doneButton.visibility = View.VISIBLE
             prevArrowButton.visibility = View.VISIBLE
         }
+        return nextArrowButton
+    }
 
-        /**
-         * The previous arrow button is to bring back the old svg if it's cached and set the
-         * proper visibility of the buttons
-         */
+    /**
+     * The previous arrow button is to bring back the old svg if it's cached and set the
+     * proper visibility of the buttons
+     * @param prevArrowButton to initialize it with having to get the same reference twice
+     * @param doneButton to set its visibility
+     * @param nextArrowButton to set its visibility
+     */
+    fun initializePrevButton(
+        prevArrowButton: ImageView,
+        doneButton: Button,
+        nextArrowButton: ImageView
+    ) {
         prevArrowButton.setOnClickListener {
             nextArrowButton.visibility = View.VISIBLE
             doneButton.visibility = View.GONE
@@ -474,10 +504,20 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                 requireActivity().findViewById<TextView>(R.id.instructions_text).text = tmp
             }
         }
+    }
 
-        /**
-         * Generate the directions for the first step.
-         */
+    /**
+     * Generate the directions for the first step.
+     *
+     * @param startAndEnd
+     * @param goingUp
+     * @param building
+     */
+    private fun generateFirstStep(
+        startAndEnd: Pair<IndoorLocation, IndoorLocation>,
+        goingUp: Boolean,
+        building: Building
+    ) {
         when {
             startAndEnd.first.lID == "" -> {
                 val end: String = when {
@@ -528,14 +568,40 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                 )
             }
         }
+    }
 
-        // setting the proper text for the done button.
+    /**
+     * Generate the directions for the second step.
+     *
+     * @param startAndEnd
+     * @param goingUp
+     * @param building
+     */
+    private fun generateSecondStep(
+        startAndEnd: Pair<IndoorLocation, IndoorLocation>,
+        goingUp: Boolean,
+        building: Building
+    ) {
+
         if (startAndEnd.second.lID == "") {
-            requireActivity().findViewById<Button>(R.id.doneButtonFloor).text = "Outside"
+            generateDirectionsOnFloor(
+                intermediateTransportID!!,
+                "entrance",
+                building.getIndoorInfo().second["1"]!!,
+                "1",
+                goingUp,
+                Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
+            )
         } else {
-            requireActivity().findViewById<Button>(R.id.doneButtonFloor).text = "Finished!"
+            generateDirectionsOnFloor(
+                intermediateTransportID!!,
+                startAndEnd.second.lID,
+                startAndEnd.second.floorMap,
+                startAndEnd.second.floorNum,
+                goingUp,
+                Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
+            )
         }
-
     }
 
     /**
