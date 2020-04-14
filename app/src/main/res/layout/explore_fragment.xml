@@ -22,14 +22,14 @@
             android:contentDescription="menu button"
             android:padding="30dp"
             android:src="@drawable/icon_menu" />
+
         <ToggleButton
             android:id="@+id/toggleButton2"
             android:layout_width="80dp"
             android:layout_height="40dp"
-            android:layout_below="@+id/mapFragSearchBar"
             android:layout_gravity="center|bottom"
-            android:layout_marginTop="15dp"
             android:layout_marginLeft="300dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/toggle_switch"
             android:elevation="0dp"
             android:paddingLeft="16dp"
