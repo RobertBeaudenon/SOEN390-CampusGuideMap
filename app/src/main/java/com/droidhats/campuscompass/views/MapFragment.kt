@@ -385,11 +385,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      *  @param resultCode checks the result of the request check
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CHECK_SETTINGS) {
-            if (resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CHECK_SETTINGS && resultCode == RESULT_OK) {
                 locationUpdateState = true
                 startLocationUpdates()
-            }
         }
     }
 
@@ -540,6 +538,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
+        setNavigationArrows(instructions, instructionsCoordinates)
+    }
+
+    /**
+     * Sets the functionality to the navigation arrows when navigating
+     * @param instructions set
+     * @param instructionsCoordinates
+     */
+    private fun setNavigationArrows(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>) {
         nextArrow.setOnClickListener{
             prevArrow.visibility = View.VISIBLE
             trackerSteps++
@@ -687,6 +694,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
             override fun onSearchConfirmed(text: CharSequence?) {
+                // not being used
             }
         })
     }
@@ -745,7 +753,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    override fun onCalendarEventClick(item: CalendarEvent?) {}
+    override fun onCalendarEventClick(item: CalendarEvent?) {
+        // add no functionality for this overidden function
+    }
 
     override fun onSearchResultClickListener(item: com.droidhats.campuscompass.models.Location?) {
         var isCampusBuilding = false
