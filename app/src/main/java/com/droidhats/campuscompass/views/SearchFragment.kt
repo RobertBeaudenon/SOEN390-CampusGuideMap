@@ -29,7 +29,6 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.Building
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.OutdoorNavigationRoute
-import com.droidhats.campuscompass.models.NavigationRoute
 import com.droidhats.campuscompass.models.FavoritePlace
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.droidhats.campuscompass.viewmodels.SearchViewModel
@@ -49,6 +48,7 @@ class SearchFragment : Fragment()  {
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchAdapter: SearchAdapter
     private lateinit var root: View
+    private lateinit var drawer : DrawerLayout
     private var columnCount = 1
     private lateinit var selectedTransportationMethod : String
     
@@ -70,7 +70,7 @@ class SearchFragment : Fragment()  {
         root = inflater.inflate(R.layout.search_fragment, container, false)
 
         // Lock the side menu so that it can't be opened
-        val drawer : DrawerLayout = requireActivity().findViewById(R.id.drawer_layout)
+        drawer = requireActivity().findViewById(R.id.drawer_layout)
         drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         recyclerView = root.findViewById(R.id.search_suggestions_recycler_view)
@@ -94,7 +94,11 @@ class SearchFragment : Fragment()  {
         }
         retrieveArguments()
     }
-
+    /**
+     * Retrieving the arguments passed with the navigation component
+     * The argument received is taken as a GooglePlace object and is used to populate the navigation
+     * destination search bar.
+     * */
     private fun retrieveArguments(){
         val destinationPlace = arguments?.getParcelable<Place>("destPlace")
         if (destinationPlace != null) {
@@ -130,6 +134,11 @@ class SearchFragment : Fragment()  {
         arguments?.clear()
     }
 
+    /**
+     * Responding to changes to the search suggestions. The indoor search results are prepended
+     * to the google places autocomplete results. On change to the results, the recycler view will be
+     * updated
+     **/
     private fun observeSearchSuggestions() {
         viewModel.googleSearchSuggestions.observe(viewLifecycleOwner , Observer { googlePredictions ->
             viewModel.searchSuggestions.value = googlePredictions
@@ -146,12 +155,18 @@ class SearchFragment : Fragment()  {
         })
     }
 
+    /**
+     * Responding to changes to the route times. On change, the route times will be displayed
+     **/
     private fun observeRouteTimes() {
         viewModel.navigationRepository.routeTimes.observe(viewLifecycleOwner, Observer {
             showRouteTimes(it)
         })
     }
 
+    /**
+     * Responding to changes to the route times. On change, the route times will be displayed
+     **/
     private fun initSearch() {
         val mainSearchBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
         mainSearchBar.isIconified = false
@@ -191,6 +206,9 @@ class SearchFragment : Fragment()  {
         initCurrentLocationHandler(mainSearchBar, secondarySearchBar)
     }
 
+    /**
+     * Starts navigation using the start and end locations from the two search bars
+     * */
     private fun initiateNavigation(){
         val origin = NavigationPoints[R.id.mainSearchBar]
         val destination = NavigationPoints[R.id.secondarySearchBar]
@@ -232,7 +250,10 @@ class SearchFragment : Fragment()  {
             }
         }
     }
-
+    /**
+     * Retrieves and sets the user's current location in appropriate search bars
+     * @param searchView: The main or destination searchView
+     * */
     private fun setCurrentLocation(searchView: SearchView) {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity as Activity)
         fusedLocationClient.lastLocation.addOnSuccessListener{
@@ -261,6 +282,11 @@ class SearchFragment : Fragment()  {
         }
     }
 
+    /**
+     * Listens to on text change in the appropriate search bar.
+     * Any character change will trigger a query request for search suggestions
+     * @param searchView: The main or destination searchView
+     **/
     private fun initQueryTextListener(searchView: SearchView) {
         val searchText = searchView.findViewById<EditText>(R.id.search_src_text)
         searchText.textSize = 14f
@@ -286,7 +312,9 @@ class SearchFragment : Fragment()  {
                 viewModel.sendSearchQueries(searchView.query.toString())
         }
     }
-
+    /**
+     * Updates the recycler view items with search suggestions
+     **/
     private fun updateRecyclerView() {
         val fragment= this
         with(recyclerView) {
@@ -299,6 +327,11 @@ class SearchFragment : Fragment()  {
         }
     }
 
+    /**
+     * Resets and clears the text in the appropriate search bar
+     * @param queryText: The text in the search bar
+     * @param searchView: The main or destination searchView
+     **/
     private fun resetQuery(queryText : EditText, searchView: SearchView){
         NavigationPoints[searchView.id] = null
         toggleNavigationButtonColor(Color.WHITE)
@@ -309,7 +342,7 @@ class SearchFragment : Fragment()  {
     }
 
     /**
-     * Resets the route time for all transportation method.
+     * Resets the route time for all transportation methods.
      */
     private fun resetRouteTimes(){
         if (isNavigationViewOpen) {
@@ -321,6 +354,9 @@ class SearchFragment : Fragment()  {
         }
     }
 
+    /**
+     * Initializes the listeners for the transportation mode radio buttons
+     **/
     private fun initTransportationRadioGroup(){
         selectedTransportationMethod = OutdoorNavigationRoute.TransportationMethods.DRIVING.string
         val radioTransportationGroup = root.findViewById<RadioGroup>(R.id.radioTransportGroup)
@@ -342,13 +378,14 @@ class SearchFragment : Fragment()  {
                 R.id.radio_transport_mode_shuttle -> {
                     selectedTransportationMethod = OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string
                 }
-                R.id.radio_transport_mode_shuttle -> {
-                    selectedTransportationMethod = OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string
-                }
             }
         }
     }
-
+    /**
+     * Displays the travel times for each of the transportation methods
+     * @param routeTimes: The travel times for the transportation methods.
+     * [Key: the name of the transportation mode, Value: the route time]
+     **/
     private fun showRouteTimes(routeTimes : MutableMap<String, String>){
         val drivingRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_driving)
         val transitRadioButton =  root.findViewById<RadioButton>(R.id.radio_transport_mode_transit)
@@ -372,12 +409,20 @@ class SearchFragment : Fragment()  {
         super.onDetach()
         reset()
     }
-
+    /**
+     * Resets the navigation view along with the selected locations
+     **/
     private fun reset(){
         isNavigationViewOpen = false
         NavigationPoints = mutableMapOf(R.id.mainSearchBar to null, R.id.secondarySearchBar to null)
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 
+    /**
+     * Expands the navigation view with the two search bars and populates the query texts if necessary
+     * @param destinationPlace: The location of the destination
+     * @param startFromCurrentLocation: indicates whether the starting location is the user's current location
+     **/
     fun showNavigationView(destinationPlace : Location, startFromCurrentLocation : Boolean ){
         isNavigationViewOpen = true
         val startNavButton = root.findViewById<ImageButton>(R.id.startNavigationButton)
@@ -415,6 +460,13 @@ class SearchFragment : Fragment()  {
         }
     }
 
+    /**
+     * Confirms a search selection as a valid location for navigation
+     * @param searchView: The main or destination searchView
+     * @param location: The location needed to be confirmed
+     * @param submit: whether to submit the query right now or only update the contents of
+     * text field
+     **/
     internal fun confirmSelection(searchView: SearchView, location: Location, submit: Boolean) {
         val mainBar =  root.findViewById<SearchView>(R.id.mainSearchBar)
         val destinationBar =  root.findViewById<SearchView>(R.id.secondarySearchBar)
@@ -486,6 +538,10 @@ class SearchFragment : Fragment()  {
         }
     }
 
+    /**
+     * Sets shuttle availability
+     * @param isAvailable: Whether shuttle transportation is possible or not
+     **/
     private fun setShuttleAvailability(isAvailable : Boolean){
         viewModel.isShuttleValid = isAvailable
         val shuttleRadioButton = root.findViewById<RadioButton>(R.id.radio_transport_mode_shuttle)
@@ -495,6 +551,10 @@ class SearchFragment : Fragment()  {
         shuttleRadioButton.isEnabled = isAvailable
     }
 
+    /**
+     * Toggles the color of the navigation button
+     * @param color: The color of the button
+     **/
     private fun toggleNavigationButtonColor(color : Int){
         val startNavButton = root.findViewById<ImageButton>(R.id.startNavigationButton)
         startNavButton.setColorFilter(color)

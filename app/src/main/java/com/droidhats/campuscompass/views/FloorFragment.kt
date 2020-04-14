@@ -124,6 +124,8 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             } else {
                 viewModel.navigationRepository?.stepBack()
             }
+            if(viewModel.navigationRepository?.navHandler == null)
+                findNavController().popBackStack(R.id.map_fragment, false)
         }
     }
 
