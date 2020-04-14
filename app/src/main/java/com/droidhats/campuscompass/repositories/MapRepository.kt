@@ -84,26 +84,7 @@ class MapRepository(applicationContext: Context) {
     private fun getBuildingsFromJSON(campusName: String): List<Building> {
         val buildingsList: MutableList<Building> = mutableListOf()
         try {
-            val buildingsArray : JSONArray = when (campusName) {
-                // Important that at the creation of the campus object, its name is either SGW or
-                // Loyola; otherwise the parsing fails
-                "SGW" -> {
-                    jsonObject.getJSONArray("SGW_buildings")
-                }
-                "Loyola" -> {
-                    jsonObject.getJSONArray("LOY_buildings")
-                }
-                else -> {
-                    throw JSONException(
-                        "Unable to parse buildings from JSON\nMake " +
-                        " that at the creation of the campus object the name parameter is " +
-                        "either SGW or Loyola)\nMake sure that the values of the string " +
-                        "resources SGW_Campus_Name and Loyola_Campus_Name are 'SGW' " +
-                        "and 'Loyola'"
-                    )
-                }
-            }
-
+            val buildingsArray : JSONArray = getCampusJSONArray(campusName)
             var coordinatesArray : JSONArray
 
             // Traverse each building in the array
@@ -184,6 +165,32 @@ class MapRepository(applicationContext: Context) {
         return buildingsList
     }
 
+    /**
+     * Given the campus name, return the appropriate json array from the json object
+     * @param campusName
+     */
+    private fun getCampusJSONArray(campusName: String): JSONArray {
+        return when (campusName) {
+            // Important that at the creation of the campus object, its name is either SGW or
+            // Loyola; otherwise the parsing fails
+            "SGW" -> {
+                jsonObject.getJSONArray("SGW_buildings")
+            }
+            "Loyola" -> {
+                jsonObject.getJSONArray("LOY_buildings")
+            }
+            else -> {
+                throw JSONException(
+                    "Unable to parse buildings from JSON\nMake " +
+                            " that at the creation of the campus object the name parameter is " +
+                            "either SGW or Loyola)\nMake sure that the values of the string " +
+                            "resources SGW_Campus_Name and Loyola_Campus_Name are 'SGW' " +
+                            "and 'Loyola'"
+                )
+            }
+        }
+    }
+
     //Helper method
     private fun getInfoFromTraversal(jsonArray: JSONArray): String{
         val builder = StringBuilder()
@@ -218,7 +225,7 @@ class MapRepository(applicationContext: Context) {
 
         // The id for the building image resource is of Int type
         // Return the building image resource id that corresponds to the building name
-        return when (buildingName) {
+        val sgwBuilding: Int? = when (buildingName) {
             "Henry F. Hall Building" -> R.drawable.building_hall
             "EV Building" -> R.drawable.building_ev
             "John Molson School of Business" -> R.drawable.building_jmsb
@@ -247,6 +254,11 @@ class MapRepository(applicationContext: Context) {
             "B Annex" -> R.drawable.building_b
             "D Annex" -> R.drawable.building_d
             "MI Annex" -> R.drawable.building_mi
+            else -> null
+        }
+        if (sgwBuilding != null) return sgwBuilding
+
+        return when (buildingName) {
             "Psychology Building" -> R.drawable.building_p
             "Richard J. Renaud Science Complex" -> R.drawable.building_rjrsc
             "Communication Studies and Journalism Building" -> R.drawable.building_csj
