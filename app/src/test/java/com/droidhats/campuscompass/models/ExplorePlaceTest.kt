@@ -21,11 +21,11 @@ class ExplorePlaceTest {
     @Test
     fun testConstructor() {
         Assert.assertEquals(testExplorePlace.placeName, "Home")
-        Assert.assertEquals(testExplorePlace.place_address, "3450 Drummond")
-        Assert.assertEquals(testExplorePlace.place_rating, "4.5")
-        Assert.assertEquals(testExplorePlace.place_placeID, "1234")
-        Assert.assertEquals(testExplorePlace.place_image, "image")
-        Assert.assertEquals(testExplorePlace.place_coordinate,  LatLng(1234.0,1234.0))
+        Assert.assertEquals(testExplorePlace.placeAddress, "3450 Drummond")
+        Assert.assertEquals(testExplorePlace.placeRating, "4.5")
+        Assert.assertEquals(testExplorePlace.placePlaceId, "1234")
+        Assert.assertEquals(testExplorePlace.placeImage, "image")
+        Assert.assertEquals(testExplorePlace.placeCoordinate,  LatLng(1234.0,1234.0))
     }
 
     // testing the toString method

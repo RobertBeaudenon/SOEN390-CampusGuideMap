@@ -927,10 +927,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onExplorePlaceClick(item: ExplorePlace?) {
         findNavController().popBackStack(R.id.map_fragment, false)
         val exploreLocation = GooglePlace(
-            item?.place_placeID!!,
+            item?.placePlaceId!!,
             item.placeName!!,
-            item.place_address!!,
-            item.place_coordinate
+            item.placeAddress!!,
+            item.placeCoordinate
         )
         Handler().postDelayed({
             focusLocation(exploreLocation, false, true)

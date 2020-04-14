@@ -12,20 +12,20 @@ class ExplorePlace(
     coordinate: LatLng
 ) {
     var placeName: String? = name
-    var place_address: String? = address
-    var place_rating: String? = rating
-    var  place_placeID: String? = placeID
-    var place_image: String? = image
-    var place_coordinate: LatLng = coordinate
+    var placeAddress: String? = address
+    var placeRating: String? = rating
+    var  placePlaceId: String? = placeID
+    var placeImage: String? = image
+    var placeCoordinate: LatLng = coordinate
     var place : Place? = null
 
     override fun toString(): String {
 
         return "Name: $placeName" +
-                "\nAddress: $place_address" +
-                "\nRating: $place_rating" +
-                "\nID: $place_placeID" +
-                "\nImage: $place_image"+
-                "\nCoordinate: $place_coordinate"
+                "\nAddress: $placeAddress" +
+                "\nRating: $placeRating" +
+                "\nID: $placePlaceId" +
+                "\nImage: $placeImage"+
+                "\nCoordinate: $placeCoordinate"
     }
 }
