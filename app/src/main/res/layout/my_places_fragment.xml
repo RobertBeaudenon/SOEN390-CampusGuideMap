@@ -35,7 +35,7 @@
             android:layout_marginBottom="20dp"
             android:text="@string/Favorites_Feature_Name"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="24sp" />
 
     </RelativeLayout>
 

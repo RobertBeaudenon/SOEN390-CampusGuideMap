@@ -82,7 +82,7 @@ class ExplorePlaceRepository (private val application: Application)  {
         requestQueue.add(placesRequest)
     }
 
-    private fun constructRequestURL(
+    fun constructRequestURL(
         campus: String,
         type: String
     ): String {
@@ -102,7 +102,7 @@ class ExplorePlaceRepository (private val application: Application)  {
         }
     }
 
-    private fun constructImageURL( reference: String): String{
+     fun constructImageURL( reference: String): String{
         return "https://maps.googleapis.com/maps/api/place/photo?" +
                 "&photoreference=" + reference +
                 "&sensor=" + "false" +
