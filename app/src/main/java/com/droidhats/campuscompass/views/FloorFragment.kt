@@ -147,6 +147,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     /**
      * This method displays the alert message appropriate for the selected layout
+     *
      * @param resourceID of the given layout
      */
     private fun displayAlertMsg(resourceID: Int) {
@@ -205,6 +206,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     /**
      * Navigate out method that navigates to the proper fragment given the id of the given layout
+     *
      * @param resId of the layout
      */
     private fun navigateOut(resId: Int) {
@@ -235,6 +237,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     /**
      * Handles the functionality related to looking at the floor maps
+     *
      * @param floorNum string of the floor number
      * @param building building to who's floor maps to look at
      * @param floorMap to look at
@@ -277,6 +280,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     /**
      * This does all the proper initialization of the number picker given the following parameters
+     *
      * @param building building object to examine
      * @param floorNum number of current floor number
      */
@@ -320,6 +324,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     /**
      * Sets the given svg object to the Image View
+     *
      * @param svg object
      */
     private fun setImage(svg: SVG) {
@@ -346,6 +351,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     /**
      * Handle the navigation between a start location to an end
+     *
      * @param startToEnd pair of start to end locations
      */
     private fun handleNavigation(startAndEnd: Pair<IndoorLocation, IndoorLocation>) {
@@ -483,6 +489,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
     /**
      * The previous arrow button is to bring back the old svg if it's cached and set the
      * proper visibility of the buttons
+     *
      * @param prevArrowButton to initialize it with having to get the same reference twice
      * @param doneButton to set its visibility
      * @param nextArrowButton to set its visibility
@@ -525,7 +532,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                     (startAndEnd.second.floorNum != "1") -> ""
                     else -> startAndEnd.second.lID
                 }
-                generateDirectionsOnFloor(
+                handleDirections(
                     "entrance",
                     end,
                     building.getIndoorInfo().second["1"]!!,
@@ -548,7 +555,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                         startAndEnd.second.floorNum
                     }
 
-                generateDirectionsOnFloor(
+                handleDirections(
                     startAndEnd.first.lID,
                     end,
                     startAndEnd.first.floorMap,
@@ -558,7 +565,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                 )
             }
             else -> {
-                generateDirectionsOnFloor(
+                handleDirections(
                     startAndEnd.first.lID,
                     startAndEnd.second.lID,
                     startAndEnd.first.floorMap,
@@ -582,9 +589,8 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         goingUp: Boolean,
         building: Building
     ) {
-
         if (startAndEnd.second.lID == "") {
-            generateDirectionsOnFloor(
+            handleDirections(
                 intermediateTransportID!!,
                 "entrance",
                 building.getIndoorInfo().second["1"]!!,
@@ -593,7 +599,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
                 Pair(startAndEnd.second.name, startAndEnd.second.floorNum)
             )
         } else {
-            generateDirectionsOnFloor(
+            handleDirections(
                 intermediateTransportID!!,
                 startAndEnd.second.lID,
                 startAndEnd.second.floorMap,
@@ -606,6 +612,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
     /**
      * Given the parameters, generate a floor map with directions on it and display it to the view
+     *
      * @param start id of the start element
      * @param end id of the end element
      * @param floorMap to display
@@ -613,7 +620,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
      * @param goingUp whether the user will be going up
      * @param classAndFloorDest class and floor destinations for the instructions
      */
-    private fun generateDirectionsOnFloor(
+    private fun handleDirections(
         start: String,
         end: String,
         floorMap: String,
@@ -627,64 +634,84 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         val mapProcessor = ProcessMap()
         val newFile = mapProcessor.automateSVG(file, floorNum)
         mapProcessor.readSVGFromString(newFile)
+
+        // in order to change them if they're empty
         var startPos = start
         var endPos = end
+
+        val pos = mapProcessor.getPositionWithId(startPos)
+        val transportationMethod = assignIntermediateTransport(pos, mapProcessor, goingUp)
+
+        when {
+            // handle when there are is no start position
+            start == "" -> startPos = transportationMethod.id
+            // handle when there are is no end position
+            end == "" -> endPos = transportationMethod.id
+        }
+
+        handleInstructions(end, transportationMethod, classAndFloorDest)
+
+        setDirections(startPos, endPos, mapProcessor)
+    }
+
+
+    /**
+     * Assign the intermediate mode of transportation
+     * @param pos position to find nearest transport
+     * @param mapProcessor
+     * @param goingUp whether the user has to go up (important for the escalators)
+     */
+    private fun assignIntermediateTransport(
+        pos: Pair<Double, Double>?,
+        mapProcessor: ProcessMap,
+        goingUp: Boolean
+    ): internalSVG {
         var transportationMethod = internalSVG("", "", 0.0, 0.0)
-
-        // handle when there are is no start position
-        if (start == "") {
-            val pos = mapProcessor.getPositionWithId(endPos)
-            if (pos != null) {
-                transportationMethod = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
-                startPos = transportationMethod.id
-                intermediateTransportID = if (goingUp) {
-                    startPos.replace("up", "down")
-                } else {
-                    startPos.replace("down", "up")
-                }
-
+        if (pos != null) {
+            transportationMethod = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
+            val position = transportationMethod.id
+            intermediateTransportID = if (goingUp) {
+                position.replace("up", "down")
             } else {
-                Toast.makeText(
-                    context,
-                    "Failed to generate directions, could not find transportation method " +
-                            "to reach next floor",
-                    Toast.LENGTH_LONG
-                ).show()
+                position.replace("down", "up")
             }
-        }
 
-        // handle when there are is no end position
-        if (end == "") {
-            val pos = mapProcessor.getPositionWithId(startPos)
-            if (pos != null) {
-                transportationMethod = mapProcessor.findNearestIndoorTransportation(pos, goingUp)
-                endPos = transportationMethod.id
-                intermediateTransportID = if (goingUp) {
-                    endPos.replace("up", "down")
-                } else {
-                    endPos.replace("down", "up")
-                }
-            } else {
-                Toast.makeText(
-                    context,
-                    "Failed to generate directions, no transportation method was found.",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+        } else {
+            Toast.makeText(
+                context,
+                "Failed to generate directions, could not find transportation method " +
+                        "to reach next floor",
+                Toast.LENGTH_LONG
+            ).show()
         }
+        return transportationMethod
+    }
 
+    /**
+     * Handle the stuff related to the instructions (messages and displaying arrow buttons)
+     */
+    private fun handleInstructions(
+        end: String,
+        transportationMethod: internalSVG,
+        classAndFloorDest: Pair<String, String>
+    ) {
         // setting proper instruction
         val message: String = when (end) {
             "" -> "Take the ${transportationMethod.transportationType} until you reach floor " +
-                    "${classAndFloorDest.second}"
+                    classAndFloorDest.second
             "entrance" -> "Make your way to the entrance and go outside"
             else -> "Make your way to class ${classAndFloorDest.first}"
         }
+
+        // setting current instruction to the previous if there were no previous instructions
         if (prevInstruction == null) {
             prevInstruction = message
         }
 
+        // Set the message
         requireActivity().findViewById<TextView>(R.id.instructions_text).text = message
+
+        // Handle visibility of appropriate buttons depending on which step we're at
         if (!canConsume) {
             requireActivity().findViewById<Button>(R.id.doneButtonFloor).visibility = View.GONE
             requireActivity().findViewById<ImageView>(R.id.nextArrowFloor).visibility = View.VISIBLE
@@ -692,7 +719,16 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             requireActivity().findViewById<Button>(R.id.doneButtonFloor).visibility = View.VISIBLE
             requireActivity().findViewById<ImageView>(R.id.nextArrowFloor).visibility = View.GONE
         }
+    }
 
+    /**
+     * Setting the directions on the image view
+     *
+     * @param start
+     * @param end
+     * @param mapProcessor
+     */
+    private fun setDirections(start: String, end: String, mapProcessor: ProcessMap) {
         progressBar.visibility = View.VISIBLE
         val imageView: ZoomImageView = root.findViewById(R.id.floormap)
         imageView.visibility = View.GONE
@@ -702,7 +738,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         GlobalScope.launch {
             val svg: SVG = SVG.getFromString(
                 mapProcessor
-                    .getSVGStringFromDirections(Pair(startPos, endPos))
+                    .getSVGStringFromDirections(Pair(start, end))
             )
             requireActivity().runOnUiThread {
                 setImage(svg)
@@ -746,6 +782,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
             }
 
             override fun onSearchConfirmed(text: CharSequence?) {
+                // unused implementation, do nothing
             }
         })
     }
