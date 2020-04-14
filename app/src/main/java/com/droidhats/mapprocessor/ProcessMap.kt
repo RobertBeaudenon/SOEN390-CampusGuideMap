@@ -418,8 +418,7 @@ class ProcessMap {
         val string: StringBuilder = StringBuilder()
         stringArray.forEach {
 
-            if (it.contains("<!-- Displaying icons on the map -->")) {
-                //string.append(Dijkstra(allElements[startInt], allElements[endInt], createPaths(list)) + "\n")
+            if (it.contains("<!-- PATH ARROW HERE  -->")) {
                 string.append(
                     A_Star(
                         allElements[startInt],

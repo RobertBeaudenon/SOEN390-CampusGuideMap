@@ -41,7 +41,7 @@ import com.droidhats.campuscompass.models.GooglePlace
 import com.droidhats.campuscompass.models.CalendarEvent
 import com.droidhats.campuscompass.models.IndoorLocation
 import com.droidhats.campuscompass.models.FavoritePlace
-import com.droidhats.campuscompass.models.Explore_Place
+import com.droidhats.campuscompass.models.ExplorePlace
 import com.droidhats.campuscompass.roomdb.FavoritesDatabase
 import com.droidhats.campuscompass.viewmodels.MapViewModel
 import com.google.android.gms.common.api.ResolvableApiException
@@ -246,7 +246,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             if ( it != null && it != currentOutdoorNavigationRoute ) {
                 if (it is OutdoorNavigationRoute) {
                     requireActivity().onBackPressedDispatcher.addCallback(this) {
-                        viewModel.navigationRepository?.stepBack()
+                        viewModel.navigationRepository.stepBack()
                     }
                     currentOutdoorNavigationRoute = it
                     drawPathPolyline(it.polyLinePath)
@@ -926,11 +926,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    override fun onExplorePlaceClick(item: Explore_Place?) {
+    override fun onExplorePlaceClick(item: ExplorePlace?) {
         findNavController().popBackStack(R.id.map_fragment, false)
         val exploreLocation = GooglePlace(
             item?.place_placeID!!,
-            item.place_name!!,
+            item.placeName!!,
             item.place_address!!,
             item.place_coordinate
         )

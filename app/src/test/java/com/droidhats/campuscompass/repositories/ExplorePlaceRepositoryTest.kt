@@ -1,12 +1,13 @@
 package com.droidhats.campuscompass.repositories
 
+import android.content.Context
 import android.os.Build
+import androidx.test.core.app.ApplicationProvider
 import com.droidhats.campuscompass.R
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -14,7 +15,7 @@ import org.robolectric.annotation.Config
 class ExplorePlaceRepositoryTest {
 
     private val exploreRepository: ExplorePlaceRepository = ExplorePlaceRepository(
-        RuntimeEnvironment.application)
+        ApplicationProvider.getApplicationContext())
 
      @Test
      fun testConstructRequestURL(){
@@ -22,13 +23,13 @@ class ExplorePlaceRepositoryTest {
                  "&location=" + "45.458488,-73.639862" +
                  "&radius=" + "2000" +
                  "&type=" + "Restaurant" +
-                 "&key=" + RuntimeEnvironment.application.applicationContext.getString(R.string.ApiKey)
+                 "&key=" + ApplicationProvider.getApplicationContext<Context>().getString(R.string.ApiKey)
 
          var urlSGW: String ="https://maps.googleapis.com/maps/api/place/nearbysearch/json?" +
                  "&location=" + "45.497406,-73.577102" +
                  "&radius=" + "1000" +
                  "&type=" + "Restaurant" +
-                 "&key=" + RuntimeEnvironment.application.applicationContext.getString(R.string.ApiKey)
+                 "&key=" + ApplicationProvider.getApplicationContext<Context>().getString(R.string.ApiKey)
 
          var urlLoyola2: String =exploreRepository.constructRequestURL("Loyola", "Restaurant")
          var urlSGW2: String =exploreRepository.constructRequestURL("SGW", "Restaurant")
@@ -44,7 +45,7 @@ class ExplorePlaceRepositoryTest {
                 "&sensor=" + "false" +
                 "&maxheight=" + "3024" +
                 "&maxwidth=" + "3024" +
-                "&key=" + RuntimeEnvironment.application.applicationContext.getString(R.string.ApiKey)
+                "&key=" + ApplicationProvider.getApplicationContext<Context>().getString(R.string.ApiKey)
         
         var image2: String =exploreRepository.constructImageURL("abcd")
 

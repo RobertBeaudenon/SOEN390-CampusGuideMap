@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.droidhats.campuscompass.R
 import com.droidhats.campuscompass.adapters.ExplorePlaceAdapter
-import com.droidhats.campuscompass.models.Explore_Place
+import com.droidhats.campuscompass.models.ExplorePlace
 import com.droidhats.campuscompass.viewmodels.ExplorePlaceViewModel
 
 /**
@@ -105,7 +105,7 @@ class ExploreCategoryFragment: Fragment() ,AdapterView.OnItemSelectedListener {
     }
 
     interface OnExplorePlaceClickListener {
-        fun onExplorePlaceClick(item: Explore_Place?)
+        fun onExplorePlaceClick(item: ExplorePlace?)
     }
 
     override fun onItemSelected(arg0: AdapterView<*>, arg1: View, position: Int, id: Long) {}

@@ -1,8 +1,11 @@
 package com.droidhats.campuscompass.views
 
+import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -10,14 +13,17 @@ import androidx.test.rule.ActivityTestRule
 import com.droidhats.campuscompass.MainActivity
 import com.droidhats.campuscompass.R
 import junit.framework.TestCase
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers
+import org.hamcrest.TypeSafeMatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4ClassRunner::class)
-class ExploreFragment {
+class ExploreFragmentTest {
 
     @Rule
     @JvmField
@@ -54,9 +60,61 @@ class ExploreFragment {
     }
 
     @Test
-    fun test_exploreFragment(){
+    fun test_exploreFragment() {
+        //Clicks the navbar
+        Espresso.onView(
+            Matchers.allOf(
+                ViewMatchers.withId(R.id.mt_nav),
+                childAtPosition(
+                    Matchers.allOf(
+                        ViewMatchers.withId(R.id.root),
+                        childAtPosition(
+                            ViewMatchers.withId(R.id.mt_container),
+                            0
+                        )
+                    ),
+                    3
+                ),
+                ViewMatchers.isDisplayed()
+            )
+        ).perform(ViewActions.click())
+        //checks that the explore option is visible in the nav bar and clicks it
+        Espresso.onView(
+            Matchers.allOf(
+                childAtPosition(
+                    Matchers.allOf(
+                        ViewMatchers.withId(R.id.design_navigation_view),
+                        childAtPosition(
+                            ViewMatchers.withId(R.id.nav_view),
+                            0
+                        )
+                    ),
+                    4
+                ),
+                ViewMatchers.isDisplayed()
+            )
+        ).perform(ViewActions.click())
+        Thread.sleep(2000)
 
-       Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.select_food_button)))
-           .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-           .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-}}
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.select_food_button)))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
+}
+
+private fun childAtPosition(
+    parentMatcher: Matcher<View>, position: Int
+): Matcher<View> {
+
+    return object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description) {
+            description.appendText("Child at position $position in parent ")
+            parentMatcher.describeTo(description)
+        }
+
+        public override fun matchesSafely(view: View): Boolean {
+            val parent = view.parent
+            return parent is ViewGroup && parentMatcher.matches(parent)
+                    && view == parent.getChildAt(position)
+        }
+    }
+}

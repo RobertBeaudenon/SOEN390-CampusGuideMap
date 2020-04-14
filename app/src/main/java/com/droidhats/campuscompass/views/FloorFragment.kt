@@ -307,7 +307,7 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
         numberPicker.setOnScrollListener(NumberPicker.OnScrollListener { picker, scrollState ->
             if (scrollState == 0) {
                 val newVal = numberPicker.value
-                val newFloorNum = building!!.getIndoorInfo().second.keys.elementAt(newVal)
+                val newFloorNum = building.getIndoorInfo().second.keys.elementAt(newVal)
 
                 val inputStream = requireContext().assets.open(maps[newVal])
                 var file = inputStream.bufferedReader().use { it.readText() }
