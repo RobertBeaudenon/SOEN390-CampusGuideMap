@@ -194,37 +194,7 @@ class NavigationRepository(private val application: Application) {
                 Request.Method.GET,
                 constructRequestURL(origin, destination, method.string, shuttleWaypoints),
                 Response.Listener { response ->
-
-                    //Retrieve response (a JSON object)
-                    val jsonResponse = JSONObject(response)
-                    // Get route information from json response
-                    val routesArray: JSONArray = jsonResponse.getJSONArray("routes")
-                    if (routesArray.length() > 0) {
-                        val routes: JSONObject = routesArray.getJSONObject(0)
-                        val legsArray: JSONArray = routes.getJSONArray("legs")
-                        val legs: JSONObject = legsArray.getJSONObject(0)
-
-                        if (method.string == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string && legsArray.length() > 1) {
-                            val totalDurationInSec = legs.getJSONObject("duration").getString("value").toInt() +
-                            legsArray.getJSONObject(1).getJSONObject("duration").getString("value").toInt() +
-                            legsArray.getJSONObject(2).getJSONObject("duration").getString("value").toInt()
-                            val hours = totalDurationInSec / 3600
-                            val minutes = (totalDurationInSec % 3600) / 60
-                            val minText = if (minutes > 1) " mins" else " min"
-                            times[method.string] =  when (hours){
-                                0 -> "$minutes $minText"
-                                1 -> "$hours hour $minutes $minText"
-                                else -> "$hours hours $minutes $minText"
-                            }
-                        }
-                        else
-                            times[method.string] = legs.getJSONObject("duration").getString("text")
-                    } else {
-                        times[method.string] = "N/A"
-                    }
-                    //Set only after all the times have been retrieved (to display them all at the same time)
-                    if (times.size == OutdoorNavigationRoute.TransportationMethods.values().size)
-                        routeTimes.value = times
+                    handleFetchRouteResponse(response, method, times)
                 },
                 Response.ErrorListener {
                     Log.e("Volley Error:", "HTTP response error")
@@ -234,6 +204,49 @@ class NavigationRepository(private val application: Application) {
             val requestQueue = Volley.newRequestQueue(application)
             requestQueue.add(directionRequest)
         }
+    }
+
+    /**
+     * Method that handles the response of the http request to get the route times
+     * @param response string
+     * @param method of transportation
+     * @param times
+     */
+    private fun handleFetchRouteResponse(
+        response: String,
+        method: OutdoorNavigationRoute.TransportationMethods,
+        times: MutableMap<String, String>
+    ) {
+        //Retrieve response (a JSON object)
+        val jsonResponse = JSONObject(response)
+        // Get route information from json response
+        val routesArray: JSONArray = jsonResponse.getJSONArray("routes")
+        if (routesArray.length() > 0) {
+            val routes: JSONObject = routesArray.getJSONObject(0)
+            val legsArray: JSONArray = routes.getJSONArray("legs")
+            val legs: JSONObject = legsArray.getJSONObject(0)
+
+            if (method.string == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string && legsArray.length() > 1) {
+                val totalDurationInSec = legs.getJSONObject("duration").getString("value").toInt() +
+                        legsArray.getJSONObject(1).getJSONObject("duration").getString("value").toInt() +
+                        legsArray.getJSONObject(2).getJSONObject("duration").getString("value").toInt()
+                val hours = totalDurationInSec / 3600
+                val minutes = (totalDurationInSec % 3600) / 60
+                val minText = if (minutes > 1) " mins" else " min"
+                times[method.string] =  when (hours){
+                    0 -> "$minutes $minText"
+                    1 -> "$hours hour $minutes $minText"
+                    else -> "$hours hours $minutes $minText"
+                }
+            }
+            else
+                times[method.string] = legs.getJSONObject("duration").getString("text")
+        } else {
+            times[method.string] = "N/A"
+        }
+        //Set only after all the times have been retrieved (to display them all at the same time)
+        if (times.size == OutdoorNavigationRoute.TransportationMethods.values().size)
+            routeTimes.value = times
     }
 
     /**
@@ -291,60 +304,134 @@ class NavigationRepository(private val application: Application) {
 
             for (leg in 0 until legsArray.length()) {
                 val stepsArray = legsArray.getJSONObject(leg).getJSONArray("steps")
-                for (i in 0 until stepsArray.length()) {
-                    try {
-                        path.add(
-                            PolyUtil.decode(
-                                stepsArray.getJSONObject(i)
-                                    .getJSONObject("polyline").getString("points")
-                            )
-                        )
 
-                        if (leg != 1) {
-                            instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
-                            intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
-                            if (stepsArray.getJSONObject(i).has("steps")) {
-                                for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
-                                    instructions.add(
-                                        parseInstructions(
-                                            stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
-                                                j
-                                            ), mode
-                                        )
-                                    )
-                                    intCoordinates.add(
-                                        parseCoordinates(
-                                            stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
-                                                j
-                                            ), true
-                                        )
-                                    )
-                                }
-                            }
-                        }
-                    } catch (e: org.json.JSONException) {
-                        Log.e("JSONException", e.message.toString())
-                    }
-                }
-
-                if (leg == 0 && mode == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string) {
-                    if (waypoints == SGW_TO_LOY_WAYPOINT) {
-                        intCoordinates.add(Campus.SGW_SHUTTLE_STOP)
-                        instructions.add("Take the Shuttle Bus to Loyola Campus")
-                    }
-                    else {
-                        intCoordinates.add(Campus.LOY_SHUTTLE_STOP)
-                        instructions.add("Take the Shuttle Bus to SGW Campus")
-                    }
-                }
-                if (leg == legsArray.length()-1) {
-                    intCoordinates.add(
-                        parseCoordinates(stepsArray.getJSONObject(stepsArray.length() - 1),false))
-                    instructions.add("You have arrived!")
-                }
+                parseIntoArray(path, stepsArray, leg, instructions, intCoordinates, mode)
+                addShuttleInstructions(leg, mode, waypoints, intCoordinates, instructions)
+                addEndInstruction(leg, legsArray, intCoordinates, instructions, stepsArray)
             }
         }
         return OutdoorNavigationRoute(origin, destination, path, instructions, intCoordinates)
+    }
+
+    /**
+     * Parse the json object into arrays of paths, instructions and coordinates
+     * @param path list of paths
+     * @param stepsArray list of steps in json format
+     * @param leg
+     * @param instructions list of instructions
+     * @param intCoordinates list of coordinates along the path
+     * @param mode of transportation
+     */
+    fun parseIntoArray(
+        path: MutableList<List<LatLng>>,
+        stepsArray: JSONArray,
+        leg: Int,
+        instructions: ArrayList<String>,
+        intCoordinates: ArrayList<LatLng>,
+        mode: String
+    ) {
+        for (i in 0 until stepsArray.length()) {
+            try {
+                path.add(
+                    PolyUtil.decode(
+                        stepsArray.getJSONObject(i)
+                            .getJSONObject("polyline").getString("points")
+                    )
+                )
+
+                if (leg != 1) {
+                    instructions.add(parseInstructions(stepsArray.getJSONObject(i), mode))
+                    intCoordinates.add(parseCoordinates(stepsArray.getJSONObject(i), true))
+                    addMainInstructions(stepsArray, i, instructions, intCoordinates, mode)
+                }
+            } catch (e: org.json.JSONException) {
+                Log.e("JSONException", e.message.toString())
+            }
+        }
+    }
+
+    /**
+     * Adds the main body of the instructions to the instructions array and coordinates array
+     * @param stepsArray list of steps in json format
+     * @param i current iteration
+     * @param instructions list of instructions
+     * @param intCoordinates list of coordinates along the path
+     * @param mode of transportation
+     */
+    private fun addMainInstructions(
+        stepsArray: JSONArray,
+        i: Int,
+        instructions: ArrayList<String>,
+        intCoordinates: ArrayList<LatLng>,
+        mode: String
+    ) {
+        if (stepsArray.getJSONObject(i).has("steps")) {
+            for (j in 0 until stepsArray.getJSONObject(i).getJSONArray("steps").length()) {
+                instructions.add(
+                    parseInstructions(
+                        stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
+                            j
+                        ), mode
+                    )
+                )
+                intCoordinates.add(
+                    parseCoordinates(
+                        stepsArray.getJSONObject(i).getJSONArray("steps").getJSONObject(
+                            j
+                        ), true
+                    )
+                )
+            }
+        }
+    }
+
+    /**
+     * Adds the instructions for the shuttle
+     * @param leg
+     * @param mode of transportation
+     * @param waypoints
+     * @param intCoordinates
+     * @param instructions
+     */
+    private fun addShuttleInstructions(
+        leg: Int,
+        mode: String,
+        waypoints: String?,
+        intCoordinates: ArrayList<LatLng>,
+        instructions: ArrayList<String>
+    ) {
+        if (leg == 0 && mode == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string) {
+            if (waypoints == SGW_TO_LOY_WAYPOINT) {
+                intCoordinates.add(Campus.SGW_SHUTTLE_STOP)
+                instructions.add("Take the Shuttle Bus to Loyola Campus")
+            }
+            else {
+                intCoordinates.add(Campus.LOY_SHUTTLE_STOP)
+                instructions.add("Take the Shuttle Bus to SGW Campus")
+            }
+        }
+    }
+
+    /**
+     * Add the instructions to show the end
+     * @param leg
+     * @param legsArray
+     * @param instructions
+     * @param intCoordinates
+     * @param stepsArray
+     */
+    private fun addEndInstruction(
+        leg: Int,
+        legsArray: JSONArray,
+        intCoordinates: ArrayList<LatLng>,
+        instructions: ArrayList<String>,
+        stepsArray: JSONArray
+    ) {
+        if (leg == legsArray.length()-1) {
+            intCoordinates.add(
+                parseCoordinates(stepsArray.getJSONObject(stepsArray.length() - 1),false))
+            instructions.add("You have arrived!")
+        }
     }
 
     /**
