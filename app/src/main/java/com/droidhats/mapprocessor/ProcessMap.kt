@@ -449,7 +449,7 @@ class ProcessMap {
         // average distance is used for scaling the distance between points in the next step
         var averageDistance: Double = 0.0
         var totalPoints: Int = 0
-        findNearestPointToClasses() { closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>> ->
+        findNearestPointToClasses { closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>> ->
             pathPoints.add(
                 Circle(
                     (closestPoint.first.first + closestPoint.second.first) / 2,
@@ -476,11 +476,20 @@ class ProcessMap {
             }
         }
 
+        cleanUpPoints(pathPoints)
+
+        return pathPoints
+    }
+
+    /**
+     *  Cleaning up points that are too close and too many together
+     *  @param pathPoints to clean up
+     */
+    fun cleanUpPoints(pathPoints: MutableList<Circle>) {
         var x: Int = 0
         var y: Int = 0
         var pathPointsSize: Int = pathPoints.size
 
-        // clean up points that are too close and too many together
         while (x < pathPointsSize) {
             var circle1: Circle = pathPoints[x]
             y = 0
@@ -500,8 +509,6 @@ class ProcessMap {
             }
             x++
         }
-
-        return pathPoints
     }
 
     /**
