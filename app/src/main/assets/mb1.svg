@@ -416,6 +416,7 @@ ROOM 1.210 IS KNOW TO BE THE AMPHITHEATER AND HAS BEEN LABEL AS SUCH
     <rect y="140" x="360" height="30" width="35" style="fill:none;stroke:none"  />
 
 
+    <rect x="400" y="500" width="75" height="350" style="fill:none;stroke:none"/>
     <!-- Displaying icons on the map -->
     <!-- Displaying stairs icon on the map -->
     <svg width="35" height="52" viewBox="0 0 35 52" fill="none" xmlns="http://www.w3.org/2000/svg" id="stairs1" x="370" y="160">

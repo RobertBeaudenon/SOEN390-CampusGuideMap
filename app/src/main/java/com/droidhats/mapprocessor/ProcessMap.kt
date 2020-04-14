@@ -399,7 +399,9 @@ class ProcessMap {
         if (startInt == null || endInt == null) {
             return ""
         }
+
         val list: MutableList<Circle> = generatePoints()
+        val paths = createPaths(list, allElements[endInt])
 
         val string: StringBuilder = StringBuilder()
         stringArray.forEach {
@@ -409,7 +411,7 @@ class ProcessMap {
                     A_Star(
                         allElements[startInt],
                         allElements[endInt],
-                        createPaths(list, allElements[endInt])
+                        paths
                     ) + "\n"
                 )
             }
@@ -427,8 +429,8 @@ class ProcessMap {
         val pathPoints: MutableList<Circle> = mutableListOf()
 
         // scatter points in missing spots, using average distance as a scale for step size
-        for (x in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step 18) {
-            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step 20) {
+        for (x in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step 50) {
+            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step 50) {
                 if (inPath(x.toDouble(), y.toDouble())) {
                     pathPoints.add(Circle(x.toDouble(), y.toDouble(), 5.0))
                 }
@@ -460,75 +462,8 @@ class ProcessMap {
             totalPoints++
         }
         averageDistance /= totalPoints
-
-        // scatter points in missing spots, using average distance as a scale for step size
-        for (i in firstElement!!.getWidth().first.toInt() until firstElement!!.getWidth().second.toInt() step (averageDistance / 2).toInt()) {
-            for (y in firstElement!!.getHeight().first.toInt() until firstElement!!.getHeight().second.toInt() step (averageDistance / 2).toInt()) {
-                if (inPath(i.toDouble(), y.toDouble()) && notInRange(
-                        pathPoints,
-                        i.toDouble(),
-                        y.toDouble(),
-                        averageDistance
-                    )
-                ) {
-                    pathPoints.add(Circle(i.toDouble(), y.toDouble(), 5.0))
-                }
-            }
-        }
-
-        cleanUpPoints(pathPoints)
-
+        pathPoints.addAll(generatePointsAcrossMap())
         return pathPoints
-    }
-
-    /**
-     *  Cleaning up points that are too close and too many together
-     *  @param pathPoints to clean up
-     */
-    fun cleanUpPoints(pathPoints: MutableList<Circle>) {
-        var x: Int = 0
-        var y: Int = 0
-        var pathPointsSize: Int = pathPoints.size
-
-        while (x < pathPointsSize) {
-            var circle1: Circle = pathPoints[x]
-            y = 0
-            while (y < pathPointsSize) {
-                var circle: Circle = pathPoints[y]
-                if (circle1.isWithinRange(
-                        circle.cx,
-                        circle.cy,
-                        20.0
-                    ) && circle1.cx != circle.cx && circle.cy != circle1.cy
-                ) {
-                    if (x > y) x = y
-                    pathPoints.removeAt(y)
-                    pathPointsSize--
-                }
-                y++
-            }
-            x++
-        }
-    }
-
-    /**
-     * Determine whether a point is within range of any of the path points
-     * @param pathPoints to check in
-     * @param x coordinate
-     * @param y coordinate
-     * @param averageDistance to the point
-     * @return Boolean whether it is not in range
-     */
-    fun notInRange(
-        pathPoints: MutableList<Circle>,
-        x: Double,
-        y: Double,
-        averageDistance: Double
-    ): Boolean {
-        for (circle in pathPoints) {
-            if (circle.isWithin(x, y, averageDistance)) return false
-        }
-        return true
     }
 
     /**
@@ -537,34 +472,24 @@ class ProcessMap {
      */
     fun findNearestPointToClasses(doForClosestPoint: (Pair<Pair<Double, Double>, Pair<Double, Double>>) -> Unit) {
 
-        val stepSize: Double = 2.0
+        val stepSize: Double = 15.0
         classes.forEach { it ->
             val center = it.getCenter()
-            var closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
+            //var closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
 
             // draw a line in 8 directions (top, left, up, down, top-left, top-right, bottom-left, bottom-right)
             // and get the nearest point and furthest point of the path, if it traverses the path
             var nearestPoints: MutableList<Pair<Pair<Double, Double>, Pair<Double, Double>>?> =
                 mutableListOf()
-            nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, true, false))
             nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, true, true))
-            nearestPoints.add(getNearestPathPoint(center, stepSize, stepSize, false, true))
             nearestPoints.add(getNearestPathPoint(center, stepSize, -stepSize, true, true))
-            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize, true, false))
             nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize, true, true))
             nearestPoints.add(getNearestPathPoint(center, -stepSize, stepSize, true, true))
-            nearestPoints.add(getNearestPathPoint(center, -stepSize, -stepSize, false, true))
-
             // find the closests point our of all the nearest points
             for (point in nearestPoints) {
                 if (point != null) {
                     doForClosestPoint(point)
                 }
-            }
-
-            // if a closest point was found do stuff
-            if (closestPoint != null) {
-                doForClosestPoint(closestPoint)
             }
         }
     }
