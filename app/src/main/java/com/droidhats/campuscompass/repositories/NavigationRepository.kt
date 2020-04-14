@@ -194,37 +194,7 @@ class NavigationRepository(private val application: Application) {
                 Request.Method.GET,
                 constructRequestURL(origin, destination, method.string, shuttleWaypoints),
                 Response.Listener { response ->
-
-                    //Retrieve response (a JSON object)
-                    val jsonResponse = JSONObject(response)
-                    // Get route information from json response
-                    val routesArray: JSONArray = jsonResponse.getJSONArray("routes")
-                    if (routesArray.length() > 0) {
-                        val routes: JSONObject = routesArray.getJSONObject(0)
-                        val legsArray: JSONArray = routes.getJSONArray("legs")
-                        val legs: JSONObject = legsArray.getJSONObject(0)
-
-                        if (method.string == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string && legsArray.length() > 1) {
-                            val totalDurationInSec = legs.getJSONObject("duration").getString("value").toInt() +
-                            legsArray.getJSONObject(1).getJSONObject("duration").getString("value").toInt() +
-                            legsArray.getJSONObject(2).getJSONObject("duration").getString("value").toInt()
-                            val hours = totalDurationInSec / 3600
-                            val minutes = (totalDurationInSec % 3600) / 60
-                            val minText = if (minutes > 1) " mins" else " min"
-                            times[method.string] =  when (hours){
-                                0 -> "$minutes $minText"
-                                1 -> "$hours hour $minutes $minText"
-                                else -> "$hours hours $minutes $minText"
-                            }
-                        }
-                        else
-                            times[method.string] = legs.getJSONObject("duration").getString("text")
-                    } else {
-                        times[method.string] = "N/A"
-                    }
-                    //Set only after all the times have been retrieved (to display them all at the same time)
-                    if (times.size == OutdoorNavigationRoute.TransportationMethods.values().size)
-                        routeTimes.value = times
+                    handleFetchRouteResponse(response, method, times)
                 },
                 Response.ErrorListener {
                     Log.e("Volley Error:", "HTTP response error")
@@ -234,6 +204,49 @@ class NavigationRepository(private val application: Application) {
             val requestQueue = Volley.newRequestQueue(application)
             requestQueue.add(directionRequest)
         }
+    }
+
+    /**
+     * Method that handles the response of the http request to get the route times
+     * @param response string
+     * @param method of transportation
+     * @param times
+     */
+    private fun handleFetchRouteResponse(
+        response: String,
+        method: OutdoorNavigationRoute.TransportationMethods,
+        times: MutableMap<String, String>
+    ) {
+        //Retrieve response (a JSON object)
+        val jsonResponse = JSONObject(response)
+        // Get route information from json response
+        val routesArray: JSONArray = jsonResponse.getJSONArray("routes")
+        if (routesArray.length() > 0) {
+            val routes: JSONObject = routesArray.getJSONObject(0)
+            val legsArray: JSONArray = routes.getJSONArray("legs")
+            val legs: JSONObject = legsArray.getJSONObject(0)
+
+            if (method.string == OutdoorNavigationRoute.TransportationMethods.SHUTTLE.string && legsArray.length() > 1) {
+                val totalDurationInSec = legs.getJSONObject("duration").getString("value").toInt() +
+                        legsArray.getJSONObject(1).getJSONObject("duration").getString("value").toInt() +
+                        legsArray.getJSONObject(2).getJSONObject("duration").getString("value").toInt()
+                val hours = totalDurationInSec / 3600
+                val minutes = (totalDurationInSec % 3600) / 60
+                val minText = if (minutes > 1) " mins" else " min"
+                times[method.string] =  when (hours){
+                    0 -> "$minutes $minText"
+                    1 -> "$hours hour $minutes $minText"
+                    else -> "$hours hours $minutes $minText"
+                }
+            }
+            else
+                times[method.string] = legs.getJSONObject("duration").getString("text")
+        } else {
+            times[method.string] = "N/A"
+        }
+        //Set only after all the times have been retrieved (to display them all at the same time)
+        if (times.size == OutdoorNavigationRoute.TransportationMethods.values().size)
+            routeTimes.value = times
     }
 
     /**
