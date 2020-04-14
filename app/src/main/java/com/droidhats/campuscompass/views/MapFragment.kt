@@ -538,7 +538,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
-        setNavigationArrows(instructions, instructionsCoordinates)
+        setNavigationNextArrow(instructions, instructionsCoordinates)
+        setNavigationBackArrow(instructions, instructionsCoordinates)
     }
 
     /**
@@ -546,7 +547,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
      * @param instructions set
      * @param instructionsCoordinates
      */
-    private fun setNavigationArrows(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>) {
+    private fun setNavigationNextArrow(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>) {
         nextArrow.setOnClickListener{
             prevArrow.visibility = View.VISIBLE
             trackerSteps++
@@ -573,6 +574,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 moveTo(instructionsCoordinates[instructions.size - 1], 20.0F)
             }
         }
+    }
+
+    private fun setNavigationBackArrow(instructions: ArrayList<String>, instructionsCoordinates: ArrayList<LatLng>) {
         prevArrow.setOnClickListener{
             nextArrow.visibility = View.VISIBLE
             doneButtonMap.visibility = View.GONE
