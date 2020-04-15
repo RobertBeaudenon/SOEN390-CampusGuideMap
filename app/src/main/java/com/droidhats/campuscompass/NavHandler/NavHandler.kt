@@ -20,7 +20,6 @@ abstract class NavHandler {
                     } else {
                         navigationHandler
                             .setNext(OutdoorNavStep(origin, selectedTransportationMode, wayPoints))
-                            .setNext(OutdoorNavStep(destination, selectedTransportationMode, wayPoints))
                             .setNext(IndoorNavStep(destination))
                     }
                 } else {
