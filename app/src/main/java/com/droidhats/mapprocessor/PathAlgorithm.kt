@@ -11,7 +11,7 @@ import kotlin.math.sqrt
  * @param pathElements graph of connected Nodes
  * @return SVG path elements as a string
  */
-fun Dijkstra(start: MapElement, end: MapElement, pathElements: MutableList<Node>): String {
+fun getShortestPath(start: MapElement, end: MapElement, pathElements: MutableList<Node>): String {
     val startPoint: Node = findNearestPoint(start, pathElements)
     val endPoint: Node = findNearestPoint(end, pathElements)
 
@@ -33,7 +33,7 @@ fun Dijkstra(start: MapElement, end: MapElement, pathElements: MutableList<Node>
     }
 
     for(point in startPoint.neighbors) {
-        SubDijkstra(point, endPoint, visited)
+        dijsktra(point, endPoint, visited)
     }
 
     if(endPoint.shortestPath.size == 0) {
@@ -44,7 +44,7 @@ fun Dijkstra(start: MapElement, end: MapElement, pathElements: MutableList<Node>
             }
             x++
         }
-        return Dijkstra(start, end, pathElements)
+        return getShortestPath(start, end, pathElements)
     }
 
     endPoint.shortestPath.add(endPoint.circle)
@@ -64,7 +64,7 @@ fun Dijkstra(start: MapElement, end: MapElement, pathElements: MutableList<Node>
  * @param endPoint the end node
  * @param visited the list of nodes already visited
  */
-fun SubDijkstra(currentPoint: Node, endPoint: Node, visited: MutableList<Node>) {
+fun dijsktra(currentPoint: Node, endPoint: Node, visited: MutableList<Node>) {
     if (currentPoint.circle.equals(endPoint.circle)) return
     visited.add(currentPoint)
 
@@ -79,14 +79,14 @@ fun SubDijkstra(currentPoint: Node, endPoint: Node, visited: MutableList<Node>) 
             point.value = dist
             point.shortestPath = copyList(currentPoint.shortestPath)
             point.shortestPath.add(currentPoint.circle)
-            SubDijkstra(point, endPoint, visited)
+            dijsktra(point, endPoint, visited)
         }
         point.visitedBy.add(currentPoint)
     }
 
     for (point in currentPoint.neighbors) {
         if (!isInList(point, visited)){
-            SubDijkstra(point, endPoint, visited)
+            dijsktra(point, endPoint, visited)
         }
     }
 }

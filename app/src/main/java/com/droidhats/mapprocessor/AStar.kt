@@ -117,37 +117,18 @@ fun findNearestPoint(mapElement: MapElement, pathElements: List<Vertex>): Vertex
 
 /**
  * Takes 2 map elements and returns the shortest path in between them given the list of path elements
+ * as an arrow
  * @param start element
  * @param end element
  * @param list of vertices
  * @return string
  */
-fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>): String {
+fun getPath(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>): String {
     val startVertex = findNearestPoint(start, pathElements)
     val endVertex = findNearestPoint(end, pathElements)
-    val queue = PriorityQueue()
 
-    // A* algorithm part
-    var poppedNode: Vertex? = startVertex
-    while (poppedNode != endVertex) {
-        for (neighbor in poppedNode!!.neighbors) {
-            if (neighbor.getValue() == null || poppedNode.getValue()!! < neighbor.getValue()!!) {
-                neighbor.setValue(getDistance(poppedNode.pos, neighbor.pos))
-                neighbor.prev = poppedNode
-                if (!queue.isNotWithin(neighbor)) {
-                    queue.removeVertex(neighbor)
-                }
-            }
-            neighbor.removeFromNeighbors(poppedNode)
-            if (queue.isNotWithin(neighbor)) {
-                queue.insert(neighbor)
-            }
-        }
-        poppedNode = queue.pop()
-        if (poppedNode == null) {
-            return A_Star(start, end, removeStartAndEnd(startVertex, endVertex, pathElements))
-        }
-    }
+    val path = aStar(startVertex, endVertex, start, end, pathElements)
+    if (path != null) return path
 
     // converting path to string
     var cur: Vertex? = endVertex
@@ -159,7 +140,6 @@ fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>
 
     // check if the start and end vertices are the same
     if(endVertex != cur) {
-        string.append(Circle.getPoint(endVertex.pos.first, endVertex.pos.second))
         string.append(Circle.getPoint(cur!!.pos.first, cur.pos.second))
     }
 
@@ -179,6 +159,46 @@ fun A_Star(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>
     }
 
     return string.toString()
+}
+
+/**
+ * A* algorithm for getting the shortest path quickly
+ * @param startVertex
+ * @param endVertex
+ * @param start
+ * @param end
+ * @param pathElements
+ */
+fun aStar(
+    startVertex: Vertex,
+    endVertex: Vertex,
+    start: MapElement,
+    end: MapElement,
+    pathElements: MutableList<Vertex>
+): String? {
+    val queue = PriorityQueue()
+    // A* algorithm part
+    var poppedNode: Vertex? = startVertex
+    while (poppedNode != endVertex) {
+        for (neighbor in poppedNode!!.neighbors) {
+            if (neighbor.getValue() == null || poppedNode.getValue()!! < neighbor.getValue()!!) {
+                neighbor.setValue(getDistance(poppedNode.pos, neighbor.pos))
+                neighbor.prev = poppedNode
+                if (!queue.isNotWithin(neighbor)) {
+                    queue.removeVertex(neighbor)
+                }
+            }
+            neighbor.removeFromNeighbors(poppedNode)
+            if (queue.isNotWithin(neighbor)) {
+                queue.insert(neighbor)
+            }
+        }
+        poppedNode = queue.pop()
+        if (poppedNode == null) {
+            return getPath(start, end, removeStartAndEnd(startVertex, endVertex, pathElements))
+        }
+    }
+    return null
 }
 
 /**

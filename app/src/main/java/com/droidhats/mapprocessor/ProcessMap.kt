@@ -432,7 +432,7 @@ class ProcessMap {
 
             if (it.contains("<!-- PATH ARROW HERE  -->")) {
                 string.append(
-                    A_Star(
+                    getPath(
                         allElements[startInt],
                         allElements[endInt],
                         paths

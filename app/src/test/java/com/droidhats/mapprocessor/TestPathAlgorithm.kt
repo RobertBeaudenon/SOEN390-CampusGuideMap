@@ -71,13 +71,13 @@ class TestPathAlgorithm {
         val currentPoint: Node = Node(Circle(5.0, 5.0, 5.0), mutableListOf(endPoint))
 
         val visited: MutableList<Node> = mutableListOf()
-        SubDijkstra(currentPoint, endPoint, visited)
+        dijsktra(currentPoint, endPoint, visited)
         Assert.assertEquals(endPoint.shortestPath.size, 0)
 
         val endPoint2: Node = Node(Circle(5.0, 4.5, 5.0), mutableListOf(endPoint))
         val middlePoint: Node = Node(Circle(5.0, 4.4, 5.0), mutableListOf(endPoint2, endPoint))
         val currentPoint2: Node = Node(Circle(0.0, 5.0, 5.0), mutableListOf(middlePoint, endPoint2))
-        SubDijkstra(currentPoint2, endPoint, mutableListOf())
+        dijsktra(currentPoint2, endPoint, mutableListOf())
 
         val string: String = "<path id=\"\" d=\"m 0.0,5.0 5.0,-0.5\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><path id=\"\" d=\"m 5.0,4.5 -15.828554103265402,19.346010570657715\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><path id=\"\" d=\"m 5.0,4.5 -19.346010570657715,-15.828554103265402\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/>"
         Assert.assertEquals(pathToString(endPoint.shortestPath), string)
@@ -93,15 +93,15 @@ class TestPathAlgorithm {
 
         val start: MapElement = Circle(0.0, 5.0, 5.0)
         var end: MapElement = Circle(0.0, 5.0, 5.0)
-        Assert.assertEquals(Dijkstra(start, end, pathElements), "<circle cx=\"0.0\" cy=\"5.0\" r=\"5.0\" /><circle cx=\"0.0\" cy=\"5.0\" r=\"5.0\" /><path id=\"\" d=\"m 0.0,5.0 0.0,0.0\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/>")
+        Assert.assertEquals(getShortestPath(start, end, pathElements), "<circle cx=\"0.0\" cy=\"5.0\" r=\"5.0\" /><circle cx=\"0.0\" cy=\"5.0\" r=\"5.0\" /><path id=\"\" d=\"m 0.0,5.0 0.0,0.0\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/>")
 
         end = Circle(5.0, 5.0, 5.0)
-        Assert.assertEquals(Dijkstra(start, end, pathElements),
+        Assert.assertEquals(getShortestPath(start, end, pathElements),
             "<path id=\"\" d=\"m 0.0,5.0 5.0,-0.5\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><path id=\"\" d=\"m 5.0,4.5 0.0,0.5\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><path id=\"\" d=\"m 5.0,5.0 -17.675,-17.675\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><path id=\"\" d=\"m 5.0,5.0 17.675,-17.675\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/><circle cx=\"0.0\" cy=\"5.0\" r=\"5.0\" /><circle cx=\"5.0\" cy=\"5.0\" r=\"5.0\" />")
 
         end = Circle(20.0, 20.0, 5.0)
         pathElements.add(Node(end, mutableListOf()))
-        Assert.assertEquals(Dijkstra(start, end, pathElements), "<circle cx=\"5.0\" cy=\"4.5\" r=\"5.0\" /><circle cx=\"20.0\" cy=\"20.0\" r=\"5.0\" /><path id=\"\" d=\"m 5.0,4.5 15.0,15.5\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/>")
+        Assert.assertEquals(getShortestPath(start, end, pathElements), "<circle cx=\"5.0\" cy=\"4.5\" r=\"5.0\" /><circle cx=\"20.0\" cy=\"20.0\" r=\"5.0\" /><path id=\"\" d=\"m 5.0,4.5 15.0,15.5\" style=\"stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1\" transform=\"\"/>")
     }
 
 }
