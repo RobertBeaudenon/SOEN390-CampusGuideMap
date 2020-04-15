@@ -41,11 +41,11 @@ class ExplorePlaceAdapter(private val items: ArrayList<ExplorePlace>, private va
         val item = items[position]
 
         holder.titleView.text = item.placeName
-        holder.rateView.text = item.place_rating
-        var rate: Double = item.place_rating!!.toDouble()
+        holder.rateView.text = item.placeRating
+        var rate: Double = item.placeRating!!.toDouble()
         holder.rateStars.rating = rate.toFloat()
-        holder.locationView.text = if (item.place_address.isNullOrBlank()) "None" else item.place_address
-        Picasso.get().load(item.place_image).into(holder.imageView);
+        holder.locationView.text = if (item.placeAddress.isNullOrBlank()) "None" else item.placeAddress
+        Picasso.get().load(item.placeImage).into(holder.imageView);
 
         with(holder.view) {
             tag = item

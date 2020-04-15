@@ -178,7 +178,11 @@ class Path(val id: String, val d: String, var transform: String, var style: Stri
         fun createPath(pointA: Pair<Double, Double>, pointB: Pair<Double, Double>): Path {
             val diffX: Double = pointB.first - pointA.first
             val diffY: Double = pointB.second - pointA.second
-            return Path("", "m " + pointA.first + "," + pointA.second + " $diffX,$diffY", "", "stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1", false)
+            return Path("",
+                "m " + pointA.first + "," + pointA.second + " $diffX,$diffY",
+                "",
+                "stroke:#7317ad;stroke-width:6;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1",
+                false)
         }
     }
 
@@ -291,7 +295,7 @@ class Line(private val m: Double, private val b: Double) {
  */
 class Circle(val cx: Double, val cy: Double, val r: Double) : MapElement() {
     override fun toString(): String {
-        return "<circle cx=\"$cx\" cy=\"$cy\" r=\"$r\" />"
+        return "<circle cx=\"$cx\" cy=\"$cy\" r=\"$r\" style=\"fill:#7317ad\"/>"
     }
 
     override fun getID() = Random().nextInt().toString()
