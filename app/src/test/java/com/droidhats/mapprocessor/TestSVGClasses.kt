@@ -73,7 +73,7 @@ class TestSVGClasses {
         Assert.assertEquals(createdPath.id, "")
         Assert.assertEquals(createdPath.d, "m 0.0,0.0 20.0,20.0")
         Assert.assertEquals(createdPath.transform, "")
-        Assert.assertEquals(createdPath.style, "stroke:#000000;stroke-width:2.01184581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1")
+        Assert.assertEquals(createdPath.style, "stroke:#7317ad;stroke-width:6;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1")
         Assert.assertFalse(createdPath.isClosed)
     }
 
@@ -82,7 +82,7 @@ class TestSVGClasses {
         val testCircle = Circle(0.0, 0.0, 5.0)
 
         Assert.assertNotNull(testCircle.getID())
-        Assert.assertEquals(testCircle.toString(), "<circle cx=\"0.0\" cy=\"0.0\" r=\"5.0\" />")
+        Assert.assertEquals(testCircle.toString(), "<circle cx=\"0.0\" cy=\"0.0\" r=\"5.0\" style=\"fill:#7317ad\"/>")
 
         val testGetPoint = Circle.getPoint(5.0, 5.0)
         Assert.assertEquals(testGetPoint.cx, 5.0, 0.1)
