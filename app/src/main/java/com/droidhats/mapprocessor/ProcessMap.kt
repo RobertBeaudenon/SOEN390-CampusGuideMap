@@ -175,7 +175,7 @@ class ProcessMap {
         val prepreBuilding = svg.split("docname=\"")
         val preBuilding = prepreBuilding[1].split("-")
         val preNumBuilding = preBuilding[1].split(".svg")
-        val numBuilding = preNumBuilding[0]
+        val numBuilding = preNumBuilding[0].toLowerCase()
         var newFileStr = ""
 
         val patternText = Regex("<text")
@@ -212,7 +212,7 @@ class ProcessMap {
                 val str = textArray[1].split(" </")
                 val roomNum = str[0]
                 val roomNumRegex = Regex(numBuilding)
-                val newFloor = roomNumRegex.replaceFirst(roomNum, floorNumber)
+                val newFloor = roomNumRegex.replaceFirst(roomNum.toLowerCase(), floorNumber)
                 val newTextTag =
                     textArray.elementAt(0) + "> " + "$newFloor" + " </" + str.elementAt(1)
                 newFileStr += newTextTag + "\n"
@@ -227,12 +227,6 @@ class ProcessMap {
                     textArray.elementAt(0) + "-" + "$newDocNum" + "." + str.elementAt(1)
                 newFileStr += newDocTag + "\n"
             }
-        }
-        var array = newFileStr.split("\n")
-        var x = 0
-        for (line in array) {
-            if (x > 100) println(line)
-            x++
         }
 
         return newFileStr
