@@ -76,12 +76,6 @@ class DirectionsTest {
         //Click Hall building marker to trigger bottom sheet
         device.findObject(UiSelector().descriptionContains("Henry F. Hall Building. ")).click()
 
-        //Retrieve bottom sheet once it is in the view
-        val bottomSheet = device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet"))
-
-        //Expand bottom sheet
-        //bottomSheet.swipe(Direction.UP, 1.0f)
-
         //Click directions button
         device.findObject(By.res("com.droidhats.campuscompass:id/bottom_sheet_directions_button"))
             .click()
