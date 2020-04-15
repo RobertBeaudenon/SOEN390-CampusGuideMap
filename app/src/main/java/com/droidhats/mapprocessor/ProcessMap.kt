@@ -499,7 +499,6 @@ class ProcessMap {
         val stepSize: Double = 15.0
         classes.forEach { it ->
             val center = it.getCenter()
-            //var closestPoint: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
 
             // draw a line in 8 directions (top, left, up, down, top-left, top-right, bottom-left, bottom-right)
             // and get the nearest point and furthest point of the path, if it traverses the path
