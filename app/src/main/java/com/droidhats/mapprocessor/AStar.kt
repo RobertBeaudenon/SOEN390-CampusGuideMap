@@ -118,17 +118,18 @@ fun findNearestPoint(mapElement: MapElement, pathElements: List<Vertex>): Vertex
 /**
  * Takes 2 map elements and returns the shortest path in between them given the list of path elements
  * as an arrow
- * @param start element
- * @param end element
- * @param list of vertices
- * @return string
+ * @param start element where the user is starting from
+ * @param end or destination element to reach
+ * @param list of vertices connected in a graph
+ * @return string of the path
  */
 fun getPath(start: MapElement, end: MapElement, pathElements: MutableList<Vertex>): String {
     val startVertex = findNearestPoint(start, pathElements)
     val endVertex = findNearestPoint(end, pathElements)
 
     val path = aStar(startVertex, endVertex, start, end, pathElements)
-    if (path != null) return path
+    if (path != null)
+        return path
 
     // converting path to string
     var cur: Vertex? = endVertex
@@ -163,11 +164,11 @@ fun getPath(start: MapElement, end: MapElement, pathElements: MutableList<Vertex
 
 /**
  * A* algorithm for getting the shortest path quickly
- * @param startVertex
- * @param endVertex
- * @param start
- * @param end
- * @param pathElements
+ * @param startVertex the vertex at the start of the path
+ * @param endVertex the vertex at the end of the path
+ * @param start the start element or place where the user is starting from
+ * @param end the end element or destination for where the user wants to go
+ * @param pathElements the elements along the path connected in a weighted graph
  */
 fun aStar(
     startVertex: Vertex,

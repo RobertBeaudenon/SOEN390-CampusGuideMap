@@ -456,11 +456,11 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
      * The functionality for this is to launch the appropriate directions to generate the next
      * step.
      *
-     * @param startAndEnd
-     * @param goingUp
-     * @param building
-     * @param doneButton
-     * @param prevArrowButton
+     * @param startAndEnd start and end indoor locations
+     * @param goingUp whether the user is going up
+     * @param building the building that the user is navigating in
+     * @param doneButton the reference to the done button
+     * @param prevArrowButton the reference to the previous arrow button
      */
     private fun initializeNextArrowButton(
         startAndEnd: Pair<IndoorLocation, IndoorLocation>,
@@ -519,9 +519,9 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
     /**
      * Generate the directions for the first step.
      *
-     * @param startAndEnd
-     * @param goingUp
-     * @param building
+     * @param startAndEnd the start and end indoor locations
+     * @param goingUp whether the user is navigating up or down
+     * @param building the building for which the user is within
      */
     private fun generateFirstStep(
         startAndEnd: Pair<IndoorLocation, IndoorLocation>,
@@ -583,9 +583,9 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
     /**
      * Generate the directions for the second step.
      *
-     * @param startAndEnd
-     * @param goingUp
-     * @param building
+     * @param startAndEnd the start and end indoor locations
+     * @param goingUp whether the user is going up or down in the building
+     * @param building the building for which the user is navigating in
      */
     private fun generateSecondStep(
         startAndEnd: Pair<IndoorLocation, IndoorLocation>,
@@ -656,7 +656,6 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
 
         setDirections(startPos, endPos, mapProcessor)
     }
-
 
     /**
      * Assign the intermediate mode of transportation
@@ -736,9 +735,9 @@ class FloorFragment : Fragment(), NavigationView.OnNavigationItemSelectedListene
     /**
      * Setting the directions on the image view
      *
-     * @param start
-     * @param end
-     * @param mapProcessor
+     * @param start id of the start location
+     * @param end id of the end location
+     * @param mapProcessor the reference to the map processor to run the get directions method
      */
     private fun setDirections(start: String, end: String, mapProcessor: ProcessMap) {
         progressBar.visibility = View.VISIBLE
